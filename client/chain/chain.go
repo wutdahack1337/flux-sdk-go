@@ -815,7 +815,7 @@ func (c *chainClient) runBatchBroadcast() {
 }
 
 func (c *chainClient) GetGasFee() (string, error) {
-	gasPrices := strings.Trim(c.opts.GasPrices, "inj")
+	gasPrices := strings.Trim(c.opts.GasPrices, "lux")
 
 	gas, err := strconv.ParseFloat(gasPrices, 64)
 
