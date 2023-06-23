@@ -1,6 +1,7 @@
 package chain
 
 import (
+	"github.com/pkg/errors"
 	"os"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -8,6 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/cosmos/cosmos-sdk/std"
+	cosmostypes "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 
 	signingtypes "github.com/cosmos/cosmos-sdk/types/tx/signing"
@@ -106,4 +108,79 @@ func newContext(
 	}
 
 	return clientCtx
+}
+
+// NewClientContext creates a new Cosmos Client context, where chainID
+// corresponds to Cosmos chain ID, fromSpec is either name of the key, or bech32-address
+// of the Cosmos account. Keyring is required to contain the specified key.
+func NewClientContext(
+	chainId, fromSpec string, kb keyring.Keyring,
+) (client.Context, error) {
+	clientCtx := client.Context{}
+
+	interfaceRegistry := types.NewInterfaceRegistry()
+	keyscodec.RegisterInterfaces(interfaceRegistry)
+	std.RegisterInterfaces(interfaceRegistry)
+
+	chaintypes.RegisterInterfaces(interfaceRegistry)
+	fnfttypes.RegisterInterfaces(interfaceRegistry)
+
+	// more cosmos types
+	authtypes.RegisterInterfaces(interfaceRegistry)
+	authztypes.RegisterInterfaces(interfaceRegistry)
+	vestingtypes.RegisterInterfaces(interfaceRegistry)
+	banktypes.RegisterInterfaces(interfaceRegistry)
+	crisistypes.RegisterInterfaces(interfaceRegistry)
+	distributiontypes.RegisterInterfaces(interfaceRegistry)
+	evidencetypes.RegisterInterfaces(interfaceRegistry)
+	govtypes.RegisterInterfaces(interfaceRegistry)
+	govv1types.RegisterInterfaces(interfaceRegistry)
+	paramproposaltypes.RegisterInterfaces(interfaceRegistry)
+	ibcapplicationtypes.RegisterInterfaces(interfaceRegistry)
+	ibccoretypes.RegisterInterfaces(interfaceRegistry)
+	ibcfeetypes.RegisterInterfaces(interfaceRegistry)
+	slashingtypes.RegisterInterfaces(interfaceRegistry)
+	stakingtypes.RegisterInterfaces(interfaceRegistry)
+	upgradetypes.RegisterInterfaces(interfaceRegistry)
+	feegranttypes.RegisterInterfaces(interfaceRegistry)
+
+	marshaler := codec.NewProtoCodec(interfaceRegistry)
+	encodingConfig := EncodingConfig{
+		InterfaceRegistry: interfaceRegistry,
+		Codec:             marshaler,
+		TxConfig: NewTxConfig([]signingtypes.SignMode{
+			signingtypes.SignMode_SIGN_MODE_DIRECT,
+		}),
+	}
+
+	var keyInfo keyring.Record
+
+	if kb != nil {
+		addr, err := cosmostypes.AccAddressFromBech32(fromSpec)
+		if err == nil {
+			record, err := kb.KeyByAddress(addr)
+			if err != nil {
+				err = errors.Wrapf(err, "failed to load key info by address %s", addr.String())
+				return clientCtx, err
+			}
+			keyInfo = *record
+		} else {
+			// failed to parse Bech32, is it a name?
+			record, err := kb.Key(fromSpec)
+			if err != nil {
+				err = errors.Wrapf(err, "no key in keyring for name: %s", fromSpec)
+				return clientCtx, err
+			}
+			keyInfo = *record
+		}
+	}
+
+	clientCtx = newContext(
+		chainId,
+		encodingConfig,
+		kb,
+		keyInfo,
+	)
+
+	return clientCtx, nil
 }

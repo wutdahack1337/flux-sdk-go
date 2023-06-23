@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 
-	"github.com/FluxNFTLabs/fluxd/chain/crypto/ethsecp256k1"
+	"github.com/FluxNFTLabs/sdk-go/chain/crypto/ethsecp256k1"
 )
 
 var amino *codec.LegacyAmino

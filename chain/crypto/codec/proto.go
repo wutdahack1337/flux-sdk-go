@@ -4,7 +4,7 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 
-	"github.com/FluxNFTLabs/fluxd/chain/crypto/ethsecp256k1"
+	"github.com/FluxNFTLabs/sdk-go/chain/crypto/ethsecp256k1"
 )
 
 var (

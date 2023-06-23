@@ -11,7 +11,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 
-	"github.com/FluxNFTLabs/fluxd/chain/crypto/ethsecp256k1"
+	"github.com/FluxNFTLabs/sdk-go/chain/crypto/ethsecp256k1"
 )
 
 const (
