@@ -73,7 +73,7 @@ func main() {
 	}
 
 	//AsyncBroadcastMsg, SyncBroadcastMsg, QueueBroadcastMsg
-	err = chainClient.QueueBroadcastMsg(msg, msg)
+	err = chainClient.QueueBroadcastMsg(msg)
 	if err != nil {
 		fmt.Println(err)
 	}
