@@ -1,14 +1,13 @@
 all:
 
 chain-types:
-	rm -rf chain && mkdir chain chain/types chain/fnft chain/fnft/types chain/crypto chain/crypto/ethsecp256k1 chain/crypto/codec chain/crypto/hd
+	rm -rf chain && mkdir chain chain/types chain/fnft chain/fnft/types chain/crypto chain/crypto/ethsecp256k1 chain/crypto/codec chain/crypto/hd chain/stream chain/stream/types
 
 	cp ../fluxd/chain/types/*.go chain/types
-
 	cp ../fluxd/chain/crypto/ethsecp256k1/*.go chain/crypto/ethsecp256k1
 	cp ../fluxd/chain/crypto/codec/*.go chain/crypto/codec
-
 	cp ../fluxd/chain/crypto/hd/*.go chain/crypto/hd
+	cp ../fluxd/chain/stream/types/*.go chain/stream/types
 	rm -rf chain/crypto/hd/*test.go
 
 	cp ../fluxd/chain/modules/fnft/types/*.go chain/fnft/types

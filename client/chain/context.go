@@ -144,10 +144,10 @@ func NewClientContext(
 	upgradetypes.RegisterInterfaces(interfaceRegistry)
 	feegranttypes.RegisterInterfaces(interfaceRegistry)
 
-	marshaler := codec.NewProtoCodec(interfaceRegistry)
+	codec := codec.NewProtoCodec(interfaceRegistry)
 	encodingConfig := EncodingConfig{
 		InterfaceRegistry: interfaceRegistry,
-		Codec:             marshaler,
+		Codec:             codec,
 		TxConfig: NewTxConfig([]signingtypes.SignMode{
 			signingtypes.SignMode_SIGN_MODE_DIRECT,
 		}),
