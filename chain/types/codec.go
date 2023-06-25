@@ -21,9 +21,9 @@ func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 		&EthAccount{},
 	)
 
-	registry.RegisterInterface("flux.types.v1beta1.ExtensionOptionsWeb3Tx", (*tx.ExtensionOptionI)(nil))
+	registry.RegisterInterface("flux.types.v1beta1.ExtensionOptionsWeb3Tx", (*tx.TxExtensionOptionI)(nil))
 	registry.RegisterImplementations(
-		(*tx.ExtensionOptionI)(nil),
+		(*tx.TxExtensionOptionI)(nil),
 		&ExtensionOptionsWeb3Tx{},
 	)
 }
