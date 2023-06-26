@@ -19,7 +19,7 @@ func main() {
 	}
 	client := types.NewChainStreamClient(cc)
 
-	stream, err := client.ChainStream(context.Background(), &types.ChainStreamRequest{
+	stream, err := client.EventsStream(context.Background(), &types.EventsStreamRequest{
 		Modules: []string{"fnft"},
 	})
 	if err != nil {

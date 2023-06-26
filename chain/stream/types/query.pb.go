@@ -28,22 +28,22 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type ChainStreamRequest struct {
+type EventsStreamRequest struct {
 	Modules []string `protobuf:"bytes,1,rep,name=modules,proto3" json:"modules,omitempty"`
 }
 
-func (m *ChainStreamRequest) Reset()         { *m = ChainStreamRequest{} }
-func (m *ChainStreamRequest) String() string { return proto.CompactTextString(m) }
-func (*ChainStreamRequest) ProtoMessage()    {}
-func (*ChainStreamRequest) Descriptor() ([]byte, []int) {
+func (m *EventsStreamRequest) Reset()         { *m = EventsStreamRequest{} }
+func (m *EventsStreamRequest) String() string { return proto.CompactTextString(m) }
+func (*EventsStreamRequest) ProtoMessage()    {}
+func (*EventsStreamRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a82db9e8fada1d29, []int{0}
 }
-func (m *ChainStreamRequest) XXX_Unmarshal(b []byte) error {
+func (m *EventsStreamRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *ChainStreamRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *EventsStreamRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_ChainStreamRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_EventsStreamRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -53,43 +53,43 @@ func (m *ChainStreamRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-func (m *ChainStreamRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ChainStreamRequest.Merge(m, src)
+func (m *EventsStreamRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventsStreamRequest.Merge(m, src)
 }
-func (m *ChainStreamRequest) XXX_Size() int {
+func (m *EventsStreamRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *ChainStreamRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ChainStreamRequest.DiscardUnknown(m)
+func (m *EventsStreamRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventsStreamRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ChainStreamRequest proto.InternalMessageInfo
+var xxx_messageInfo_EventsStreamRequest proto.InternalMessageInfo
 
-func (m *ChainStreamRequest) GetModules() []string {
+func (m *EventsStreamRequest) GetModules() []string {
 	if m != nil {
 		return m.Modules
 	}
 	return nil
 }
 
-type ChainStreamResponse struct {
+type EventsStreamResponse struct {
 	BlockHeight uint64    `protobuf:"varint,1,opt,name=block_height,json=blockHeight,proto3" json:"block_height,omitempty"`
 	Modules     []string  `protobuf:"bytes,2,rep,name=modules,proto3" json:"modules,omitempty"`
 	Events      []*Events `protobuf:"bytes,3,rep,name=events,proto3" json:"events,omitempty"`
 }
 
-func (m *ChainStreamResponse) Reset()         { *m = ChainStreamResponse{} }
-func (m *ChainStreamResponse) String() string { return proto.CompactTextString(m) }
-func (*ChainStreamResponse) ProtoMessage()    {}
-func (*ChainStreamResponse) Descriptor() ([]byte, []int) {
+func (m *EventsStreamResponse) Reset()         { *m = EventsStreamResponse{} }
+func (m *EventsStreamResponse) String() string { return proto.CompactTextString(m) }
+func (*EventsStreamResponse) ProtoMessage()    {}
+func (*EventsStreamResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a82db9e8fada1d29, []int{1}
 }
-func (m *ChainStreamResponse) XXX_Unmarshal(b []byte) error {
+func (m *EventsStreamResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *ChainStreamResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *EventsStreamResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_ChainStreamResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_EventsStreamResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -99,33 +99,33 @@ func (m *ChainStreamResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-func (m *ChainStreamResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ChainStreamResponse.Merge(m, src)
+func (m *EventsStreamResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventsStreamResponse.Merge(m, src)
 }
-func (m *ChainStreamResponse) XXX_Size() int {
+func (m *EventsStreamResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *ChainStreamResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_ChainStreamResponse.DiscardUnknown(m)
+func (m *EventsStreamResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventsStreamResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ChainStreamResponse proto.InternalMessageInfo
+var xxx_messageInfo_EventsStreamResponse proto.InternalMessageInfo
 
-func (m *ChainStreamResponse) GetBlockHeight() uint64 {
+func (m *EventsStreamResponse) GetBlockHeight() uint64 {
 	if m != nil {
 		return m.BlockHeight
 	}
 	return 0
 }
 
-func (m *ChainStreamResponse) GetModules() []string {
+func (m *EventsStreamResponse) GetModules() []string {
 	if m != nil {
 		return m.Modules
 	}
 	return nil
 }
 
-func (m *ChainStreamResponse) GetEvents() []*Events {
+func (m *EventsStreamResponse) GetEvents() []*Events {
 	if m != nil {
 		return m.Events
 	}
@@ -176,37 +176,155 @@ func (m *Events) GetRawEvents() []*types.Any {
 	return nil
 }
 
+type GetEventsRequest struct {
+	Height  uint64   `protobuf:"varint,1,opt,name=height,proto3" json:"height,omitempty"`
+	Modules []string `protobuf:"bytes,2,rep,name=modules,proto3" json:"modules,omitempty"`
+}
+
+func (m *GetEventsRequest) Reset()         { *m = GetEventsRequest{} }
+func (m *GetEventsRequest) String() string { return proto.CompactTextString(m) }
+func (*GetEventsRequest) ProtoMessage()    {}
+func (*GetEventsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a82db9e8fada1d29, []int{3}
+}
+func (m *GetEventsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetEventsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetEventsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetEventsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetEventsRequest.Merge(m, src)
+}
+func (m *GetEventsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetEventsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetEventsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetEventsRequest proto.InternalMessageInfo
+
+func (m *GetEventsRequest) GetHeight() uint64 {
+	if m != nil {
+		return m.Height
+	}
+	return 0
+}
+
+func (m *GetEventsRequest) GetModules() []string {
+	if m != nil {
+		return m.Modules
+	}
+	return nil
+}
+
+type GetEventsResponse struct {
+	Height  uint64    `protobuf:"varint,1,opt,name=height,proto3" json:"height,omitempty"`
+	Modules []string  `protobuf:"bytes,2,rep,name=modules,proto3" json:"modules,omitempty"`
+	Events  []*Events `protobuf:"bytes,3,rep,name=events,proto3" json:"events,omitempty"`
+}
+
+func (m *GetEventsResponse) Reset()         { *m = GetEventsResponse{} }
+func (m *GetEventsResponse) String() string { return proto.CompactTextString(m) }
+func (*GetEventsResponse) ProtoMessage()    {}
+func (*GetEventsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a82db9e8fada1d29, []int{4}
+}
+func (m *GetEventsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetEventsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetEventsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetEventsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetEventsResponse.Merge(m, src)
+}
+func (m *GetEventsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetEventsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetEventsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetEventsResponse proto.InternalMessageInfo
+
+func (m *GetEventsResponse) GetHeight() uint64 {
+	if m != nil {
+		return m.Height
+	}
+	return 0
+}
+
+func (m *GetEventsResponse) GetModules() []string {
+	if m != nil {
+		return m.Modules
+	}
+	return nil
+}
+
+func (m *GetEventsResponse) GetEvents() []*Events {
+	if m != nil {
+		return m.Events
+	}
+	return nil
+}
+
 func init() {
-	proto.RegisterType((*ChainStreamRequest)(nil), "flux.stream.v1beta1.ChainStreamRequest")
-	proto.RegisterType((*ChainStreamResponse)(nil), "flux.stream.v1beta1.ChainStreamResponse")
+	proto.RegisterType((*EventsStreamRequest)(nil), "flux.stream.v1beta1.EventsStreamRequest")
+	proto.RegisterType((*EventsStreamResponse)(nil), "flux.stream.v1beta1.EventsStreamResponse")
 	proto.RegisterType((*Events)(nil), "flux.stream.v1beta1.Events")
+	proto.RegisterType((*GetEventsRequest)(nil), "flux.stream.v1beta1.GetEventsRequest")
+	proto.RegisterType((*GetEventsResponse)(nil), "flux.stream.v1beta1.GetEventsResponse")
 }
 
 func init() { proto.RegisterFile("flux/stream/v1beta1/query.proto", fileDescriptor_a82db9e8fada1d29) }
 
 var fileDescriptor_a82db9e8fada1d29 = []byte{
-	// 328 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x91, 0x3f, 0x4f, 0x02, 0x31,
-	0x18, 0xc6, 0xa9, 0x18, 0x0c, 0xc5, 0xa9, 0x38, 0x9c, 0x98, 0x9c, 0xc8, 0xe2, 0x4d, 0xad, 0xc0,
-	0xec, 0xa0, 0x46, 0xa2, 0x89, 0x71, 0x38, 0x9d, 0x5c, 0x48, 0x0b, 0x2f, 0x77, 0xc4, 0xe3, 0x0a,
-	0xd7, 0x96, 0x3f, 0x9f, 0xc0, 0xd5, 0x8f, 0xe5, 0xc8, 0xe8, 0x68, 0xe0, 0x8b, 0x18, 0x7a, 0x47,
-	0xc2, 0x45, 0x12, 0xc7, 0xf7, 0xcd, 0xef, 0xf9, 0xa5, 0xcf, 0x5b, 0x7c, 0x3e, 0x88, 0xcc, 0x9c,
-	0x29, 0x9d, 0x00, 0x1f, 0xb1, 0x69, 0x53, 0x80, 0xe6, 0x4d, 0x36, 0x31, 0x90, 0x2c, 0xe8, 0x38,
-	0x91, 0x5a, 0x92, 0xea, 0x06, 0xa0, 0x29, 0x40, 0x33, 0xa0, 0x76, 0x1a, 0x48, 0x19, 0x44, 0xc0,
-	0x2c, 0x22, 0xcc, 0x80, 0xf1, 0x38, 0xe3, 0x1b, 0x14, 0x93, 0xbb, 0x90, 0x0f, 0xe3, 0x17, 0x9b,
-	0xf0, 0x61, 0x62, 0x40, 0x69, 0xe2, 0xe0, 0xa3, 0x91, 0xec, 0x9b, 0x08, 0x94, 0x83, 0xea, 0x45,
-	0xaf, 0xec, 0x6f, 0xc7, 0xc6, 0x07, 0xc2, 0xd5, 0x5c, 0x40, 0x8d, 0x65, 0xac, 0x80, 0x5c, 0xe0,
-	0x63, 0x11, 0xc9, 0xde, 0x7b, 0x37, 0x84, 0x61, 0x10, 0x6a, 0x07, 0xd5, 0x91, 0x77, 0xe8, 0x57,
-	0xec, 0xee, 0xc1, 0xae, 0x76, 0xa5, 0x07, 0x39, 0x29, 0x69, 0xe3, 0x12, 0x4c, 0x21, 0xd6, 0xca,
-	0x29, 0xd6, 0x8b, 0x5e, 0xa5, 0x75, 0x46, 0xf7, 0xb4, 0xa0, 0xf7, 0x16, 0xf1, 0x33, 0xb4, 0x71,
-	0x8d, 0x4b, 0xe9, 0x86, 0xb4, 0x31, 0x4e, 0xf8, 0xac, 0x9b, 0x29, 0x90, 0x55, 0x9c, 0xd0, 0xb4,
-	0x33, 0xdd, 0x76, 0xa6, 0x37, 0xf1, 0xc2, 0x2f, 0x27, 0x7c, 0x96, 0x86, 0x5a, 0x13, 0x5c, 0xd9,
-	0xe9, 0x41, 0x44, 0x7e, 0xbc, 0xdc, 0xfb, 0x82, 0xbf, 0x97, 0xaa, 0x79, 0xff, 0x83, 0xe9, 0x85,
-	0xae, 0xd0, 0xed, 0xe3, 0xd7, 0xca, 0x45, 0xcb, 0x95, 0x8b, 0x7e, 0x56, 0x2e, 0xfa, 0x5c, 0xbb,
-	0x85, 0xe5, 0xda, 0x2d, 0x7c, 0xaf, 0xdd, 0xc2, 0x1b, 0x0b, 0x86, 0x3a, 0x34, 0x82, 0xf6, 0xe4,
-	0x88, 0x75, 0x22, 0x33, 0x7f, 0xee, 0xbc, 0x3e, 0x71, 0xa1, 0xd8, 0xc6, 0xdd, 0x67, 0xbd, 0x8d,
-	0x6d, 0xfb, 0xe9, 0x7a, 0x31, 0x06, 0x25, 0x4a, 0xb6, 0x56, 0xfb, 0x37, 0x00, 0x00, 0xff, 0xff,
-	0x15, 0x7c, 0xea, 0xa9, 0x10, 0x02, 0x00, 0x00,
+	// 392 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x93, 0xbb, 0x6e, 0xe2, 0x40,
+	0x14, 0x86, 0x99, 0x65, 0xe5, 0x15, 0x03, 0xc5, 0xee, 0x80, 0x56, 0x5e, 0x56, 0xf2, 0xb2, 0x96,
+	0x12, 0x39, 0xcd, 0x4c, 0x80, 0x3a, 0x45, 0x6e, 0x24, 0x91, 0xa2, 0x14, 0x4e, 0x2a, 0x1a, 0x64,
+	0xc3, 0x60, 0xa3, 0x18, 0x0f, 0x78, 0xc6, 0x5c, 0xf2, 0x04, 0x29, 0xf3, 0x58, 0x29, 0x29, 0x53,
+	0x46, 0xf0, 0x22, 0x11, 0x9e, 0x21, 0xc2, 0x11, 0xb9, 0x96, 0x73, 0xf4, 0x9d, 0xcf, 0xe7, 0x3f,
+	0x47, 0x86, 0xff, 0xba, 0x41, 0x3c, 0x21, 0x5c, 0x44, 0xd4, 0xe9, 0x93, 0x51, 0xd5, 0xa5, 0xc2,
+	0xa9, 0x92, 0x61, 0x4c, 0xa3, 0x29, 0x1e, 0x44, 0x4c, 0x30, 0x54, 0x5c, 0x02, 0x58, 0x02, 0x58,
+	0x01, 0xe5, 0x3f, 0x1e, 0x63, 0x5e, 0x40, 0x49, 0x82, 0xb8, 0x71, 0x97, 0x38, 0xa1, 0xe2, 0x4d,
+	0x02, 0x8b, 0xc7, 0x23, 0x1a, 0x0a, 0x7e, 0x99, 0xb4, 0xd8, 0x74, 0x18, 0x53, 0x2e, 0x90, 0x0e,
+	0x7f, 0xf4, 0x59, 0x27, 0x0e, 0x28, 0xd7, 0x41, 0x25, 0x6b, 0xe5, 0xec, 0xd5, 0xd3, 0xbc, 0x05,
+	0xb0, 0x94, 0xee, 0xe0, 0x03, 0x16, 0x72, 0x8a, 0xfe, 0xc3, 0x82, 0x1b, 0xb0, 0xf6, 0x75, 0xcb,
+	0xa7, 0x3d, 0xcf, 0x17, 0x3a, 0xa8, 0x00, 0xeb, 0xbb, 0x9d, 0x4f, 0x6a, 0xa7, 0x49, 0x69, 0xdd,
+	0xfa, 0x2d, 0x65, 0x45, 0x75, 0xa8, 0xd1, 0x44, 0xaa, 0x67, 0x2b, 0x59, 0x2b, 0x5f, 0xfb, 0x8b,
+	0x37, 0xe4, 0xc0, 0xf2, 0xbb, 0xb6, 0x42, 0xcd, 0x3d, 0xa8, 0xc9, 0x0a, 0xaa, 0x43, 0x18, 0x39,
+	0xe3, 0x96, 0x52, 0x80, 0x44, 0x51, 0xc2, 0x32, 0x35, 0x5e, 0xa5, 0xc6, 0xfb, 0xe1, 0xd4, 0xce,
+	0x45, 0xce, 0x58, 0x36, 0x99, 0x47, 0xf0, 0xe7, 0x09, 0x15, 0xca, 0xa9, 0x72, 0xff, 0x86, 0x5a,
+	0x6a, 0x7c, 0xf5, 0x7a, 0x7d, 0x72, 0xf3, 0x06, 0xfe, 0x5a, 0xb3, 0xa8, 0x5d, 0x7c, 0x5a, 0xf3,
+	0xa5, 0x05, 0xd4, 0x66, 0x00, 0xe6, 0x0f, 0x7d, 0xa7, 0x17, 0xca, 0x53, 0x20, 0x0a, 0x0b, 0xeb,
+	0xa7, 0x41, 0xd6, 0x1b, 0x92, 0xd4, 0xbd, 0xcb, 0x3b, 0x1f, 0x20, 0x65, 0xb6, 0x5d, 0x80, 0x9a,
+	0x30, 0xf7, 0x1c, 0x19, 0x6d, 0x6d, 0xec, 0x7c, 0xb9, 0xd8, 0xf2, 0xf6, 0x7b, 0x98, 0xb4, 0x1f,
+	0x9c, 0xdd, 0xcf, 0x0d, 0x30, 0x9b, 0x1b, 0xe0, 0x71, 0x6e, 0x80, 0xbb, 0x85, 0x91, 0x99, 0x2d,
+	0x8c, 0xcc, 0xc3, 0xc2, 0xc8, 0x34, 0x89, 0xd7, 0x13, 0x7e, 0xec, 0xe2, 0x36, 0xeb, 0x93, 0x46,
+	0x10, 0x4f, 0x2e, 0x1a, 0x57, 0xe7, 0x8e, 0xcb, 0xc9, 0xd2, 0xdb, 0x21, 0xed, 0xe5, 0x1a, 0x56,
+	0x3f, 0x86, 0x98, 0x0e, 0x28, 0x77, 0xb5, 0xe4, 0xf0, 0xf5, 0xa7, 0x00, 0x00, 0x00, 0xff, 0xff,
+	0xc3, 0x64, 0x33, 0xfb, 0x34, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -221,7 +339,8 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type ChainStreamClient interface {
-	ChainStream(ctx context.Context, in *ChainStreamRequest, opts ...grpc.CallOption) (ChainStream_ChainStreamClient, error)
+	EventsStream(ctx context.Context, in *EventsStreamRequest, opts ...grpc.CallOption) (ChainStream_EventsStreamClient, error)
+	GetEvents(ctx context.Context, in *GetEventsRequest, opts ...grpc.CallOption) (*GetEventsResponse, error)
 }
 
 type chainStreamClient struct {
@@ -232,12 +351,12 @@ func NewChainStreamClient(cc grpc1.ClientConn) ChainStreamClient {
 	return &chainStreamClient{cc}
 }
 
-func (c *chainStreamClient) ChainStream(ctx context.Context, in *ChainStreamRequest, opts ...grpc.CallOption) (ChainStream_ChainStreamClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ChainStream_serviceDesc.Streams[0], "/flux.stream.v1beta1.ChainStream/ChainStream", opts...)
+func (c *chainStreamClient) EventsStream(ctx context.Context, in *EventsStreamRequest, opts ...grpc.CallOption) (ChainStream_EventsStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_ChainStream_serviceDesc.Streams[0], "/flux.stream.v1beta1.ChainStream/EventsStream", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &chainStreamChainStreamClient{stream}
+	x := &chainStreamEventsStreamClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -247,76 +366,112 @@ func (c *chainStreamClient) ChainStream(ctx context.Context, in *ChainStreamRequ
 	return x, nil
 }
 
-type ChainStream_ChainStreamClient interface {
-	Recv() (*ChainStreamResponse, error)
+type ChainStream_EventsStreamClient interface {
+	Recv() (*EventsStreamResponse, error)
 	grpc.ClientStream
 }
 
-type chainStreamChainStreamClient struct {
+type chainStreamEventsStreamClient struct {
 	grpc.ClientStream
 }
 
-func (x *chainStreamChainStreamClient) Recv() (*ChainStreamResponse, error) {
-	m := new(ChainStreamResponse)
+func (x *chainStreamEventsStreamClient) Recv() (*EventsStreamResponse, error) {
+	m := new(EventsStreamResponse)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
 	return m, nil
 }
 
+func (c *chainStreamClient) GetEvents(ctx context.Context, in *GetEventsRequest, opts ...grpc.CallOption) (*GetEventsResponse, error) {
+	out := new(GetEventsResponse)
+	err := c.cc.Invoke(ctx, "/flux.stream.v1beta1.ChainStream/GetEvents", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ChainStreamServer is the server API for ChainStream service.
 type ChainStreamServer interface {
-	ChainStream(*ChainStreamRequest, ChainStream_ChainStreamServer) error
+	EventsStream(*EventsStreamRequest, ChainStream_EventsStreamServer) error
+	GetEvents(context.Context, *GetEventsRequest) (*GetEventsResponse, error)
 }
 
 // UnimplementedChainStreamServer can be embedded to have forward compatible implementations.
 type UnimplementedChainStreamServer struct {
 }
 
-func (*UnimplementedChainStreamServer) ChainStream(req *ChainStreamRequest, srv ChainStream_ChainStreamServer) error {
-	return status.Errorf(codes.Unimplemented, "method ChainStream not implemented")
+func (*UnimplementedChainStreamServer) EventsStream(req *EventsStreamRequest, srv ChainStream_EventsStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method EventsStream not implemented")
+}
+func (*UnimplementedChainStreamServer) GetEvents(ctx context.Context, req *GetEventsRequest) (*GetEventsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetEvents not implemented")
 }
 
 func RegisterChainStreamServer(s grpc1.Server, srv ChainStreamServer) {
 	s.RegisterService(&_ChainStream_serviceDesc, srv)
 }
 
-func _ChainStream_ChainStream_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(ChainStreamRequest)
+func _ChainStream_EventsStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(EventsStreamRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(ChainStreamServer).ChainStream(m, &chainStreamChainStreamServer{stream})
+	return srv.(ChainStreamServer).EventsStream(m, &chainStreamEventsStreamServer{stream})
 }
 
-type ChainStream_ChainStreamServer interface {
-	Send(*ChainStreamResponse) error
+type ChainStream_EventsStreamServer interface {
+	Send(*EventsStreamResponse) error
 	grpc.ServerStream
 }
 
-type chainStreamChainStreamServer struct {
+type chainStreamEventsStreamServer struct {
 	grpc.ServerStream
 }
 
-func (x *chainStreamChainStreamServer) Send(m *ChainStreamResponse) error {
+func (x *chainStreamEventsStreamServer) Send(m *EventsStreamResponse) error {
 	return x.ServerStream.SendMsg(m)
+}
+
+func _ChainStream_GetEvents_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetEventsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChainStreamServer).GetEvents(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/flux.stream.v1beta1.ChainStream/GetEvents",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChainStreamServer).GetEvents(ctx, req.(*GetEventsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 var _ChainStream_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "flux.stream.v1beta1.ChainStream",
 	HandlerType: (*ChainStreamServer)(nil),
-	Methods:     []grpc.MethodDesc{},
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetEvents",
+			Handler:    _ChainStream_GetEvents_Handler,
+		},
+	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "ChainStream",
-			Handler:       _ChainStream_ChainStream_Handler,
+			StreamName:    "EventsStream",
+			Handler:       _ChainStream_EventsStream_Handler,
 			ServerStreams: true,
 		},
 	},
 	Metadata: "flux/stream/v1beta1/query.proto",
 }
 
-func (m *ChainStreamRequest) Marshal() (dAtA []byte, err error) {
+func (m *EventsStreamRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -326,12 +481,12 @@ func (m *ChainStreamRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *ChainStreamRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *EventsStreamRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ChainStreamRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *EventsStreamRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -348,7 +503,7 @@ func (m *ChainStreamRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *ChainStreamResponse) Marshal() (dAtA []byte, err error) {
+func (m *EventsStreamResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -358,12 +513,12 @@ func (m *ChainStreamResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *ChainStreamResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *EventsStreamResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ChainStreamResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *EventsStreamResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -436,6 +591,94 @@ func (m *Events) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *GetEventsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetEventsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetEventsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Modules) > 0 {
+		for iNdEx := len(m.Modules) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Modules[iNdEx])
+			copy(dAtA[i:], m.Modules[iNdEx])
+			i = encodeVarintQuery(dAtA, i, uint64(len(m.Modules[iNdEx])))
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if m.Height != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Height))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetEventsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetEventsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetEventsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Events) > 0 {
+		for iNdEx := len(m.Events) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Events[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.Modules) > 0 {
+		for iNdEx := len(m.Modules) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Modules[iNdEx])
+			copy(dAtA[i:], m.Modules[iNdEx])
+			i = encodeVarintQuery(dAtA, i, uint64(len(m.Modules[iNdEx])))
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if m.Height != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Height))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -447,7 +690,7 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *ChainStreamRequest) Size() (n int) {
+func (m *EventsStreamRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -462,7 +705,7 @@ func (m *ChainStreamRequest) Size() (n int) {
 	return n
 }
 
-func (m *ChainStreamResponse) Size() (n int) {
+func (m *EventsStreamResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -501,13 +744,55 @@ func (m *Events) Size() (n int) {
 	return n
 }
 
+func (m *GetEventsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Height != 0 {
+		n += 1 + sovQuery(uint64(m.Height))
+	}
+	if len(m.Modules) > 0 {
+		for _, s := range m.Modules {
+			l = len(s)
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *GetEventsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Height != 0 {
+		n += 1 + sovQuery(uint64(m.Height))
+	}
+	if len(m.Modules) > 0 {
+		for _, s := range m.Modules {
+			l = len(s)
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if len(m.Events) > 0 {
+		for _, e := range m.Events {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	return n
+}
+
 func sovQuery(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *ChainStreamRequest) Unmarshal(dAtA []byte) error {
+func (m *EventsStreamRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -530,10 +815,10 @@ func (m *ChainStreamRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: ChainStreamRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: EventsStreamRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ChainStreamRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: EventsStreamRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -589,7 +874,7 @@ func (m *ChainStreamRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *ChainStreamResponse) Unmarshal(dAtA []byte) error {
+func (m *EventsStreamResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -612,10 +897,10 @@ func (m *ChainStreamResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: ChainStreamResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: EventsStreamResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ChainStreamResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: EventsStreamResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -784,6 +1069,242 @@ func (m *Events) Unmarshal(dAtA []byte) error {
 			}
 			m.RawEvents = append(m.RawEvents, &types.Any{})
 			if err := m.RawEvents[len(m.RawEvents)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetEventsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetEventsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetEventsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Height", wireType)
+			}
+			m.Height = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Height |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Modules", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Modules = append(m.Modules, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetEventsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetEventsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetEventsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Height", wireType)
+			}
+			m.Height = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Height |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Modules", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Modules = append(m.Modules, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Events", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Events = append(m.Events, &Events{})
+			if err := m.Events[len(m.Events)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
