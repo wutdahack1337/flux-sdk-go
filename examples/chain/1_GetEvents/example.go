@@ -17,7 +17,7 @@ func main() {
 	}
 	client := types.NewChainStreamClient(cc)
 
-	res, err := client.GetEvents(context.Background(), &types.GetEventsRequest{
+	res, err := client.GetEvents(context.Background(), &types.EventsRequest{
 		Height:  652,
 		Modules: []string{"fnft"},
 	})
