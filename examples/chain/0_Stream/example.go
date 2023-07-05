@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	fnfttypes "github.com/FluxNFTLabs/sdk-go/chain/fnft/types"
+	coretypes "github.com/cometbft/cometbft/rpc/core/types"
 	"github.com/cosmos/gogoproto/proto"
+	"github.com/goccy/go-json"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
@@ -19,8 +21,9 @@ func main() {
 	}
 	client := types.NewChainStreamClient(cc)
 
-	stream, err := client.EventsStream(context.Background(), &types.EventsStreamRequest{
-		Modules: []string{"fnft"},
+	stream, err := client.StreamEvents(context.Background(), &types.EventsRequest{
+		Modules:   []string{"fnft"},
+		TmQueries: []string{"block", "block_results", "validators"},
 	})
 	if err != nil {
 		panic(err)
@@ -31,7 +34,7 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println("===================", res.BlockHeight)
+		fmt.Println("===================", res.Height)
 		for i, module := range res.Modules {
 			fmt.Println(module)
 			for _, rawEvent := range res.Events[i].RawEvents {
@@ -41,6 +44,29 @@ func main() {
 					panic(err)
 				}
 				fmt.Println(nft)
+			}
+		}
+
+		for i, query := range res.TmQueries {
+			bz := []byte(res.TmData[i])
+			fmt.Println(query)
+			switch query {
+			case "block":
+				var block coretypes.ResultBlock
+				err = json.Unmarshal(bz, &block)
+				if err != nil {
+					panic(err)
+				}
+				fmt.Println(block.Block.Height)
+			case "block_results":
+				var blockResults coretypes.ResultBlockResults
+				err = json.Unmarshal(bz, &blockResults)
+				if err != nil {
+					panic(err)
+				}
+				fmt.Println(blockResults.Height)
+			case "validators":
+				fmt.Println(string(bz))
 			}
 		}
 	}

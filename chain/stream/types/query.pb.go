@@ -29,8 +29,9 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type EventsRequest struct {
-	Height  uint64   `protobuf:"varint,1,opt,name=height,proto3" json:"height,omitempty"`
-	Modules []string `protobuf:"bytes,2,rep,name=modules,proto3" json:"modules,omitempty"`
+	Height    uint64   `protobuf:"varint,1,opt,name=height,proto3" json:"height,omitempty"`
+	Modules   []string `protobuf:"bytes,2,rep,name=modules,proto3" json:"modules,omitempty"`
+	TmQueries []string `protobuf:"bytes,3,rep,name=tm_queries,json=tmQueries,proto3" json:"tm_queries,omitempty"`
 }
 
 func (m *EventsRequest) Reset()         { *m = EventsRequest{} }
@@ -80,10 +81,20 @@ func (m *EventsRequest) GetModules() []string {
 	return nil
 }
 
+func (m *EventsRequest) GetTmQueries() []string {
+	if m != nil {
+		return m.TmQueries
+	}
+	return nil
+}
+
 type EventsResponse struct {
-	Height  uint64    `protobuf:"varint,1,opt,name=height,proto3" json:"height,omitempty"`
-	Modules []string  `protobuf:"bytes,2,rep,name=modules,proto3" json:"modules,omitempty"`
-	Events  []*Events `protobuf:"bytes,3,rep,name=events,proto3" json:"events,omitempty"`
+	Height    uint64    `protobuf:"varint,1,opt,name=height,proto3" json:"height,omitempty"`
+	Time      uint64    `protobuf:"varint,2,opt,name=time,proto3" json:"time,omitempty"`
+	Modules   []string  `protobuf:"bytes,3,rep,name=modules,proto3" json:"modules,omitempty"`
+	Events    []*Events `protobuf:"bytes,4,rep,name=events,proto3" json:"events,omitempty"`
+	TmQueries []string  `protobuf:"bytes,5,rep,name=tm_queries,json=tmQueries,proto3" json:"tm_queries,omitempty"`
+	TmData    []string  `protobuf:"bytes,6,rep,name=tm_data,json=tmData,proto3" json:"tm_data,omitempty"`
 }
 
 func (m *EventsResponse) Reset()         { *m = EventsResponse{} }
@@ -126,6 +137,13 @@ func (m *EventsResponse) GetHeight() uint64 {
 	return 0
 }
 
+func (m *EventsResponse) GetTime() uint64 {
+	if m != nil {
+		return m.Time
+	}
+	return 0
+}
+
 func (m *EventsResponse) GetModules() []string {
 	if m != nil {
 		return m.Modules
@@ -136,6 +154,20 @@ func (m *EventsResponse) GetModules() []string {
 func (m *EventsResponse) GetEvents() []*Events {
 	if m != nil {
 		return m.Events
+	}
+	return nil
+}
+
+func (m *EventsResponse) GetTmQueries() []string {
+	if m != nil {
+		return m.TmQueries
+	}
+	return nil
+}
+
+func (m *EventsResponse) GetTmData() []string {
+	if m != nil {
+		return m.TmData
 	}
 	return nil
 }
@@ -193,28 +225,32 @@ func init() {
 func init() { proto.RegisterFile("flux/stream/v1beta1/query.proto", fileDescriptor_a82db9e8fada1d29) }
 
 var fileDescriptor_a82db9e8fada1d29 = []byte{
-	// 334 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x92, 0x3f, 0x4f, 0xf3, 0x30,
-	0x10, 0x87, 0xeb, 0xb7, 0xaf, 0x82, 0xea, 0x02, 0x83, 0x41, 0x28, 0x14, 0x29, 0x54, 0x61, 0xe9,
-	0x64, 0xd3, 0x76, 0x66, 0x28, 0x88, 0x22, 0x24, 0xc4, 0x10, 0xba, 0xc0, 0x82, 0x9c, 0xf6, 0x9a,
-	0x54, 0x4a, 0xe3, 0x36, 0xb6, 0xfb, 0xe7, 0x5b, 0xf0, 0x89, 0x98, 0x19, 0x3b, 0x32, 0xa2, 0xf6,
-	0x8b, 0xa0, 0xc6, 0xce, 0x86, 0x2a, 0x21, 0x31, 0x9e, 0xfd, 0xf8, 0xb9, 0xfb, 0x9d, 0x8c, 0xcf,
-	0x87, 0x89, 0x5e, 0x30, 0xa9, 0x32, 0xe0, 0x63, 0x36, 0x6b, 0x86, 0xa0, 0x78, 0x93, 0x4d, 0x35,
-	0x64, 0x4b, 0x3a, 0xc9, 0x84, 0x12, 0xe4, 0x68, 0x0b, 0x50, 0x03, 0x50, 0x0b, 0xd4, 0x4e, 0x23,
-	0x21, 0xa2, 0x04, 0x58, 0x8e, 0x84, 0x7a, 0xc8, 0x78, 0x6a, 0x79, 0xbf, 0x83, 0x0f, 0x6e, 0x67,
-	0x90, 0x2a, 0x19, 0xc0, 0x54, 0x83, 0x54, 0xe4, 0x04, 0x3b, 0x31, 0x8c, 0xa2, 0x58, 0xb9, 0xa8,
-	0x8e, 0x1a, 0xff, 0x03, 0x5b, 0x11, 0x17, 0xef, 0x8d, 0xc5, 0x40, 0x27, 0x20, 0xdd, 0x7f, 0xf5,
-	0x72, 0xa3, 0x12, 0x14, 0xa5, 0x3f, 0xc7, 0x87, 0x85, 0x42, 0x4e, 0x44, 0x2a, 0xe1, 0xf7, 0x0e,
-	0xd2, 0xc6, 0x0e, 0xe4, 0x0e, 0xb7, 0x5c, 0x2f, 0x37, 0xaa, 0xad, 0x33, 0xfa, 0x43, 0x0e, 0x6a,
-	0xdb, 0x58, 0xd4, 0xbf, 0xc2, 0x8e, 0x39, 0x21, 0x6d, 0x8c, 0x33, 0x3e, 0x7f, 0xb5, 0x0a, 0x94,
-	0x2b, 0x8e, 0xa9, 0x49, 0x4d, 0x8b, 0xd4, 0xb4, 0x93, 0x2e, 0x83, 0x4a, 0xc6, 0xe7, 0xe6, 0x51,
-	0xeb, 0x1d, 0xe1, 0xea, 0x4d, 0xcc, 0x47, 0xe9, 0x53, 0xde, 0x85, 0x3c, 0xe3, 0x7d, 0x73, 0x63,
-	0x6b, 0x7f, 0xd7, 0x0c, 0x66, 0x5b, 0xb5, 0x8b, 0x9d, 0x8c, 0x59, 0xc7, 0x25, 0x22, 0x3d, 0x5c,
-	0xb9, 0x03, 0x65, 0x87, 0xfd, 0x2b, 0xef, 0xf5, 0xfd, 0xc7, 0xda, 0x43, 0xab, 0xb5, 0x87, 0xbe,
-	0xd6, 0x1e, 0x7a, 0xdb, 0x78, 0xa5, 0xd5, 0xc6, 0x2b, 0x7d, 0x6e, 0xbc, 0xd2, 0x0b, 0x8b, 0x46,
-	0x2a, 0xd6, 0x21, 0xed, 0x8b, 0x31, 0xeb, 0x26, 0x7a, 0xf1, 0xd8, 0xed, 0x3d, 0xf0, 0x50, 0xb2,
-	0xad, 0x74, 0xc0, 0xfa, 0xdb, 0xd0, 0xc5, 0x27, 0x52, 0xcb, 0x09, 0xc8, 0xd0, 0xc9, 0x97, 0xd4,
-	0xfe, 0x0e, 0x00, 0x00, 0xff, 0xff, 0xc6, 0xb2, 0x5b, 0x54, 0x60, 0x02, 0x00, 0x00,
+	// 393 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x52, 0x3d, 0x8f, 0xd3, 0x40,
+	0x10, 0xcd, 0x9e, 0x83, 0x4f, 0x9e, 0x03, 0x8a, 0x05, 0x81, 0x39, 0x84, 0x89, 0x4c, 0x93, 0x6a,
+	0x97, 0xbb, 0xd4, 0x14, 0x7c, 0x1d, 0x42, 0x42, 0x48, 0x98, 0x6b, 0xa0, 0x09, 0xeb, 0xcb, 0xc6,
+	0xb6, 0xe4, 0xb5, 0x13, 0xef, 0x38, 0x1f, 0xff, 0x82, 0x5f, 0x44, 0x43, 0x43, 0x99, 0x92, 0x12,
+	0x25, 0x7f, 0x04, 0x79, 0xbd, 0x96, 0x20, 0x82, 0x54, 0xd7, 0xed, 0xcc, 0xbc, 0x7d, 0xef, 0xcd,
+	0xdb, 0x85, 0xc7, 0xd3, 0xbc, 0x5e, 0x71, 0x8d, 0x95, 0x14, 0x8a, 0x2f, 0xce, 0x62, 0x89, 0xe2,
+	0x8c, 0xcf, 0x6b, 0x59, 0xad, 0xd9, 0xac, 0x2a, 0xb1, 0xa4, 0x77, 0x1a, 0x00, 0x6b, 0x01, 0xcc,
+	0x02, 0x4e, 0x1f, 0x24, 0x65, 0x99, 0xe4, 0x92, 0x1b, 0x48, 0x5c, 0x4f, 0xb9, 0x28, 0x2c, 0x3e,
+	0xfc, 0x02, 0xb7, 0x5e, 0x2f, 0x64, 0x81, 0x3a, 0x92, 0xf3, 0x5a, 0x6a, 0xa4, 0xf7, 0xc0, 0x4d,
+	0x65, 0x96, 0xa4, 0xe8, 0x93, 0x01, 0x19, 0xf6, 0x23, 0x5b, 0x51, 0x1f, 0x8e, 0x55, 0x39, 0xa9,
+	0x73, 0xa9, 0xfd, 0xa3, 0x81, 0x33, 0xf4, 0xa2, 0xae, 0xa4, 0x8f, 0x00, 0x50, 0x8d, 0x1b, 0x13,
+	0x99, 0xd4, 0xbe, 0x63, 0x86, 0x1e, 0xaa, 0x0f, 0x6d, 0x23, 0xfc, 0x4e, 0xe0, 0x76, 0x27, 0xa1,
+	0x67, 0x65, 0xa1, 0xe5, 0x7f, 0x35, 0x28, 0xf4, 0x31, 0x53, 0xd2, 0x3f, 0x32, 0x5d, 0x73, 0xfe,
+	0x53, 0xd7, 0xf9, 0x5b, 0x77, 0x04, 0xae, 0x34, 0xbc, 0x7e, 0x7f, 0xe0, 0x0c, 0x4f, 0xce, 0x1f,
+	0xb2, 0x7f, 0xec, 0xce, 0xac, 0xb4, 0x85, 0xee, 0x99, 0xbd, 0xb1, 0x67, 0x96, 0xde, 0x87, 0x63,
+	0x54, 0xe3, 0x89, 0x40, 0xe1, 0xbb, 0x66, 0xe6, 0xa2, 0x7a, 0x25, 0x50, 0x84, 0xcf, 0xc0, 0x6d,
+	0x99, 0xe8, 0x08, 0xa0, 0x12, 0xcb, 0xb1, 0x95, 0x26, 0x46, 0xfa, 0x2e, 0x6b, 0x13, 0x66, 0x5d,
+	0xc2, 0xec, 0x79, 0xb1, 0x8e, 0xbc, 0x4a, 0x2c, 0xdb, 0x4b, 0xe7, 0xdf, 0x08, 0x9c, 0xbc, 0x4c,
+	0x45, 0x56, 0x7c, 0x34, 0xee, 0xe8, 0x25, 0x78, 0x6f, 0x24, 0x5a, 0xc6, 0xf0, 0x90, 0xf1, 0xf6,
+	0x59, 0x4e, 0x9f, 0x1c, 0xc4, 0xd8, 0x5c, 0x3f, 0xc1, 0xcd, 0x96, 0xff, 0x9a, 0x89, 0x9f, 0x92,
+	0x17, 0x6f, 0x7f, 0x6c, 0x03, 0xb2, 0xd9, 0x06, 0xe4, 0xd7, 0x36, 0x20, 0x5f, 0x77, 0x41, 0x6f,
+	0xb3, 0x0b, 0x7a, 0x3f, 0x77, 0x41, 0xef, 0x33, 0x4f, 0x32, 0x4c, 0xeb, 0x98, 0x5d, 0x95, 0x8a,
+	0x5f, 0xe4, 0xf5, 0xea, 0xfd, 0xc5, 0xe5, 0x3b, 0x11, 0x6b, 0xde, 0xd0, 0x4e, 0xf8, 0x55, 0xb3,
+	0x74, 0xf7, 0x61, 0x71, 0x3d, 0x93, 0x3a, 0x76, 0x4d, 0x48, 0xa3, 0xdf, 0x01, 0x00, 0x00, 0xff,
+	0xff, 0x45, 0x78, 0x2e, 0x2c, 0xcc, 0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -229,8 +265,8 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type ChainStreamClient interface {
-	EventsStream(ctx context.Context, in *EventsRequest, opts ...grpc.CallOption) (ChainStream_EventsStreamClient, error)
 	GetEvents(ctx context.Context, in *EventsRequest, opts ...grpc.CallOption) (*EventsResponse, error)
+	StreamEvents(ctx context.Context, in *EventsRequest, opts ...grpc.CallOption) (ChainStream_StreamEventsClient, error)
 }
 
 type chainStreamClient struct {
@@ -239,38 +275,6 @@ type chainStreamClient struct {
 
 func NewChainStreamClient(cc grpc1.ClientConn) ChainStreamClient {
 	return &chainStreamClient{cc}
-}
-
-func (c *chainStreamClient) EventsStream(ctx context.Context, in *EventsRequest, opts ...grpc.CallOption) (ChainStream_EventsStreamClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ChainStream_serviceDesc.Streams[0], "/flux.stream.v1beta1.ChainStream/EventsStream", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &chainStreamEventsStreamClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type ChainStream_EventsStreamClient interface {
-	Recv() (*EventsResponse, error)
-	grpc.ClientStream
-}
-
-type chainStreamEventsStreamClient struct {
-	grpc.ClientStream
-}
-
-func (x *chainStreamEventsStreamClient) Recv() (*EventsResponse, error) {
-	m := new(EventsResponse)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
 }
 
 func (c *chainStreamClient) GetEvents(ctx context.Context, in *EventsRequest, opts ...grpc.CallOption) (*EventsResponse, error) {
@@ -282,46 +286,57 @@ func (c *chainStreamClient) GetEvents(ctx context.Context, in *EventsRequest, op
 	return out, nil
 }
 
+func (c *chainStreamClient) StreamEvents(ctx context.Context, in *EventsRequest, opts ...grpc.CallOption) (ChainStream_StreamEventsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_ChainStream_serviceDesc.Streams[0], "/flux.stream.v1beta1.ChainStream/StreamEvents", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &chainStreamStreamEventsClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type ChainStream_StreamEventsClient interface {
+	Recv() (*EventsResponse, error)
+	grpc.ClientStream
+}
+
+type chainStreamStreamEventsClient struct {
+	grpc.ClientStream
+}
+
+func (x *chainStreamStreamEventsClient) Recv() (*EventsResponse, error) {
+	m := new(EventsResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // ChainStreamServer is the server API for ChainStream service.
 type ChainStreamServer interface {
-	EventsStream(*EventsRequest, ChainStream_EventsStreamServer) error
 	GetEvents(context.Context, *EventsRequest) (*EventsResponse, error)
+	StreamEvents(*EventsRequest, ChainStream_StreamEventsServer) error
 }
 
 // UnimplementedChainStreamServer can be embedded to have forward compatible implementations.
 type UnimplementedChainStreamServer struct {
 }
 
-func (*UnimplementedChainStreamServer) EventsStream(req *EventsRequest, srv ChainStream_EventsStreamServer) error {
-	return status.Errorf(codes.Unimplemented, "method EventsStream not implemented")
-}
 func (*UnimplementedChainStreamServer) GetEvents(ctx context.Context, req *EventsRequest) (*EventsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetEvents not implemented")
+}
+func (*UnimplementedChainStreamServer) StreamEvents(req *EventsRequest, srv ChainStream_StreamEventsServer) error {
+	return status.Errorf(codes.Unimplemented, "method StreamEvents not implemented")
 }
 
 func RegisterChainStreamServer(s grpc1.Server, srv ChainStreamServer) {
 	s.RegisterService(&_ChainStream_serviceDesc, srv)
-}
-
-func _ChainStream_EventsStream_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(EventsRequest)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(ChainStreamServer).EventsStream(m, &chainStreamEventsStreamServer{stream})
-}
-
-type ChainStream_EventsStreamServer interface {
-	Send(*EventsResponse) error
-	grpc.ServerStream
-}
-
-type chainStreamEventsStreamServer struct {
-	grpc.ServerStream
-}
-
-func (x *chainStreamEventsStreamServer) Send(m *EventsResponse) error {
-	return x.ServerStream.SendMsg(m)
 }
 
 func _ChainStream_GetEvents_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -342,6 +357,27 @@ func _ChainStream_GetEvents_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ChainStream_StreamEvents_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(EventsRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(ChainStreamServer).StreamEvents(m, &chainStreamStreamEventsServer{stream})
+}
+
+type ChainStream_StreamEventsServer interface {
+	Send(*EventsResponse) error
+	grpc.ServerStream
+}
+
+type chainStreamStreamEventsServer struct {
+	grpc.ServerStream
+}
+
+func (x *chainStreamStreamEventsServer) Send(m *EventsResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 var _ChainStream_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "flux.stream.v1beta1.ChainStream",
 	HandlerType: (*ChainStreamServer)(nil),
@@ -353,8 +389,8 @@ var _ChainStream_serviceDesc = grpc.ServiceDesc{
 	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "EventsStream",
-			Handler:       _ChainStream_EventsStream_Handler,
+			StreamName:    "StreamEvents",
+			Handler:       _ChainStream_StreamEvents_Handler,
 			ServerStreams: true,
 		},
 	},
@@ -381,6 +417,15 @@ func (m *EventsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.TmQueries) > 0 {
+		for iNdEx := len(m.TmQueries) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.TmQueries[iNdEx])
+			copy(dAtA[i:], m.TmQueries[iNdEx])
+			i = encodeVarintQuery(dAtA, i, uint64(len(m.TmQueries[iNdEx])))
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
 	if len(m.Modules) > 0 {
 		for iNdEx := len(m.Modules) - 1; iNdEx >= 0; iNdEx-- {
 			i -= len(m.Modules[iNdEx])
@@ -418,6 +463,24 @@ func (m *EventsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.TmData) > 0 {
+		for iNdEx := len(m.TmData) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.TmData[iNdEx])
+			copy(dAtA[i:], m.TmData[iNdEx])
+			i = encodeVarintQuery(dAtA, i, uint64(len(m.TmData[iNdEx])))
+			i--
+			dAtA[i] = 0x32
+		}
+	}
+	if len(m.TmQueries) > 0 {
+		for iNdEx := len(m.TmQueries) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.TmQueries[iNdEx])
+			copy(dAtA[i:], m.TmQueries[iNdEx])
+			i = encodeVarintQuery(dAtA, i, uint64(len(m.TmQueries[iNdEx])))
+			i--
+			dAtA[i] = 0x2a
+		}
+	}
 	if len(m.Events) > 0 {
 		for iNdEx := len(m.Events) - 1; iNdEx >= 0; iNdEx-- {
 			{
@@ -429,7 +492,7 @@ func (m *EventsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 				i = encodeVarintQuery(dAtA, i, uint64(size))
 			}
 			i--
-			dAtA[i] = 0x1a
+			dAtA[i] = 0x22
 		}
 	}
 	if len(m.Modules) > 0 {
@@ -438,8 +501,13 @@ func (m *EventsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			copy(dAtA[i:], m.Modules[iNdEx])
 			i = encodeVarintQuery(dAtA, i, uint64(len(m.Modules[iNdEx])))
 			i--
-			dAtA[i] = 0x12
+			dAtA[i] = 0x1a
 		}
+	}
+	if m.Time != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Time))
+		i--
+		dAtA[i] = 0x10
 	}
 	if m.Height != 0 {
 		i = encodeVarintQuery(dAtA, i, uint64(m.Height))
@@ -512,6 +580,12 @@ func (m *EventsRequest) Size() (n int) {
 			n += 1 + l + sovQuery(uint64(l))
 		}
 	}
+	if len(m.TmQueries) > 0 {
+		for _, s := range m.TmQueries {
+			l = len(s)
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
 	return n
 }
 
@@ -524,6 +598,9 @@ func (m *EventsResponse) Size() (n int) {
 	if m.Height != 0 {
 		n += 1 + sovQuery(uint64(m.Height))
 	}
+	if m.Time != 0 {
+		n += 1 + sovQuery(uint64(m.Time))
+	}
 	if len(m.Modules) > 0 {
 		for _, s := range m.Modules {
 			l = len(s)
@@ -533,6 +610,18 @@ func (m *EventsResponse) Size() (n int) {
 	if len(m.Events) > 0 {
 		for _, e := range m.Events {
 			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if len(m.TmQueries) > 0 {
+		for _, s := range m.TmQueries {
+			l = len(s)
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if len(m.TmData) > 0 {
+		for _, s := range m.TmData {
+			l = len(s)
 			n += 1 + l + sovQuery(uint64(l))
 		}
 	}
@@ -640,6 +729,38 @@ func (m *EventsRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.Modules = append(m.Modules, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TmQueries", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TmQueries = append(m.TmQueries, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])
@@ -710,6 +831,25 @@ func (m *EventsResponse) Unmarshal(dAtA []byte) error {
 				}
 			}
 		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Time", wireType)
+			}
+			m.Time = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Time |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Modules", wireType)
 			}
@@ -741,7 +881,7 @@ func (m *EventsResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.Modules = append(m.Modules, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
-		case 3:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Events", wireType)
 			}
@@ -774,6 +914,70 @@ func (m *EventsResponse) Unmarshal(dAtA []byte) error {
 			if err := m.Events[len(m.Events)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TmQueries", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TmQueries = append(m.TmQueries, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TmData", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TmData = append(m.TmData, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

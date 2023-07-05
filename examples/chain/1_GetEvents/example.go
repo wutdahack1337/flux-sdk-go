@@ -18,8 +18,9 @@ func main() {
 	client := types.NewChainStreamClient(cc)
 
 	res, err := client.GetEvents(context.Background(), &types.EventsRequest{
-		Height:  652,
+		Height:  15381,
 		Modules: []string{"fnft"},
+		TmQueries: []string{"block", "block_results", "validators"},
 	})
 	if err != nil {
 		panic(err)
