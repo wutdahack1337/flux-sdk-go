@@ -14,12 +14,12 @@ import (
 )
 
 func main() {
-	cc, err := grpc.Dial("localhost:9999", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	cc, err := grpc.Dial("localhost:9900", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	defer cc.Close()
 	if err != nil {
 		panic(err)
 	}
-	client := types.NewChainStreamClient(cc)
+	client := types.NewQueryClient(cc)
 
 	stream, err := client.StreamEvents(context.Background(), &types.EventsRequest{
 		Modules:   []string{"fnft"},
@@ -34,7 +34,7 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println("===================", res.Height)
+		fmt.Println("===================", res.Height, res.Time)
 		for i, module := range res.Modules {
 			fmt.Println(module)
 			for _, rawEvent := range res.Events[i].RawEvents {

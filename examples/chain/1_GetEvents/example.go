@@ -10,16 +10,16 @@ import (
 )
 
 func main() {
-	cc, err := grpc.Dial("localhost:9999", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	cc, err := grpc.Dial("localhost:9900", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	defer cc.Close()
 	if err != nil {
 		panic(err)
 	}
-	client := types.NewChainStreamClient(cc)
+	client := types.NewQueryClient(cc)
 
 	res, err := client.GetEvents(context.Background(), &types.EventsRequest{
-		Height:  15381,
-		Modules: []string{"fnft"},
+		Height:    100,
+		Modules:   []string{"fnft"},
 		TmQueries: []string{"block", "block_results", "validators"},
 	})
 	if err != nil {
