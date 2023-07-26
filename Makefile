@@ -1,16 +1,14 @@
 all:
 
 chain-types:
-	rm -rf chain && mkdir chain chain/types chain/fnft chain/fnft/types chain/crypto chain/crypto/ethsecp256k1 chain/crypto/codec chain/crypto/hd chain/stream chain/stream/types
+	rm -rf chain && mkdir chain chain/types chain/app chain/crypto chain/indexer chain/modules chain/modules/fnft chain/modules/fnft/types chain/stream chain/stream/types
+	cp -r ../fluxd/chain/stream/types/ chain/stream/types
+	cp -r ../fluxd/chain/modules/fnft/types/ chain/modules/fnft/types
+	cp -r ../fluxd/chain/indexer/ chain/indexer
+	cp -r ../fluxd/chain/crypto/ chain/crypto
+	cp -r ../fluxd/chain/app/ante/ chain/app/ante
+	cp -r ../fluxd/chain/types/ chain/types
 
-	cp ../fluxd/chain/types/*.go chain/types
-	cp ../fluxd/chain/crypto/ethsecp256k1/*.go chain/crypto/ethsecp256k1
-	cp ../fluxd/chain/crypto/codec/*.go chain/crypto/codec
-	cp ../fluxd/chain/crypto/hd/*.go chain/crypto/hd
-	cp ../fluxd/chain/stream/types/*.go chain/stream/types
-	rm -rf chain/crypto/hd/*test.go
-
-	cp ../fluxd/chain/modules/fnft/types/*.go chain/fnft/types
-	rm -rf chain/fnft/types/*test.go  rm -rf chain/modules/fnft/types/*gw.go
+	rm chain/crypto/*/*test.go
 
 	echo "👉 Replace fluxd/chain with sdk-go/chain"

@@ -1,4 +1,4 @@
-package chain
+package types
 
 import (
 	"github.com/pkg/errors"
@@ -10,6 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/cosmos/cosmos-sdk/std"
 	cosmostypes "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 
 	signingtypes "github.com/cosmos/cosmos-sdk/types/tx/signing"
@@ -32,41 +33,8 @@ import (
 	ibccoretypes "github.com/cosmos/ibc-go/v7/modules/core/types"
 
 	keyscodec "github.com/FluxNFTLabs/sdk-go/chain/crypto/codec"
-	fnfttypes "github.com/FluxNFTLabs/sdk-go/chain/fnft/types"
-	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
+	fnfttypes "github.com/FluxNFTLabs/sdk-go/chain/modules/fnft/types"
 )
-
-// NewTxConfig initializes new Cosmos TxConfig with certain signModes enabled.
-func NewTxConfig(signModes []signingtypes.SignMode) client.TxConfig {
-	interfaceRegistry := types.NewInterfaceRegistry()
-	keyscodec.RegisterInterfaces(interfaceRegistry)
-	std.RegisterInterfaces(interfaceRegistry)
-
-	chaintypes.RegisterInterfaces(interfaceRegistry)
-	fnfttypes.RegisterInterfaces(interfaceRegistry)
-
-	// more cosmos types
-	authtypes.RegisterInterfaces(interfaceRegistry)
-	authztypes.RegisterInterfaces(interfaceRegistry)
-	vestingtypes.RegisterInterfaces(interfaceRegistry)
-	banktypes.RegisterInterfaces(interfaceRegistry)
-	crisistypes.RegisterInterfaces(interfaceRegistry)
-	distributiontypes.RegisterInterfaces(interfaceRegistry)
-	evidencetypes.RegisterInterfaces(interfaceRegistry)
-	govtypes.RegisterInterfaces(interfaceRegistry)
-	govv1types.RegisterInterfaces(interfaceRegistry)
-	paramproposaltypes.RegisterInterfaces(interfaceRegistry)
-	ibcapplicationtypes.RegisterInterfaces(interfaceRegistry)
-	ibccoretypes.RegisterInterfaces(interfaceRegistry)
-	ibcfeetypes.RegisterInterfaces(interfaceRegistry)
-	slashingtypes.RegisterInterfaces(interfaceRegistry)
-	stakingtypes.RegisterInterfaces(interfaceRegistry)
-	upgradetypes.RegisterInterfaces(interfaceRegistry)
-	feegranttypes.RegisterInterfaces(interfaceRegistry)
-
-	marshaler := codec.NewProtoCodec(interfaceRegistry)
-	return tx.NewTxConfig(marshaler, signModes)
-}
 
 type EncodingConfig struct {
 	InterfaceRegistry types.InterfaceRegistry
@@ -74,55 +42,18 @@ type EncodingConfig struct {
 	TxConfig          client.TxConfig
 }
 
-func newContext(
-	chainId string,
-	encodingConfig EncodingConfig,
-	kb keyring.Keyring,
-	keyInfo keyring.Record,
-) client.Context {
-	clientCtx := client.Context{
-		ChainID:           chainId,
-		Codec:             encodingConfig.Codec,
-		InterfaceRegistry: encodingConfig.InterfaceRegistry,
-		Output:            os.Stderr,
-		OutputFormat:      "json",
-		BroadcastMode:     "block",
-		UseLedger:         false,
-		Simulate:          true,
-		GenerateOnly:      false,
-		Offline:           false,
-		SkipConfirm:       true,
-		TxConfig:          encodingConfig.TxConfig,
-		AccountRetriever:  authtypes.AccountRetriever{},
-	}
-
-	if keyInfo.PubKey != nil {
-		address, err := keyInfo.GetAddress()
-		if err != nil {
-			panic(err)
-		}
-		clientCtx = clientCtx.WithKeyring(kb)
-		clientCtx = clientCtx.WithFromAddress(address)
-		clientCtx = clientCtx.WithFromName(keyInfo.Name)
-		clientCtx = clientCtx.WithFrom(keyInfo.Name)
-	}
-
-	return clientCtx
+func init() {
+	config := sdk.GetConfig()
+	SetBech32Prefixes(config)
+	SetBip44CoinType(config)
 }
 
-// NewClientContext creates a new Cosmos Client context, where chainID
-// corresponds to Cosmos chain ID, fromSpec is either name of the key, or bech32-address
-// of the Cosmos account. Keyring is required to contain the specified key.
-func NewClientContext(
-	chainId, fromSpec string, kb keyring.Keyring,
-) (client.Context, error) {
-	clientCtx := client.Context{}
-
+func RegisterTypes() types.InterfaceRegistry {
 	interfaceRegistry := types.NewInterfaceRegistry()
 	keyscodec.RegisterInterfaces(interfaceRegistry)
 	std.RegisterInterfaces(interfaceRegistry)
 
-	chaintypes.RegisterInterfaces(interfaceRegistry)
+	RegisterInterfaces(interfaceRegistry)
 	fnfttypes.RegisterInterfaces(interfaceRegistry)
 
 	// more cosmos types
@@ -144,9 +75,25 @@ func NewClientContext(
 	upgradetypes.RegisterInterfaces(interfaceRegistry)
 	feegranttypes.RegisterInterfaces(interfaceRegistry)
 
-	codec := codec.NewProtoCodec(interfaceRegistry)
+	return interfaceRegistry
+}
+
+// NewTxConfig initializes new Cosmos TxConfig with certain signModes enabled.
+func NewTxConfig(signModes []signingtypes.SignMode) client.TxConfig {
+	registry := RegisterTypes()
+	marshaler := codec.NewProtoCodec(registry)
+	return tx.NewTxConfig(marshaler, signModes)
+}
+
+func NewClientContext(
+	chainId, fromSpec string, kb keyring.Keyring,
+) (client.Context, error) {
+	clientCtx := client.Context{}
+	registry := RegisterTypes()
+
+	codec := codec.NewProtoCodec(registry)
 	encodingConfig := EncodingConfig{
-		InterfaceRegistry: interfaceRegistry,
+		InterfaceRegistry: registry,
 		Codec:             codec,
 		TxConfig: NewTxConfig([]signingtypes.SignMode{
 			signingtypes.SignMode_SIGN_MODE_DIRECT,
@@ -183,4 +130,40 @@ func NewClientContext(
 	)
 
 	return clientCtx, nil
+}
+
+func newContext(
+	chainId string,
+	encodingConfig EncodingConfig,
+	kb keyring.Keyring,
+	keyInfo keyring.Record,
+) client.Context {
+	clientCtx := client.Context{
+		ChainID:           chainId,
+		Codec:             encodingConfig.Codec,
+		InterfaceRegistry: encodingConfig.InterfaceRegistry,
+		Output:            os.Stderr,
+		OutputFormat:      "json",
+		BroadcastMode:     "block",
+		UseLedger:         false,
+		Simulate:          true,
+		GenerateOnly:      false,
+		Offline:           false,
+		SkipConfirm:       true,
+		TxConfig:          encodingConfig.TxConfig,
+		AccountRetriever:  authtypes.AccountRetriever{},
+	}
+
+	if keyInfo.PubKey != nil {
+		address, err := keyInfo.GetAddress()
+		if err != nil {
+			panic(err)
+		}
+		clientCtx = clientCtx.WithKeyring(kb)
+		clientCtx = clientCtx.WithFromAddress(address)
+		clientCtx = clientCtx.WithFromName(keyInfo.Name)
+		clientCtx = clientCtx.WithFrom(keyInfo.Name)
+	}
+
+	return clientCtx
 }
