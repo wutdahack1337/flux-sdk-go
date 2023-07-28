@@ -8,7 +8,6 @@ import (
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
 	"github.com/cosmos/cosmos-sdk/codec"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	signingtypes "github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
@@ -65,7 +64,10 @@ func main() {
 		signingtypes.SignMode_SIGN_MODE_LEGACY_AMINO_JSON,
 		signingtypes.SignMode_SIGN_MODE_DIRECT,
 	})
-	txBuilder := txConfig.NewTxBuilder()
+	extTxBuilder, ok := txConfig.NewTxBuilder().(authtx.ExtensionOptionsTxBuilder)
+	if !ok {
+		panic("cannot cast txBuilder")
+	}
 
 	timeoutHeight := uint64(19000)
 	gasLimit := uint64(200000)
@@ -75,11 +77,11 @@ func main() {
 		Amount: sdk.NewIntFromUint64(gasLimit).Mul(gasPrice),
 	}}
 
-	txBuilder.SetMsgs(msg)
-	txBuilder.SetGasLimit(gasLimit)
-	txBuilder.SetFeeAmount(fee)
-	txBuilder.SetTimeoutHeight(timeoutHeight)
-	txBuilder.SetMemo("abc")
+	extTxBuilder.SetMsgs(msg)
+	extTxBuilder.SetGasLimit(gasLimit)
+	extTxBuilder.SetFeeAmount(fee)
+	extTxBuilder.SetTimeoutHeight(timeoutHeight)
+	extTxBuilder.SetMemo("abc")
 
 	signerData := authsigning.SignerData{
 		Address:       senderAddr.String(),
@@ -87,11 +89,10 @@ func main() {
 		AccountNumber: accNum,
 		Sequence:      accSeq,
 	}
-
 	data, err := txConfig.SignModeHandler().GetSignBytes(
 		signingtypes.SignMode_SIGN_MODE_LEGACY_AMINO_JSON,
 		signerData,
-		txBuilder.GetTx(),
+		extTxBuilder.GetTx(),
 	)
 	if err != nil {
 		panic(err)
@@ -117,26 +118,6 @@ func main() {
 		panic(err)
 	}
 
-	extTxBuilder, ok := txConfig.NewTxBuilder().(authtx.ExtensionOptionsTxBuilder)
-	if !ok {
-		panic("cannot cast txBuilder")
-	}
-
-	// prepare ext tx bulder data
-	feePayerSig, err := ethcrypto.Sign(typedDataHash, feePayerPrivKey.ToECDSA())
-	if err != nil {
-		panic(err)
-	}
-	extOpts := &chaintypes.ExtensionOptionsWeb3Tx{
-		TypedDataChainID: 1,
-		FeePayer:         feePayerAddr.String(),
-		FeePayerSig:      feePayerSig,
-	}
-	extOptsAny, err := codectypes.NewAnyWithValue(extOpts)
-	if err != nil {
-		panic(err)
-	}
-
 	senderSig, err := ethcrypto.Sign(typedDataHash, senderPrivKey.ToECDSA())
 	if err != nil {
 		panic(err)
@@ -149,25 +130,45 @@ func main() {
 		},
 		Sequence: accSeq,
 	}
-
-	// construct tx
-	extTxBuilder.SetMsgs(msg)
-	extTxBuilder.SetGasLimit(gasLimit)
-	extTxBuilder.SetFeeAmount(fee)
-	extTxBuilder.SetTimeoutHeight(timeoutHeight)
-	extTxBuilder.SetMemo("abc")
 	extTxBuilder.SetSignatures(sig)
-	extTxBuilder.SetExtensionOptions(extOptsAny)
 
-	txBytes, err := clientCtx.TxConfig.TxEncoder()(extTxBuilder.GetTx())
-	if err != nil {
-		panic(err)
-	}
+	txBytes, _ := clientCtx.TxConfig.TxEncoder()(extTxBuilder.GetTx())
+	fmt.Println(string(txBytes))
 
-	txRes, err := clientCtx.BroadcastTxAsync(txBytes)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(txRes)
+	//// prepare ext tx bulder data
+	//feePayerSig, err := ethcrypto.Sign(typedDataHash, feePayerPrivKey.ToECDSA())
+	//if err != nil {
+	//	panic(err)
+	//}
+	//extOpts := &chaintypes.ExtensionOptionsWeb3Tx{
+	//	TypedDataChainID: 1,
+	//	FeePayer:         feePayerAddr.String(),
+	//	FeePayerSig:      feePayerSig,
+	//}
+	//extOptsAny, err := codectypes.NewAnyWithValue(extOpts)
+	//if err != nil {
+	//	panic(err)
+	//}
+	//
+	//
+	//// construct tx
+	//extTxBuilder.SetMsgs(msg)
+	//extTxBuilder.SetGasLimit(gasLimit)
+	//extTxBuilder.SetFeeAmount(fee)
+	//extTxBuilder.SetTimeoutHeight(timeoutHeight)
+	//extTxBuilder.SetMemo("abc")
+	//extTxBuilder.SetSignatures(sig)
+	//extTxBuilder.SetExtensionOptions(extOptsAny)
+	//
+	//txBytes, err := clientCtx.TxConfig.TxEncoder()(extTxBuilder.GetTx())
+	//if err != nil {
+	//	panic(err)
+	//}
+	//
+	//txRes, err := clientCtx.BroadcastTxAsync(txBytes)
+	//if err != nil {
+	//	panic(err)
+	//}
+	//
+	//fmt.Println(txRes)
 }
