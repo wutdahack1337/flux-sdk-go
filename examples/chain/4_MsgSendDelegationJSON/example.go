@@ -1,13 +1,17 @@
 package main
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 	eip712 "github.com/FluxNFTLabs/sdk-go/chain/app/ante"
 	"github.com/FluxNFTLabs/sdk-go/chain/app/ante/typeddata"
 	secp256k1 "github.com/FluxNFTLabs/sdk-go/chain/crypto/ethsecp256k1"
+	types "github.com/FluxNFTLabs/sdk-go/chain/indexer/web3gw"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
 	"github.com/cosmos/cosmos-sdk/codec"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	signingtypes "github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
@@ -15,15 +19,34 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/ethereum/go-ethereum/common"
 	ethcrypto "github.com/ethereum/go-ethereum/crypto"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
-type Fee struct {
-	Amount   sdk.Coins `json:"amount"`
-	FeePayer string    `json:"feePayer"`
-	Gas      string    `json:"gas"`
-}
-
 func main() {
+	// prepare info
+	senderPrivKey := secp256k1.PrivKey{Key: common.Hex2Bytes("88CBEAD91AEE890D27BF06E003ADE3D4E952427E88F88D31D61D3EF5E5D54305")}
+	senderPubKey := senderPrivKey.PubKey()
+	senderAddr := sdk.AccAddress(senderPubKey.Address().Bytes())
+	receiverAddr := sdk.MustAccAddressFromBech32("lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx")
+
+	// init web3gw client
+	cc, err := grpc.Dial("localhost:4444", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	defer cc.Close()
+	if err != nil {
+		panic(err)
+	}
+	client := types.NewWeb3GWClient(cc)
+
+	// get fee payer metadata
+	metadata, err := client.GetMetaData(context.Background(), &types.GetMetaDataRequest{})
+	if err != nil {
+		panic(err)
+	}
+	feePayerAddr := sdk.MustAccAddressFromBech32(metadata.Address)
+	fmt.Println(metadata)
+
+	// init client ctx
 	clientCtx, err := chaintypes.NewClientContext("flux-1", "", nil)
 	if err != nil {
 		panic(err)
@@ -34,27 +57,17 @@ func main() {
 	}
 	clientCtx = clientCtx.WithClient(tmClient)
 
-	senderPrivKey := secp256k1.PrivKey{Key: common.Hex2Bytes("88CBEAD91AEE890D27BF06E003ADE3D4E952427E88F88D31D61D3EF5E5D54305")}
-	senderPubKey := senderPrivKey.PubKey()
-	senderAddr := sdk.AccAddress(senderPubKey.Address().Bytes())
-
-	receiverAddr := "lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx"
-
-	feePayerPrivKey := secp256k1.PrivKey{Key: common.Hex2Bytes("39A4C898DDA351D54875D5EBB3E1C451189116FAA556C3C04ADC860DD1000608")}
-	feePayerPubKey := feePayerPrivKey.PubKey()
-	feePayerAddr := sdk.AccAddress(feePayerPubKey.Address().Bytes())
-
 	// init msg
 	msg := &banktypes.MsgSend{
 		FromAddress: senderAddr.String(),
-		ToAddress:   receiverAddr,
+		ToAddress:   receiverAddr.String(),
 		Amount: sdk.Coins{
 			{Denom: "lux", Amount: sdk.NewIntFromUint64(77)},
 		},
 	}
 
+	// init tx builder
 	protoCodec := codec.NewProtoCodec(chaintypes.RegisterTypes())
-
 	accNum, accSeq, err := clientCtx.AccountRetriever.GetAccountNumberSequence(clientCtx, senderAddr)
 	if err != nil {
 		panic(err)
@@ -69,6 +82,7 @@ func main() {
 		panic("cannot cast txBuilder")
 	}
 
+	// prepare tx data
 	timeoutHeight := uint64(19000)
 	gasLimit := uint64(200000)
 	gasPrice := sdk.NewIntFromUint64(500000)
@@ -77,12 +91,14 @@ func main() {
 		Amount: sdk.NewIntFromUint64(gasLimit).Mul(gasPrice),
 	}}
 
+	// build tx
 	extTxBuilder.SetMsgs(msg)
 	extTxBuilder.SetGasLimit(gasLimit)
 	extTxBuilder.SetFeeAmount(fee)
 	extTxBuilder.SetTimeoutHeight(timeoutHeight)
 	extTxBuilder.SetMemo("abc")
 
+	// build typed data
 	signerData := authsigning.SignerData{
 		Address:       senderAddr.String(),
 		ChainID:       clientCtx.ChainID,
@@ -113,11 +129,23 @@ func main() {
 		panic(err)
 	}
 
-	typedDataHash, err := typeddata.ComputeTypedDataHash(typedData)
+	// get fee payer sig
+	typedDataBytes, err := json.Marshal(typedData)
+	res, err := client.Sign(context.Background(), &types.SignRequest{TypedData: string(typedDataBytes)})
 	if err != nil {
 		panic(err)
 	}
 
+	// double check gateway hash
+	typedDataHash, err := typeddata.ComputeTypedDataHash(typedData)
+	if err != nil {
+		panic(err)
+	}
+	if common.Bytes2Hex(typedDataHash) != common.Bytes2Hex(res.Hash) {
+		panic("mismatched typed data hash from fee payer")
+	}
+
+	// build sender sig
 	senderSig, err := ethcrypto.Sign(typedDataHash, senderPrivKey.ToECDSA())
 	if err != nil {
 		panic(err)
@@ -132,43 +160,28 @@ func main() {
 	}
 	extTxBuilder.SetSignatures(sig)
 
-	txBytes, _ := clientCtx.TxConfig.TxEncoder()(extTxBuilder.GetTx())
-	fmt.Println(string(txBytes))
+	// add extension opts with fee payer sig
+	extOpts := &chaintypes.ExtensionOptionsWeb3Tx{
+		TypedDataChainID: 1,
+		FeePayer:         feePayerAddr.String(),
+		FeePayerSig:      res.Signature,
+	}
+	extOptsAny, err := codectypes.NewAnyWithValue(extOpts)
+	if err != nil {
+		panic(err)
+	}
+	extTxBuilder.SetExtensionOptions(extOptsAny)
 
-	//// prepare ext tx bulder data
-	//feePayerSig, err := ethcrypto.Sign(typedDataHash, feePayerPrivKey.ToECDSA())
-	//if err != nil {
-	//	panic(err)
-	//}
-	//extOpts := &chaintypes.ExtensionOptionsWeb3Tx{
-	//	TypedDataChainID: 1,
-	//	FeePayer:         feePayerAddr.String(),
-	//	FeePayerSig:      feePayerSig,
-	//}
-	//extOptsAny, err := codectypes.NewAnyWithValue(extOpts)
-	//if err != nil {
-	//	panic(err)
-	//}
-	//
-	//
-	//// construct tx
-	//extTxBuilder.SetMsgs(msg)
-	//extTxBuilder.SetGasLimit(gasLimit)
-	//extTxBuilder.SetFeeAmount(fee)
-	//extTxBuilder.SetTimeoutHeight(timeoutHeight)
-	//extTxBuilder.SetMemo("abc")
-	//extTxBuilder.SetSignatures(sig)
-	//extTxBuilder.SetExtensionOptions(extOptsAny)
-	//
-	//txBytes, err := clientCtx.TxConfig.TxEncoder()(extTxBuilder.GetTx())
-	//if err != nil {
-	//	panic(err)
-	//}
-	//
-	//txRes, err := clientCtx.BroadcastTxAsync(txBytes)
-	//if err != nil {
-	//	panic(err)
-	//}
-	//
-	//fmt.Println(txRes)
+	// broadcast tx
+	txBytes, err := clientCtx.TxConfig.TxEncoder()(extTxBuilder.GetTx())
+	if err != nil {
+		panic(err)
+	}
+
+	txRes, err := clientCtx.BroadcastTxAsync(txBytes)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(txRes)
 }
