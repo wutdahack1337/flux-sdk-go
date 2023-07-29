@@ -2,16 +2,12 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	eip712 "github.com/FluxNFTLabs/sdk-go/chain/app/ante"
-	"github.com/FluxNFTLabs/sdk-go/chain/app/ante/typeddata"
 	secp256k1 "github.com/FluxNFTLabs/sdk-go/chain/crypto/ethsecp256k1"
 	types "github.com/FluxNFTLabs/sdk-go/chain/indexer/web3gw"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
-	"github.com/cosmos/cosmos-sdk/codec"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	signingtypes "github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
@@ -30,6 +26,10 @@ func main() {
 	senderAddr := sdk.AccAddress(senderPubKey.Address().Bytes())
 	receiverAddr := sdk.MustAccAddressFromBech32("lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx")
 
+	//feePayerPrivKey := secp256k1.PrivKey{Key: common.Hex2Bytes("39A4C898DDA351D54875D5EBB3E1C451189116FAA556C3C04ADC860DD1000608")}
+	//feePayerPubKey := feePayerPrivKey.PubKey()
+	//feePayerAddr := sdk.AccAddress(feePayerPubKey.Address().Bytes())
+
 	// init web3gw client
 	cc, err := grpc.Dial("localhost:4444", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	defer cc.Close()
@@ -44,7 +44,7 @@ func main() {
 		panic(err)
 	}
 	feePayerAddr := sdk.MustAccAddressFromBech32(metadata.Address)
-	fmt.Println(metadata)
+	feePayerPubKey := cryptotypes.PubKey(&secp256k1.PubKey{Key: metadata.Pubkey})
 
 	// init client ctx
 	clientCtx, err := chaintypes.NewClientContext("flux-1", "", nil)
@@ -67,16 +67,16 @@ func main() {
 	}
 
 	// init tx builder
-	protoCodec := codec.NewProtoCodec(chaintypes.RegisterTypes())
-	accNum, accSeq, err := clientCtx.AccountRetriever.GetAccountNumberSequence(clientCtx, senderAddr)
+	senderNum, senderSeq, err := clientCtx.AccountRetriever.GetAccountNumberSequence(clientCtx, senderAddr)
+	if err != nil {
+		panic(err)
+	}
+	feePayerNum, feePayerSeq, err := clientCtx.AccountRetriever.GetAccountNumberSequence(clientCtx, feePayerAddr)
 	if err != nil {
 		panic(err)
 	}
 
-	txConfig := chaintypes.NewTxConfig([]signingtypes.SignMode{
-		signingtypes.SignMode_SIGN_MODE_LEGACY_AMINO_JSON,
-		signingtypes.SignMode_SIGN_MODE_DIRECT,
-	})
+	txConfig := chaintypes.NewTxConfig([]signingtypes.SignMode{signingtypes.SignMode_SIGN_MODE_DIRECT})
 	extTxBuilder, ok := txConfig.NewTxBuilder().(authtx.ExtensionOptionsTxBuilder)
 	if !ok {
 		panic("cannot cast txBuilder")
@@ -85,100 +85,94 @@ func main() {
 	// prepare tx data
 	timeoutHeight := uint64(19000)
 	gasLimit := uint64(200000)
-	gasPrice := sdk.NewIntFromUint64(500000)
+	gasPrice := sdk.NewIntFromUint64(500000000)
 	fee := []sdk.Coin{{
 		Denom:  "lux",
 		Amount: sdk.NewIntFromUint64(gasLimit).Mul(gasPrice),
 	}}
+	senderSigV2 := signingtypes.SignatureV2{
+		PubKey: senderPubKey,
+		Data: &signingtypes.SingleSignatureData{
+			SignMode:  signingtypes.SignMode_SIGN_MODE_DIRECT,
+			Signature: nil,
+		},
+		Sequence: senderSeq,
+	}
+	feePayerSigV2 := signingtypes.SignatureV2{
+		PubKey: feePayerPubKey,
+		Data: &signingtypes.SingleSignatureData{
+			SignMode:  signingtypes.SignMode_SIGN_MODE_DIRECT,
+			Signature: nil,
+		},
+		Sequence: feePayerSeq,
+	}
 
 	// build tx
 	extTxBuilder.SetMsgs(msg)
 	extTxBuilder.SetGasLimit(gasLimit)
-	extTxBuilder.SetFeeAmount(fee)
 	extTxBuilder.SetTimeoutHeight(timeoutHeight)
 	extTxBuilder.SetMemo("abc")
+	extTxBuilder.SetFeePayer(feePayerAddr)
+	extTxBuilder.SetFeeAmount(fee)
+	extTxBuilder.SetSignatures(senderSigV2, feePayerSigV2)
 
-	// build typed data
+	// build sign data
 	signerData := authsigning.SignerData{
-		Address:       senderAddr.String(),
 		ChainID:       clientCtx.ChainID,
-		AccountNumber: accNum,
-		Sequence:      accSeq,
+		AccountNumber: senderNum,
+		Sequence:      senderSeq,
+		PubKey:        senderPubKey,
+		Address:       senderAddr.String(),
 	}
 	data, err := txConfig.SignModeHandler().GetSignBytes(
-		signingtypes.SignMode_SIGN_MODE_LEGACY_AMINO_JSON,
+		signingtypes.SignMode_SIGN_MODE_DIRECT,
 		signerData,
 		extTxBuilder.GetTx(),
 	)
 	if err != nil {
 		panic(err)
 	}
-
-	feeDelegationOptions := &eip712.FeeDelegationOptions{
-		FeePayer: feePayerAddr,
-	}
-
-	typedData, err := eip712.WrapTxToEIP712(
-		protoCodec,
-		1,
-		msg,
-		data,
-		feeDelegationOptions,
-	)
+	senderSig, err := senderPrivKey.Sign(data)
 	if err != nil {
 		panic(err)
 	}
 
+	signerData = authsigning.SignerData{
+		ChainID:       clientCtx.ChainID,
+		AccountNumber: feePayerNum,
+		Sequence:      feePayerSeq,
+		PubKey:        feePayerPubKey,
+		Address:       feePayerAddr.String(),
+	}
+	data, err = txConfig.SignModeHandler().GetSignBytes(
+		signingtypes.SignMode_SIGN_MODE_DIRECT,
+		signerData,
+		extTxBuilder.GetTx(),
+	)
+
 	// get fee payer sig
-	typedDataBytes, err := json.Marshal(typedData)
-	res, err := client.Sign(context.Background(), &types.SignRequest{TypedData: string(typedDataBytes)})
+	res, err := client.SignProto(context.Background(), &types.SignProtoRequest{Data: data})
 	if err != nil {
 		panic(err)
 	}
 
 	// double check gateway hash
-	typedDataHash, err := typeddata.ComputeTypedDataHash(typedData)
-	if err != nil {
-		panic(err)
-	}
-	if common.Bytes2Hex(typedDataHash) != common.Bytes2Hex(res.Hash) {
+	hash := ethcrypto.Keccak256Hash(data).Bytes()
+	if common.Bytes2Hex(hash) != common.Bytes2Hex(res.Hash) {
 		panic("mismatched typed data hash from fee payer")
 	}
 
-	// build sender sig
-	senderSig, err := ethcrypto.Sign(typedDataHash, senderPrivKey.ToECDSA())
-	if err != nil {
-		panic(err)
-	}
-	sig := signingtypes.SignatureV2{
-		PubKey: senderPubKey,
-		Data: &signingtypes.SingleSignatureData{
-			SignMode:  signingtypes.SignMode_SIGN_MODE_LEGACY_AMINO_JSON,
-			Signature: senderSig,
-		},
-		Sequence: accSeq,
-	}
-	extTxBuilder.SetSignatures(sig)
-
-	// add extension opts with fee payer sig
-	extOpts := &chaintypes.ExtensionOptionsWeb3Tx{
-		TypedDataChainID: 1,
-		FeePayer:         feePayerAddr.String(),
-		FeePayerSig:      res.Signature,
-	}
-	extOptsAny, err := codectypes.NewAnyWithValue(extOpts)
-	if err != nil {
-		panic(err)
-	}
-	extTxBuilder.SetExtensionOptions(extOptsAny)
+	// set signatures again
+	senderSigV2.Data.(*signingtypes.SingleSignatureData).Signature = senderSig
+	feePayerSigV2.Data.(*signingtypes.SingleSignatureData).Signature = res.Signature
+	extTxBuilder.SetSignatures(senderSigV2, feePayerSigV2)
 
 	// broadcast tx
 	txBytes, err := clientCtx.TxConfig.TxEncoder()(extTxBuilder.GetTx())
 	if err != nil {
 		panic(err)
 	}
-
-	txRes, err := clientCtx.BroadcastTxAsync(txBytes)
+	txRes, err := clientCtx.BroadcastTxSync(txBytes)
 	if err != nil {
 		panic(err)
 	}
