@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	"os"
 	"time"
 
@@ -33,7 +34,7 @@ func main() {
 	}
 
 	// initialize grpc client
-	clientCtx, err := chainclient.NewClientContext(
+	clientCtx, err := chaintypes.NewClientContext(
 		"flux-1",
 		senderAddress.String(),
 		cosmosKeyring,
