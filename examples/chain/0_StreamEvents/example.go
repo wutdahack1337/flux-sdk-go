@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	fnfttypes "github.com/FluxNFTLabs/sdk-go/chain/fnft/types"
+	fnfttypes "github.com/FluxNFTLabs/sdk-go/chain/modules/fnft/types"
 	coretypes "github.com/cometbft/cometbft/rpc/core/types"
 	"github.com/cosmos/gogoproto/proto"
 	"github.com/goccy/go-json"

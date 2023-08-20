@@ -3,7 +3,8 @@ package main
 import (
 	sdkmath "cosmossdk.io/math"
 	"fmt"
-	fnfttypes "github.com/FluxNFTLabs/sdk-go/chain/fnft/types"
+	fnfttypes "github.com/FluxNFTLabs/sdk-go/chain/modules/fnft/types"
+	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	"os"
 	"time"
 
@@ -36,7 +37,7 @@ func main() {
 	}
 
 	// initialize grpc client
-	clientCtx, err := chainclient.NewClientContext(
+	clientCtx, err := chaintypes.NewClientContext(
 		network.ChainId,
 		senderAddress.String(),
 		cosmosKeyring,
