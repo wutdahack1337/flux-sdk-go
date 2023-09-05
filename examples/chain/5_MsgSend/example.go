@@ -1,23 +1,20 @@
 package main
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
-	fnfttypes "github.com/FluxNFTLabs/sdk-go/chain/modules/fnft/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	"os"
 	"time"
 
-	"github.com/FluxNFTLabs/sdk-go/client/common"
-
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
+	"github.com/FluxNFTLabs/sdk-go/client/common"
 	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
 	sdktypes "github.com/cosmos/cosmos-sdk/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
 func main() {
-	network := common.LoadNetwork("local", "")
-	tmClient, err := rpchttp.New(network.TmEndpoint, "/websocket")
+	tmClient, err := rpchttp.New("http://localhost:26657", "/websocket")
 	if err != nil {
 		panic(err)
 	}
@@ -38,35 +35,28 @@ func main() {
 
 	// initialize grpc client
 	clientCtx, err := chaintypes.NewClientContext(
-		network.ChainId,
+		"flux-1",
 		senderAddress.String(),
 		cosmosKeyring,
 	)
 	if err != nil {
 		fmt.Println(err)
 	}
-	clientCtx = clientCtx.WithNodeURI(network.TmEndpoint).WithClient(tmClient)
+	clientCtx = clientCtx.WithClient(tmClient)
 
 	// prepare tx msg
-	msg := &fnfttypes.MsgCreate{
-		Sender:  senderAddress.String(),
-		ClassId: "series",
-		Uri:     "",
-		Supply:  sdkmath.NewIntFromUint64(7000),
-		InitialPrice: sdktypes.Coin{
-			Denom:  "ibc0xdAC17F958D2ee523a2206206994597C13D831ec7",
-			Amount: sdkmath.NewIntFromUint64(1500000),
+	msg := &banktypes.MsgSend{
+		FromAddress: senderAddress.String(),
+		ToAddress:   "lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx",
+		Amount: []sdktypes.Coin{{
+			Denom: "lux", Amount: sdktypes.NewInt(1000000000000000000)}, // 1 LUX
 		},
-		ISOTimestamp:         uint64(time.Now().Unix() + 25),
-		ISOSuccessPercent:    75,
-		AcceptedPaymentDenom: "ibc0xdAC17F958D2ee523a2206206994597C13D831ec7",
-		DividendInterval:     864000,
 	}
 
 	chainClient, err := chainclient.NewChainClient(
 		clientCtx,
-		network.ChainGrpcEndpoint,
-		common.OptionTLSCert(network.ChainTlsCert),
+		"localhost:9900",
+		//common.OptionTLSCert(network.ChainTlsCert),
 		common.OptionGasPrices("500000000lux"),
 	)
 
@@ -76,6 +66,7 @@ func main() {
 
 	//AsyncBroadcastMsg, SyncBroadcastMsg, QueueBroadcastMsg
 	err = chainClient.QueueBroadcastMsg(msg)
+
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -83,10 +74,11 @@ func main() {
 	time.Sleep(time.Second * 5)
 
 	gasFee, err := chainClient.GetGasFee()
+
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	fmt.Println("gas fee:", gasFee, "LUX")
+	fmt.Println("gas fee:", gasFee)
 }

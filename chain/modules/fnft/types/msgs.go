@@ -4,6 +4,7 @@ import (
 	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	goerrors "github.com/pkg/errors"
 )
 
 var _ sdk.Msg = &MsgCreate{}
@@ -32,11 +33,12 @@ func (m MsgCreate) ValidateBasic() error {
 		return errors.Wrapf(sdkerrors.ErrInvalidCoins, "Invalid nft initial price (%s)", m.Supply)
 	}
 
-	err = sdk.ValidateDenom(m.AcceptedSponsorshipDenom)
+	err = sdk.ValidateDenom(m.AcceptedPaymentDenom)
 	if err != nil {
-		return errors.Wrapf(sdkerrors.ErrInvalidCoins, "Invalid denom format (%s)", m.AcceptedSponsorshipDenom)
+		return errors.Wrapf(sdkerrors.ErrInvalidCoins, "Invalid denom format (%s)", m.AcceptedPaymentDenom)
 	}
 
+	// TODO: decide on minimum dividend distribution, this will decide onchain liquidity as people must stay in fnft to earn dividend
 	//enforces 10-day lower bound for dividend distribution
 	//tenDays := uint64(864000)
 	//if m.DividendInterval < tenDays {
@@ -45,6 +47,10 @@ func (m MsgCreate) ValidateBasic() error {
 
 	if m.ISOTimestamp == 0 {
 		return errors.Wrapf(sdkerrors.ErrNotSupported, "Invalid ISO timestamp (%s)", m.ISOTimestamp)
+	}
+
+	if m.ISOSuccessPercent == 0 {
+		return goerrors.New("ISO success threshold cannot be 0")
 	}
 
 	return nil

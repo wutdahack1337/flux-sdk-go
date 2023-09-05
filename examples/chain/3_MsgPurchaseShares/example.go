@@ -12,7 +12,6 @@ import (
 
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
-	sdktypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 func main() {
@@ -26,7 +25,7 @@ func main() {
 		os.Getenv("HOME")+"/.fluxd",
 		"fluxd",
 		"file",
-		"user1",
+		"user2",
 		"12345678",
 		"", // keyring will be used if pk not provided
 		false,
@@ -48,19 +47,11 @@ func main() {
 	clientCtx = clientCtx.WithNodeURI(network.TmEndpoint).WithClient(tmClient)
 
 	// prepare tx msg
-	msg := &fnfttypes.MsgCreate{
+	msg := &fnfttypes.MsgPurchaseShares{
 		Sender:  senderAddress.String(),
 		ClassId: "series",
-		Uri:     "",
-		Supply:  sdkmath.NewIntFromUint64(7000),
-		InitialPrice: sdktypes.Coin{
-			Denom:  "ibc0xdAC17F958D2ee523a2206206994597C13D831ec7",
-			Amount: sdkmath.NewIntFromUint64(1500000),
-		},
-		ISOTimestamp:         uint64(time.Now().Unix() + 25),
-		ISOSuccessPercent:    75,
-		AcceptedPaymentDenom: "ibc0xdAC17F958D2ee523a2206206994597C13D831ec7",
-		DividendInterval:     864000,
+		Id:      "0",
+		Shares:  sdkmath.NewIntFromUint64(6000),
 	}
 
 	chainClient, err := chainclient.NewChainClient(

@@ -11,14 +11,12 @@ func ValidateGenesis(data GenesisState) error {
 			return ErrEmptyClassID
 		}
 	}
-	for _, entry := range data.Entries {
-		for _, nft := range entry.Nfts {
-			if len(nft.Id) == 0 {
-				return ErrEmptyNFTID
-			}
-			if _, err := sdk.AccAddressFromBech32(entry.Owner); err != nil {
-				return err
-			}
+	for _, fnft := range data.Nfts {
+		if len(fnft.Id) == 0 {
+			return ErrEmptyNFTID
+		}
+		if _, err := sdk.AccAddressFromBech32(fnft.Owner); err != nil {
+			return err
 		}
 	}
 	return nil
@@ -35,9 +33,9 @@ func DefaultGenesisState() *GenesisState {
 				Uri:         "https://flux.network",
 			},
 			{
-				Id:          "content",
-				Name:        "content",
-				Description: "Content NFT",
+				Id:          "livestream",
+				Name:        "livestream",
+				Description: "Livestream NFT",
 				Uri:         "https://flux.network",
 			},
 			{
@@ -47,11 +45,12 @@ func DefaultGenesisState() *GenesisState {
 				Uri:         "https://flux.network",
 			},
 			{
-				Id:          "merch",
-				Name:        "merch",
-				Description: "Merch NFT",
+				Id:          "consuming",
+				Name:        "consuming",
+				Description: "Consuming NFT (ticket, book, game...)",
 				Uri:         "https://flux.network",
 			},
 		},
+		Nfts: []*NFT{},
 	}
 }

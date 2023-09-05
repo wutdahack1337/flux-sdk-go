@@ -1,20 +1,23 @@
 package main
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"fmt"
+	fnfttypes "github.com/FluxNFTLabs/sdk-go/chain/modules/fnft/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	"os"
 	"time"
 
-	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
+
+	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
 	sdktypes "github.com/cosmos/cosmos-sdk/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
 func main() {
-	tmClient, err := rpchttp.New("http://localhost:26657", "/websocket")
+	network := common.LoadNetwork("local", "")
+	tmClient, err := rpchttp.New(network.TmEndpoint, "/websocket")
 	if err != nil {
 		panic(err)
 	}
@@ -23,9 +26,9 @@ func main() {
 		os.Getenv("HOME")+"/.fluxd",
 		"fluxd",
 		"file",
-		"user1",
+		"user3",
 		"12345678",
-		"88CBEAD91AEE890D27BF06E003ADE3D4E952427E88F88D31D61D3EF5E5D54305",
+		"", // keyring will be used if pk not provided
 		false,
 	)
 
@@ -35,28 +38,29 @@ func main() {
 
 	// initialize grpc client
 	clientCtx, err := chaintypes.NewClientContext(
-		"flux-1",
+		network.ChainId,
 		senderAddress.String(),
 		cosmosKeyring,
 	)
 	if err != nil {
 		fmt.Println(err)
 	}
-	clientCtx = clientCtx.WithClient(tmClient)
+	clientCtx = clientCtx.WithNodeURI(network.TmEndpoint).WithClient(tmClient)
 
 	// prepare tx msg
-	msg := &banktypes.MsgSend{
-		FromAddress: senderAddress.String(),
-		ToAddress:   "lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx",
-		Amount: []sdktypes.Coin{{
-			Denom: "lux", Amount: sdktypes.NewInt(1000000000000000000)}, // 1 LUX
-		},
+	msg := &fnfttypes.MsgSponsor{
+		Sender:      senderAddress.String(),
+		ClassId:     "series",
+		Id:          "0",
+		Coin:        sdktypes.Coin{Denom: "ibc0xdAC17F958D2ee523a2206206994597C13D831ec7", Amount: sdkmath.NewIntFromUint64(1500000)},
+		Description: "Cocacola Ad",
+		Uri:         "https://flux.com/ads/cocacola/1",
 	}
 
 	chainClient, err := chainclient.NewChainClient(
 		clientCtx,
-		"localhost:9900",
-		//common.OptionTLSCert(network.ChainTlsCert),
+		network.ChainGrpcEndpoint,
+		common.OptionTLSCert(network.ChainTlsCert),
 		common.OptionGasPrices("500000000lux"),
 	)
 
@@ -66,7 +70,6 @@ func main() {
 
 	//AsyncBroadcastMsg, SyncBroadcastMsg, QueueBroadcastMsg
 	err = chainClient.QueueBroadcastMsg(msg)
-
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -74,11 +77,10 @@ func main() {
 	time.Sleep(time.Second * 5)
 
 	gasFee, err := chainClient.GetGasFee()
-
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	fmt.Println("gas fee:", gasFee)
+	fmt.Println("gas fee:", gasFee, "LUX")
 }

@@ -1,5 +1,7 @@
 package types
 
+import sdk "github.com/cosmos/cosmos-sdk/types"
+
 const (
 	// ModuleName defines the name of the nft module
 	ModuleName = "fnft"
@@ -10,3 +12,5 @@ const (
 	// RouterKey is the message route for nft
 	RouterKey = ModuleName
 )
+
+var TeamFundAcc sdk.AccAddress

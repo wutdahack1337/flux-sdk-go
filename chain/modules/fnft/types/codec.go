@@ -1,6 +1,8 @@
 package types
 
 import (
+	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/codec/legacy"
 	types "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
@@ -15,4 +17,15 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgSponsor{},
 	)
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
+}
+
+// RegisterLegacyAminoCodec registers the necessary fnft interfaces and concrete types
+// on the provided LegacyAmino codec. These types are used for Amino JSON serialization.
+func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
+	legacy.RegisterAminoMsg(cdc, &MsgCreate{}, "fnft/MsgCreate")
+	legacy.RegisterAminoMsg(cdc, &MsgSponsor{}, "fnft/MsgSponsor")
+	legacy.RegisterAminoMsg(cdc, &MsgPurchaseShares{}, "fnft/MsgPurchaseShares")
+	legacy.RegisterAminoMsg(cdc, &MsgTransferShares{}, "fnft/MsgTransferShares")
+	legacy.RegisterAminoMsg(cdc, &MsgWithdrawShares{}, "fnft/MsgWithdrawShares")
+	legacy.RegisterAminoMsg(cdc, &MsgDepositShares{}, "fnft/MsgDepositShares")
 }
