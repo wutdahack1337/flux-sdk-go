@@ -3,9 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	fnfttypes "github.com/FluxNFTLabs/sdk-go/chain/modules/fnft/types"
 	coretypes "github.com/cometbft/cometbft/rpc/core/types"
-	"github.com/cosmos/gogoproto/proto"
 	"github.com/goccy/go-json"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -37,13 +35,8 @@ func main() {
 		fmt.Println("===================", res.Height, res.Time)
 		for i, module := range res.Modules {
 			fmt.Println(module)
-			for _, rawEvent := range res.Events[i].RawEvents {
-				var nft fnfttypes.NFT
-				err = proto.Unmarshal(rawEvent.Value, &nft)
-				if err != nil {
-					panic(err)
-				}
-				fmt.Println(nft)
+			for _, eventOp := range res.Events[i].EventOps {
+				fmt.Println(eventOp)
 			}
 		}
 

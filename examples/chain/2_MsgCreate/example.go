@@ -51,7 +51,6 @@ func main() {
 	msg := &fnfttypes.MsgCreate{
 		Sender:  senderAddress.String(),
 		ClassId: "series",
-		Uri:     "",
 		Supply:  sdkmath.NewIntFromUint64(7000),
 		InitialPrice: sdktypes.Coin{
 			Denom:  "ibc0xdAC17F958D2ee523a2206206994597C13D831ec7",

@@ -18,7 +18,7 @@ func main() {
 	client := types.NewQueryClient(cc)
 
 	res, err := client.GetEvents(context.Background(), &types.EventsRequest{
-		Height:    100,
+		Height:    67,
 		Modules:   []string{"fnft"},
 		TmQueries: []string{"block", "block_results", "validators"},
 	})

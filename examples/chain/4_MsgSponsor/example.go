@@ -54,7 +54,6 @@ func main() {
 		Id:          "0",
 		Coin:        sdktypes.Coin{Denom: "ibc0xdAC17F958D2ee523a2206206994597C13D831ec7", Amount: sdkmath.NewIntFromUint64(1500000)},
 		Description: "Cocacola Ad",
-		Uri:         "https://flux.com/ads/cocacola/1",
 	}
 
 	chainClient, err := chainclient.NewChainClient(
