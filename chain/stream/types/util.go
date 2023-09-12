@@ -7,6 +7,7 @@ import (
 
 func ToAny(msg proto.Message) *codectypes.Any {
 	anyMsg, err := codectypes.NewAnyWithValue(msg)
+	anyMsg.TypeUrl = anyMsg.TypeUrl[1:]
 	if err != nil {
 		panic(err)
 	}

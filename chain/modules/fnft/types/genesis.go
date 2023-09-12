@@ -12,10 +12,24 @@ func ValidateGenesis(data GenesisState) error {
 		}
 	}
 	for _, fnft := range data.Nfts {
+		if len(fnft.ClassId) == 0 {
+			return ErrEmptyClassID
+		}
 		if len(fnft.Id) == 0 {
 			return ErrEmptyNFTID
 		}
 		if _, err := sdk.AccAddressFromBech32(fnft.Owner); err != nil {
+			return err
+		}
+	}
+	for _, holder := range data.Holders {
+		if len(holder.ClassId) == 0 {
+			return ErrEmptyClassID
+		}
+		if len(holder.Id) == 0 {
+			return ErrEmptyNFTID
+		}
+		if _, err := sdk.AccAddressFromBech32(holder.Address); err != nil {
 			return err
 		}
 	}
