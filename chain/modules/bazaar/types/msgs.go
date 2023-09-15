@@ -9,6 +9,7 @@ import (
 
 var _ sdk.Msg = &MsgCreateProduct{}
 var _ sdk.Msg = &MsgPurchaseOffering{}
+var _ sdk.Msg = &MsgVerifyProduct{}
 
 // ValidateBasic implements the Msg.ValidateBasic method.
 func (m MsgCreateProduct) ValidateBasic() error {
@@ -75,6 +76,28 @@ func (m MsgPurchaseOffering) ValidateBasic() error {
 }
 
 func (m MsgPurchaseOffering) GetSigners() []sdk.AccAddress {
+	signer, _ := sdk.AccAddressFromBech32(m.Sender)
+	return []sdk.AccAddress{signer}
+}
+
+func (m MsgVerifyProduct) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(m.Sender)
+	if err != nil {
+		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", m.Sender)
+	}
+	if len(m.ClassId) == 0 {
+		return fnfttypes.ErrEmptyClassID
+	}
+	if len(m.Id) == 0 {
+		return fnfttypes.ErrEmptyNFTID
+	}
+	if len(m.ProductId) == 0 {
+		return ErrEmptyProductID
+	}
+	return nil
+}
+
+func (m MsgVerifyProduct) GetSigners() []sdk.AccAddress {
 	signer, _ := sdk.AccAddressFromBech32(m.Sender)
 	return []sdk.AccAddress{signer}
 }
