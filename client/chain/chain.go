@@ -76,6 +76,8 @@ type ChainClient interface {
 
 	BuildGenericAuthz(granter string, grantee string, msgtype string, expireIn time.Time) *authztypes.MsgGrant
 	GetGasFee() (string, error)
+
+	BroadcastDone()
 	Close()
 }
 
@@ -107,6 +109,8 @@ type chainClient struct {
 
 	closed  int64
 	canSign bool
+
+	Broadcasted chan struct{}
 }
 
 // NewCosmosClient creates a new gRPC client that communicates with gRPC server at protoAddr.
@@ -186,6 +190,8 @@ func NewChainClient(
 		authQueryClient:  authtypes.NewQueryClient(conn),
 		bankQueryClient:  banktypes.NewQueryClient(conn),
 		authzQueryClient: authztypes.NewQueryClient(conn),
+
+		Broadcasted: make(chan struct{}, 100000000),
 	}
 
 	if cc.canSign {
@@ -778,6 +784,7 @@ func (c *chainClient) runBatchBroadcast() {
 		c.accSeq++
 		log.Debugln("nonce incremented to", c.accSeq)
 		log.Debugln("gas wanted: ", c.gasWanted)
+		c.Broadcasted <- struct{}{}
 	}
 
 	for {
@@ -850,4 +857,8 @@ func (c *chainClient) BuildGenericAuthz(granter string, grantee string, msgtype 
 			Expiration:    &expireIn,
 		},
 	}
+}
+
+func (c *chainClient) BroadcastDone() {
+	<-c.Broadcasted
 }
