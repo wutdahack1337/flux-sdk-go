@@ -5,10 +5,8 @@ import (
 	"fmt"
 	fnfttypes "github.com/FluxNFTLabs/sdk-go/chain/modules/fnft/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
-	"os"
-	"time"
-
 	"github.com/FluxNFTLabs/sdk-go/client/common"
+	"os"
 
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
@@ -27,7 +25,7 @@ func main() {
 		"fluxd",
 		"file",
 		"user3",
-		"12345678",
+		"",
 		"", // keyring will be used if pk not provided
 		false,
 	)
@@ -72,14 +70,5 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	time.Sleep(time.Second * 5)
-
-	gasFee, err := chainClient.GetGasFee()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	fmt.Println("gas fee:", gasFee, "LUX")
+	chainClient.BroadcastDone()
 }

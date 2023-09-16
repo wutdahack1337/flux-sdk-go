@@ -4,13 +4,11 @@ import (
 	"fmt"
 	bazaartypes "github.com/FluxNFTLabs/sdk-go/chain/modules/bazaar/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
+	"github.com/FluxNFTLabs/sdk-go/client/common"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	"os"
-	"time"
-
-	"github.com/FluxNFTLabs/sdk-go/client/common"
 
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
@@ -28,7 +26,7 @@ func main() {
 		"fluxd",
 		"file",
 		"genesis",
-		"12345678",
+		"",
 		"", // keyring will be used if pk not provided
 		false,
 	)
@@ -91,21 +89,11 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	time.Sleep(time.Second * 3)
+	chainClient.BroadcastDone()
 
 	err = chainClient.QueueBroadcastMsg(voteMsg)
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	time.Sleep(time.Second * 3)
-
-	gasFee, err := chainClient.GetGasFee()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	fmt.Println("gas fee:", gasFee, "LUX")
+	chainClient.BroadcastDone()
 }

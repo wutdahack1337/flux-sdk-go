@@ -26,10 +26,6 @@ func main() {
 	senderAddr := sdk.AccAddress(senderPubKey.Address().Bytes())
 	receiverAddr := sdk.MustAccAddressFromBech32("lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx")
 
-	//feePayerPrivKey := secp256k1.PrivKey{Key: common.Hex2Bytes("39A4C898DDA351D54875D5EBB3E1C451189116FAA556C3C04ADC860DD1000608")}
-	//feePayerPubKey := feePayerPrivKey.PubKey()
-	//feePayerAddr := sdk.AccAddress(feePayerPubKey.Address().Bytes())
-
 	// init web3gw client
 	cc, err := grpc.Dial("localhost:4444", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	defer cc.Close()
