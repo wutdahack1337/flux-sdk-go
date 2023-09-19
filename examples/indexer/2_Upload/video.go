@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	types "github.com/FluxNFTLabs/sdk-go/chain/indexer/media"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -24,7 +23,8 @@ func main() {
 	}
 
 	// read file in chunks
-	path := "examples/indexer/2_Upload/beach.mov"
+	extension := ".mov"
+	path := "examples/indexer/2_Upload/samples/beach" + extension
 	file, err := os.Open(path)
 	if err != nil {
 		panic(err)
@@ -43,7 +43,7 @@ func main() {
 	err = uc.Send(&types.StreamMsg{
 		Content: &types.StreamMsg_Metadata{
 			Metadata: &types.Metadata{
-				Path:      "series/0/0/product.mov",
+				Path:      "series_0_0_product" + extension,
 				Encrypted: false,
 				Type:      types.ContentType_Video,
 			},
@@ -82,6 +82,7 @@ func main() {
 	}
 
 	// close stream
-	res, err := uc.CloseAndRecv()
-	fmt.Println(res, err)
+	if _, err = uc.CloseAndRecv(); err != nil {
+		panic(err)
+	}
 }
