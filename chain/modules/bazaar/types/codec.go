@@ -17,9 +17,12 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 
 	registry.RegisterImplementations(
 		(*govtypes.Content)(nil),
-		//&ClassCommissionsProposal{},
-		//&VerifiersProposal{},
+		&ClassCommissionsProposal{},
+		&VerifiersProposal{},
 	)
+
+	govtypes.RegisterProposalType((&ClassCommissionsProposal{}).ProposalType())
+	govtypes.RegisterProposalType((&VerifiersProposal{}).ProposalType())
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }

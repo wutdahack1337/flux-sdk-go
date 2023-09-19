@@ -38,12 +38,10 @@ func (m MsgCreate) ValidateBasic() error {
 		return errors.Wrapf(sdkerrors.ErrInvalidCoins, "Invalid denom format (%s)", m.AcceptedPaymentDenom)
 	}
 
-	// TODO: decide on minimum dividend distribution, this will decide onchain liquidity as people must stay in fnft to earn dividend
-	//enforces 10-day lower bound for dividend distribution
-	//tenDays := uint64(864000)
-	//if m.DividendInterval < tenDays {
-	//	return errors.Wrapf(sdkerrors.ErrNotSupported, "Invalid dividend interval (%s), minimal interval is 10 days (%s)", m.DividendInterval, tenDays)
-	//}
+	minuet := uint64(60)
+	if m.DividendInterval < minuet {
+		return errors.Wrapf(sdkerrors.ErrNotSupported, "Invalid dividend interval (%s), minimal interval is (%d)", m.DividendInterval, minuet)
+	}
 
 	if m.ISOTimestamp == 0 {
 		return errors.Wrapf(sdkerrors.ErrNotSupported, "Invalid ISO timestamp (%s)", m.ISOTimestamp)

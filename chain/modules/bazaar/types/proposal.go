@@ -11,11 +11,6 @@ import (
 var _ govtypes.Content = &ClassCommissionsProposal{}
 var _ govtypes.Content = &VerifiersProposal{}
 
-func init() {
-	//govtypes.RegisterProposalType((&ClassCommissionsProposal{}).ProposalType())
-	//govtypes.RegisterProposalType((&VerifiersProposal{}).ProposalType())
-}
-
 func NewClassCommissionsProposal(title, description string, req []ClassCommission) *ClassCommissionsProposal {
 	return &ClassCommissionsProposal{
 		Title:            title,
