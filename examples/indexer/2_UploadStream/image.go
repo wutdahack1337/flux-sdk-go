@@ -24,7 +24,7 @@ func main() {
 
 	// read file in chunks
 	extension := ".jpg"
-	path := "examples/indexer/2_Upload/samples/bird" + extension
+	path := "examples/indexer/2_UploadStream/samples/bird" + extension
 	file, err := os.Open(path)
 	if err != nil {
 		panic(err)

@@ -24,7 +24,7 @@ func main() {
 
 	// read file in chunks
 	extension := ".mp3"
-	path := "examples/indexer/2_Upload/samples/hello" + extension
+	path := "examples/indexer/2_UploadStream/samples/hello" + extension
 	file, err := os.Open(path)
 	if err != nil {
 		panic(err)

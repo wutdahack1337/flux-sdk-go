@@ -24,7 +24,7 @@ func main() {
 
 	// read file in chunks
 	extension := ".mov"
-	path := "examples/indexer/2_Upload/samples/beach" + extension
+	path := "examples/indexer/2_UploadStream/samples/beach" + extension
 	file, err := os.Open(path)
 	if err != nil {
 		panic(err)
