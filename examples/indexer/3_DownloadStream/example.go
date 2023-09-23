@@ -11,8 +11,17 @@ import (
 	"time"
 )
 
+const GRPC_MSG_SIZE = 134217728 // 128MB
+
 func main() {
-	cc, err := grpc.Dial("localhost:4444", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	opts := []grpc.DialOption{
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithDefaultCallOptions(
+			grpc.MaxCallRecvMsgSize(GRPC_MSG_SIZE),
+			grpc.MaxCallSendMsgSize(GRPC_MSG_SIZE),
+		),
+	}
+	cc, err := grpc.Dial("localhost:4444", opts...)
 	defer cc.Close()
 	if err != nil {
 		panic(err)
@@ -34,11 +43,13 @@ func main() {
 	wg.Add(2)
 
 	// downloader routine
+	doneFetching := false
 	go func() {
 		defer wg.Done()
 		for {
 			msg, err := dc.Recv()
 			if err != nil {
+				fmt.Println(err)
 				break
 			}
 			switch data := msg.Content.(type) {
@@ -47,6 +58,12 @@ func main() {
 			case *types.StreamMsg_MediaChunk:
 				chunkCh <- data.MediaChunk
 				chunkIdx += 1
+				if chunkIdx == metadata.ChunkSize {
+					doneFetching = true
+				}
+			}
+			if doneFetching {
+				break
 			}
 		}
 		close(chunkCh)
@@ -63,7 +80,7 @@ func main() {
 					count = math.Min[uint64](metadata.ChunkSize-chunkIdx, bufferSize)
 				}
 				err = dc.Send(&types.DownloadRequest{
-					Path:       "series_0_1_product.mp3",
+					Path:       "series_0_0_product.mov",
 					ChunkIdx:   chunkIdx,
 					ChunkCount: count,
 				})
@@ -74,6 +91,7 @@ func main() {
 			// wait to receive chunk and play
 			chunk, ok := <-chunkCh
 			if !ok {
+				err = dc.CloseSend()
 				break
 			}
 			time.Sleep(time.Second * 1)
