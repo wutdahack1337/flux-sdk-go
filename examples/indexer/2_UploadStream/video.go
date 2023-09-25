@@ -2,10 +2,15 @@ package main
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	types "github.com/FluxNFTLabs/sdk-go/chain/indexer/media"
+	ffmpeg "github.com/u2takey/ffmpeg-go"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"math"
 	"os"
+	"strconv"
 )
 
 func main() {
@@ -16,15 +21,29 @@ func main() {
 	}
 	client := types.NewAPIClient(cc)
 
-	// init upload client
+	//init upload client
 	uc, err := client.Upload(context.Background())
 	if err != nil {
 		panic(err)
 	}
 
-	// read file in chunks
+	// read video chunk info
 	extension := ".mov"
 	path := "examples/indexer/2_UploadStream/samples/beach" + extension
+	chunkCount, chunkTime, err := getVideoChunkInfo(path, 30, 3)
+	if err != nil {
+		panic(err)
+	}
+	metadata := &types.Metadata{
+		Path:       "series_0_0_product" + extension,
+		Encrypted:  false,
+		Type:       types.ContentType_Video,
+		ChunkCount: chunkCount,
+		ChunkTime:  chunkTime,
+		Thumbnail:  "",
+	}
+
+	// read file in chunks
 	file, err := os.Open(path)
 	if err != nil {
 		panic(err)
@@ -42,11 +61,7 @@ func main() {
 	// upload metadata
 	err = uc.Send(&types.StreamMsg{
 		Content: &types.StreamMsg_Metadata{
-			Metadata: &types.Metadata{
-				Path:      "series_0_0_product" + extension,
-				Encrypted: false,
-				Type:      types.ContentType_Video,
-			},
+			Metadata: metadata,
 		},
 	})
 	if err != nil {
@@ -85,4 +100,57 @@ func main() {
 	if _, err = uc.CloseAndRecv(); err != nil {
 		panic(err)
 	}
+}
+
+type VideoInfo struct {
+	CodecType string `json:"codec_type"`
+	Width     uint   `json:"width"`
+	Height    uint   `json:"height"`
+	BitRate   string `json:"bit_rate"`
+	Duration  string `json:"duration"`
+}
+
+type VideoMetadata struct {
+	Streams []VideoInfo `json:"streams"`
+}
+
+func getVideoChunkInfo(fileName string, maxChunkSize float64, minChunkDuration float64) (uint64, uint64, error) {
+	data, err := ffmpeg.Probe(fileName)
+	if err != nil {
+		return 0, 0, err
+	}
+
+	videoMetadata := &VideoMetadata{}
+	err = json.Unmarshal([]byte(data), videoMetadata)
+	if err != nil {
+		return 0, 0, err
+	}
+
+	for _, info := range videoMetadata.Streams {
+		if info.CodecType == "video" {
+			// compute bit rate and chunk size
+			bitRate, err := strconv.ParseFloat(info.BitRate, 64)
+			if err != nil {
+				return 0, 0, err
+			}
+			duration, err := strconv.ParseFloat(info.Duration, 64)
+			if err != nil {
+				return 0, 0, err
+			}
+
+			// compute reasonable chunk size according to maximum bit rate
+			mbRate := bitRate / 8 / 1000 / 1000
+			chunkCount := math.Ceil(mbRate * duration / maxChunkSize)
+			chunkDuration := math.Ceil(duration / chunkCount)
+
+			// this means each chunk must fit at least x seconds
+			if mbRate*minChunkDuration > maxChunkSize {
+				return 0, 0, errors.New("video bit rate is too high")
+			}
+
+			return uint64(chunkCount), uint64(chunkDuration), nil
+		}
+	}
+
+	return 0, 0, errors.New("video metadata not found")
 }
