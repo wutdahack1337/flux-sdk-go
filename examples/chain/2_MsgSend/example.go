@@ -1,6 +1,7 @@
 package main
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"fmt"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
@@ -47,7 +48,7 @@ func main() {
 		FromAddress: senderAddress.String(),
 		ToAddress:   "lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx",
 		Amount: []sdktypes.Coin{{
-			Denom: "lux", Amount: sdktypes.NewInt(1000000000000000000)}, // 1 LUX
+			Denom: "lux", Amount: sdkmath.NewInt(1000000000000000000)}, // 1 LUX
 		},
 	}
 

@@ -1,6 +1,7 @@
 package main
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"fmt"
 	bazaartypes "github.com/FluxNFTLabs/sdk-go/chain/modules/bazaar/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
@@ -60,7 +61,7 @@ func main() {
 		panic(err)
 	}
 
-	depositAmount, _ := sdk.NewIntFromString("500000000000000000000")
+	depositAmount, _ := sdkmath.NewIntFromString("500000000000000000000")
 	proposalMsg := &govtypes.MsgSubmitProposal{
 		Content:        contentAny,
 		InitialDeposit: sdk.Coins{{Denom: "lux", Amount: depositAmount}},

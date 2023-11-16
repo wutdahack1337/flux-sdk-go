@@ -1,6 +1,7 @@
 package main
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"fmt"
 	bazaartypes "github.com/FluxNFTLabs/sdk-go/chain/modules/bazaar/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
@@ -54,11 +55,11 @@ func main() {
 		Offerings: []*bazaartypes.Offering{
 			{Price: &sdk.Coin{
 				Denom:  "ibc0xdAC17F958D2ee523a2206206994597C13D831ec7",
-				Amount: sdk.NewIntFromUint64(2),
+				Amount: sdkmath.NewIntFromUint64(2),
 			}},
 			{Price: &sdk.Coin{
 				Denom:  "ibc0xdAC17F958D2ee523a2206206994597C13D831ec7",
-				Amount: sdk.NewIntFromUint64(3),
+				Amount: sdkmath.NewIntFromUint64(3),
 			}},
 		},
 		Tags: []string{"anime", "onepiece", "series", "cartoon", "luffy", "pirate"},
