@@ -2,6 +2,7 @@ package types
 
 import (
 	"cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
 	fnfttypes "github.com/FluxNFTLabs/sdk-go/chain/modules/fnft/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -33,7 +34,7 @@ func (m MsgCreateProduct) ValidateBasic() error {
 		if len(o.Price.Denom) == 0 {
 			return ErrInvalidOfferingDenom
 		}
-		if o.Price.Amount.LTE(sdk.NewInt(0)) {
+		if o.Price.Amount.LTE(sdkmath.NewInt(0)) {
 			return ErrInvalidOfferingAmount
 		}
 		if o.PurchaseCount != 0 {

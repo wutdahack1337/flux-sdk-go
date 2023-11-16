@@ -515,6 +515,7 @@ func (c *chainClient) AsyncBroadcastMsg(msgs ...sdk.Msg) (*txtypes.BroadcastTxRe
 }
 
 func (c *chainClient) BuildSignedTx(clientCtx client.Context, accNum, accSeq, initialGas uint64, msgs ...sdk.Msg) (signing.Tx, error) {
+	ctx := context.Background()
 	txf := NewTxFactory(clientCtx).WithSequence(accSeq).WithAccountNumber(accNum).WithGas(initialGas)
 
 	if clientCtx.Simulate {
@@ -549,7 +550,7 @@ func (c *chainClient) BuildSignedTx(clientCtx client.Context, accNum, accSeq, in
 	}
 
 	txn.SetFeeGranter(clientCtx.GetFeeGranterAddress())
-	err = tx.Sign(txf, clientCtx.GetFromName(), txn, true)
+	err = tx.Sign(ctx, txf, clientCtx.GetFromName(), txn, true)
 	if err != nil {
 		err = errors.Wrap(err, "failed to Sign Tx")
 		return nil, err
@@ -632,12 +633,13 @@ func (c *chainClient) broadcastTx(
 	await bool,
 	msgs ...sdk.Msg,
 ) (*txtypes.BroadcastTxResponse, error) {
+	ctx := context.Background()
 	txf, err := c.prepareFactory(clientCtx, txf)
+
 	if err != nil {
 		err = errors.Wrap(err, "failed to prepareFactory")
 		return nil, err
 	}
-	ctx := context.Background()
 	if clientCtx.Simulate {
 		simTxBytes, err := txf.BuildSimTx(msgs...)
 		if err != nil {
@@ -666,7 +668,7 @@ func (c *chainClient) broadcastTx(
 	}
 
 	txn.SetFeeGranter(clientCtx.GetFeeGranterAddress())
-	err = tx.Sign(txf, clientCtx.GetFromName(), txn, true)
+	err = tx.Sign(ctx, txf, clientCtx.GetFromName(), txn, true)
 	if err != nil {
 		err = errors.Wrap(err, "failed to Sign Tx")
 		return nil, err

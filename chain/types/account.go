@@ -19,7 +19,7 @@ import (
 )
 
 var (
-	_ authtypes.AccountI                 = (*EthAccount)(nil)
+	_ sdk.AccountI                       = (*EthAccount)(nil)
 	_ authtypes.GenesisAccount           = (*EthAccount)(nil)
 	_ codectypes.UnpackInterfacesMessage = (*EthAccount)(nil)
 )
@@ -32,7 +32,7 @@ var EmptyCodeHash = ethcrypto.Keccak256(nil)
 
 // ProtoAccount defines the prototype function for BaseAccount used for an
 // AccountKeeper.
-func ProtoAccount() authtypes.AccountI {
+func ProtoAccount() sdk.AccountI {
 	return &EthAccount{
 		BaseAccount: &authtypes.BaseAccount{},
 		CodeHash:    ethcrypto.Keccak256(nil),

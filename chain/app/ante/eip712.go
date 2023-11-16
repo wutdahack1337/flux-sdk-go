@@ -1,6 +1,7 @@
 package ante
 
 import (
+	txsigning "cosmossdk.io/x/tx/signing"
 	"fmt"
 	"strconv"
 
@@ -33,10 +34,10 @@ import (
 // CONTRACT: Tx must implement SigVerifiableTx interface
 type Eip712SigVerificationDecorator struct {
 	ak              AccountKeeper
-	signModeHandler authsigning.SignModeHandler
+	signModeHandler *txsigning.HandlerMap
 }
 
-func NewEip712SigVerificationDecorator(ak AccountKeeper, signModeHandler authsigning.SignModeHandler) Eip712SigVerificationDecorator {
+func NewEip712SigVerificationDecorator(ak AccountKeeper, signModeHandler *txsigning.HandlerMap) Eip712SigVerificationDecorator {
 	return Eip712SigVerificationDecorator{
 		ak:              ak,
 		signModeHandler: signModeHandler,
@@ -60,7 +61,10 @@ func (svd Eip712SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx,
 		return ctx, err
 	}
 
-	signerAddrs := sigTx.GetSigners()
+	signerAddrs, err := sigTx.GetSigners()
+	if err != nil {
+		return ctx, err
+	}
 
 	// check that signer length and signature length are the same
 	if len(sigs) != len(signerAddrs) {
@@ -129,7 +133,7 @@ func VerifySignatureEIP712(
 	pubKey cryptotypes.PubKey,
 	signerData authsigning.SignerData,
 	sigData signing.SignatureData,
-	handler authsigning.SignModeHandler,
+	handler *txsigning.HandlerMap,
 	tx authsigning.Tx,
 ) error {
 	switch data := sigData.(type) {
@@ -152,7 +156,6 @@ func VerifySignatureEIP712(
 				Gas:    tx.GetGas(),
 			},
 			msgs, tx.GetMemo(),
-			nil,
 		)
 
 		var chainID uint64

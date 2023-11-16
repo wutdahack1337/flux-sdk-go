@@ -1,20 +1,22 @@
 package ante
 
 import (
+	"context"
+	storetypes "cosmossdk.io/store/types"
 	"fmt"
-	ibcante "github.com/cosmos/ibc-go/v7/modules/core/ante"
-	ibckeeper "github.com/cosmos/ibc-go/v7/modules/core/keeper"
+	"github.com/cosmos/cosmos-sdk/types/tx/signing"
+	ibcante "github.com/cosmos/ibc-go/v8/modules/core/ante"
+	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 
 	"cosmossdk.io/errors"
+	txsigning "cosmossdk.io/x/tx/signing"
 	log "github.com/InjectiveLabs/suplog"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	"github.com/cosmos/cosmos-sdk/crypto/types/multisig"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authante "github.com/cosmos/cosmos-sdk/x/auth/ante"
-	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"github.com/FluxNFTLabs/sdk-go/chain/crypto/ethsecp256k1"
@@ -29,22 +31,22 @@ const (
 
 // AccountKeeper defines an expected keeper interface for the auth module's AccountKeeper
 type AccountKeeper interface {
-	NewAccount(sdk.Context, authtypes.AccountI) authtypes.AccountI
-	NewAccountWithAddress(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
+	NewAccount(context.Context, sdk.AccountI) sdk.AccountI
+	NewAccountWithAddress(ctx context.Context, addr sdk.AccAddress) sdk.AccountI
 
-	GetAccount(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
-	GetAllAccounts(ctx sdk.Context) []authtypes.AccountI
-	SetAccount(ctx sdk.Context, acc authtypes.AccountI)
+	GetAccount(ctx context.Context, addr sdk.AccAddress) sdk.AccountI
+	GetAllAccounts(ctx context.Context) []sdk.AccountI
+	SetAccount(ctx context.Context, acc sdk.AccountI)
 
-	IterateAccounts(ctx sdk.Context, process func(authtypes.AccountI) bool)
+	IterateAccounts(ctx context.Context, process func(sdk.AccountI) bool)
 
-	ValidatePermissions(macc authtypes.ModuleAccountI) error
+	ValidatePermissions(macc sdk.ModuleAccountI) error
 
 	GetModuleAddress(moduleName string) sdk.AccAddress
 	GetModuleAddressAndPermissions(moduleName string) (addr sdk.AccAddress, permissions []string)
-	GetModuleAccountAndPermissions(ctx sdk.Context, moduleName string) (authtypes.ModuleAccountI, []string)
-	GetModuleAccount(ctx sdk.Context, moduleName string) authtypes.ModuleAccountI
-	SetModuleAccount(ctx sdk.Context, macc authtypes.ModuleAccountI)
+	GetModuleAccountAndPermissions(ctx context.Context, moduleName string) (sdk.ModuleAccountI, []string)
+	GetModuleAccount(ctx context.Context, moduleName string) sdk.ModuleAccountI
+	SetModuleAccount(ctx context.Context, macc sdk.ModuleAccountI)
 
 	authante.AccountKeeper
 }
@@ -52,12 +54,12 @@ type AccountKeeper interface {
 // BankKeeper defines an expected keeper interface for the bank module's Keeper
 type BankKeeper interface {
 	authtypes.BankKeeper
-	GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin
+	GetBalance(ctx context.Context, addr sdk.AccAddress, denom string) sdk.Coin
 }
 
 // FeegrantKeeper defines an expected keeper interface for the feegrant module's Keeper
 type FeegrantKeeper interface {
-	UseGrantedFees(ctx sdk.Context, granter, grantee sdk.AccAddress, fee sdk.Coins, msgs []sdk.Msg) error
+	UseGrantedFees(ctx context.Context, granter, grantee sdk.AccAddress, fee sdk.Coins, msgs []sdk.Msg) error
 }
 
 // NewAnteHandler returns an ante handler responsible for attempting to route an
@@ -68,7 +70,7 @@ func NewAnteHandler(
 	ak AccountKeeper,
 	bankKeeper BankKeeper,
 	feegrantKeeper FeegrantKeeper,
-	signModeHandler authsigning.SignModeHandler,
+	signModeHandler *txsigning.HandlerMap,
 	ibcKeeper *ibckeeper.Keeper,
 ) sdk.AnteHandler {
 	return func(
@@ -144,7 +146,7 @@ var _ = DefaultSigVerificationGasConsumer
 // for signature verification based upon the public key type. The cost is fetched from the given params and is matched
 // by the concrete type.
 func DefaultSigVerificationGasConsumer(
-	meter sdk.GasMeter, sig signing.SignatureV2, params authtypes.Params,
+	meter storetypes.GasMeter, sig signing.SignatureV2, params authtypes.Params,
 ) error {
 	pubkey := sig.PubKey
 	switch pubkey := pubkey.(type) {
@@ -179,7 +181,7 @@ func DefaultSigVerificationGasConsumer(
 
 // ConsumeMultisignatureVerificationGas consumes gas from a GasMeter for verifying a multisig pubkey signature
 func ConsumeMultisignatureVerificationGas(
-	meter sdk.GasMeter, sig *signing.MultiSignatureData, pubkey multisig.PubKey,
+	meter storetypes.GasMeter, sig *signing.MultiSignatureData, pubkey multisig.PubKey,
 	params authtypes.Params, accSeq uint64,
 ) error {
 

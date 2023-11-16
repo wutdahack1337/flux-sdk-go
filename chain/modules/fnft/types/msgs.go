@@ -2,9 +2,10 @@ package types
 
 import (
 	"cosmossdk.io/errors"
+	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	goerrors "github.com/pkg/errors"
+	"github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
 var _ sdk.Msg = &MsgCreate{}
@@ -25,11 +26,11 @@ func (m MsgCreate) ValidateBasic() error {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", m.Sender)
 	}
 
-	if !m.Supply.GT(sdk.ZeroInt()) {
+	if !m.Supply.GT(sdkmath.ZeroInt()) {
 		return errors.Wrapf(sdkerrors.ErrInvalidCoins, "Invalid nft supply (%s)", m.Supply)
 	}
 
-	if !m.InitialPrice.Amount.GT(sdk.ZeroInt()) {
+	if !m.InitialPrice.Amount.GT(sdkmath.ZeroInt()) {
 		return errors.Wrapf(sdkerrors.ErrInvalidCoins, "Invalid nft initial price (%s)", m.Supply)
 	}
 
@@ -40,15 +41,15 @@ func (m MsgCreate) ValidateBasic() error {
 
 	minuet := uint64(60)
 	if m.DividendInterval < minuet {
-		return errors.Wrapf(sdkerrors.ErrNotSupported, "Invalid dividend interval (%s), minimal interval is (%d)", m.DividendInterval, minuet)
+		return errors.Wrapf(sdkerrors.ErrNotSupported, "Invalid dividend interval (%d), minimal interval is (%d)", m.DividendInterval, minuet)
 	}
 
 	if m.ISOTimestamp == 0 {
-		return errors.Wrapf(sdkerrors.ErrNotSupported, "Invalid ISO timestamp (%s)", m.ISOTimestamp)
+		return errors.Wrapf(sdkerrors.ErrNotSupported, "Invalid ISO timestamp (%d)", m.ISOTimestamp)
 	}
 
 	if m.ISOSuccessPercent == 0 {
-		return goerrors.New("ISO success threshold cannot be 0")
+		return errors.New(types.StoreKey, 1001, "ISO success threshold cannot be 0")
 	}
 
 	return nil
@@ -75,7 +76,7 @@ func (m MsgPurchaseShares) ValidateBasic() error {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", m.Sender)
 	}
 
-	if !m.Shares.GT(sdk.ZeroInt()) {
+	if !m.Shares.GT(sdkmath.ZeroInt()) {
 		return errors.Wrapf(sdkerrors.ErrInvalidCoins, "Invalid share amount (%s)", m.Shares)
 	}
 
@@ -108,7 +109,7 @@ func (m MsgTransferShares) ValidateBasic() error {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid receiver address (%s)", m.Receiver)
 	}
 
-	if !m.Shares.GT(sdk.ZeroInt()) {
+	if !m.Shares.GT(sdkmath.ZeroInt()) {
 		return errors.Wrapf(sdkerrors.ErrInvalidCoins, "Invalid share amount (%s)", m.Shares)
 	}
 
@@ -136,7 +137,7 @@ func (m MsgDepositShares) ValidateBasic() error {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", m.Sender)
 	}
 
-	if !m.Shares.GT(sdk.ZeroInt()) {
+	if !m.Shares.GT(sdkmath.ZeroInt()) {
 		return errors.Wrapf(sdkerrors.ErrInvalidCoins, "Invalid share amount (%s)", m.Shares)
 	}
 
@@ -164,7 +165,7 @@ func (m MsgWithdrawShares) ValidateBasic() error {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", m.Sender)
 	}
 
-	if !m.Shares.GT(sdk.ZeroInt()) {
+	if !m.Shares.GT(sdkmath.ZeroInt()) {
 		return errors.Wrapf(sdkerrors.ErrInvalidCoins, "Invalid share amount (%s)", m.Shares)
 	}
 
@@ -192,7 +193,7 @@ func (m MsgSponsor) ValidateBasic() error {
 		return errors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", m.Sender)
 	}
 
-	if !m.Coin.Amount.GT(sdk.ZeroInt()) {
+	if !m.Coin.Amount.GT(sdkmath.ZeroInt()) {
 		return errors.Wrapf(sdkerrors.ErrInvalidCoins, "Invalid sponsorship coin (%s)", m.Coin)
 	}
 	err = sdk.ValidateDenom(m.Coin.Denom)
