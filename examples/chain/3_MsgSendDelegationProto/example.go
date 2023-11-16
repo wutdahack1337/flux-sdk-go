@@ -2,6 +2,10 @@ package main
 
 import (
 	"context"
+	signingv1beta1 "cosmossdk.io/api/cosmos/tx/signing/v1beta1"
+
+	sdkmath "cosmossdk.io/math"
+	"cosmossdk.io/x/tx/signing"
 	"fmt"
 	secp256k1 "github.com/FluxNFTLabs/sdk-go/chain/crypto/ethsecp256k1"
 	types "github.com/FluxNFTLabs/sdk-go/chain/indexer/web3gw"
@@ -58,7 +62,7 @@ func main() {
 		FromAddress: senderAddr.String(),
 		ToAddress:   receiverAddr.String(),
 		Amount: sdk.Coins{
-			{Denom: "lux", Amount: sdk.NewIntFromUint64(77)},
+			{Denom: "lux", Amount: sdkmath.NewIntFromUint64(77)},
 		},
 	}
 
@@ -81,10 +85,10 @@ func main() {
 	// prepare tx data
 	timeoutHeight := uint64(19000)
 	gasLimit := uint64(200000)
-	gasPrice := sdk.NewIntFromUint64(500000000)
+	gasPrice := sdkmath.NewIntFromUint64(500000000)
 	fee := []sdk.Coin{{
 		Denom:  "lux",
-		Amount: sdk.NewIntFromUint64(gasLimit).Mul(gasPrice),
+		Amount: sdkmath.NewIntFromUint64(gasLimit).Mul(gasPrice),
 	}}
 	senderSigV2 := signingtypes.SignatureV2{
 		PubKey: senderPubKey,
@@ -113,17 +117,18 @@ func main() {
 	extTxBuilder.SetSignatures(senderSigV2, feePayerSigV2)
 
 	// build sign data
-	signerData := authsigning.SignerData{
+	signerData := signing.SignerData{
 		ChainID:       clientCtx.ChainID,
 		AccountNumber: senderNum,
 		Sequence:      senderSeq,
-		PubKey:        senderPubKey,
-		Address:       senderAddr.String(),
+		//PubKey:        senderPubKey,
+		Address: senderAddr.String(),
 	}
 	data, err := txConfig.SignModeHandler().GetSignBytes(
-		signingtypes.SignMode_SIGN_MODE_DIRECT,
+		context.Background(),
+		signingv1beta1.SignMode_SIGN_MODE_DIRECT,
 		signerData,
-		extTxBuilder.GetTx(),
+		extTxBuilder.(authsigning.V2AdaptableTx).GetSigningTxData(),
 	)
 	if err != nil {
 		panic(err)
@@ -133,17 +138,18 @@ func main() {
 		panic(err)
 	}
 
-	signerData = authsigning.SignerData{
+	signerData = signing.SignerData{
 		ChainID:       clientCtx.ChainID,
 		AccountNumber: feePayerNum,
 		Sequence:      feePayerSeq,
-		PubKey:        feePayerPubKey,
-		Address:       feePayerAddr.String(),
+		//PubKey:        feePayerPubKey,
+		Address: feePayerAddr.String(),
 	}
 	data, err = txConfig.SignModeHandler().GetSignBytes(
-		signingtypes.SignMode_SIGN_MODE_DIRECT,
+		context.Background(),
+		signingv1beta1.SignMode_SIGN_MODE_DIRECT,
 		signerData,
-		extTxBuilder.GetTx(),
+		extTxBuilder.(authsigning.V2AdaptableTx).GetSigningTxData(),
 	)
 
 	// get fee payer sig

@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	signingv1beta1 "cosmossdk.io/api/cosmos/tx/signing/v1beta1"
+	sdkmath "cosmossdk.io/math"
+	"cosmossdk.io/x/tx/signing"
 	"encoding/json"
 	"fmt"
 	eip712 "github.com/FluxNFTLabs/sdk-go/chain/app/ante"
@@ -61,7 +64,7 @@ func main() {
 		FromAddress: senderAddr.String(),
 		ToAddress:   receiverAddr.String(),
 		Amount: sdk.Coins{
-			{Denom: "lux", Amount: sdk.NewIntFromUint64(77)},
+			{Denom: "lux", Amount: sdkmath.NewIntFromUint64(77)},
 		},
 	}
 
@@ -81,10 +84,10 @@ func main() {
 	// prepare tx data
 	timeoutHeight := uint64(19000)
 	gasLimit := uint64(200000)
-	gasPrice := sdk.NewIntFromUint64(500000)
+	gasPrice := sdkmath.NewIntFromUint64(500000)
 	fee := []sdk.Coin{{
 		Denom:  "lux",
-		Amount: sdk.NewIntFromUint64(gasLimit).Mul(gasPrice),
+		Amount: sdkmath.NewIntFromUint64(gasLimit).Mul(gasPrice),
 	}}
 
 	// build tx
@@ -95,16 +98,17 @@ func main() {
 	extTxBuilder.SetMemo("abc")
 
 	// build typed data
-	signerData := authsigning.SignerData{
+	signerData := signing.SignerData{
 		Address:       senderAddr.String(),
 		ChainID:       clientCtx.ChainID,
 		AccountNumber: accNum,
 		Sequence:      accSeq,
 	}
 	data, err := txConfig.SignModeHandler().GetSignBytes(
-		signingtypes.SignMode_SIGN_MODE_LEGACY_AMINO_JSON,
+		context.Background(),
+		signingv1beta1.SignMode_SIGN_MODE_DIRECT,
 		signerData,
-		extTxBuilder.GetTx(),
+		extTxBuilder.(authsigning.V2AdaptableTx).GetSigningTxData(),
 	)
 	if err != nil {
 		panic(err)
