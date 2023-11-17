@@ -84,7 +84,7 @@ func main() {
 	// prepare tx data
 	timeoutHeight := uint64(19000)
 	gasLimit := uint64(200000)
-	gasPrice := sdkmath.NewIntFromUint64(500000)
+	gasPrice := sdkmath.NewIntFromUint64(500000000)
 	fee := []sdk.Coin{{
 		Denom:  "lux",
 		Amount: sdkmath.NewIntFromUint64(gasLimit).Mul(gasPrice),
@@ -106,7 +106,7 @@ func main() {
 	}
 	data, err := txConfig.SignModeHandler().GetSignBytes(
 		context.Background(),
-		signingv1beta1.SignMode_SIGN_MODE_DIRECT,
+		signingv1beta1.SignMode_SIGN_MODE_LEGACY_AMINO_JSON,
 		signerData,
 		extTxBuilder.(authsigning.V2AdaptableTx).GetSigningTxData(),
 	)
@@ -131,6 +131,12 @@ func main() {
 
 	// get fee payer sig
 	typedDataBytes, err := json.Marshal(typedData)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(string(typedDataBytes))
+
 	res, err := client.SignJSON(context.Background(), &types.SignJSONRequest{Data: typedDataBytes})
 	if err != nil {
 		panic(err)
@@ -141,6 +147,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
 	if common.Bytes2Hex(typedDataHash) != common.Bytes2Hex(res.Hash) {
 		panic("mismatched typed data hash from fee payer")
 	}
