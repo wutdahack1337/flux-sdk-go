@@ -17,9 +17,8 @@ import (
 	cosmtypes "github.com/cosmos/cosmos-sdk/types"
 	"github.com/pkg/errors"
 
-	cryptocodec "github.com/FluxNFTLabs/sdk-go/chain/crypto/codec"
-	"github.com/FluxNFTLabs/sdk-go/chain/crypto/ethsecp256k1"
-	"github.com/FluxNFTLabs/sdk-go/chain/crypto/hd"
+	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 )
 
 const defaultKeyringKeyName = "validator"
@@ -46,7 +45,7 @@ func InitCosmosKeyring(
 
 		// Specfic to Injective chain with Ethermint keys
 		// Should be secp256k1.PrivKey for generic Cosmos chain
-		cosmosAccPk := &ethsecp256k1.PrivKey{
+		cosmosAccPk := &secp256k1.PrivKey{
 			Key: pkBytes,
 		}
 
@@ -101,7 +100,6 @@ func InitCosmosKeyring(
 			absoluteKeyringDir,
 			passReader,
 			getCryptoCodec(),
-			hd.EthSecp256k1Option(),
 		)
 		if err != nil {
 			err = errors.Wrap(err, "failed to init keyring")
@@ -194,7 +192,7 @@ func getCryptoCodec() *codec.ProtoCodec {
 // KeyringForPrivKey creates a temporary in-mem keyring for a PrivKey.
 // Allows to init Context when the key has been provided in plaintext and parsed.
 func KeyringForPrivKey(name string, privKey cryptotypes.PrivKey) (keyring.Keyring, error) {
-	kb := keyring.NewInMemory(getCryptoCodec(), hd.EthSecp256k1Option())
+	kb := keyring.NewInMemory(getCryptoCodec())
 	tmpPhrase := randPhrase(64)
 	armored := cosmcrypto.EncryptArmorPrivKey(privKey, tmpPhrase, privKey.Type())
 	err := kb.ImportPrivKey(name, armored, tmpPhrase)

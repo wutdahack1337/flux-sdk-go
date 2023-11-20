@@ -13,6 +13,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 
+	evidencetypes "cosmossdk.io/x/evidence/types"
+	feegranttypes "cosmossdk.io/x/feegrant"
+	upgradetypes "cosmossdk.io/x/upgrade/types"
 	signingtypes "github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
@@ -20,19 +23,15 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	evidencetypes "cosmossdk.io/x/evidence/types"
-	feegranttypes "cosmossdk.io/x/feegrant"
 	govv1types "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	paramproposaltypes "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	upgradetypes "cosmossdk.io/x/upgrade/types"
 	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
 	ibcapplicationtypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
 	ibccoretypes "github.com/cosmos/ibc-go/v8/modules/core/types"
 
-	keyscodec "github.com/FluxNFTLabs/sdk-go/chain/crypto/codec"
 	fnfttypes "github.com/FluxNFTLabs/sdk-go/chain/modules/fnft/types"
 )
 
@@ -50,7 +49,6 @@ func init() {
 
 func RegisterTypes() types.InterfaceRegistry {
 	interfaceRegistry := types.NewInterfaceRegistry()
-	keyscodec.RegisterInterfaces(interfaceRegistry)
 	std.RegisterInterfaces(interfaceRegistry)
 
 	RegisterInterfaces(interfaceRegistry)

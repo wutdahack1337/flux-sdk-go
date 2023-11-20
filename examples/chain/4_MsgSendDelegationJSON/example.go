@@ -9,12 +9,12 @@ import (
 	"fmt"
 	eip712 "github.com/FluxNFTLabs/sdk-go/chain/app/ante"
 	"github.com/FluxNFTLabs/sdk-go/chain/app/ante/typeddata"
-	secp256k1 "github.com/FluxNFTLabs/sdk-go/chain/crypto/ethsecp256k1"
 	types "github.com/FluxNFTLabs/sdk-go/chain/indexer/web3gw"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	signingtypes "github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
@@ -153,7 +153,8 @@ func main() {
 	}
 
 	// build sender sig
-	senderSig, err := ethcrypto.Sign(typedDataHash, senderPrivKey.ToECDSA())
+	senderEthPk, _ := ethcrypto.ToECDSA(senderPrivKey.Bytes())
+	senderSig, err := ethcrypto.Sign(typedDataHash, senderEthPk)
 	if err != nil {
 		panic(err)
 	}

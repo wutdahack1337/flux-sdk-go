@@ -7,10 +7,10 @@ import (
 	sdkmath "cosmossdk.io/math"
 	"cosmossdk.io/x/tx/signing"
 	"fmt"
-	secp256k1 "github.com/FluxNFTLabs/sdk-go/chain/crypto/ethsecp256k1"
 	types "github.com/FluxNFTLabs/sdk-go/chain/indexer/web3gw"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	signingtypes "github.com/cosmos/cosmos-sdk/types/tx/signing"
@@ -139,11 +139,10 @@ func main() {
 	}
 
 	signerData = signing.SignerData{
+		Address:       feePayerAddr.String(),
 		ChainID:       clientCtx.ChainID,
 		AccountNumber: feePayerNum,
 		Sequence:      feePayerSeq,
-		//PubKey:        feePayerPubKey,
-		Address: feePayerAddr.String(),
 	}
 	data, err = txConfig.SignModeHandler().GetSignBytes(
 		context.Background(),
