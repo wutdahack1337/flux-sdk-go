@@ -1,6 +1,8 @@
 package ante
 
 import (
+	"context"
+	signingv1beta1 "cosmossdk.io/api/cosmos/tx/signing/v1beta1"
 	txsigning "cosmossdk.io/x/tx/signing"
 	"fmt"
 	"strconv"
@@ -10,20 +12,19 @@ import (
 	"cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authante "github.com/cosmos/cosmos-sdk/x/auth/ante"
-	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	ethcrypto "github.com/ethereum/go-ethereum/crypto"
 	ethsecp256k1 "github.com/ethereum/go-ethereum/crypto/secp256k1"
 
 	"github.com/FluxNFTLabs/sdk-go/chain/app/ante/typeddata"
 
-	secp256k1 "github.com/FluxNFTLabs/sdk-go/chain/crypto/ethsecp256k1"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 )
 
@@ -98,8 +99,9 @@ func (svd Eip712SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx,
 		if !genesis {
 			accNum = acc.GetAccountNumber()
 		}
-		signerData := authsigning.SignerData{
+		signerData := txsigning.SignerData{
 			ChainID:       chainID,
+			Address:       acc.GetAddress().String(),
 			AccountNumber: accNum,
 			Sequence:      acc.GetSequence(),
 		}
@@ -131,7 +133,7 @@ func init() {
 // and single vs multi-signatures.
 func VerifySignatureEIP712(
 	pubKey cryptotypes.PubKey,
-	signerData authsigning.SignerData,
+	signerData txsigning.SignerData,
 	sigData signing.SignatureData,
 	handler *txsigning.HandlerMap,
 	tx authsigning.Tx,
@@ -144,24 +146,19 @@ func VerifySignatureEIP712(
 
 		// @contract: this code is reached only when Msg has Web3Tx extension (so this custom Ante handler flow),
 		// and the signature is SIGN_MODE_LEGACY_AMINO_JSON which is supported for EIP712 for now
-
 		msgs := tx.GetMsgs()
-		txBytes := legacytx.StdSignBytes(
-			signerData.ChainID,
-			signerData.AccountNumber,
-			signerData.Sequence,
-			tx.GetTimeoutHeight(),
-			legacytx.StdFee{
-				Amount: tx.GetFee(),
-				Gas:    tx.GetGas(),
-			},
-			msgs, tx.GetMemo(),
+		txBytes, err := handler.GetSignBytes(
+			context.Background(),
+			signingv1beta1.SignMode_SIGN_MODE_LEGACY_AMINO_JSON,
+			signerData,
+			tx.(authsigning.V2AdaptableTx).GetSigningTxData(),
 		)
-
-		var chainID uint64
-		var err error
+		if err != nil {
+			return err
+		}
 
 		var (
+			chainID      uint64
 			feePayer     sdk.AccAddress
 			feePayerSig  []byte
 			feeDelegated bool
@@ -247,6 +244,7 @@ func VerifySignatureEIP712(
 				err = fmt.Errorf("failed to verify delegated fee payer sig")
 				return err
 			}
+
 		} else {
 			typedData, err = WrapTxToEIP712(chainTypesCodec, chainID, msgs[0], txBytes, nil)
 			if err != nil {
