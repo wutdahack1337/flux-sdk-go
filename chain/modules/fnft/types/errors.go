@@ -14,5 +14,6 @@ var (
 	ErrAcceptedDenom  = errors.Register(ModuleName, 7, "invalid sponsorship denom")
 	ErrHolderNotFound = errors.Register(ModuleName, 8, "holder not found")
 	ErrInvalidShares  = errors.Register(ModuleName, 9, "invalid shares")
-	ErrISORestriction = errors.Register(ModuleName, 10, "action not supported in this period")
+	ErrInvalidISO     = errors.Register(ModuleName, 10, "action not supported in this period")
+	ErrISORestriction = errors.Register(ModuleName, 11, "action not supported in this period")
 )

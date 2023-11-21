@@ -5,7 +5,6 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
 var _ sdk.Msg = &MsgCreate{}
@@ -49,7 +48,7 @@ func (m MsgCreate) ValidateBasic() error {
 	}
 
 	if m.ISOSuccessPercent == 0 {
-		return errors.New(types.StoreKey, 1001, "ISO success threshold cannot be 0")
+		return errors.Wrapf(ErrInvalidISO, "ISO success threshold cannot be 0")
 	}
 
 	return nil

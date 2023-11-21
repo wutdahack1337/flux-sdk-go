@@ -144,14 +144,16 @@ func VerifySignatureEIP712(
 			return fmt.Errorf("unexpected SignatureData %T: wrong SignMode", sigData)
 		}
 
-		// @contract: this code is reached only when Msg has Web3Tx extension (so this custom Ante handler flow),
-		// and the signature is SIGN_MODE_LEGACY_AMINO_JSON which is supported for EIP712 for now
+		// tweak signing tx data to remove extension option here to not break aminojson impl
+		signingTxData := tx.(authsigning.V2AdaptableTx).GetSigningTxData()
+		signingTxData.Body.ExtensionOptions = nil
+		signingTxData.Body.NonCriticalExtensionOptions = nil
 		msgs := tx.GetMsgs()
 		txBytes, err := handler.GetSignBytes(
 			context.Background(),
 			signingv1beta1.SignMode_SIGN_MODE_LEGACY_AMINO_JSON,
 			signerData,
-			tx.(authsigning.V2AdaptableTx).GetSigningTxData(),
+			signingTxData,
 		)
 		if err != nil {
 			return err
