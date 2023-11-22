@@ -5,7 +5,9 @@ import (
 	bazaartypes "github.com/FluxNFTLabs/sdk-go/chain/modules/bazaar/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
+	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"os"
+	"strings"
 
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
@@ -18,28 +20,25 @@ func main() {
 		panic(err)
 	}
 
-	senderAddress, cosmosKeyring, err := chainclient.InitCosmosKeyring(
-		os.Getenv("HOME")+"/.fluxd",
+	kr, err := keyring.New(
 		"fluxd",
 		"file",
-		"signer1",
-		"",
-		"", // keyring will be used if pk not provided
-		false,
+		os.Getenv("HOME")+"/.fluxd",
+		strings.NewReader("12345678"),
+		chainclient.GetCryptoCodec(),
 	)
-
 	if err != nil {
 		panic(err)
 	}
 
 	// initialize grpc client
-	clientCtx, err := chaintypes.NewClientContext(
+	clientCtx, senderAddress, err := chaintypes.NewClientContext(
 		network.ChainId,
-		senderAddress.String(),
-		cosmosKeyring,
+		"signer1",
+		kr,
 	)
 	if err != nil {
-		fmt.Println(err)
+		panic(err)
 	}
 	clientCtx = clientCtx.WithNodeURI(network.TmEndpoint).WithClient(tmClient)
 

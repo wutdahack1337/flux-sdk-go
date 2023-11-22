@@ -7,41 +7,41 @@ import (
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
 	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
+	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	sdktypes "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"os"
+	"strings"
 )
 
 func main() {
+	network := common.LoadNetwork("local", "")
 	tmClient, err := rpchttp.New("http://localhost:26657", "/websocket")
 	if err != nil {
 		panic(err)
 	}
 
-	senderAddress, cosmosKeyring, err := chainclient.InitCosmosKeyring(
-		os.Getenv("HOME")+"/.fluxd",
+	kr, err := keyring.New(
 		"fluxd",
 		"file",
-		"user1",
-		"",
-		"", // keyring will be used if pk not provided
-		false,
+		os.Getenv("HOME")+"/.fluxd",
+		strings.NewReader("12345678"),
+		chainclient.GetCryptoCodec(),
 	)
-
 	if err != nil {
 		panic(err)
 	}
 
 	// initialize grpc client
-	clientCtx, err := chaintypes.NewClientContext(
-		"flux-1",
-		senderAddress.String(),
-		cosmosKeyring,
+	clientCtx, senderAddress, err := chaintypes.NewClientContext(
+		network.ChainId,
+		"user1",
+		kr,
 	)
 	if err != nil {
-		fmt.Println(err)
+		panic(err)
 	}
-	clientCtx = clientCtx.WithClient(tmClient)
+	clientCtx = clientCtx.WithNodeURI(network.TmEndpoint).WithClient(tmClient)
 
 	// prepare tx msg
 	msg := &banktypes.MsgSend{
