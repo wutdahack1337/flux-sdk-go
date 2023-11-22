@@ -9,7 +9,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/cosmos/cosmos-sdk/std"
-	cosmostypes "github.com/cosmos/cosmos-sdk/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 
@@ -84,40 +83,32 @@ func NewTxConfig(signModes []signingtypes.SignMode) client.TxConfig {
 }
 
 func NewClientContext(
-	chainId, fromSpec string, kb keyring.Keyring,
-) (client.Context, error) {
+	chainId, account string, kb keyring.Keyring,
+) (client.Context, sdk.AccAddress, error) {
 	clientCtx := client.Context{}
 	registry := RegisterTypes()
 
-	codec := codec.NewProtoCodec(registry)
+	cdc := codec.NewProtoCodec(registry)
 	encodingConfig := EncodingConfig{
 		InterfaceRegistry: registry,
-		Codec:             codec,
+		Codec:             cdc,
 		TxConfig: NewTxConfig([]signingtypes.SignMode{
 			signingtypes.SignMode_SIGN_MODE_DIRECT,
 		}),
 	}
 
-	var keyInfo keyring.Record
+	// get record from keyring
+	record, err := kb.Key(account)
+	if err != nil {
+		err = errors.Wrapf(err, "no key in keyring for name: %s", account)
+		return clientCtx, sdk.AccAddress{}, err
+	}
+	keyInfo := *record
 
-	if kb != nil {
-		addr, err := cosmostypes.AccAddressFromBech32(fromSpec)
-		if err == nil {
-			record, err := kb.KeyByAddress(addr)
-			if err != nil {
-				err = errors.Wrapf(err, "failed to load key info by address %s", addr.String())
-				return clientCtx, err
-			}
-			keyInfo = *record
-		} else {
-			// failed to parse Bech32, is it a name?
-			record, err := kb.Key(fromSpec)
-			if err != nil {
-				err = errors.Wrapf(err, "no key in keyring for name: %s", fromSpec)
-				return clientCtx, err
-			}
-			keyInfo = *record
-		}
+	// get address from record
+	addr, err := record.GetAddress()
+	if err != nil {
+		return clientCtx, sdk.AccAddress{}, err
 	}
 
 	clientCtx = newContext(
@@ -127,7 +118,7 @@ func NewClientContext(
 		keyInfo,
 	)
 
-	return clientCtx, nil
+	return clientCtx, addr, nil
 }
 
 func newContext(
