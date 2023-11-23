@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	signingv1beta1 "cosmossdk.io/api/cosmos/tx/signing/v1beta1"
+	"crypto/sha256"
 
 	sdkmath "cosmossdk.io/math"
 	"cosmossdk.io/x/tx/signing"
@@ -18,7 +19,6 @@ import (
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/ethereum/go-ethereum/common"
-	ethcrypto "github.com/ethereum/go-ethereum/crypto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -47,7 +47,7 @@ func main() {
 	feePayerPubKey := cryptotypes.PubKey(&secp256k1.PubKey{Key: metadata.Pubkey})
 
 	// init client ctx
-	clientCtx, err := chaintypes.NewClientContext("flux-1", "", nil)
+	clientCtx, _, err := chaintypes.NewClientContext("flux-1", "", nil)
 	if err != nil {
 		panic(err)
 	}
@@ -158,7 +158,9 @@ func main() {
 	}
 
 	// double check gateway hash
-	hash := ethcrypto.Keccak256Hash(data).Bytes()
+	h := sha256.New()
+	h.Write(data)
+	hash := h.Sum(nil)
 	if common.Bytes2Hex(hash) != common.Bytes2Hex(res.Hash) {
 		panic("mismatched typed data hash from fee payer")
 	}

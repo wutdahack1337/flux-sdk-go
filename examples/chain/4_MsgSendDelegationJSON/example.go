@@ -49,7 +49,7 @@ func main() {
 	feePayerAddr := sdk.MustAccAddressFromBech32(metadata.Address)
 
 	// init client ctx
-	clientCtx, err := chaintypes.NewClientContext("flux-1", "", nil)
+	clientCtx, _, err := chaintypes.NewClientContext("flux-1", "", nil)
 	if err != nil {
 		panic(err)
 	}
@@ -134,8 +134,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Println(string(typedDataBytes))
 
 	res, err := client.SignJSON(context.Background(), &types.SignJSONRequest{Data: typedDataBytes})
 	if err != nil {
