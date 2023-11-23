@@ -98,17 +98,22 @@ func NewClientContext(
 	}
 
 	// get record from keyring
-	record, err := kb.Key(account)
-	if err != nil {
-		err = errors.Wrapf(err, "no key in keyring for name: %s", account)
-		return clientCtx, sdk.AccAddress{}, err
-	}
-	keyInfo := *record
+	addr := sdk.AccAddress{}
+	keyInfo := keyring.Record{}
 
-	// get address from record
-	addr, err := record.GetAddress()
-	if err != nil {
-		return clientCtx, sdk.AccAddress{}, err
+	if kb != nil {
+		record, err := kb.Key(account)
+		if err != nil {
+			err = errors.Wrapf(err, "no key in keyring for name: %s", account)
+			return clientCtx, sdk.AccAddress{}, err
+		}
+		keyInfo = *record
+
+		// get address from record
+		addr, err = record.GetAddress()
+		if err != nil {
+			return clientCtx, sdk.AccAddress{}, err
+		}
 	}
 
 	clientCtx = newContext(
