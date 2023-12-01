@@ -45,6 +45,15 @@ func main() {
 	}
 	clientCtx = clientCtx.WithGRPCClient(cc)
 
+	// init chain client
+	chainClient, err := chainclient.NewChainClient(
+		clientCtx,
+		common.OptionGasPrices("500000000lux"),
+	)
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	// prepare tx msg
 	msg := &banktypes.MsgSend{
 		FromAddress: senderAddress.String(),
@@ -52,15 +61,6 @@ func main() {
 		Amount: []sdktypes.Coin{{
 			Denom: "lux", Amount: sdkmath.NewInt(1000000000000000000)}, // 1 LUX
 		},
-	}
-
-	chainClient, err := chainclient.NewChainClient(
-		clientCtx,
-		common.OptionGasPrices("500000000lux"),
-	)
-
-	if err != nil {
-		fmt.Println(err)
 	}
 
 	//AsyncBroadcastMsg, SyncBroadcastMsg, QueueBroadcastMsg
