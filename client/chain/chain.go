@@ -17,9 +17,8 @@ import (
 
 	"github.com/FluxNFTLabs/sdk-go/client/common"
 	log "github.com/InjectiveLabs/suplog"
-	rpcclient "github.com/cometbft/cometbft/rpc/client"
-	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
 	"github.com/cosmos/cosmos-sdk/client"
+	nodetypes "github.com/cosmos/cosmos-sdk/client/grpc/node"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cosmtypes "github.com/cosmos/cosmos-sdk/types"
@@ -101,7 +100,7 @@ type chainClient struct {
 	sessionCookie  string
 	sessionEnabled bool
 
-	cometbftClient   rpcclient.Client
+	nodeClient       nodetypes.ServiceClient
 	txClient         txtypes.ServiceClient
 	authQueryClient  authtypes.QueryClient
 	bankQueryClient  banktypes.QueryClient
@@ -113,11 +112,8 @@ type chainClient struct {
 	Broadcasted chan struct{}
 }
 
-// NewCosmosClient creates a new gRPC client that communicates with gRPC server at protoAddr.
-// protoAddr must be in form "tcp://127.0.0.1:8080" or "unix:///tmp/test.sock", protocol is required.
 func NewChainClient(
 	ctx client.Context,
-	protoAddr string,
 	options ...common.ClientOption,
 ) (ChainClient, error) {
 	// process options
@@ -135,37 +131,6 @@ func NewChainClient(
 		txFactory = txFactory.WithGasPrices(opts.GasPrices)
 	}
 
-	// init grpc connection
-	var conn *grpc.ClientConn
-	var err error
-	stickySessionEnabled := true
-	if opts.TLSCert != nil {
-		conn, err = grpc.Dial(protoAddr, grpc.WithTransportCredentials(opts.TLSCert), grpc.WithContextDialer(common.DialerFunc))
-	} else {
-		conn, err = grpc.Dial(protoAddr, grpc.WithInsecure(), grpc.WithContextDialer(common.DialerFunc))
-		stickySessionEnabled = false
-	}
-	if err != nil {
-		err = errors.Wrapf(err, "failed to connect to the gRPC: %s", protoAddr)
-		return nil, err
-	}
-
-	// init tm websocket
-	var cometbftClient *rpchttp.HTTP
-	if ctx.NodeURI != "" {
-		cometbftClient, err = rpchttp.New(ctx.NodeURI, "/websocket")
-		if err != nil {
-			panic(err)
-		}
-
-		if !cometbftClient.IsRunning() {
-			err = cometbftClient.Start()
-			if err != nil {
-				return nil, err
-			}
-		}
-	}
-
 	// build client
 	cc := &chainClient{
 		ctx:  ctx,
@@ -175,28 +140,23 @@ func NewChainClient(
 			"module": "sdk-go",
 			"svc":    "chainClient",
 		}),
-
-		conn:      conn,
 		txFactory: txFactory,
 		canSign:   ctx.Keyring != nil,
 		syncMux:   new(sync.Mutex),
 		msgC:      make(chan sdk.Msg, msgCommitBatchSizeLimit),
 		doneC:     make(chan bool, 1),
 
-		sessionEnabled: stickySessionEnabled,
-
-		cometbftClient:   cometbftClient,
-		txClient:         txtypes.NewServiceClient(conn),
-		authQueryClient:  authtypes.NewQueryClient(conn),
-		bankQueryClient:  banktypes.NewQueryClient(conn),
-		authzQueryClient: authztypes.NewQueryClient(conn),
+		nodeClient:       nodetypes.NewServiceClient(ctx.GRPCClient),
+		txClient:         txtypes.NewServiceClient(ctx.GRPCClient),
+		authQueryClient:  authtypes.NewQueryClient(ctx.GRPCClient),
+		bankQueryClient:  banktypes.NewQueryClient(ctx.GRPCClient),
+		authzQueryClient: authztypes.NewQueryClient(ctx.GRPCClient),
 
 		Broadcasted: make(chan struct{}, 100000000),
 	}
 
 	if cc.canSign {
 		var err error
-
 		cc.accNum, cc.accSeq, err = cc.txFactory.AccountRetriever().GetAccountNumberSequence(ctx, ctx.GetFromAddress())
 		if err != nil {
 			err = errors.Wrap(err, "failed to get initial account num and seq")
@@ -240,12 +200,12 @@ func (c *chainClient) syncNonce() {
 func (c *chainClient) syncTimeoutHeight() {
 	for {
 		ctx := context.Background()
-		block, err := c.ctx.Client.Block(ctx, nil)
+		status, err := c.nodeClient.Status(ctx, &nodetypes.StatusRequest{})
 		if err != nil {
 			c.logger.WithError(err).Errorln("failed to get current block")
 			return
 		}
-		c.txFactory.WithTimeoutHeight(uint64(block.Block.Height) + defaultTimeoutHeight)
+		c.txFactory.WithTimeoutHeight(uint64(status.Height) + defaultTimeoutHeight)
 		time.Sleep(defaultTimeoutHeightSyncInterval)
 	}
 }
@@ -695,7 +655,6 @@ func (c *chainClient) broadcastTx(
 	awaitCtx, cancelFn := context.WithTimeout(context.Background(), defaultBroadcastTimeout)
 	defer cancelFn()
 
-	txHash, _ := hex.DecodeString(res.TxResponse.TxHash)
 	t := time.NewTimer(defaultBroadcastStatusPoll)
 
 	for {
@@ -705,20 +664,12 @@ func (c *chainClient) broadcastTx(
 			t.Stop()
 			return nil, err
 		case <-t.C:
-			resultTx, err := clientCtx.Client.Tx(awaitCtx, txHash, false)
+			resultTx, err := c.txClient.GetTx(awaitCtx, &txtypes.GetTxRequest{Hash: res.TxResponse.TxHash})
 			if err != nil {
-				if errRes := client.CheckTendermintError(err, txBytes); errRes != nil {
-					return &txtypes.BroadcastTxResponse{TxResponse: errRes}, err
-				}
-
-				// log.WithError(err).Warningln("Tx Error for Hash:", res.TxHash)
-
 				t.Reset(defaultBroadcastStatusPoll)
 				continue
-
-			} else if resultTx.Height > 0 {
-				resResultTx := sdk.NewResponseResultTx(resultTx, res.TxResponse.Tx, res.TxResponse.Timestamp)
-				res = &txtypes.BroadcastTxResponse{TxResponse: resResultTx}
+			} else if resultTx.TxResponse.Height > 0 {
+				res = &txtypes.BroadcastTxResponse{TxResponse: resultTx.TxResponse}
 				t.Stop()
 				return res, err
 			}
