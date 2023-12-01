@@ -2,7 +2,6 @@ package chain
 
 import (
 	"context"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/x/auth/signing"
@@ -536,7 +535,6 @@ func (c *chainClient) SyncBroadcastSignedTx(txBytes []byte) (*txtypes.BroadcastT
 	awaitCtx, cancelFn := context.WithTimeout(context.Background(), defaultBroadcastTimeout)
 	defer cancelFn()
 
-	txHash, _ := hex.DecodeString(res.TxResponse.TxHash)
 	t := time.NewTimer(defaultBroadcastStatusPoll)
 
 	for {
@@ -546,20 +544,12 @@ func (c *chainClient) SyncBroadcastSignedTx(txBytes []byte) (*txtypes.BroadcastT
 			t.Stop()
 			return nil, err
 		case <-t.C:
-			resultTx, err := c.ctx.Client.Tx(awaitCtx, txHash, false)
+			resultTx, err := c.txClient.GetTx(awaitCtx, &txtypes.GetTxRequest{Hash: res.TxResponse.TxHash})
 			if err != nil {
-				if errRes := client.CheckTendermintError(err, txBytes); errRes != nil {
-					return &txtypes.BroadcastTxResponse{TxResponse: errRes}, err
-				}
-
-				// log.WithError(err).Warningln("Tx Error for Hash:", res.TxHash)
-
 				t.Reset(defaultBroadcastStatusPoll)
 				continue
-
-			} else if resultTx.Height > 0 {
-				resResultTx := sdk.NewResponseResultTx(resultTx, res.TxResponse.Tx, res.TxResponse.Timestamp)
-				res = &txtypes.BroadcastTxResponse{TxResponse: resResultTx}
+			} else if resultTx.TxResponse.Height > 0 {
+				res = &txtypes.BroadcastTxResponse{TxResponse: resultTx.TxResponse}
 				t.Stop()
 				return res, err
 			}

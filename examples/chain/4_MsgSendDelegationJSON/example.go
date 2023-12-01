@@ -11,7 +11,7 @@ import (
 	"github.com/FluxNFTLabs/sdk-go/chain/app/ante/typeddata"
 	types "github.com/FluxNFTLabs/sdk-go/chain/indexer/web3gw"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
-	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
+	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
@@ -48,16 +48,23 @@ func main() {
 	}
 	feePayerAddr := sdk.MustAccAddressFromBech32(metadata.Address)
 
+	// init grpc connection
+	cc, err = grpc.Dial("localhost:9900", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		panic(err)
+	}
+
 	// init client ctx
 	clientCtx, _, err := chaintypes.NewClientContext("flux-1", "", nil)
 	if err != nil {
 		panic(err)
 	}
-	tmClient, err := rpchttp.New("http://localhost:26657", "/websocket")
-	if err != nil {
-		panic(err)
-	}
-	clientCtx = clientCtx.WithClient(tmClient)
+	clientCtx = clientCtx.WithGRPCClient(cc)
+
+	// init chain client
+	chainClient, err := chainclient.NewChainClient(
+		clientCtx,
+	)
 
 	// init msg
 	msg := &banktypes.MsgSend{
@@ -183,8 +190,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
-	txRes, err := clientCtx.BroadcastTxSync(txBytes)
+	txRes, err := chainClient.SyncBroadcastSignedTx(txBytes)
 	if err != nil {
 		panic(err)
 	}

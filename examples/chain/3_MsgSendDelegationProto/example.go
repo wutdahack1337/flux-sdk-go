@@ -4,13 +4,13 @@ import (
 	"context"
 	signingv1beta1 "cosmossdk.io/api/cosmos/tx/signing/v1beta1"
 	"crypto/sha256"
+	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 
 	sdkmath "cosmossdk.io/math"
 	"cosmossdk.io/x/tx/signing"
 	"fmt"
 	types "github.com/FluxNFTLabs/sdk-go/chain/indexer/web3gw"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
-	rpchttp "github.com/cometbft/cometbft/rpc/client/http"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -46,16 +46,23 @@ func main() {
 	feePayerAddr := sdk.MustAccAddressFromBech32(metadata.Address)
 	feePayerPubKey := cryptotypes.PubKey(&secp256k1.PubKey{Key: metadata.Pubkey})
 
+	// init grpc connection
+	cc, err = grpc.Dial("localhost:9900", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		panic(err)
+	}
+
 	// init client ctx
 	clientCtx, _, err := chaintypes.NewClientContext("flux-1", "", nil)
 	if err != nil {
 		panic(err)
 	}
-	tmClient, err := rpchttp.New("http://localhost:26657", "/websocket")
-	if err != nil {
-		panic(err)
-	}
-	clientCtx = clientCtx.WithClient(tmClient)
+	clientCtx = clientCtx.WithGRPCClient(cc)
+
+	// init chain client
+	chainClient, err := chainclient.NewChainClient(
+		clientCtx,
+	)
 
 	// init msg
 	msg := &banktypes.MsgSend{
@@ -175,7 +182,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	txRes, err := clientCtx.BroadcastTxSync(txBytes)
+	txRes, err := chainClient.SyncBroadcastSignedTx(txBytes)
 	if err != nil {
 		panic(err)
 	}
