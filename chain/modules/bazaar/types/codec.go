@@ -21,10 +21,6 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&VerifiersProposal{},
 	)
 
-	// TODO
-	//govtypes.RegisterProposalType((&ClassCommissionsProposal{}).ProposalType())
-	//govtypes.RegisterProposalType((&VerifiersProposal{}).ProposalType())
-
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }
 

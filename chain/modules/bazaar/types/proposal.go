@@ -5,18 +5,19 @@ import (
 	fnfttypes "github.com/FluxNFTLabs/sdk-go/chain/modules/fnft/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
-	"github.com/cosmos/gogoproto/proto"
+)
+
+const (
+	ClassCommissionsProposalType = "ClassCommissionsProposal"
+	VerifiersProposalType        = "VerifiersProposal"
 )
 
 var _ govtypes.Content = &ClassCommissionsProposal{}
 var _ govtypes.Content = &VerifiersProposal{}
 
-func NewClassCommissionsProposal(title, description string, req []ClassCommission) *ClassCommissionsProposal {
-	return &ClassCommissionsProposal{
-		Title:            title,
-		Description:      description,
-		ClassCommissions: req,
-	}
+func init() {
+	govtypes.RegisterProposalType((&ClassCommissionsProposal{}).ProposalType())
+	govtypes.RegisterProposalType((&VerifiersProposal{}).ProposalType())
 }
 
 func (p *ClassCommissionsProposal) GetTitle() string {
@@ -32,7 +33,7 @@ func (p *ClassCommissionsProposal) ProposalRoute() string {
 }
 
 func (p *ClassCommissionsProposal) ProposalType() string {
-	return proto.MessageName(p)
+	return ClassCommissionsProposalType
 }
 
 // ValidateBasic returns ValidateBasic result of this proposal.
@@ -51,14 +52,6 @@ func (p *ClassCommissionsProposal) ValidateBasic() error {
 	return govtypes.ValidateAbstract(p)
 }
 
-func NewVerifiersProposal(title, description string, req []ClassCommission) *ClassCommissionsProposal {
-	return &ClassCommissionsProposal{
-		Title:            title,
-		Description:      description,
-		ClassCommissions: req,
-	}
-}
-
 func (p *VerifiersProposal) GetTitle() string {
 	return p.Title
 }
@@ -72,7 +65,7 @@ func (p *VerifiersProposal) ProposalRoute() string {
 }
 
 func (p *VerifiersProposal) ProposalType() string {
-	return proto.MessageName(p)
+	return VerifiersProposalType
 }
 
 // ValidateBasic returns ValidateBasic result of this proposal.
