@@ -176,7 +176,6 @@ func VerifySignatureEIP712(
 					// chainID in EIP712 typed data is allowed to not match signerData.ChainID,
 					// but limited to certain options: 1 (mainnet), 5 (Goerli), thus Metamask will
 					// be able to submit signatures without switching networks.
-
 					if extOpt.TypedDataChainID == 1 || extOpt.TypedDataChainID == 5 {
 						chainID = extOpt.TypedDataChainID
 					}
@@ -194,6 +193,9 @@ func VerifySignatureEIP712(
 						}
 
 						feeDelegated = true
+					} else {
+						// allow using EIP712 without fee delegation
+						return nil
 					}
 				}
 			}

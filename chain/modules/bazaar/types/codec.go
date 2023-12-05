@@ -28,5 +28,6 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 // on the provided LegacyAmino codec. These types are used for Amino JSON serialization.
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCreateProduct{}, "bazaar/MsgCreateProduct", nil)
+	cdc.RegisterConcrete(&MsgVerifyProduct{}, "bazaar/MsgVerifyProduct", nil)
 	cdc.RegisterConcrete(&MsgPurchaseOffering{}, "bazaar/MsgPurchaseOffering", nil)
 }
