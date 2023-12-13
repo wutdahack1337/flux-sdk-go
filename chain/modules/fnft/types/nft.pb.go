@@ -30,7 +30,8 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // Class defines the class of the nft type.
 type Class struct {
-	// id defines the unique identifier of the NFT classification, similar to the contract address of ERC721
+	// id defines the unique identifier of the NFT classification, similar to the
+	// contract address of ERC721
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	// name defines the human-readable name of the NFT classification. Optional
 	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
@@ -38,7 +39,8 @@ type Class struct {
 	Symbol string `protobuf:"bytes,3,opt,name=symbol,proto3" json:"symbol,omitempty"`
 	// description is a brief description of nft classification. Optional
 	Description string `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
-	// url for the class metadata stored off chain. It can define schema for Class and NFT `Data` attributes. Optional
+	// url for the class metadata stored off chain. It can define schema for Class
+	// and NFT `Data` attributes. Optional
 	Url string `protobuf:"bytes,5,opt,name=url,proto3" json:"url,omitempty"`
 	// data is the app specific metadata of the NFT class. Optional
 	Data *types.Any `protobuf:"bytes,6,opt,name=data,proto3" json:"data,omitempty"`

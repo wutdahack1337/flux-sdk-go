@@ -12,7 +12,7 @@ import (
 	"cosmossdk.io/errors"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/ethsecp256k1"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -21,7 +21,7 @@ import (
 	authante "github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	ethcrypto "github.com/ethereum/go-ethereum/crypto"
-	ethsecp256k1 "github.com/ethereum/go-ethereum/crypto/secp256k1"
+	ethlibsecp256k1 "github.com/ethereum/go-ethereum/crypto/secp256k1"
 
 	"github.com/FluxNFTLabs/sdk-go/chain/app/ante/typeddata"
 
@@ -228,7 +228,7 @@ func VerifySignatureEIP712(
 				return err
 			}
 
-			feePayerPubkey, err := ethsecp256k1.RecoverPubkey(sigHash, feePayerSig)
+			feePayerPubkey, err := ethlibsecp256k1.RecoverPubkey(sigHash, feePayerSig)
 			if err != nil {
 				err = errors.Wrap(err, "failed to recover delegated fee payer from sig")
 				return err
@@ -240,7 +240,7 @@ func VerifySignatureEIP712(
 				return err
 			}
 
-			recoveredFeePayerAcc := sdk.AccAddress((&secp256k1.PubKey{
+			recoveredFeePayerAcc := sdk.AccAddress((&ethsecp256k1.PubKey{
 				Key: ethcrypto.CompressPubkey(ecPubKey),
 			}).Address().Bytes())
 
@@ -266,9 +266,9 @@ func VerifySignatureEIP712(
 			return fmt.Errorf("signature length doesnt match typical [R||S||V] signature 65 bytes")
 		}
 
-		// VerifySignature of secp256k1 accepts 64 byte signature [R||S]
+		// VerifySignature of ethsecp256k1 accepts 64 byte signature [R||S]
 		// WARNING! Under NO CIRCUMSTANCES try to use pubKey.VerifySignature there
-		if !ethsecp256k1.VerifySignature(pubKey.Bytes(), sigHash, data.Signature[:len(data.Signature)-1]) {
+		if !ethlibsecp256k1.VerifySignature(pubKey.Bytes(), sigHash, data.Signature[:len(data.Signature)-1]) {
 			return fmt.Errorf("unable to verify signer signature of EIP712 typed data")
 		}
 

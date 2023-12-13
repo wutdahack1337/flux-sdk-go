@@ -818,14 +818,17 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
-	// Balance queries the number of NFTs of a given class owned by the owner, same as balanceOf in ERC721
+	// Balance queries the number of NFTs of a given class owned by the owner,
+	// same as balanceOf in ERC721
 	Balance(ctx context.Context, in *QueryBalanceRequest, opts ...grpc.CallOption) (*QueryBalanceResponse, error)
-	// Owner queries the owner of the NFT based on its class and id, same as ownerOf in ERC721
+	// Owner queries the owner of the NFT based on its class and id, same as
+	// ownerOf in ERC721
 	Owner(ctx context.Context, in *QueryOwnerRequest, opts ...grpc.CallOption) (*QueryOwnerResponse, error)
-	// Supply queries the number of NFTs from the given class, same as totalSupply of ERC721.
+	// Supply queries the number of NFTs from the given class, same as totalSupply
+	// of ERC721.
 	Supply(ctx context.Context, in *QuerySupplyRequest, opts ...grpc.CallOption) (*QuerySupplyResponse, error)
-	// NFTs queries all NFTs of a given class or owner,choose at least one of the two, similar to tokenByIndex in
-	// ERC721Enumerable
+	// NFTs queries all NFTs of a given class or owner,choose at least one of the
+	// two, similar to tokenByIndex in ERC721Enumerable
 	NFTs(ctx context.Context, in *QueryNFTsRequest, opts ...grpc.CallOption) (*QueryNFTsResponse, error)
 	// NFT queries an NFT based on its class and id.
 	NFT(ctx context.Context, in *QueryNFTRequest, opts ...grpc.CallOption) (*QueryNFTResponse, error)
@@ -908,14 +911,17 @@ func (c *queryClient) Classes(ctx context.Context, in *QueryClassesRequest, opts
 
 // QueryServer is the server API for Query service.
 type QueryServer interface {
-	// Balance queries the number of NFTs of a given class owned by the owner, same as balanceOf in ERC721
+	// Balance queries the number of NFTs of a given class owned by the owner,
+	// same as balanceOf in ERC721
 	Balance(context.Context, *QueryBalanceRequest) (*QueryBalanceResponse, error)
-	// Owner queries the owner of the NFT based on its class and id, same as ownerOf in ERC721
+	// Owner queries the owner of the NFT based on its class and id, same as
+	// ownerOf in ERC721
 	Owner(context.Context, *QueryOwnerRequest) (*QueryOwnerResponse, error)
-	// Supply queries the number of NFTs from the given class, same as totalSupply of ERC721.
+	// Supply queries the number of NFTs from the given class, same as totalSupply
+	// of ERC721.
 	Supply(context.Context, *QuerySupplyRequest) (*QuerySupplyResponse, error)
-	// NFTs queries all NFTs of a given class or owner,choose at least one of the two, similar to tokenByIndex in
-	// ERC721Enumerable
+	// NFTs queries all NFTs of a given class or owner,choose at least one of the
+	// two, similar to tokenByIndex in ERC721Enumerable
 	NFTs(context.Context, *QueryNFTsRequest) (*QueryNFTsResponse, error)
 	// NFT queries an NFT based on its class and id.
 	NFT(context.Context, *QueryNFTRequest) (*QueryNFTResponse, error)

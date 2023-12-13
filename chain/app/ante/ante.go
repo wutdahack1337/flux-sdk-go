@@ -18,14 +18,14 @@ import (
 	authante "github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/ethsecp256k1"
 )
 
 const (
 	// TODO: Use this cost per byte through parameter or overriding NewConsumeGasForTxSizeDecorator
 	// which currently defaults at 10, if intended
 	// memoCostPerByte     sdk.Gas = 3
-	secp256k1VerifyCost uint64 = 21000
+	ethSecp256k1VerifyCost uint64 = 21000
 )
 
 // AccountKeeper defines an expected keeper interface for the auth module's AccountKeeper
@@ -153,8 +153,8 @@ func DefaultSigVerificationGasConsumer(
 		meter.ConsumeGas(params.SigVerifyCostED25519, "ante verify: ed25519")
 		return nil
 
-	case *secp256k1.PubKey:
-		meter.ConsumeGas(params.SigVerifyCostSecp256k1, "ante verify: secp256k1")
+	case *ethsecp256k1.PubKey:
+		meter.ConsumeGas(params.SigVerifyCostSecp256k1, "ante verify: ethsecp256k1")
 		return nil
 
 	case multisig.PubKey:

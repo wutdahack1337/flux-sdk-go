@@ -38,7 +38,8 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type MsgCreate struct {
 	// sender is the address of the owner of nft
 	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
-	// class_id defines the unique identifier of the nft classification, similar to the contract address of ERC721
+	// class_id defines the unique identifier of the nft classification, similar
+	// to the contract address of ERC721
 	ClassId string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 	// shares defines the number of shares this nft holds
 	Supply cosmossdk_io_math.Int `protobuf:"bytes,3,opt,name=supply,proto3,customtype=cosmossdk.io/math.Int" json:"supply"`
@@ -169,7 +170,8 @@ var xxx_messageInfo_MsgCreateResponse proto.InternalMessageInfo
 type MsgPurchaseShares struct {
 	// sender is the address of sender
 	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
-	// class_id defines the unique identifier of the nft classification, similar to the contract address of ERC721
+	// class_id defines the unique identifier of the nft classification, similar
+	// to the contract address of ERC721
 	ClassId string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 	// id defines the monotonic increasing id of the nft in nft class
 	Id string `protobuf:"bytes,3,opt,name=id,proto3" json:"id,omitempty"`
@@ -268,9 +270,11 @@ func (m *MsgPurchaseSharesResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgPurchaseSharesResponse proto.InternalMessageInfo
 
-// MsgTransferShares represents a message to transfer nft shares from one account to another account.
+// MsgTransferShares represents a message to transfer nft shares from one
+// account to another account.
 type MsgTransferShares struct {
-	// class_id defines the unique identifier of the nft classification, similar to the contract address of ERC721
+	// class_id defines the unique identifier of the nft classification, similar
+	// to the contract address of ERC721
 	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 	// id defines the unique identification of nft
 	Id string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
@@ -380,9 +384,11 @@ func (m *MsgTransferSharesResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgTransferSharesResponse proto.InternalMessageInfo
 
-// MsgDepositShares represents a message to deposit nft shares from bank to fnft.
+// MsgDepositShares represents a message to deposit nft shares from bank to
+// fnft.
 type MsgDepositShares struct {
-	// class_id defines the unique identifier of the nft classification, similar to the contract address of ERC721
+	// class_id defines the unique identifier of the nft classification, similar
+	// to the contract address of ERC721
 	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 	// id defines the unique identification of nft
 	Id string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
@@ -483,9 +489,11 @@ func (m *MsgDepositSharesResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgDepositSharesResponse proto.InternalMessageInfo
 
-// MsgWithdrawShares represents a message to withdraw nft shares from fnft to bank.
+// MsgWithdrawShares represents a message to withdraw nft shares from fnft to
+// bank.
 type MsgWithdrawShares struct {
-	// class_id defines the unique identifier of the nft classification, similar to the contract address of ERC721
+	// class_id defines the unique identifier of the nft classification, similar
+	// to the contract address of ERC721
 	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 	// id defines the unique identification of nft
 	Id string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
@@ -590,7 +598,8 @@ var xxx_messageInfo_MsgWithdrawSharesResponse proto.InternalMessageInfo
 type MsgSponsor struct {
 	// sender is the address of sender
 	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
-	// class_id defines the unique identifier of the nft classification, similar to the contract address of ERC721
+	// class_id defines the unique identifier of the nft classification, similar
+	// to the contract address of ERC721
 	ClassId string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 	// id defines the unique identification of nft
 	Id string `protobuf:"bytes,3,opt,name=id,proto3" json:"id,omitempty"`
@@ -790,11 +799,14 @@ type MsgClient interface {
 	Create(ctx context.Context, in *MsgCreate, opts ...grpc.CallOption) (*MsgCreateResponse, error)
 	// PurchaseShares defines a method to purchase shares from a nft.
 	PurchaseShares(ctx context.Context, in *MsgPurchaseShares, opts ...grpc.CallOption) (*MsgPurchaseSharesResponse, error)
-	// TransferShares defines a method to TransferShares a nft shares one account to another.
+	// TransferShares defines a method to TransferShares a nft shares one account
+	// to another.
 	TransferShares(ctx context.Context, in *MsgTransferShares, opts ...grpc.CallOption) (*MsgTransferSharesResponse, error)
-	// TransferShares defines a method to TransferShares a nft shares one account to another.
+	// TransferShares defines a method to TransferShares a nft shares one account
+	// to another.
 	DepositShares(ctx context.Context, in *MsgDepositShares, opts ...grpc.CallOption) (*MsgDepositSharesResponse, error)
-	// TransferShares defines a method to TransferShares a nft shares one account to another.
+	// TransferShares defines a method to TransferShares a nft shares one account
+	// to another.
 	WithdrawShares(ctx context.Context, in *MsgWithdrawShares, opts ...grpc.CallOption) (*MsgWithdrawSharesResponse, error)
 	// Sponsor defines a method to sponsor a nft project
 	Sponsor(ctx context.Context, in *MsgSponsor, opts ...grpc.CallOption) (*MsgSponsorResponse, error)
@@ -868,11 +880,14 @@ type MsgServer interface {
 	Create(context.Context, *MsgCreate) (*MsgCreateResponse, error)
 	// PurchaseShares defines a method to purchase shares from a nft.
 	PurchaseShares(context.Context, *MsgPurchaseShares) (*MsgPurchaseSharesResponse, error)
-	// TransferShares defines a method to TransferShares a nft shares one account to another.
+	// TransferShares defines a method to TransferShares a nft shares one account
+	// to another.
 	TransferShares(context.Context, *MsgTransferShares) (*MsgTransferSharesResponse, error)
-	// TransferShares defines a method to TransferShares a nft shares one account to another.
+	// TransferShares defines a method to TransferShares a nft shares one account
+	// to another.
 	DepositShares(context.Context, *MsgDepositShares) (*MsgDepositSharesResponse, error)
-	// TransferShares defines a method to TransferShares a nft shares one account to another.
+	// TransferShares defines a method to TransferShares a nft shares one account
+	// to another.
 	WithdrawShares(context.Context, *MsgWithdrawShares) (*MsgWithdrawSharesResponse, error)
 	// Sponsor defines a method to sponsor a nft project
 	Sponsor(context.Context, *MsgSponsor) (*MsgSponsorResponse, error)

@@ -33,7 +33,7 @@ var _ = utilities.NewDoubleArray
 var _ = descriptor.ForMessage
 var _ = metadata.Join
 
-func request_Provider_GetBlock_0(ctx context.Context, marshaler runtime.Marshaler, client ProviderClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_API_GetBlock_0(ctx context.Context, marshaler runtime.Marshaler, client APIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ProviderBlockRequest
 	var metadata runtime.ServerMetadata
 
@@ -60,7 +60,7 @@ func request_Provider_GetBlock_0(ctx context.Context, marshaler runtime.Marshale
 
 }
 
-func local_request_Provider_GetBlock_0(ctx context.Context, marshaler runtime.Marshaler, server ProviderServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_API_GetBlock_0(ctx context.Context, marshaler runtime.Marshaler, server APIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ProviderBlockRequest
 	var metadata runtime.ServerMetadata
 
@@ -87,7 +87,7 @@ func local_request_Provider_GetBlock_0(ctx context.Context, marshaler runtime.Ma
 
 }
 
-func request_Provider_StreamBlock_0(ctx context.Context, marshaler runtime.Marshaler, client ProviderClient, req *http.Request, pathParams map[string]string) (Provider_StreamBlockClient, runtime.ServerMetadata, error) {
+func request_API_StreamBlock_0(ctx context.Context, marshaler runtime.Marshaler, client APIClient, req *http.Request, pathParams map[string]string) (API_StreamBlockClient, runtime.ServerMetadata, error) {
 	var protoReq ProviderBlockRequest
 	var metadata runtime.ServerMetadata
 
@@ -122,7 +122,7 @@ func request_Provider_StreamBlock_0(ctx context.Context, marshaler runtime.Marsh
 
 }
 
-func request_Provider_GetEvents_0(ctx context.Context, marshaler runtime.Marshaler, client ProviderClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_API_GetEvents_0(ctx context.Context, marshaler runtime.Marshaler, client APIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ProviderEventsRequest
 	var metadata runtime.ServerMetadata
 
@@ -160,7 +160,7 @@ func request_Provider_GetEvents_0(ctx context.Context, marshaler runtime.Marshal
 
 }
 
-func local_request_Provider_GetEvents_0(ctx context.Context, marshaler runtime.Marshaler, server ProviderServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_API_GetEvents_0(ctx context.Context, marshaler runtime.Marshaler, server APIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ProviderEventsRequest
 	var metadata runtime.ServerMetadata
 
@@ -198,7 +198,7 @@ func local_request_Provider_GetEvents_0(ctx context.Context, marshaler runtime.M
 
 }
 
-func request_Provider_StreamEvents_0(ctx context.Context, marshaler runtime.Marshaler, client ProviderClient, req *http.Request, pathParams map[string]string) (Provider_StreamEventsClient, runtime.ServerMetadata, error) {
+func request_API_StreamEvents_0(ctx context.Context, marshaler runtime.Marshaler, client APIClient, req *http.Request, pathParams map[string]string) (API_StreamEventsClient, runtime.ServerMetadata, error) {
 	var protoReq ProviderEventsRequest
 	var metadata runtime.ServerMetadata
 
@@ -244,13 +244,13 @@ func request_Provider_StreamEvents_0(ctx context.Context, marshaler runtime.Mars
 
 }
 
-// RegisterProviderHandlerServer registers the http handlers for service Provider to "mux".
-// UnaryRPC     :call ProviderServer directly.
+// RegisterAPIHandlerServer registers the http handlers for service API to "mux".
+// UnaryRPC     :call APIServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterProviderHandlerFromEndpoint instead.
-func RegisterProviderHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ProviderServer) error {
+// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterAPIHandlerFromEndpoint instead.
+func RegisterAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, server APIServer) error {
 
-	mux.Handle("GET", pattern_Provider_GetBlock_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_API_GetBlock_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -261,7 +261,7 @@ func RegisterProviderHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Provider_GetBlock_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_API_GetBlock_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -269,18 +269,18 @@ func RegisterProviderHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 			return
 		}
 
-		forward_Provider_GetBlock_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_API_GetBlock_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_Provider_StreamBlock_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_API_StreamBlock_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
 		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 		return
 	})
 
-	mux.Handle("GET", pattern_Provider_GetEvents_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_API_GetEvents_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -291,7 +291,7 @@ func RegisterProviderHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Provider_GetEvents_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_API_GetEvents_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -299,11 +299,11 @@ func RegisterProviderHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 			return
 		}
 
-		forward_Provider_GetEvents_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_API_GetEvents_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_Provider_StreamEvents_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_API_StreamEvents_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
 		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -313,9 +313,9 @@ func RegisterProviderHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 	return nil
 }
 
-// RegisterProviderHandlerFromEndpoint is same as RegisterProviderHandler but
+// RegisterAPIHandlerFromEndpoint is same as RegisterAPIHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
-func RegisterProviderHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+func RegisterAPIHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
 		return err
@@ -335,23 +335,23 @@ func RegisterProviderHandlerFromEndpoint(ctx context.Context, mux *runtime.Serve
 		}()
 	}()
 
-	return RegisterProviderHandler(ctx, mux, conn)
+	return RegisterAPIHandler(ctx, mux, conn)
 }
 
-// RegisterProviderHandler registers the http handlers for service Provider to "mux".
+// RegisterAPIHandler registers the http handlers for service API to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterProviderHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return RegisterProviderHandlerClient(ctx, mux, NewProviderClient(conn))
+func RegisterAPIHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	return RegisterAPIHandlerClient(ctx, mux, NewAPIClient(conn))
 }
 
-// RegisterProviderHandlerClient registers the http handlers for service Provider
-// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "ProviderClient".
-// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "ProviderClient"
+// RegisterAPIHandlerClient registers the http handlers for service API
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "APIClient".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "APIClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "ProviderClient" to call the correct interceptors.
-func RegisterProviderHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ProviderClient) error {
+// "APIClient" to call the correct interceptors.
+func RegisterAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client APIClient) error {
 
-	mux.Handle("GET", pattern_Provider_GetBlock_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_API_GetBlock_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -360,18 +360,18 @@ func RegisterProviderHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Provider_GetBlock_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_API_GetBlock_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_Provider_GetBlock_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_API_GetBlock_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_Provider_StreamBlock_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_API_StreamBlock_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -380,18 +380,18 @@ func RegisterProviderHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Provider_StreamBlock_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_API_StreamBlock_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_Provider_StreamBlock_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_API_StreamBlock_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_Provider_GetEvents_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_API_GetEvents_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -400,18 +400,18 @@ func RegisterProviderHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Provider_GetEvents_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_API_GetEvents_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_Provider_GetEvents_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_API_GetEvents_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_Provider_StreamEvents_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_API_StreamEvents_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -420,14 +420,14 @@ func RegisterProviderHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Provider_StreamEvents_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_API_StreamEvents_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_Provider_StreamEvents_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_API_StreamEvents_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -435,21 +435,21 @@ func RegisterProviderHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 }
 
 var (
-	pattern_Provider_GetBlock_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"flux", "indexer", "provider", "block", "height"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_API_GetBlock_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"flux", "indexer", "provider", "block", "height"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Provider_StreamBlock_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"flux", "indexer", "provider", "streamblock", "height"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_API_StreamBlock_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"flux", "indexer", "provider", "streamblock", "height"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Provider_GetEvents_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"flux", "indexer", "provider", "events", "height", "modules"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_API_GetEvents_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"flux", "indexer", "provider", "events", "height", "modules"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Provider_StreamEvents_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"flux", "indexer", "provider", "streamevents", "height", "modules"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_API_StreamEvents_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"flux", "indexer", "provider", "streamevents", "height", "modules"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (
-	forward_Provider_GetBlock_0 = runtime.ForwardResponseMessage
+	forward_API_GetBlock_0 = runtime.ForwardResponseMessage
 
-	forward_Provider_StreamBlock_0 = runtime.ForwardResponseStream
+	forward_API_StreamBlock_0 = runtime.ForwardResponseStream
 
-	forward_Provider_GetEvents_0 = runtime.ForwardResponseMessage
+	forward_API_GetEvents_0 = runtime.ForwardResponseMessage
 
-	forward_Provider_StreamEvents_0 = runtime.ForwardResponseStream
+	forward_API_StreamEvents_0 = runtime.ForwardResponseStream
 )

@@ -65,8 +65,8 @@ func DefaultGenesisState() *GenesisState {
 			},
 		},
 		Verifiers: []string{
-			"lux1ujnthlkcyx7dhxw5yky4dse5sfx965arr9nhds", // signer1 addr
-			"lux18tg2y5r4ugl0p202q2l3n4nhg8nvzsw87hylc2", // signer2 addr
+			"lux10tq6q4p67prfmhmzmdwg7zwx66v0gpfdygrr8z", // signer1 addr
+			"lux1kmmz47pr8h46wcyxw8h3k8s85x0ncykqp0xmgj", // signer2 addr
 		},
 	}
 }

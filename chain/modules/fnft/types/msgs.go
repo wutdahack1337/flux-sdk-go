@@ -33,22 +33,23 @@ func (m MsgCreate) ValidateBasic() error {
 		return errors.Wrapf(sdkerrors.ErrInvalidCoins, "Invalid nft initial price (%s)", m.Supply)
 	}
 
+	if m.ISOTimestamp == 0 {
+		return errors.Wrapf(sdkerrors.ErrNotSupported, "Invalid ISO timestamp (%d)", m.ISOTimestamp)
+	}
+
+	minSuccessPercent := uint64(66)
+	if m.ISOSuccessPercent < minSuccessPercent {
+		return errors.Wrapf(ErrInvalidISO, "ISO success threshold cannot be smaller than minimum percent (%d)", minSuccessPercent)
+	}
+
 	err = sdk.ValidateDenom(m.AcceptedPaymentDenom)
 	if err != nil {
 		return errors.Wrapf(sdkerrors.ErrInvalidCoins, "Invalid denom format (%s)", m.AcceptedPaymentDenom)
 	}
 
-	minuet := uint64(60)
-	if m.DividendInterval < minuet {
-		return errors.Wrapf(sdkerrors.ErrNotSupported, "Invalid dividend interval (%d), minimal interval is (%d)", m.DividendInterval, minuet)
-	}
-
-	if m.ISOTimestamp == 0 {
-		return errors.Wrapf(sdkerrors.ErrNotSupported, "Invalid ISO timestamp (%d)", m.ISOTimestamp)
-	}
-
-	if m.ISOSuccessPercent == 0 {
-		return errors.Wrapf(ErrInvalidISO, "ISO success threshold cannot be 0")
+	minDividendInterval := uint64(10)
+	if m.DividendInterval < minDividendInterval {
+		return errors.Wrapf(sdkerrors.ErrNotSupported, "Invalid dividend interval (%d), minimal interval is (%d)", m.DividendInterval, minDividendInterval)
 	}
 
 	return nil
