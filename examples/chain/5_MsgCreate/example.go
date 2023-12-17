@@ -59,16 +59,17 @@ func main() {
 
 	// prepare tx msg
 	msg := &fnfttypes.MsgCreate{
-		Sender:  senderAddress.String(),
-		ClassId: "series",
-		Supply:  sdkmath.NewIntFromUint64(7000),
+		Sender:             senderAddress.String(),
+		ClassId:            "series",
+		Supply:             sdkmath.NewIntFromUint64(7000),
+		OwnerEquityPercent: sdkmath.NewIntFromUint64(40),
 		InitialPrice: sdktypes.Coin{
-			Denom:  "ibc0xdAC17F958D2ee523a2206206994597C13D831ec7",
+			Denom:  "usdt",
 			Amount: sdkmath.NewIntFromUint64(1500000),
 		},
 		ISOTimestamp:         uint64(time.Now().Unix() + 25),
 		ISOSuccessPercent:    75,
-		AcceptedPaymentDenom: "ibc0xdAC17F958D2ee523a2206206994597C13D831ec7",
+		AcceptedPaymentDenom: "usdt",
 		DividendInterval:     864000,
 	}
 

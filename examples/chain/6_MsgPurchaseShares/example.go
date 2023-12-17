@@ -37,7 +37,7 @@ func main() {
 	// init client ctx
 	clientCtx, senderAddress, err := chaintypes.NewClientContext(
 		network.ChainId,
-		"user1",
+		"user2",
 		kr,
 	)
 	if err != nil {
@@ -59,7 +59,7 @@ func main() {
 		Sender:  senderAddress.String(),
 		ClassId: "series",
 		Id:      "0",
-		Shares:  sdkmath.NewIntFromUint64(6000),
+		Shares:  sdkmath.NewIntFromUint64(3500),
 	}
 
 	//AsyncBroadcastMsg, SyncBroadcastMsg, QueueBroadcastMsg

@@ -64,11 +64,11 @@ func main() {
 		Description: "A random kid accidentally ate a fruit that disables swimming ability but now his body gains rubber properties",
 		Offerings: []*bazaartypes.Offering{
 			{Price: &sdk.Coin{
-				Denom:  "ibc0xdAC17F958D2ee523a2206206994597C13D831ec7",
+				Denom:  "usdt",
 				Amount: sdkmath.NewIntFromUint64(2),
 			}},
 			{Price: &sdk.Coin{
-				Denom:  "ibc0xdAC17F958D2ee523a2206206994597C13D831ec7",
+				Denom:  "usdt",
 				Amount: sdkmath.NewIntFromUint64(3),
 			}},
 		},

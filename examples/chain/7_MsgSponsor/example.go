@@ -60,7 +60,7 @@ func main() {
 		Sender:      senderAddress.String(),
 		ClassId:     "series",
 		Id:          "0",
-		Coin:        sdktypes.Coin{Denom: "ibc0xdAC17F958D2ee523a2206206994597C13D831ec7", Amount: sdkmath.NewIntFromUint64(1500000)},
+		Coin:        sdktypes.Coin{Denom: "usdt", Amount: sdkmath.NewIntFromUint64(1500000)},
 		Description: "Cocacola Ad",
 	}
 
