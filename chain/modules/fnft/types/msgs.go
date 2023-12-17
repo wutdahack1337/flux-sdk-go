@@ -29,6 +29,11 @@ func (m MsgCreate) ValidateBasic() error {
 		return errors.Wrapf(sdkerrors.ErrInvalidCoins, "Invalid nft supply (%s)", m.Supply)
 	}
 
+	minOwnerEquityPercent := sdkmath.NewIntFromUint64(33)
+	if m.OwnerEquityPercent.LT(minOwnerEquityPercent) {
+		return errors.Wrapf(ErrInvalidOwnerEquity, "Minimum owner equity percent is %s, got %s", minOwnerEquityPercent.String(), m.OwnerEquityPercent.String())
+	}
+
 	if !m.InitialPrice.Amount.GT(sdkmath.ZeroInt()) {
 		return errors.Wrapf(sdkerrors.ErrInvalidCoins, "Invalid nft initial price (%s)", m.Supply)
 	}
