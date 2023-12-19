@@ -323,6 +323,210 @@ func (m *QuerySupplyResponse) GetAmount() uint64 {
 	return 0
 }
 
+// QueryHolderRequest is the request type for the Query/Holder RPC method
+type QueryHolderRequest struct {
+	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
+	Id      string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	Address string `protobuf:"bytes,3,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+func (m *QueryHolderRequest) Reset()         { *m = QueryHolderRequest{} }
+func (m *QueryHolderRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryHolderRequest) ProtoMessage()    {}
+func (*QueryHolderRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d66918eda415d6d9, []int{6}
+}
+func (m *QueryHolderRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryHolderRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryHolderRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryHolderRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryHolderRequest.Merge(m, src)
+}
+func (m *QueryHolderRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryHolderRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryHolderRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryHolderRequest proto.InternalMessageInfo
+
+func (m *QueryHolderRequest) GetClassId() string {
+	if m != nil {
+		return m.ClassId
+	}
+	return ""
+}
+
+func (m *QueryHolderRequest) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *QueryHolderRequest) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+// QueryHolderRequest is the response type for the Query/Holder RPC method
+type QueryHolderResponse struct {
+	Holder *Holder `protobuf:"bytes,1,opt,name=holder,proto3" json:"holder,omitempty"`
+}
+
+func (m *QueryHolderResponse) Reset()         { *m = QueryHolderResponse{} }
+func (m *QueryHolderResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryHolderResponse) ProtoMessage()    {}
+func (*QueryHolderResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d66918eda415d6d9, []int{7}
+}
+func (m *QueryHolderResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryHolderResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryHolderResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryHolderResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryHolderResponse.Merge(m, src)
+}
+func (m *QueryHolderResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryHolderResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryHolderResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryHolderResponse proto.InternalMessageInfo
+
+func (m *QueryHolderResponse) GetHolder() *Holder {
+	if m != nil {
+		return m.Holder
+	}
+	return nil
+}
+
+// QueryHoldersRequest is the request type for the Query/Holders RPC method
+type QueryHoldersRequest struct {
+	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
+	Id      string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (m *QueryHoldersRequest) Reset()         { *m = QueryHoldersRequest{} }
+func (m *QueryHoldersRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryHoldersRequest) ProtoMessage()    {}
+func (*QueryHoldersRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d66918eda415d6d9, []int{8}
+}
+func (m *QueryHoldersRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryHoldersRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryHoldersRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryHoldersRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryHoldersRequest.Merge(m, src)
+}
+func (m *QueryHoldersRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryHoldersRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryHoldersRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryHoldersRequest proto.InternalMessageInfo
+
+func (m *QueryHoldersRequest) GetClassId() string {
+	if m != nil {
+		return m.ClassId
+	}
+	return ""
+}
+
+func (m *QueryHoldersRequest) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+// QueryHoldersRequest is the response type for the Query/Holders RPC method
+type QueryHoldersResponse struct {
+	Holders []*Holder `protobuf:"bytes,3,rep,name=holders,proto3" json:"holders,omitempty"`
+}
+
+func (m *QueryHoldersResponse) Reset()         { *m = QueryHoldersResponse{} }
+func (m *QueryHoldersResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryHoldersResponse) ProtoMessage()    {}
+func (*QueryHoldersResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d66918eda415d6d9, []int{9}
+}
+func (m *QueryHoldersResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryHoldersResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryHoldersResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryHoldersResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryHoldersResponse.Merge(m, src)
+}
+func (m *QueryHoldersResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryHoldersResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryHoldersResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryHoldersResponse proto.InternalMessageInfo
+
+func (m *QueryHoldersResponse) GetHolders() []*Holder {
+	if m != nil {
+		return m.Holders
+	}
+	return nil
+}
+
 // QueryNFTstRequest is the request type for the Query/NFTs RPC method
 type QueryNFTsRequest struct {
 	// class_id associated with the nft
@@ -337,7 +541,7 @@ func (m *QueryNFTsRequest) Reset()         { *m = QueryNFTsRequest{} }
 func (m *QueryNFTsRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryNFTsRequest) ProtoMessage()    {}
 func (*QueryNFTsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d66918eda415d6d9, []int{6}
+	return fileDescriptor_d66918eda415d6d9, []int{10}
 }
 func (m *QueryNFTsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -399,7 +603,7 @@ func (m *QueryNFTsResponse) Reset()         { *m = QueryNFTsResponse{} }
 func (m *QueryNFTsResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryNFTsResponse) ProtoMessage()    {}
 func (*QueryNFTsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d66918eda415d6d9, []int{7}
+	return fileDescriptor_d66918eda415d6d9, []int{11}
 }
 func (m *QueryNFTsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -454,7 +658,7 @@ func (m *QueryNFTRequest) Reset()         { *m = QueryNFTRequest{} }
 func (m *QueryNFTRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryNFTRequest) ProtoMessage()    {}
 func (*QueryNFTRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d66918eda415d6d9, []int{8}
+	return fileDescriptor_d66918eda415d6d9, []int{12}
 }
 func (m *QueryNFTRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -507,7 +711,7 @@ func (m *QueryNFTResponse) Reset()         { *m = QueryNFTResponse{} }
 func (m *QueryNFTResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryNFTResponse) ProtoMessage()    {}
 func (*QueryNFTResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d66918eda415d6d9, []int{9}
+	return fileDescriptor_d66918eda415d6d9, []int{13}
 }
 func (m *QueryNFTResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -553,7 +757,7 @@ func (m *QueryClassRequest) Reset()         { *m = QueryClassRequest{} }
 func (m *QueryClassRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryClassRequest) ProtoMessage()    {}
 func (*QueryClassRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d66918eda415d6d9, []int{10}
+	return fileDescriptor_d66918eda415d6d9, []int{14}
 }
 func (m *QueryClassRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -599,7 +803,7 @@ func (m *QueryClassResponse) Reset()         { *m = QueryClassResponse{} }
 func (m *QueryClassResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryClassResponse) ProtoMessage()    {}
 func (*QueryClassResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d66918eda415d6d9, []int{11}
+	return fileDescriptor_d66918eda415d6d9, []int{15}
 }
 func (m *QueryClassResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -645,7 +849,7 @@ func (m *QueryClassesRequest) Reset()         { *m = QueryClassesRequest{} }
 func (m *QueryClassesRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryClassesRequest) ProtoMessage()    {}
 func (*QueryClassesRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d66918eda415d6d9, []int{12}
+	return fileDescriptor_d66918eda415d6d9, []int{16}
 }
 func (m *QueryClassesRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -693,7 +897,7 @@ func (m *QueryClassesResponse) Reset()         { *m = QueryClassesResponse{} }
 func (m *QueryClassesResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryClassesResponse) ProtoMessage()    {}
 func (*QueryClassesResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d66918eda415d6d9, []int{13}
+	return fileDescriptor_d66918eda415d6d9, []int{17}
 }
 func (m *QueryClassesResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -743,6 +947,10 @@ func init() {
 	proto.RegisterType((*QueryOwnerResponse)(nil), "flux.fnft.v1beta1.QueryOwnerResponse")
 	proto.RegisterType((*QuerySupplyRequest)(nil), "flux.fnft.v1beta1.QuerySupplyRequest")
 	proto.RegisterType((*QuerySupplyResponse)(nil), "flux.fnft.v1beta1.QuerySupplyResponse")
+	proto.RegisterType((*QueryHolderRequest)(nil), "flux.fnft.v1beta1.QueryHolderRequest")
+	proto.RegisterType((*QueryHolderResponse)(nil), "flux.fnft.v1beta1.QueryHolderResponse")
+	proto.RegisterType((*QueryHoldersRequest)(nil), "flux.fnft.v1beta1.QueryHoldersRequest")
+	proto.RegisterType((*QueryHoldersResponse)(nil), "flux.fnft.v1beta1.QueryHoldersResponse")
 	proto.RegisterType((*QueryNFTsRequest)(nil), "flux.fnft.v1beta1.QueryNFTsRequest")
 	proto.RegisterType((*QueryNFTsResponse)(nil), "flux.fnft.v1beta1.QueryNFTsResponse")
 	proto.RegisterType((*QueryNFTRequest)(nil), "flux.fnft.v1beta1.QueryNFTRequest")
@@ -756,54 +964,62 @@ func init() {
 func init() { proto.RegisterFile("flux/fnft/v1beta1/query.proto", fileDescriptor_d66918eda415d6d9) }
 
 var fileDescriptor_d66918eda415d6d9 = []byte{
-	// 752 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x96, 0xc1, 0x4f, 0x13, 0x4f,
-	0x14, 0xc7, 0x99, 0x96, 0xd2, 0xdf, 0x6f, 0x48, 0x54, 0x46, 0x82, 0x65, 0xc5, 0x4a, 0x16, 0x68,
-	0x6b, 0x23, 0x3b, 0x52, 0xc3, 0x8d, 0x78, 0x40, 0xb3, 0xc6, 0xc4, 0x14, 0xad, 0x3d, 0x99, 0x18,
-	0x33, 0x6d, 0xa7, 0x65, 0x93, 0xed, 0xce, 0xd2, 0xd9, 0x55, 0x08, 0x41, 0x13, 0x8d, 0xc6, 0xc4,
-	0x8b, 0x86, 0x3f, 0xc2, 0x7f, 0xc5, 0x23, 0x89, 0x17, 0x8f, 0x06, 0xfc, 0x43, 0xcc, 0xce, 0xcc,
-	0x96, 0x5d, 0xbb, 0x4b, 0x09, 0xf1, 0xb8, 0x9d, 0xef, 0x7b, 0xdf, 0xcf, 0xbc, 0xf7, 0xe6, 0x01,
-	0xbc, 0xd1, 0xb5, 0xfd, 0x5d, 0xdc, 0x75, 0xba, 0x1e, 0x7e, 0xb5, 0xd6, 0xa2, 0x1e, 0x59, 0xc3,
-	0x3b, 0x3e, 0x1d, 0xec, 0x19, 0xee, 0x80, 0x79, 0x0c, 0xcd, 0x04, 0xc7, 0x46, 0x70, 0x6c, 0xa8,
-	0x63, 0xad, 0xda, 0x66, 0xbc, 0xcf, 0x38, 0x6e, 0x11, 0x4e, 0xa5, 0x76, 0x18, 0xe9, 0x92, 0x9e,
-	0xe5, 0x10, 0xcf, 0x62, 0x8e, 0x0c, 0xd7, 0x16, 0x7a, 0x8c, 0xf5, 0x6c, 0x8a, 0x89, 0x6b, 0x61,
-	0xe2, 0x38, 0xcc, 0x13, 0x87, 0x5c, 0x9d, 0x5e, 0x1f, 0xf5, 0x0e, 0x8c, 0xc4, 0xa1, 0x6e, 0xc2,
-	0xab, 0x4f, 0x83, 0xe4, 0x9b, 0xc4, 0x26, 0x4e, 0x9b, 0x36, 0xe8, 0x8e, 0x4f, 0xb9, 0x87, 0xe6,
-	0xe1, 0x7f, 0x6d, 0x9b, 0x70, 0xfe, 0xd2, 0xea, 0x14, 0xc0, 0x22, 0xa8, 0xfc, 0xdf, 0xc8, 0x8b,
-	0xef, 0x47, 0x1d, 0x34, 0x0b, 0x73, 0xec, 0xb5, 0x43, 0x07, 0x85, 0x8c, 0xf8, 0x5d, 0x7e, 0xe8,
-	0x06, 0x9c, 0x8d, 0xe7, 0xe1, 0x2e, 0x73, 0x38, 0x45, 0x73, 0x70, 0x8a, 0xf4, 0x99, 0xef, 0x78,
-	0x22, 0xcd, 0x64, 0x43, 0x7d, 0xe9, 0xf7, 0xe0, 0x8c, 0xd0, 0x6f, 0x05, 0xd1, 0xe7, 0x70, 0xbd,
-	0x04, 0x33, 0x56, 0x47, 0x59, 0x66, 0xac, 0x8e, 0x5e, 0x85, 0x28, 0x1a, 0xaf, 0xdc, 0x86, 0x6c,
-	0x20, 0xca, 0x86, 0x95, 0xf6, 0x99, 0xef, 0xba, 0xf6, 0xde, 0x78, 0x33, 0x7d, 0x55, 0x15, 0x25,
-	0x0c, 0x18, 0x73, 0x97, 0xcf, 0x00, 0x5e, 0x11, 0xfa, 0xba, 0xd9, 0xe4, 0x17, 0xad, 0x20, 0x32,
-	0x21, 0x3c, 0x6d, 0x6c, 0x21, 0xbb, 0x08, 0x2a, 0xd3, 0xb5, 0x92, 0x21, 0xa7, 0xc0, 0x08, 0xa6,
-	0xc0, 0x90, 0x13, 0xa3, 0x7a, 0x68, 0x3c, 0x21, 0xbd, 0xb0, 0x5d, 0x8d, 0x48, 0xa4, 0xfe, 0x09,
-	0xa8, 0xd2, 0x4a, 0x1a, 0xc5, 0x5e, 0x85, 0x93, 0x4e, 0xd7, 0xe3, 0x05, 0xb0, 0x98, 0xad, 0x4c,
-	0xd7, 0xe6, 0x8c, 0x91, 0x81, 0x33, 0xea, 0x66, 0xb3, 0x21, 0x34, 0xe8, 0x61, 0x8c, 0x24, 0x23,
-	0x48, 0xca, 0x63, 0x49, 0xa4, 0x51, 0x0c, 0x65, 0x03, 0x5e, 0x0e, 0x49, 0x2e, 0xd0, 0xe2, 0x8d,
-	0xd3, 0xaa, 0x0e, 0xaf, 0x51, 0x81, 0x59, 0xa7, 0x2b, 0xeb, 0x9f, 0x7e, 0x8b, 0x40, 0xa2, 0x1b,
-	0xaa, 0x0a, 0xf7, 0x83, 0xec, 0xe7, 0xe8, 0xf9, 0x03, 0x35, 0x24, 0x4a, 0xaf, 0xfc, 0x0c, 0x98,
-	0x13, 0x02, 0xe5, 0x58, 0x48, 0x70, 0x94, 0x01, 0x52, 0xa6, 0xbf, 0x50, 0x93, 0x23, 0x7e, 0xa4,
-	0x43, 0xdf, 0x78, 0x6f, 0xc1, 0x85, 0x7b, 0x7b, 0x08, 0xd4, 0x33, 0x1b, 0xe6, 0x57, 0x9c, 0x35,
-	0x28, 0x2f, 0x42, 0xc3, 0x0e, 0xa7, 0x93, 0x86, 0xc2, 0x7f, 0xd6, 0xe6, 0xda, 0xb7, 0x3c, 0xcc,
-	0x09, 0x2a, 0xf4, 0x15, 0xc0, 0xbc, 0xda, 0x00, 0xa8, 0x94, 0x40, 0x90, 0xb0, 0x6a, 0xb4, 0xf2,
-	0x58, 0x9d, 0xb4, 0xd4, 0xd7, 0xdf, 0xfd, 0xf8, 0x7d, 0x98, 0xc1, 0x68, 0x15, 0x8f, 0x2e, 0xb4,
-	0x96, 0xd4, 0xe2, 0x7d, 0xf1, 0x96, 0x0e, 0xf0, 0x7e, 0xd8, 0xe6, 0x03, 0xf4, 0x11, 0xc0, 0x9c,
-	0xd8, 0x12, 0x68, 0x39, 0xcd, 0x29, 0xba, 0x84, 0xb4, 0x95, 0x31, 0x2a, 0x45, 0x73, 0x47, 0xd0,
-	0x54, 0x51, 0x25, 0x81, 0x46, 0x40, 0x44, 0x18, 0xf0, 0x7e, 0x00, 0xf2, 0x01, 0xc0, 0x29, 0xb9,
-	0x51, 0x50, 0xaa, 0x47, 0x6c, 0x45, 0x69, 0xa5, 0x71, 0x32, 0xc5, 0x72, 0x5b, 0xb0, 0x94, 0xd0,
-	0x72, 0x02, 0x0b, 0x17, 0xd2, 0x68, 0x41, 0x06, 0x70, 0x32, 0x58, 0x0d, 0x68, 0x29, 0x2d, 0x7b,
-	0x64, 0x8d, 0x69, 0xcb, 0x67, 0x8b, 0x14, 0xc0, 0x4d, 0x01, 0x30, 0x8f, 0xae, 0xe1, 0xc4, 0xbf,
-	0x35, 0x1c, 0xbd, 0x85, 0xd9, 0xba, 0xd9, 0x44, 0xfa, 0x19, 0xd9, 0x42, 0xc7, 0xa5, 0x33, 0x35,
-	0xca, 0x10, 0x0b, 0xc3, 0x5b, 0xa8, 0x9c, 0x62, 0x38, 0x52, 0xfc, 0xf7, 0x00, 0xe6, 0xc4, 0xfc,
-	0xa7, 0x4f, 0x41, 0x74, 0x53, 0xa4, 0x4f, 0x41, 0x6c, 0x3f, 0xe8, 0xab, 0x82, 0xa3, 0x8c, 0x56,
-	0x12, 0x38, 0xd4, 0x3b, 0x8b, 0x96, 0xfe, 0x0d, 0xcc, 0xab, 0x97, 0x9b, 0xfe, 0x3c, 0xe2, 0xab,
-	0x23, 0xfd, 0x79, 0xfc, 0xb5, 0x02, 0x74, 0x5d, 0xa0, 0x2c, 0x20, 0x2d, 0x1d, 0x65, 0x73, 0xeb,
-	0xfb, 0x71, 0x11, 0x1c, 0x1d, 0x17, 0xc1, 0xaf, 0xe3, 0x22, 0xf8, 0x72, 0x52, 0x9c, 0x38, 0x3a,
-	0x29, 0x4e, 0xfc, 0x3c, 0x29, 0x4e, 0x3c, 0x5f, 0xef, 0x59, 0xde, 0xb6, 0xdf, 0x32, 0xda, 0xac,
-	0x8f, 0x4d, 0xdb, 0xdf, 0xad, 0x9b, 0xcd, 0xc7, 0xa4, 0xc5, 0x45, 0xae, 0x0e, 0x6e, 0x6f, 0x13,
-	0xcb, 0xc1, 0x7d, 0xd6, 0xf1, 0x6d, 0xca, 0x65, 0x6a, 0x6f, 0xcf, 0xa5, 0xbc, 0x35, 0x25, 0xfe,
-	0x8b, 0xb8, 0xfb, 0x27, 0x00, 0x00, 0xff, 0xff, 0xe1, 0x22, 0x3a, 0x87, 0xe0, 0x08, 0x00, 0x00,
+	// 872 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x96, 0xd1, 0x6b, 0x2b, 0x45,
+	0x14, 0xc6, 0x3b, 0x49, 0x93, 0x78, 0xe7, 0x82, 0x7a, 0xc7, 0xcb, 0x35, 0x8d, 0xd7, 0x28, 0x73,
+	0xd3, 0xa4, 0x86, 0x76, 0xc7, 0xa6, 0xf6, 0xad, 0x88, 0x54, 0x89, 0x15, 0x25, 0xd5, 0x98, 0x17,
+	0x05, 0x91, 0x4d, 0x76, 0x93, 0x2e, 0x6c, 0x76, 0xd3, 0xcc, 0xae, 0xb6, 0x84, 0x2a, 0x28, 0x8a,
+	0x20, 0x82, 0xd2, 0x7f, 0xc8, 0x47, 0x1f, 0x0b, 0xbe, 0xf8, 0x28, 0xad, 0x7f, 0x88, 0xec, 0x99,
+	0xb3, 0xe9, 0x6e, 0xb3, 0x9b, 0x2d, 0xe1, 0x3e, 0xce, 0xce, 0x37, 0xe7, 0xfb, 0xcd, 0xcc, 0x99,
+	0x2f, 0xa1, 0xaf, 0x0f, 0x6d, 0xff, 0x4c, 0x0c, 0x9d, 0xa1, 0x27, 0xbe, 0xd9, 0xed, 0x9b, 0x9e,
+	0xbe, 0x2b, 0x4e, 0x7d, 0x73, 0x7a, 0xae, 0x4d, 0xa6, 0xae, 0xe7, 0xb2, 0x47, 0xc1, 0xb4, 0x16,
+	0x4c, 0x6b, 0x38, 0x5d, 0x69, 0x0e, 0x5c, 0x39, 0x76, 0xa5, 0xe8, 0xeb, 0xd2, 0x54, 0xda, 0xf9,
+	0xca, 0x89, 0x3e, 0xb2, 0x1c, 0xdd, 0xb3, 0x5c, 0x47, 0x2d, 0xaf, 0x3c, 0x1d, 0xb9, 0xee, 0xc8,
+	0x36, 0x85, 0x3e, 0xb1, 0x84, 0xee, 0x38, 0xae, 0x07, 0x93, 0x12, 0x67, 0x5f, 0x5b, 0xf4, 0x0e,
+	0x8c, 0x60, 0x92, 0xb7, 0xe9, 0x2b, 0x9f, 0x05, 0xc5, 0x0f, 0x75, 0x5b, 0x77, 0x06, 0x66, 0xd7,
+	0x3c, 0xf5, 0x4d, 0xe9, 0xb1, 0x0d, 0xfa, 0xc2, 0xc0, 0xd6, 0xa5, 0xfc, 0xda, 0x32, 0xca, 0xe4,
+	0x4d, 0xb2, 0xf5, 0xa0, 0x5b, 0x82, 0xf1, 0x47, 0x06, 0x7b, 0x4c, 0x0b, 0xee, 0xb7, 0x8e, 0x39,
+	0x2d, 0xe7, 0xe0, 0xbb, 0x1a, 0x70, 0x8d, 0x3e, 0x8e, 0xd7, 0x91, 0x13, 0xd7, 0x91, 0x26, 0x7b,
+	0x42, 0x8b, 0xfa, 0xd8, 0xf5, 0x1d, 0x0f, 0xca, 0xac, 0x77, 0x71, 0xc4, 0xdf, 0xa5, 0x8f, 0x40,
+	0x7f, 0x1c, 0xac, 0xbe, 0x87, 0xeb, 0x8b, 0x34, 0x67, 0x19, 0x68, 0x99, 0xb3, 0x0c, 0xde, 0xa4,
+	0x2c, 0xba, 0x1e, 0xdd, 0xe6, 0x6c, 0x24, 0xca, 0x26, 0x50, 0xfb, 0xb9, 0x3f, 0x99, 0xd8, 0xe7,
+	0xd9, 0x66, 0x7c, 0x07, 0x0f, 0x25, 0x5c, 0x90, 0xb1, 0x97, 0x2f, 0xb0, 0xfe, 0x91, 0x6b, 0x1b,
+	0xab, 0x6c, 0x86, 0x95, 0x69, 0x49, 0x37, 0x8c, 0xa9, 0x29, 0x65, 0x39, 0xaf, 0x94, 0x38, 0xe4,
+	0x47, 0x48, 0x12, 0x96, 0x46, 0x92, 0x5d, 0x5a, 0x3c, 0x81, 0x2f, 0x50, 0xf9, 0x61, 0x6b, 0x43,
+	0x5b, 0x68, 0x20, 0x0d, 0x97, 0xa0, 0x90, 0xbf, 0x17, 0xab, 0x24, 0x57, 0x38, 0xf2, 0x8f, 0xf1,
+	0x8a, 0xe7, 0x15, 0x10, 0x66, 0x8f, 0x96, 0x94, 0x47, 0x40, 0x9f, 0x5f, 0x4e, 0x13, 0x2a, 0xf9,
+	0xaf, 0x84, 0xbe, 0x0c, 0xd5, 0x3a, 0xed, 0x9e, 0x5c, 0xb5, 0xeb, 0x58, 0x9b, 0xd2, 0xdb, 0xc7,
+	0x00, 0x67, 0xf7, 0xb0, 0x55, 0xd7, 0xd4, 0xcb, 0xd1, 0x82, 0x97, 0xa3, 0xa9, 0x57, 0x16, 0x52,
+	0x7c, 0xaa, 0x8f, 0xc2, 0x16, 0xef, 0x46, 0x56, 0xf2, 0x5f, 0x08, 0xb6, 0xa3, 0xa2, 0xc1, 0x8d,
+	0x35, 0xe9, 0xba, 0x33, 0xf4, 0x64, 0x99, 0xc0, 0xae, 0x9e, 0x24, 0xec, 0xaa, 0xd3, 0xee, 0x75,
+	0x41, 0xc3, 0x3e, 0x8c, 0x91, 0xe4, 0x80, 0xa4, 0x91, 0x49, 0xa2, 0x8c, 0x62, 0x28, 0x07, 0xf4,
+	0xa5, 0x90, 0x64, 0x85, 0x3b, 0x3a, 0xb8, 0x3d, 0xd5, 0xf9, 0x36, 0xb6, 0x68, 0xde, 0x19, 0x7a,
+	0xd8, 0x29, 0x69, 0xbb, 0x08, 0x24, 0x5c, 0xc3, 0x53, 0x78, 0x3f, 0xa8, 0x7e, 0x8f, 0x77, 0xf2,
+	0x01, 0x36, 0x3e, 0xea, 0xd1, 0x4f, 0xa3, 0x05, 0x10, 0xa0, 0x63, 0x39, 0xc1, 0x51, 0x2d, 0x50,
+	0x32, 0xfe, 0x15, 0x76, 0x26, 0x7c, 0x34, 0xe7, 0xbe, 0xf1, 0xbb, 0x25, 0x2b, 0xdf, 0xed, 0x25,
+	0xc1, 0xbe, 0x9d, 0xd7, 0x47, 0xce, 0x16, 0x55, 0x1b, 0x31, 0xc3, 0x1b, 0x4e, 0x27, 0x0d, 0x85,
+	0xcf, 0xed, 0x9a, 0x5b, 0x7f, 0x3e, 0xa0, 0x05, 0xa0, 0x62, 0x7f, 0x10, 0x5a, 0xc2, 0xd4, 0x64,
+	0xf5, 0x04, 0x82, 0x84, 0x78, 0xae, 0x34, 0x32, 0x75, 0xca, 0x92, 0xef, 0xff, 0xf0, 0xf7, 0x7f,
+	0x97, 0x39, 0xc1, 0x76, 0xc4, 0xe2, 0x8f, 0x40, 0x5f, 0x69, 0xc5, 0x0c, 0xde, 0xd2, 0x85, 0x98,
+	0x85, 0xd7, 0x7c, 0xc1, 0x7e, 0x26, 0xb4, 0x00, 0xc9, 0xca, 0x6a, 0x69, 0x4e, 0xd1, 0xe0, 0xae,
+	0x6c, 0x66, 0xa8, 0x90, 0xe6, 0x6d, 0xa0, 0x69, 0xb2, 0xad, 0x04, 0x1a, 0x80, 0x88, 0x30, 0x88,
+	0x59, 0x00, 0xf2, 0x13, 0xa1, 0x45, 0x95, 0xc2, 0x2c, 0xd5, 0x23, 0x16, 0xeb, 0x95, 0x7a, 0x96,
+	0x0c, 0x59, 0xb6, 0x81, 0xa5, 0xce, 0x6a, 0x09, 0x2c, 0x12, 0xa4, 0xd1, 0x03, 0xf9, 0x8d, 0xd0,
+	0xa2, 0x8a, 0xb0, 0x74, 0x8e, 0x58, 0xfc, 0xa7, 0x73, 0xc4, 0xa3, 0x9c, 0xbf, 0x03, 0x1c, 0x1a,
+	0xdb, 0x4e, 0xe0, 0xb8, 0x73, 0x1a, 0x62, 0x86, 0x3f, 0x0b, 0x70, 0x41, 0x25, 0xcc, 0x61, 0x96,
+	0xe1, 0x24, 0x33, 0x9b, 0xe6, 0x4e, 0xa0, 0xf3, 0x26, 0x20, 0xd5, 0x18, 0xcf, 0x46, 0x62, 0x53,
+	0xba, 0x1e, 0x64, 0x26, 0x7b, 0x96, 0x56, 0x3c, 0x92, 0xef, 0x95, 0xda, 0x72, 0x11, 0xda, 0xbf,
+	0x01, 0xf6, 0x1b, 0xec, 0x55, 0x91, 0xf8, 0xc7, 0x45, 0xb2, 0xef, 0x69, 0xbe, 0xd3, 0xee, 0x31,
+	0xbe, 0xa4, 0x5a, 0xe8, 0xf8, 0x6c, 0xa9, 0x06, 0x0d, 0x05, 0x18, 0xbe, 0xc5, 0x1a, 0x29, 0x86,
+	0x0b, 0x9b, 0xfe, 0x91, 0xd0, 0x02, 0x04, 0x43, 0xfa, 0xf3, 0x88, 0x46, 0x68, 0xfa, 0xf3, 0x88,
+	0x05, 0x27, 0xdf, 0x01, 0x8e, 0x06, 0xdb, 0x4c, 0xe0, 0xc0, 0x00, 0x8a, 0xf6, 0xe4, 0x77, 0xb4,
+	0x84, 0x91, 0x96, 0xde, 0x02, 0xf1, 0x4c, 0x4d, 0x6f, 0x81, 0x3b, 0xd9, 0xc8, 0x39, 0xa0, 0x3c,
+	0x65, 0x95, 0x74, 0x94, 0xc3, 0xe3, 0xbf, 0xae, 0xab, 0xe4, 0xea, 0xba, 0x4a, 0xfe, 0xbd, 0xae,
+	0x92, 0xdf, 0x6f, 0xaa, 0x6b, 0x57, 0x37, 0xd5, 0xb5, 0x7f, 0x6e, 0xaa, 0x6b, 0x5f, 0xee, 0x8f,
+	0x2c, 0xef, 0xc4, 0xef, 0x6b, 0x03, 0x77, 0x2c, 0xda, 0xb6, 0x7f, 0xd6, 0x69, 0xf7, 0x3e, 0xd1,
+	0xfb, 0x12, 0x6a, 0x19, 0x62, 0x70, 0xa2, 0x5b, 0x8e, 0x18, 0xbb, 0x86, 0x6f, 0x9b, 0x52, 0x95,
+	0xf6, 0xce, 0x27, 0xa6, 0xec, 0x17, 0xe1, 0x2f, 0xe9, 0xde, 0xff, 0x01, 0x00, 0x00, 0xff, 0xff,
+	0x65, 0x22, 0x38, 0x07, 0x2d, 0x0b, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -827,6 +1043,12 @@ type QueryClient interface {
 	// Supply queries the number of NFTs from the given class, same as totalSupply
 	// of ERC721.
 	Supply(ctx context.Context, in *QuerySupplyRequest, opts ...grpc.CallOption) (*QuerySupplyResponse, error)
+	// Holders queries single share holders from the given class, class id, address
+	// of ERC721.
+	Holder(ctx context.Context, in *QueryHolderRequest, opts ...grpc.CallOption) (*QueryHolderResponse, error)
+	// Holders queries all share holders from the given class, class id
+	// of ERC721.
+	Holders(ctx context.Context, in *QueryHoldersRequest, opts ...grpc.CallOption) (*QueryHoldersResponse, error)
 	// NFTs queries all NFTs of a given class or owner,choose at least one of the
 	// two, similar to tokenByIndex in ERC721Enumerable
 	NFTs(ctx context.Context, in *QueryNFTsRequest, opts ...grpc.CallOption) (*QueryNFTsResponse, error)
@@ -867,6 +1089,24 @@ func (c *queryClient) Owner(ctx context.Context, in *QueryOwnerRequest, opts ...
 func (c *queryClient) Supply(ctx context.Context, in *QuerySupplyRequest, opts ...grpc.CallOption) (*QuerySupplyResponse, error) {
 	out := new(QuerySupplyResponse)
 	err := c.cc.Invoke(ctx, "/flux.fnft.v1beta1.Query/Supply", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Holder(ctx context.Context, in *QueryHolderRequest, opts ...grpc.CallOption) (*QueryHolderResponse, error) {
+	out := new(QueryHolderResponse)
+	err := c.cc.Invoke(ctx, "/flux.fnft.v1beta1.Query/Holder", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Holders(ctx context.Context, in *QueryHoldersRequest, opts ...grpc.CallOption) (*QueryHoldersResponse, error) {
+	out := new(QueryHoldersResponse)
+	err := c.cc.Invoke(ctx, "/flux.fnft.v1beta1.Query/Holders", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -920,6 +1160,12 @@ type QueryServer interface {
 	// Supply queries the number of NFTs from the given class, same as totalSupply
 	// of ERC721.
 	Supply(context.Context, *QuerySupplyRequest) (*QuerySupplyResponse, error)
+	// Holders queries single share holders from the given class, class id, address
+	// of ERC721.
+	Holder(context.Context, *QueryHolderRequest) (*QueryHolderResponse, error)
+	// Holders queries all share holders from the given class, class id
+	// of ERC721.
+	Holders(context.Context, *QueryHoldersRequest) (*QueryHoldersResponse, error)
 	// NFTs queries all NFTs of a given class or owner,choose at least one of the
 	// two, similar to tokenByIndex in ERC721Enumerable
 	NFTs(context.Context, *QueryNFTsRequest) (*QueryNFTsResponse, error)
@@ -943,6 +1189,12 @@ func (*UnimplementedQueryServer) Owner(ctx context.Context, req *QueryOwnerReque
 }
 func (*UnimplementedQueryServer) Supply(ctx context.Context, req *QuerySupplyRequest) (*QuerySupplyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Supply not implemented")
+}
+func (*UnimplementedQueryServer) Holder(ctx context.Context, req *QueryHolderRequest) (*QueryHolderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Holder not implemented")
+}
+func (*UnimplementedQueryServer) Holders(ctx context.Context, req *QueryHoldersRequest) (*QueryHoldersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Holders not implemented")
 }
 func (*UnimplementedQueryServer) NFTs(ctx context.Context, req *QueryNFTsRequest) (*QueryNFTsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method NFTs not implemented")
@@ -1011,6 +1263,42 @@ func _Query_Supply_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).Supply(ctx, req.(*QuerySupplyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Holder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryHolderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Holder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/flux.fnft.v1beta1.Query/Holder",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Holder(ctx, req.(*QueryHolderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Holders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryHoldersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Holders(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/flux.fnft.v1beta1.Query/Holders",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Holders(ctx, req.(*QueryHoldersRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1102,6 +1390,14 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Supply",
 			Handler:    _Query_Supply_Handler,
+		},
+		{
+			MethodName: "Holder",
+			Handler:    _Query_Holder_Handler,
+		},
+		{
+			MethodName: "Holders",
+			Handler:    _Query_Holders_Handler,
 		},
 		{
 			MethodName: "NFTs",
@@ -1310,6 +1606,159 @@ func (m *QuerySupplyResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintQuery(dAtA, i, uint64(m.Amount))
 		i--
 		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryHolderRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryHolderRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryHolderRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.ClassId) > 0 {
+		i -= len(m.ClassId)
+		copy(dAtA[i:], m.ClassId)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.ClassId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryHolderResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryHolderResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryHolderResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Holder != nil {
+		{
+			size, err := m.Holder.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryHoldersRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryHoldersRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryHoldersRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.ClassId) > 0 {
+		i -= len(m.ClassId)
+		copy(dAtA[i:], m.ClassId)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.ClassId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryHoldersResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryHoldersResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryHoldersResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Holders) > 0 {
+		for iNdEx := len(m.Holders) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Holders[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
 	}
 	return len(dAtA) - i, nil
 }
@@ -1724,6 +2173,72 @@ func (m *QuerySupplyResponse) Size() (n int) {
 	_ = l
 	if m.Amount != 0 {
 		n += 1 + sovQuery(uint64(m.Amount))
+	}
+	return n
+}
+
+func (m *QueryHolderRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ClassId)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryHolderResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Holder != nil {
+		l = m.Holder.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryHoldersRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ClassId)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryHoldersResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Holders) > 0 {
+		for _, e := range m.Holders {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
 	}
 	return n
 }
@@ -2371,6 +2886,436 @@ func (m *QuerySupplyResponse) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryHolderRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryHolderRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryHolderRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ClassId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ClassId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryHolderResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryHolderResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryHolderResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Holder", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Holder == nil {
+				m.Holder = &Holder{}
+			}
+			if err := m.Holder.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryHoldersRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryHoldersRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryHoldersRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ClassId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ClassId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryHoldersResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryHoldersResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryHoldersResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Holders", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Holders = append(m.Holders, &Holder{})
+			if err := m.Holders[len(m.Holders)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])
