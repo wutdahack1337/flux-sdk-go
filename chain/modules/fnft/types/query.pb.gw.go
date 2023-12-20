@@ -1059,9 +1059,9 @@ var (
 
 	pattern_Query_Supply_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"flux", "fnft", "v1beta1", "supply", "class_id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Holder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"flux", "fnft", "v1beta1", "class_id", "id", "address"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Holder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6}, []string{"flux", "fnft", "v1beta1", "holder", "class_id", "id", "address"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Holders_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4}, []string{"flux", "fnft", "v1beta1", "class_id", "id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Holders_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"flux", "fnft", "v1beta1", "holders", "class_id", "id"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Query_NFTs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"flux", "fnft", "v1beta1", "nfts"}, "", runtime.AssumeColonVerbOpt(false)))
 
