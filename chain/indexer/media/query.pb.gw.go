@@ -110,7 +110,7 @@ var (
 )
 
 func request_API_SetMetaData_0(ctx context.Context, marshaler runtime.Marshaler, client APIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq Metadata
+	var protoReq SetMetadataRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
@@ -126,7 +126,7 @@ func request_API_SetMetaData_0(ctx context.Context, marshaler runtime.Marshaler,
 }
 
 func local_request_API_SetMetaData_0(ctx context.Context, marshaler runtime.Marshaler, server APIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq Metadata
+	var protoReq SetMetadataRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {

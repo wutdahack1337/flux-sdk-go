@@ -40,11 +40,10 @@ func main() {
 	}
 
 	// prepare header & ctx
-	req := &media.Metadata{
+	req := &media.SetMetadataRequest{
 		Owner: senderAddr,
-		Path:  "series/1/5",
-		Key:   "series/1/5/thumbail.jpg",
-		Url:   "s3://flux-media-assets",
+		Path:  "series/0/0",
+		Key:   "thumbnail.jpg",
 	}
 	nonce := []byte(strconv.FormatUint(acc.Nonce, 10))
 	reqBz, _ := req.Marshal()
