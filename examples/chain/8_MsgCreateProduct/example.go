@@ -57,17 +57,15 @@ func main() {
 
 	// prepare tx msg
 	msg := &bazaartypes.MsgCreateProduct{
-		Sender:      senderAddress.String(),
-		ClassId:     "series",
-		Id:          "0",
-		Title:       "Romance dawn",
-		Description: "A random kid accidentally ate a fruit that disables swimming ability but now his body gains rubber properties",
+		Sender:  senderAddress.String(),
+		ClassId: "series",
+		Id:      "0",
 		Offerings: []*bazaartypes.Offering{
-			{Price: &sdk.Coin{
+			{Price: sdk.Coin{
 				Denom:  "usdt",
 				Amount: sdkmath.NewIntFromUint64(2),
 			}},
-			{Price: &sdk.Coin{
+			{Price: sdk.Coin{
 				Denom:  "usdt",
 				Amount: sdkmath.NewIntFromUint64(3),
 			}},
