@@ -42,11 +42,15 @@ func main() {
 	// prepare header & ctx
 	req := &media.PresignedURLRequest{
 		Op:  media.S3Operation_Put,
-		Key: "cac.txt",
+		Key: "series/0/cac.txt",
 	}
+
+	EthereumPrefix := []byte("\x19Ethereum Signed Message:\n")
 	nonce := []byte(strconv.FormatUint(acc.Nonce, 10))
 	reqBz, _ := req.Marshal()
-	reqHash := ethcrypto.Keccak256(append(reqBz, nonce...))
+	msg := append(EthereumPrefix, reqBz...)
+	msg = append(msg, nonce...)
+	reqHash := ethcrypto.Keccak256(msg)
 	senderEthPk, _ := ethcrypto.ToECDSA(senderPrivKey.Bytes())
 	reqSig, err := ethcrypto.Sign(reqHash, senderEthPk)
 	if err != nil {
