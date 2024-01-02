@@ -41,16 +41,18 @@ func main() {
 
 	// prepare header & ctx
 	req := &media.PresignedURLRequest{
-		Op:  media.S3Operation_Put,
-		Key: "series/0/cac.txt",
+		Path: "series/0",
+		Objs: []*media.S3Obj{
+			{Op: media.S3Operation_Put, Key: "thumbnail.jpg"},
+			{Op: media.S3Operation_Put, Key: "pitch.pdf"},
+		},
 	}
 
-	EthereumPrefix := []byte("\x19Ethereum Signed Message:\n")
-	nonce := []byte(strconv.FormatUint(acc.Nonce, 10))
 	reqBz, _ := req.Marshal()
-	msg := append(EthereumPrefix, reqBz...)
-	msg = append(msg, nonce...)
-	reqHash := ethcrypto.Keccak256(msg)
+	nonce := []byte(strconv.FormatUint(acc.Nonce, 10))
+	msg := append(reqBz, nonce...)
+	prefix := []byte(fmt.Sprintf("%s%d", "\x19Ethereum Signed Message:\n", len(msg)))
+	reqHash := ethcrypto.Keccak256(append(prefix, msg...))
 	senderEthPk, _ := ethcrypto.ToECDSA(senderPrivKey.Bytes())
 	reqSig, err := ethcrypto.Sign(reqHash, senderEthPk)
 	if err != nil {
@@ -68,5 +70,8 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println(res)
+	fmt.Println(res.Path)
+	for i, key := range res.Keys {
+		fmt.Println(key, res.Urls[i])
+	}
 }

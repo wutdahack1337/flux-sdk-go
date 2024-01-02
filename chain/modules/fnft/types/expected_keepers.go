@@ -22,3 +22,7 @@ type AccountKeeper interface {
 	GetModuleAddress(name string) sdk.AccAddress
 	GetAccount(ctx context.Context, addr sdk.AccAddress) sdk.AccountI
 }
+
+type BazaarKeeper interface {
+	GetVerifier(ctx context.Context, address string) (string, bool)
+}

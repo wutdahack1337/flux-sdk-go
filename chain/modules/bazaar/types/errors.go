@@ -16,4 +16,5 @@ var (
 	ErrInvalidCommissionPart           = errors.Register(ModuleName, 9, "invalid class commission part")
 	ErrUnverifiedOfferingPurchaseCount = errors.Register(ModuleName, 10, "offering purchase count is capped at 10 for unverified product")
 	ErrVerifierNotExists               = errors.Register(ModuleName, 11, "only verifier address can verify product")
+	ErrVerifierRestriction             = errors.Register(ModuleName, 12, "verifier cannot create project, product")
 )

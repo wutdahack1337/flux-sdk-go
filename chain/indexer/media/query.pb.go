@@ -54,16 +54,68 @@ func (S3Operation) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_06796104fc06fe94, []int{0}
 }
 
-type PresignedURLRequest struct {
+type S3Obj struct {
 	Op  S3Operation `protobuf:"varint,1,opt,name=op,proto3,enum=flux.indexer.media.S3Operation" json:"op,omitempty"`
 	Key string      `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`
+}
+
+func (m *S3Obj) Reset()         { *m = S3Obj{} }
+func (m *S3Obj) String() string { return proto.CompactTextString(m) }
+func (*S3Obj) ProtoMessage()    {}
+func (*S3Obj) Descriptor() ([]byte, []int) {
+	return fileDescriptor_06796104fc06fe94, []int{0}
+}
+func (m *S3Obj) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *S3Obj) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_S3Obj.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *S3Obj) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_S3Obj.Merge(m, src)
+}
+func (m *S3Obj) XXX_Size() int {
+	return m.Size()
+}
+func (m *S3Obj) XXX_DiscardUnknown() {
+	xxx_messageInfo_S3Obj.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_S3Obj proto.InternalMessageInfo
+
+func (m *S3Obj) GetOp() S3Operation {
+	if m != nil {
+		return m.Op
+	}
+	return S3Operation_Put
+}
+
+func (m *S3Obj) GetKey() string {
+	if m != nil {
+		return m.Key
+	}
+	return ""
+}
+
+type PresignedURLRequest struct {
+	Path string   `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"`
+	Objs []*S3Obj `protobuf:"bytes,2,rep,name=objs,proto3" json:"objs,omitempty"`
 }
 
 func (m *PresignedURLRequest) Reset()         { *m = PresignedURLRequest{} }
 func (m *PresignedURLRequest) String() string { return proto.CompactTextString(m) }
 func (*PresignedURLRequest) ProtoMessage()    {}
 func (*PresignedURLRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_06796104fc06fe94, []int{0}
+	return fileDescriptor_06796104fc06fe94, []int{1}
 }
 func (m *PresignedURLRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -92,29 +144,31 @@ func (m *PresignedURLRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_PresignedURLRequest proto.InternalMessageInfo
 
-func (m *PresignedURLRequest) GetOp() S3Operation {
+func (m *PresignedURLRequest) GetPath() string {
 	if m != nil {
-		return m.Op
-	}
-	return S3Operation_Put
-}
-
-func (m *PresignedURLRequest) GetKey() string {
-	if m != nil {
-		return m.Key
+		return m.Path
 	}
 	return ""
 }
 
+func (m *PresignedURLRequest) GetObjs() []*S3Obj {
+	if m != nil {
+		return m.Objs
+	}
+	return nil
+}
+
 type PresignedURLResponse struct {
-	Url string `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`
+	Path string   `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"`
+	Keys []string `protobuf:"bytes,2,rep,name=keys,proto3" json:"keys,omitempty"`
+	Urls []string `protobuf:"bytes,3,rep,name=urls,proto3" json:"urls,omitempty"`
 }
 
 func (m *PresignedURLResponse) Reset()         { *m = PresignedURLResponse{} }
 func (m *PresignedURLResponse) String() string { return proto.CompactTextString(m) }
 func (*PresignedURLResponse) ProtoMessage()    {}
 func (*PresignedURLResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_06796104fc06fe94, []int{1}
+	return fileDescriptor_06796104fc06fe94, []int{2}
 }
 func (m *PresignedURLResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -143,276 +197,63 @@ func (m *PresignedURLResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_PresignedURLResponse proto.InternalMessageInfo
 
-func (m *PresignedURLResponse) GetUrl() string {
-	if m != nil {
-		return m.Url
-	}
-	return ""
-}
-
-type GetMedataRequest struct {
-	Owner string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
-	Path  string `protobuf:"bytes,2,opt,name=path,proto3" json:"path,omitempty"`
-	Key   string `protobuf:"bytes,3,opt,name=key,proto3" json:"key,omitempty"`
-}
-
-func (m *GetMedataRequest) Reset()         { *m = GetMedataRequest{} }
-func (m *GetMedataRequest) String() string { return proto.CompactTextString(m) }
-func (*GetMedataRequest) ProtoMessage()    {}
-func (*GetMedataRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_06796104fc06fe94, []int{2}
-}
-func (m *GetMedataRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *GetMedataRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_GetMedataRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *GetMedataRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetMedataRequest.Merge(m, src)
-}
-func (m *GetMedataRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *GetMedataRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetMedataRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetMedataRequest proto.InternalMessageInfo
-
-func (m *GetMedataRequest) GetOwner() string {
-	if m != nil {
-		return m.Owner
-	}
-	return ""
-}
-
-func (m *GetMedataRequest) GetPath() string {
+func (m *PresignedURLResponse) GetPath() string {
 	if m != nil {
 		return m.Path
 	}
 	return ""
 }
 
-func (m *GetMedataRequest) GetKey() string {
+func (m *PresignedURLResponse) GetKeys() []string {
 	if m != nil {
-		return m.Key
+		return m.Keys
 	}
-	return ""
+	return nil
 }
 
-type GetMetadataResponse struct {
-	Owner string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty" bson:"owner"`
-	Path  string `protobuf:"bytes,2,opt,name=path,proto3" json:"path,omitempty" bson:"path"`
-	Key   string `protobuf:"bytes,3,opt,name=key,proto3" json:"key,omitempty" bson:"key"`
-}
-
-func (m *GetMetadataResponse) Reset()         { *m = GetMetadataResponse{} }
-func (m *GetMetadataResponse) String() string { return proto.CompactTextString(m) }
-func (*GetMetadataResponse) ProtoMessage()    {}
-func (*GetMetadataResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_06796104fc06fe94, []int{3}
-}
-func (m *GetMetadataResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *GetMetadataResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_GetMetadataResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *GetMetadataResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetMetadataResponse.Merge(m, src)
-}
-func (m *GetMetadataResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *GetMetadataResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetMetadataResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetMetadataResponse proto.InternalMessageInfo
-
-func (m *GetMetadataResponse) GetOwner() string {
+func (m *PresignedURLResponse) GetUrls() []string {
 	if m != nil {
-		return m.Owner
+		return m.Urls
 	}
-	return ""
+	return nil
 }
-
-func (m *GetMetadataResponse) GetPath() string {
-	if m != nil {
-		return m.Path
-	}
-	return ""
-}
-
-func (m *GetMetadataResponse) GetKey() string {
-	if m != nil {
-		return m.Key
-	}
-	return ""
-}
-
-type SetMetadataRequest struct {
-	Owner string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty" bson:"owner"`
-	Path  string `protobuf:"bytes,2,opt,name=path,proto3" json:"path,omitempty" bson:"path"`
-	Key   string `protobuf:"bytes,3,opt,name=key,proto3" json:"key,omitempty" bson:"key"`
-}
-
-func (m *SetMetadataRequest) Reset()         { *m = SetMetadataRequest{} }
-func (m *SetMetadataRequest) String() string { return proto.CompactTextString(m) }
-func (*SetMetadataRequest) ProtoMessage()    {}
-func (*SetMetadataRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_06796104fc06fe94, []int{4}
-}
-func (m *SetMetadataRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *SetMetadataRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_SetMetadataRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *SetMetadataRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SetMetadataRequest.Merge(m, src)
-}
-func (m *SetMetadataRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *SetMetadataRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_SetMetadataRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_SetMetadataRequest proto.InternalMessageInfo
-
-func (m *SetMetadataRequest) GetOwner() string {
-	if m != nil {
-		return m.Owner
-	}
-	return ""
-}
-
-func (m *SetMetadataRequest) GetPath() string {
-	if m != nil {
-		return m.Path
-	}
-	return ""
-}
-
-func (m *SetMetadataRequest) GetKey() string {
-	if m != nil {
-		return m.Key
-	}
-	return ""
-}
-
-type SetMetadataResponse struct {
-}
-
-func (m *SetMetadataResponse) Reset()         { *m = SetMetadataResponse{} }
-func (m *SetMetadataResponse) String() string { return proto.CompactTextString(m) }
-func (*SetMetadataResponse) ProtoMessage()    {}
-func (*SetMetadataResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_06796104fc06fe94, []int{5}
-}
-func (m *SetMetadataResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *SetMetadataResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_SetMetadataResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *SetMetadataResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SetMetadataResponse.Merge(m, src)
-}
-func (m *SetMetadataResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *SetMetadataResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_SetMetadataResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_SetMetadataResponse proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterEnum("flux.indexer.media.S3Operation", S3Operation_name, S3Operation_value)
+	proto.RegisterType((*S3Obj)(nil), "flux.indexer.media.S3Obj")
 	proto.RegisterType((*PresignedURLRequest)(nil), "flux.indexer.media.PresignedURLRequest")
 	proto.RegisterType((*PresignedURLResponse)(nil), "flux.indexer.media.PresignedURLResponse")
-	proto.RegisterType((*GetMedataRequest)(nil), "flux.indexer.media.GetMedataRequest")
-	proto.RegisterType((*GetMetadataResponse)(nil), "flux.indexer.media.GetMetadataResponse")
-	proto.RegisterType((*SetMetadataRequest)(nil), "flux.indexer.media.SetMetadataRequest")
-	proto.RegisterType((*SetMetadataResponse)(nil), "flux.indexer.media.SetMetadataResponse")
 }
 
 func init() { proto.RegisterFile("flux/indexer/media/query.proto", fileDescriptor_06796104fc06fe94) }
 
 var fileDescriptor_06796104fc06fe94 = []byte{
-	// 515 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x94, 0x41, 0x6f, 0xd3, 0x30,
-	0x14, 0xc7, 0xeb, 0x16, 0x86, 0xf6, 0x3a, 0x8d, 0xc8, 0x2d, 0xd2, 0x54, 0x4d, 0x69, 0x65, 0xa6,
-	0xae, 0xe2, 0x10, 0xa3, 0xed, 0xc6, 0x8d, 0x6a, 0x1a, 0x02, 0x8d, 0x51, 0x25, 0x20, 0x21, 0x6e,
-	0xee, 0x62, 0xd2, 0x88, 0x34, 0xce, 0x12, 0x47, 0x74, 0xd7, 0xb1, 0x0b, 0x37, 0x24, 0xce, 0x7c,
-	0x1f, 0x8e, 0x93, 0xb8, 0x70, 0xaa, 0x50, 0xcb, 0x27, 0xe8, 0x27, 0x40, 0xb1, 0x53, 0x91, 0xd2,
-	0x0c, 0x6e, 0xdc, 0x5e, 0xec, 0xbf, 0xff, 0xff, 0x5f, 0xfc, 0x5e, 0x02, 0xe6, 0xdb, 0x20, 0x9d,
-	0x50, 0x3f, 0x74, 0xf9, 0x84, 0xc7, 0x74, 0xcc, 0x5d, 0x9f, 0xd1, 0xf3, 0x94, 0xc7, 0x17, 0x56,
-	0x14, 0x0b, 0x29, 0x30, 0xce, 0xf6, 0xad, 0x7c, 0xdf, 0x52, 0xfb, 0xad, 0x5d, 0x4f, 0x08, 0x2f,
-	0xe0, 0x94, 0x45, 0x3e, 0x65, 0x61, 0x28, 0x24, 0x93, 0xbe, 0x08, 0x13, 0x7d, 0xa2, 0xd5, 0xf4,
-	0x84, 0x27, 0x54, 0x49, 0xb3, 0x4a, 0xaf, 0x92, 0xd7, 0xd0, 0x18, 0xc4, 0x3c, 0xf1, 0xbd, 0x90,
-	0xbb, 0xaf, 0xec, 0x13, 0x9b, 0x9f, 0xa7, 0x3c, 0x91, 0x98, 0x42, 0x55, 0x44, 0x3b, 0xa8, 0x83,
-	0x7a, 0xdb, 0x07, 0x6d, 0x6b, 0x3d, 0xcb, 0x72, 0x0e, 0x5f, 0x44, 0x3c, 0x56, 0x01, 0x76, 0x55,
-	0x44, 0xd8, 0x80, 0xda, 0x3b, 0x7e, 0xb1, 0x53, 0xed, 0xa0, 0xde, 0xa6, 0x9d, 0x95, 0xa4, 0x07,
-	0xcd, 0x55, 0xe7, 0x24, 0x12, 0x61, 0xc2, 0x33, 0x65, 0x1a, 0x07, 0xca, 0x7b, 0xd3, 0xce, 0x4a,
-	0x72, 0x0a, 0xc6, 0x13, 0x2e, 0x9f, 0x73, 0x97, 0x49, 0xb6, 0x04, 0x68, 0xc2, 0x6d, 0xf1, 0x3e,
-	0xe4, 0x71, 0xae, 0xd3, 0x0f, 0x18, 0xc3, 0xad, 0x88, 0xc9, 0x51, 0x1e, 0xa3, 0xea, 0x65, 0x72,
-	0xed, 0x77, 0xf2, 0x15, 0x82, 0x86, 0x32, 0x94, 0x4c, 0x5b, 0xe6, 0xc9, 0xdd, 0x15, 0xcf, 0xbe,
-	0xb1, 0x98, 0xb6, 0xb7, 0x86, 0x89, 0x08, 0x1f, 0x11, 0xb5, 0x4c, 0x96, 0x29, 0xf7, 0x8b, 0x29,
-	0xfd, 0xbb, 0x8b, 0x69, 0xbb, 0xae, 0x65, 0xd9, 0x2a, 0xc9, 0x63, 0x3b, 0x85, 0xd8, 0xfe, 0xf6,
-	0x62, 0xda, 0x06, 0xad, 0xc9, 0x00, 0x34, 0xc6, 0x07, 0x04, 0xd8, 0x29, 0x62, 0xe8, 0x37, 0xfb,
-	0xcf, 0x14, 0xf7, 0xa0, 0xe1, 0xac, 0xdf, 0xc5, 0x03, 0x02, 0xf5, 0x42, 0x0b, 0xf1, 0x1d, 0xa8,
-	0x0d, 0x52, 0x69, 0x54, 0x30, 0xc0, 0xc6, 0x11, 0x0f, 0xb8, 0xe4, 0x06, 0x3a, 0xf8, 0x52, 0x83,
-	0xda, 0xe3, 0xc1, 0x53, 0xfc, 0x11, 0xc1, 0x56, 0xb1, 0x95, 0x78, 0xbf, 0x6c, 0x22, 0x4a, 0xc6,
-	0xa8, 0xd5, 0xfb, 0xb7, 0x50, 0xf3, 0x90, 0xee, 0xe5, 0xb7, 0x9f, 0x9f, 0xab, 0x1d, 0x62, 0xd2,
-	0x92, 0xc1, 0x8f, 0xf4, 0x89, 0x34, 0x0e, 0xf0, 0x25, 0x82, 0x7a, 0xde, 0xdb, 0x23, 0x26, 0x19,
-	0xde, 0x2b, 0x4b, 0xf8, 0x73, 0x9a, 0x5a, 0xfb, 0x37, 0xaa, 0x56, 0xaf, 0x85, 0xec, 0x29, 0x0c,
-	0x13, 0xef, 0x96, 0x61, 0x8c, 0x73, 0x35, 0xbe, 0x42, 0x50, 0x77, 0x0a, 0x10, 0xdd, 0xd2, 0x2f,
-	0x64, 0xad, 0xf5, 0xe5, 0x18, 0xce, 0xcd, 0x18, 0xe4, 0xaf, 0x18, 0xfd, 0x67, 0x5f, 0x67, 0x26,
-	0xba, 0x9e, 0x99, 0xe8, 0xc7, 0xcc, 0x44, 0x9f, 0xe6, 0x66, 0xe5, 0x7a, 0x6e, 0x56, 0xbe, 0xcf,
-	0xcd, 0xca, 0x9b, 0x87, 0x9e, 0x2f, 0x47, 0xe9, 0xd0, 0x3a, 0x13, 0x63, 0x7a, 0x1c, 0xa4, 0x93,
-	0xd3, 0xe3, 0x97, 0x27, 0x6c, 0x98, 0x28, 0x37, 0x97, 0x9e, 0x8d, 0x98, 0x1f, 0xae, 0x9a, 0x0e,
-	0x37, 0xd4, 0xef, 0xe0, 0xf0, 0x57, 0x00, 0x00, 0x00, 0xff, 0xff, 0xbb, 0x3b, 0x35, 0x06, 0x78,
-	0x04, 0x00, 0x00,
+	// 389 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0x4f, 0x8b, 0xd3, 0x40,
+	0x18, 0x87, 0x33, 0x49, 0x5d, 0xe9, 0xac, 0x48, 0x19, 0xf7, 0x10, 0x8b, 0x8c, 0x21, 0x07, 0x0d,
+	0x82, 0x19, 0x69, 0x3f, 0x81, 0x22, 0x0b, 0x2e, 0x8b, 0x5b, 0xa6, 0x0a, 0xe2, 0x2d, 0x69, 0x5e,
+	0xd3, 0xb4, 0x69, 0x66, 0x9a, 0x99, 0x81, 0xf6, 0xea, 0xcd, 0x9b, 0xe2, 0x97, 0xf2, 0x58, 0xf0,
+	0xe2, 0x51, 0x5a, 0x3f, 0x88, 0x64, 0xe2, 0xa1, 0xc5, 0x88, 0xb7, 0x87, 0xf7, 0xcf, 0x93, 0xf7,
+	0x47, 0x06, 0xd3, 0x0f, 0xa5, 0xd9, 0xb0, 0xa2, 0xca, 0x60, 0x03, 0x35, 0x5b, 0x41, 0x56, 0x24,
+	0x6c, 0x6d, 0xa0, 0xde, 0xc6, 0xb2, 0x16, 0x5a, 0x10, 0xd2, 0xf4, 0xe3, 0x3f, 0xfd, 0xd8, 0xf6,
+	0x87, 0x0f, 0x72, 0x21, 0xf2, 0x12, 0x58, 0x22, 0x0b, 0x96, 0x54, 0x95, 0xd0, 0x89, 0x2e, 0x44,
+	0xa5, 0xda, 0x8d, 0xe1, 0x45, 0x2e, 0x72, 0x61, 0x91, 0x35, 0xd4, 0x56, 0xc3, 0x2b, 0x7c, 0x6b,
+	0x3a, 0xbe, 0x49, 0x17, 0x84, 0x61, 0x57, 0x48, 0x1f, 0x05, 0x28, 0xba, 0x3b, 0x7a, 0x18, 0xff,
+	0x6d, 0x8f, 0xa7, 0xe3, 0x1b, 0x09, 0xb5, 0x55, 0x72, 0x57, 0x48, 0x32, 0xc0, 0xde, 0x12, 0xb6,
+	0xbe, 0x1b, 0xa0, 0xa8, 0xcf, 0x1b, 0x0c, 0xdf, 0xe1, 0x7b, 0x93, 0x1a, 0x54, 0x91, 0x57, 0x90,
+	0xbd, 0xe5, 0xd7, 0x1c, 0xd6, 0x06, 0x94, 0x26, 0x04, 0xf7, 0x64, 0xa2, 0xe7, 0xd6, 0xdd, 0xe7,
+	0x96, 0xc9, 0x53, 0xdc, 0x13, 0xe9, 0x42, 0xf9, 0x6e, 0xe0, 0x45, 0xe7, 0xa3, 0xfb, 0xff, 0xf8,
+	0x5e, 0xba, 0xe0, 0x76, 0x2c, 0xe4, 0xf8, 0xe2, 0xd4, 0xac, 0xa4, 0xa8, 0x14, 0x74, 0xaa, 0x09,
+	0xee, 0x2d, 0x61, 0xdb, 0xaa, 0xfb, 0xdc, 0x72, 0x53, 0x33, 0x75, 0xa9, 0x7c, 0xaf, 0xad, 0x35,
+	0xfc, 0x24, 0xc4, 0xe7, 0x47, 0x91, 0xc8, 0x6d, 0xec, 0x4d, 0x8c, 0x1e, 0x38, 0x04, 0xe3, 0xb3,
+	0x97, 0x50, 0x82, 0x86, 0x01, 0x1a, 0x7d, 0x41, 0xd8, 0x7b, 0x3e, 0x79, 0x45, 0x3e, 0x21, 0x7c,
+	0xe7, 0xf8, 0x00, 0xf2, 0xb8, 0xeb, 0xe2, 0x8e, 0xf0, 0xc3, 0xe8, 0xff, 0x83, 0x6d, 0x96, 0xf0,
+	0xd1, 0xc7, 0xef, 0xbf, 0xbe, 0xba, 0x41, 0x48, 0x59, 0xc7, 0xaf, 0x97, 0xed, 0x86, 0xa9, 0xcb,
+	0x17, 0x57, 0xdf, 0xf6, 0x14, 0xed, 0xf6, 0x14, 0xfd, 0xdc, 0x53, 0xf4, 0xf9, 0x40, 0x9d, 0xdd,
+	0x81, 0x3a, 0x3f, 0x0e, 0xd4, 0x79, 0xff, 0x2c, 0x2f, 0xf4, 0xdc, 0xa4, 0xf1, 0x4c, 0xac, 0xd8,
+	0x65, 0x69, 0x36, 0xaf, 0x2f, 0xdf, 0x5c, 0x27, 0xa9, 0xb2, 0xbe, 0x8c, 0xcd, 0xe6, 0x49, 0x51,
+	0x9d, 0x6a, 0xd3, 0x33, 0xfb, 0x08, 0xc6, 0xbf, 0x03, 0x00, 0x00, 0xff, 0xff, 0x46, 0xd1, 0x38,
+	0x6c, 0x6e, 0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -428,8 +269,6 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type APIClient interface {
 	PresignedURL(ctx context.Context, in *PresignedURLRequest, opts ...grpc.CallOption) (*PresignedURLResponse, error)
-	GetMetaData(ctx context.Context, in *GetMedataRequest, opts ...grpc.CallOption) (*GetMetadataResponse, error)
-	SetMetaData(ctx context.Context, in *SetMetadataRequest, opts ...grpc.CallOption) (*SetMetadataResponse, error)
 }
 
 type aPIClient struct {
@@ -449,29 +288,9 @@ func (c *aPIClient) PresignedURL(ctx context.Context, in *PresignedURLRequest, o
 	return out, nil
 }
 
-func (c *aPIClient) GetMetaData(ctx context.Context, in *GetMedataRequest, opts ...grpc.CallOption) (*GetMetadataResponse, error) {
-	out := new(GetMetadataResponse)
-	err := c.cc.Invoke(ctx, "/flux.indexer.media.API/GetMetaData", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *aPIClient) SetMetaData(ctx context.Context, in *SetMetadataRequest, opts ...grpc.CallOption) (*SetMetadataResponse, error) {
-	out := new(SetMetadataResponse)
-	err := c.cc.Invoke(ctx, "/flux.indexer.media.API/SetMetaData", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // APIServer is the server API for API service.
 type APIServer interface {
 	PresignedURL(context.Context, *PresignedURLRequest) (*PresignedURLResponse, error)
-	GetMetaData(context.Context, *GetMedataRequest) (*GetMetadataResponse, error)
-	SetMetaData(context.Context, *SetMetadataRequest) (*SetMetadataResponse, error)
 }
 
 // UnimplementedAPIServer can be embedded to have forward compatible implementations.
@@ -480,12 +299,6 @@ type UnimplementedAPIServer struct {
 
 func (*UnimplementedAPIServer) PresignedURL(ctx context.Context, req *PresignedURLRequest) (*PresignedURLResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PresignedURL not implemented")
-}
-func (*UnimplementedAPIServer) GetMetaData(ctx context.Context, req *GetMedataRequest) (*GetMetadataResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetMetaData not implemented")
-}
-func (*UnimplementedAPIServer) SetMetaData(ctx context.Context, req *SetMetadataRequest) (*SetMetadataResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetMetaData not implemented")
 }
 
 func RegisterAPIServer(s grpc1.Server, srv APIServer) {
@@ -510,42 +323,6 @@ func _API_PresignedURL_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _API_GetMetaData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetMedataRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(APIServer).GetMetaData(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/flux.indexer.media.API/GetMetaData",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(APIServer).GetMetaData(ctx, req.(*GetMedataRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _API_SetMetaData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetMetadataRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(APIServer).SetMetaData(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/flux.indexer.media.API/SetMetaData",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(APIServer).SetMetaData(ctx, req.(*SetMetadataRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 var _API_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "flux.indexer.media.API",
 	HandlerType: (*APIServer)(nil),
@@ -554,17 +331,44 @@ var _API_serviceDesc = grpc.ServiceDesc{
 			MethodName: "PresignedURL",
 			Handler:    _API_PresignedURL_Handler,
 		},
-		{
-			MethodName: "GetMetaData",
-			Handler:    _API_GetMetaData_Handler,
-		},
-		{
-			MethodName: "SetMetaData",
-			Handler:    _API_SetMetaData_Handler,
-		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "flux/indexer/media/query.proto",
+}
+
+func (m *S3Obj) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *S3Obj) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *S3Obj) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Key) > 0 {
+		i -= len(m.Key)
+		copy(dAtA[i:], m.Key)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Key)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Op != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Op))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *PresignedURLRequest) Marshal() (dAtA []byte, err error) {
@@ -587,17 +391,26 @@ func (m *PresignedURLRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Key) > 0 {
-		i -= len(m.Key)
-		copy(dAtA[i:], m.Key)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Key)))
-		i--
-		dAtA[i] = 0x12
+	if len(m.Objs) > 0 {
+		for iNdEx := len(m.Objs) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Objs[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
 	}
-	if m.Op != 0 {
-		i = encodeVarintQuery(dAtA, i, uint64(m.Op))
+	if len(m.Path) > 0 {
+		i -= len(m.Path)
+		copy(dAtA[i:], m.Path)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Path)))
 		i--
-		dAtA[i] = 0x8
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -622,168 +435,31 @@ func (m *PresignedURLResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Url) > 0 {
-		i -= len(m.Url)
-		copy(dAtA[i:], m.Url)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Url)))
-		i--
-		dAtA[i] = 0xa
+	if len(m.Urls) > 0 {
+		for iNdEx := len(m.Urls) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Urls[iNdEx])
+			copy(dAtA[i:], m.Urls[iNdEx])
+			i = encodeVarintQuery(dAtA, i, uint64(len(m.Urls[iNdEx])))
+			i--
+			dAtA[i] = 0x1a
+		}
 	}
-	return len(dAtA) - i, nil
-}
-
-func (m *GetMedataRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GetMedataRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *GetMedataRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Key) > 0 {
-		i -= len(m.Key)
-		copy(dAtA[i:], m.Key)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Key)))
-		i--
-		dAtA[i] = 0x1a
+	if len(m.Keys) > 0 {
+		for iNdEx := len(m.Keys) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Keys[iNdEx])
+			copy(dAtA[i:], m.Keys[iNdEx])
+			i = encodeVarintQuery(dAtA, i, uint64(len(m.Keys[iNdEx])))
+			i--
+			dAtA[i] = 0x12
+		}
 	}
 	if len(m.Path) > 0 {
 		i -= len(m.Path)
 		copy(dAtA[i:], m.Path)
 		i = encodeVarintQuery(dAtA, i, uint64(len(m.Path)))
 		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Owner) > 0 {
-		i -= len(m.Owner)
-		copy(dAtA[i:], m.Owner)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Owner)))
-		i--
 		dAtA[i] = 0xa
 	}
-	return len(dAtA) - i, nil
-}
-
-func (m *GetMetadataResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GetMetadataResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *GetMetadataResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Key) > 0 {
-		i -= len(m.Key)
-		copy(dAtA[i:], m.Key)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Key)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Path) > 0 {
-		i -= len(m.Path)
-		copy(dAtA[i:], m.Path)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Path)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Owner) > 0 {
-		i -= len(m.Owner)
-		copy(dAtA[i:], m.Owner)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Owner)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *SetMetadataRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *SetMetadataRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *SetMetadataRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Key) > 0 {
-		i -= len(m.Key)
-		copy(dAtA[i:], m.Key)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Key)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Path) > 0 {
-		i -= len(m.Path)
-		copy(dAtA[i:], m.Path)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Path)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Owner) > 0 {
-		i -= len(m.Owner)
-		copy(dAtA[i:], m.Owner)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Owner)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *SetMetadataResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *SetMetadataResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *SetMetadataResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
 	return len(dAtA) - i, nil
 }
 
@@ -798,7 +474,7 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *PresignedURLRequest) Size() (n int) {
+func (m *S3Obj) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -814,88 +490,47 @@ func (m *PresignedURLRequest) Size() (n int) {
 	return n
 }
 
+func (m *PresignedURLRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Path)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if len(m.Objs) > 0 {
+		for _, e := range m.Objs {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	return n
+}
+
 func (m *PresignedURLResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.Url)
-	if l > 0 {
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	return n
-}
-
-func (m *GetMedataRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Owner)
-	if l > 0 {
-		n += 1 + l + sovQuery(uint64(l))
-	}
 	l = len(m.Path)
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
-	l = len(m.Key)
-	if l > 0 {
-		n += 1 + l + sovQuery(uint64(l))
+	if len(m.Keys) > 0 {
+		for _, s := range m.Keys {
+			l = len(s)
+			n += 1 + l + sovQuery(uint64(l))
+		}
 	}
-	return n
-}
-
-func (m *GetMetadataResponse) Size() (n int) {
-	if m == nil {
-		return 0
+	if len(m.Urls) > 0 {
+		for _, s := range m.Urls {
+			l = len(s)
+			n += 1 + l + sovQuery(uint64(l))
+		}
 	}
-	var l int
-	_ = l
-	l = len(m.Owner)
-	if l > 0 {
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	l = len(m.Path)
-	if l > 0 {
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	l = len(m.Key)
-	if l > 0 {
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	return n
-}
-
-func (m *SetMetadataRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Owner)
-	if l > 0 {
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	l = len(m.Path)
-	if l > 0 {
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	l = len(m.Key)
-	if l > 0 {
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	return n
-}
-
-func (m *SetMetadataResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
 	return n
 }
 
@@ -905,7 +540,7 @@ func sovQuery(x uint64) (n int) {
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *PresignedURLRequest) Unmarshal(dAtA []byte) error {
+func (m *S3Obj) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -928,10 +563,10 @@ func (m *PresignedURLRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: PresignedURLRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: S3Obj: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: PresignedURLRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: S3Obj: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1006,6 +641,122 @@ func (m *PresignedURLRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *PresignedURLRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: PresignedURLRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: PresignedURLRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Path", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Path = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Objs", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Objs = append(m.Objs, &S3Obj{})
+			if err := m.Objs[len(m.Objs)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *PresignedURLResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1037,120 +788,6 @@ func (m *PresignedURLResponse) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Url", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Url = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *GetMedataRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GetMedataRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetMedataRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Owner = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Path", wireType)
 			}
 			var stringLen uint64
@@ -1181,123 +818,9 @@ func (m *GetMedataRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.Path = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Key", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Key = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *GetMetadataResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GetMetadataResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetMetadataResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Owner = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Path", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Keys", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1325,11 +848,11 @@ func (m *GetMetadataResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Path = string(dAtA[iNdEx:postIndex])
+			m.Keys = append(m.Keys, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Key", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Urls", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1357,204 +880,8 @@ func (m *GetMetadataResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Key = string(dAtA[iNdEx:postIndex])
+			m.Urls = append(m.Urls, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *SetMetadataRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: SetMetadataRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SetMetadataRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Owner = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Path", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Path = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Key", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Key = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *SetMetadataResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: SetMetadataResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SetMetadataResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])
