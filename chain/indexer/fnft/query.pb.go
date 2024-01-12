@@ -30,24 +30,21 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type GetNFTsRequest struct {
-	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	Id      string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
-	Owner   string `protobuf:"bytes,3,opt,name=owner,proto3" json:"owner,omitempty"`
+type ClassesRequest struct {
 }
 
-func (m *GetNFTsRequest) Reset()         { *m = GetNFTsRequest{} }
-func (m *GetNFTsRequest) String() string { return proto.CompactTextString(m) }
-func (*GetNFTsRequest) ProtoMessage()    {}
-func (*GetNFTsRequest) Descriptor() ([]byte, []int) {
+func (m *ClassesRequest) Reset()         { *m = ClassesRequest{} }
+func (m *ClassesRequest) String() string { return proto.CompactTextString(m) }
+func (*ClassesRequest) ProtoMessage()    {}
+func (*ClassesRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_baf8ebf21edb08a9, []int{0}
 }
-func (m *GetNFTsRequest) XXX_Unmarshal(b []byte) error {
+func (m *ClassesRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GetNFTsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ClassesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_GetNFTsRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_ClassesRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -57,55 +54,155 @@ func (m *GetNFTsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, erro
 		return b[:n], nil
 	}
 }
-func (m *GetNFTsRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetNFTsRequest.Merge(m, src)
+func (m *ClassesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ClassesRequest.Merge(m, src)
 }
-func (m *GetNFTsRequest) XXX_Size() int {
+func (m *ClassesRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *GetNFTsRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetNFTsRequest.DiscardUnknown(m)
+func (m *ClassesRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ClassesRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GetNFTsRequest proto.InternalMessageInfo
+var xxx_messageInfo_ClassesRequest proto.InternalMessageInfo
 
-func (m *GetNFTsRequest) GetClassId() string {
+type ClassesResponse struct {
+	Height  uint64         `protobuf:"varint,1,opt,name=height,proto3" json:"height,omitempty"`
+	Classes []*types.Class `protobuf:"bytes,2,rep,name=classes,proto3" json:"classes,omitempty"`
+}
+
+func (m *ClassesResponse) Reset()         { *m = ClassesResponse{} }
+func (m *ClassesResponse) String() string { return proto.CompactTextString(m) }
+func (*ClassesResponse) ProtoMessage()    {}
+func (*ClassesResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_baf8ebf21edb08a9, []int{1}
+}
+func (m *ClassesResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ClassesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ClassesResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ClassesResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ClassesResponse.Merge(m, src)
+}
+func (m *ClassesResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *ClassesResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_ClassesResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ClassesResponse proto.InternalMessageInfo
+
+func (m *ClassesResponse) GetHeight() uint64 {
+	if m != nil {
+		return m.Height
+	}
+	return 0
+}
+
+func (m *ClassesResponse) GetClasses() []*types.Class {
+	if m != nil {
+		return m.Classes
+	}
+	return nil
+}
+
+type NFTsRequest struct {
+	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
+	Id      string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	Owner   string `protobuf:"bytes,3,opt,name=owner,proto3" json:"owner,omitempty"`
+	Status  string `protobuf:"bytes,4,opt,name=status,proto3" json:"status,omitempty"`
+}
+
+func (m *NFTsRequest) Reset()         { *m = NFTsRequest{} }
+func (m *NFTsRequest) String() string { return proto.CompactTextString(m) }
+func (*NFTsRequest) ProtoMessage()    {}
+func (*NFTsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_baf8ebf21edb08a9, []int{2}
+}
+func (m *NFTsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *NFTsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_NFTsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *NFTsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NFTsRequest.Merge(m, src)
+}
+func (m *NFTsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *NFTsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_NFTsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NFTsRequest proto.InternalMessageInfo
+
+func (m *NFTsRequest) GetClassId() string {
 	if m != nil {
 		return m.ClassId
 	}
 	return ""
 }
 
-func (m *GetNFTsRequest) GetId() string {
+func (m *NFTsRequest) GetId() string {
 	if m != nil {
 		return m.Id
 	}
 	return ""
 }
 
-func (m *GetNFTsRequest) GetOwner() string {
+func (m *NFTsRequest) GetOwner() string {
 	if m != nil {
 		return m.Owner
 	}
 	return ""
 }
 
-type GetNFTsResponse struct {
-	Nft []*types.NFT `protobuf:"bytes,1,rep,name=nft,proto3" json:"nft,omitempty"`
+func (m *NFTsRequest) GetStatus() string {
+	if m != nil {
+		return m.Status
+	}
+	return ""
 }
 
-func (m *GetNFTsResponse) Reset()         { *m = GetNFTsResponse{} }
-func (m *GetNFTsResponse) String() string { return proto.CompactTextString(m) }
-func (*GetNFTsResponse) ProtoMessage()    {}
-func (*GetNFTsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_baf8ebf21edb08a9, []int{1}
+type NFTsResponse struct {
+	Height uint64       `protobuf:"varint,1,opt,name=height,proto3" json:"height,omitempty"`
+	Nft    []*types.NFT `protobuf:"bytes,2,rep,name=nft,proto3" json:"nft,omitempty"`
 }
-func (m *GetNFTsResponse) XXX_Unmarshal(b []byte) error {
+
+func (m *NFTsResponse) Reset()         { *m = NFTsResponse{} }
+func (m *NFTsResponse) String() string { return proto.CompactTextString(m) }
+func (*NFTsResponse) ProtoMessage()    {}
+func (*NFTsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_baf8ebf21edb08a9, []int{3}
+}
+func (m *NFTsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GetNFTsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *NFTsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_GetNFTsResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_NFTsResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -115,43 +212,50 @@ func (m *GetNFTsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-func (m *GetNFTsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetNFTsResponse.Merge(m, src)
+func (m *NFTsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NFTsResponse.Merge(m, src)
 }
-func (m *GetNFTsResponse) XXX_Size() int {
+func (m *NFTsResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *GetNFTsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetNFTsResponse.DiscardUnknown(m)
+func (m *NFTsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_NFTsResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GetNFTsResponse proto.InternalMessageInfo
+var xxx_messageInfo_NFTsResponse proto.InternalMessageInfo
 
-func (m *GetNFTsResponse) GetNft() []*types.NFT {
+func (m *NFTsResponse) GetHeight() uint64 {
+	if m != nil {
+		return m.Height
+	}
+	return 0
+}
+
+func (m *NFTsResponse) GetNft() []*types.NFT {
 	if m != nil {
 		return m.Nft
 	}
 	return nil
 }
 
-type GetHoldersRequest struct {
+type HoldersRequest struct {
 	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 	Id      string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
 	Address string `protobuf:"bytes,3,opt,name=address,proto3" json:"address,omitempty"`
 }
 
-func (m *GetHoldersRequest) Reset()         { *m = GetHoldersRequest{} }
-func (m *GetHoldersRequest) String() string { return proto.CompactTextString(m) }
-func (*GetHoldersRequest) ProtoMessage()    {}
-func (*GetHoldersRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_baf8ebf21edb08a9, []int{2}
+func (m *HoldersRequest) Reset()         { *m = HoldersRequest{} }
+func (m *HoldersRequest) String() string { return proto.CompactTextString(m) }
+func (*HoldersRequest) ProtoMessage()    {}
+func (*HoldersRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_baf8ebf21edb08a9, []int{4}
 }
-func (m *GetHoldersRequest) XXX_Unmarshal(b []byte) error {
+func (m *HoldersRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GetHoldersRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *HoldersRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_GetHoldersRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_HoldersRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -161,55 +265,56 @@ func (m *GetHoldersRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-func (m *GetHoldersRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetHoldersRequest.Merge(m, src)
+func (m *HoldersRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_HoldersRequest.Merge(m, src)
 }
-func (m *GetHoldersRequest) XXX_Size() int {
+func (m *HoldersRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *GetHoldersRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetHoldersRequest.DiscardUnknown(m)
+func (m *HoldersRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_HoldersRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GetHoldersRequest proto.InternalMessageInfo
+var xxx_messageInfo_HoldersRequest proto.InternalMessageInfo
 
-func (m *GetHoldersRequest) GetClassId() string {
+func (m *HoldersRequest) GetClassId() string {
 	if m != nil {
 		return m.ClassId
 	}
 	return ""
 }
 
-func (m *GetHoldersRequest) GetId() string {
+func (m *HoldersRequest) GetId() string {
 	if m != nil {
 		return m.Id
 	}
 	return ""
 }
 
-func (m *GetHoldersRequest) GetAddress() string {
+func (m *HoldersRequest) GetAddress() string {
 	if m != nil {
 		return m.Address
 	}
 	return ""
 }
 
-type GetHoldersResponse struct {
-	Holders []*types.Holder `protobuf:"bytes,1,rep,name=holders,proto3" json:"holders,omitempty"`
+type HoldersResponse struct {
+	Height  uint64          `protobuf:"varint,1,opt,name=height,proto3" json:"height,omitempty"`
+	Holders []*types.Holder `protobuf:"bytes,2,rep,name=holders,proto3" json:"holders,omitempty"`
 }
 
-func (m *GetHoldersResponse) Reset()         { *m = GetHoldersResponse{} }
-func (m *GetHoldersResponse) String() string { return proto.CompactTextString(m) }
-func (*GetHoldersResponse) ProtoMessage()    {}
-func (*GetHoldersResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_baf8ebf21edb08a9, []int{3}
+func (m *HoldersResponse) Reset()         { *m = HoldersResponse{} }
+func (m *HoldersResponse) String() string { return proto.CompactTextString(m) }
+func (*HoldersResponse) ProtoMessage()    {}
+func (*HoldersResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_baf8ebf21edb08a9, []int{5}
 }
-func (m *GetHoldersResponse) XXX_Unmarshal(b []byte) error {
+func (m *HoldersResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GetHoldersResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *HoldersResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_GetHoldersResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_HoldersResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -219,19 +324,26 @@ func (m *GetHoldersResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-func (m *GetHoldersResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetHoldersResponse.Merge(m, src)
+func (m *HoldersResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_HoldersResponse.Merge(m, src)
 }
-func (m *GetHoldersResponse) XXX_Size() int {
+func (m *HoldersResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *GetHoldersResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetHoldersResponse.DiscardUnknown(m)
+func (m *HoldersResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_HoldersResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GetHoldersResponse proto.InternalMessageInfo
+var xxx_messageInfo_HoldersResponse proto.InternalMessageInfo
 
-func (m *GetHoldersResponse) GetHolders() []*types.Holder {
+func (m *HoldersResponse) GetHeight() uint64 {
+	if m != nil {
+		return m.Height
+	}
+	return 0
+}
+
+func (m *HoldersResponse) GetHolders() []*types.Holder {
 	if m != nil {
 		return m.Holders
 	}
@@ -239,44 +351,49 @@ func (m *GetHoldersResponse) GetHolders() []*types.Holder {
 }
 
 func init() {
-	proto.RegisterType((*GetNFTsRequest)(nil), "flux.indexer.fnft.GetNFTsRequest")
-	proto.RegisterType((*GetNFTsResponse)(nil), "flux.indexer.fnft.GetNFTsResponse")
-	proto.RegisterType((*GetHoldersRequest)(nil), "flux.indexer.fnft.GetHoldersRequest")
-	proto.RegisterType((*GetHoldersResponse)(nil), "flux.indexer.fnft.GetHoldersResponse")
+	proto.RegisterType((*ClassesRequest)(nil), "flux.indexer.fnft.ClassesRequest")
+	proto.RegisterType((*ClassesResponse)(nil), "flux.indexer.fnft.ClassesResponse")
+	proto.RegisterType((*NFTsRequest)(nil), "flux.indexer.fnft.NFTsRequest")
+	proto.RegisterType((*NFTsResponse)(nil), "flux.indexer.fnft.NFTsResponse")
+	proto.RegisterType((*HoldersRequest)(nil), "flux.indexer.fnft.HoldersRequest")
+	proto.RegisterType((*HoldersResponse)(nil), "flux.indexer.fnft.HoldersResponse")
 }
 
 func init() { proto.RegisterFile("flux/indexer/fnft/query.proto", fileDescriptor_baf8ebf21edb08a9) }
 
 var fileDescriptor_baf8ebf21edb08a9 = []byte{
-	// 447 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x92, 0x41, 0x8b, 0xd3, 0x40,
-	0x14, 0xc7, 0x3b, 0x29, 0x1a, 0x1d, 0x61, 0x65, 0x07, 0x91, 0x34, 0x6a, 0x58, 0x83, 0x42, 0x4f,
-	0x33, 0x74, 0x57, 0xf4, 0xa0, 0x17, 0x3d, 0x64, 0x0d, 0x48, 0xd1, 0xd0, 0x83, 0x78, 0x91, 0x49,
-	0x67, 0xd2, 0x0e, 0xc4, 0x99, 0x6e, 0x66, 0xa2, 0x95, 0xa5, 0x17, 0x6f, 0xde, 0x04, 0x0f, 0x7e,
-	0x08, 0xbf, 0x88, 0xc7, 0x05, 0x2f, 0x1e, 0xa5, 0xf5, 0x83, 0x48, 0x26, 0x53, 0xb5, 0xb4, 0x28,
-	0x78, 0x09, 0xbc, 0xf7, 0xff, 0x67, 0xde, 0xef, 0xfd, 0x67, 0xe0, 0x8d, 0xa2, 0xac, 0xe7, 0x44,
-	0x48, 0xc6, 0xe7, 0xbc, 0x22, 0x85, 0x2c, 0x0c, 0x39, 0xa9, 0x79, 0xf5, 0x16, 0xcf, 0x2a, 0x65,
-	0x14, 0xda, 0x6f, 0x64, 0xec, 0x64, 0xdc, 0xc8, 0x61, 0x6f, 0xa2, 0xd4, 0xa4, 0xe4, 0xc4, 0x1a,
-	0xf2, 0xba, 0x20, 0x54, 0x3a, 0x77, 0x78, 0xdd, 0x49, 0x74, 0x26, 0x08, 0x95, 0x52, 0x19, 0x6a,
-	0x84, 0x92, 0xda, 0xa9, 0xd7, 0xec, 0x28, 0x3b, 0xe2, 0xf5, 0x20, 0xe7, 0x86, 0x0e, 0x88, 0x2c,
-	0x4c, 0x2b, 0xc6, 0xcf, 0xe0, 0xde, 0x31, 0x37, 0xc3, 0x64, 0xa4, 0x33, 0x7e, 0x52, 0x73, 0x6d,
-	0x50, 0x0f, 0x5e, 0x18, 0x97, 0x54, 0xeb, 0x97, 0x82, 0x05, 0xe0, 0x00, 0xf4, 0x2f, 0x66, 0xbe,
-	0xad, 0x53, 0x86, 0xf6, 0xa0, 0x27, 0x58, 0xe0, 0xd9, 0xa6, 0x27, 0x18, 0xba, 0x02, 0xcf, 0xa9,
-	0x37, 0x92, 0x57, 0x41, 0xd7, 0xb6, 0xda, 0x22, 0xbe, 0x0f, 0x2f, 0xff, 0x3a, 0x52, 0xcf, 0x94,
-	0xd4, 0x1c, 0xf5, 0x61, 0x57, 0x16, 0x26, 0x00, 0x07, 0xdd, 0xfe, 0xa5, 0xc3, 0xab, 0xd8, 0x2e,
-	0xd7, 0x00, 0x61, 0x07, 0x84, 0x87, 0xc9, 0x28, 0x6b, 0x2c, 0xf1, 0x73, 0xb8, 0x7f, 0xcc, 0xcd,
-	0x63, 0x55, 0x32, 0x5e, 0xfd, 0x0f, 0x52, 0x00, 0x7d, 0xca, 0x58, 0xc5, 0xb5, 0x76, 0x50, 0xeb,
-	0x32, 0x4e, 0x21, 0xfa, 0xf3, 0x64, 0x47, 0x76, 0x04, 0xfd, 0x69, 0xdb, 0x72, 0x74, 0xbd, 0x1d,
-	0x74, 0xed, 0x4f, 0xd9, 0xda, 0x79, 0xf8, 0xd9, 0x83, 0xdd, 0x87, 0x4f, 0x53, 0xf4, 0x1e, 0x40,
-	0xdf, 0xad, 0x8a, 0x6e, 0xe2, 0xad, 0x2b, 0xc3, 0x9b, 0xc9, 0x86, 0xf1, 0xdf, 0x2c, 0x2d, 0x4f,
-	0x7c, 0xef, 0xdd, 0xd7, 0x1f, 0x1f, 0xbd, 0x01, 0x22, 0x64, 0xfb, 0x81, 0xc8, 0xc2, 0x68, 0x72,
-	0xba, 0x4e, 0x62, 0x41, 0x4e, 0xed, 0xc7, 0x86, 0xbe, 0x40, 0x9f, 0x00, 0x84, 0xbf, 0xf7, 0x43,
-	0xb7, 0x76, 0xcf, 0xda, 0x0c, 0x36, 0xbc, 0xfd, 0x0f, 0x97, 0x83, 0x7a, 0x60, 0xa1, 0xee, 0xa2,
-	0x3b, 0x3b, 0xa0, 0x5c, 0x26, 0xdb, 0x5c, 0x2e, 0xf7, 0xc5, 0xa3, 0xf4, 0xcb, 0x32, 0x02, 0x67,
-	0xcb, 0x08, 0x7c, 0x5f, 0x46, 0xe0, 0xc3, 0x2a, 0xea, 0x9c, 0xad, 0xa2, 0xce, 0xb7, 0x55, 0xd4,
-	0x79, 0x41, 0x26, 0xc2, 0x4c, 0xeb, 0x1c, 0x8f, 0xd5, 0x2b, 0x92, 0x94, 0xf5, 0x7c, 0x98, 0x8c,
-	0x9e, 0xd0, 0x5c, 0xdb, 0x29, 0x8c, 0x8c, 0xa7, 0x54, 0xc8, 0x8d, 0x61, 0xf9, 0x79, 0xfb, 0x68,
-	0x8f, 0x7e, 0x06, 0x00, 0x00, 0xff, 0xff, 0xef, 0x7f, 0x69, 0x14, 0x3e, 0x03, 0x00, 0x00,
+	// 491 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x54, 0x51, 0x6f, 0xd3, 0x3c,
+	0x14, 0x6d, 0xda, 0x7e, 0xeb, 0xc7, 0x1d, 0x74, 0x60, 0xa1, 0x29, 0x2d, 0x10, 0x46, 0x9e, 0xfa,
+	0x14, 0x77, 0xdd, 0x2f, 0x00, 0xa4, 0x8e, 0x22, 0x54, 0xa6, 0xac, 0x48, 0x08, 0x09, 0x90, 0x53,
+	0x3b, 0x8d, 0xa5, 0xcc, 0xee, 0x62, 0x07, 0xca, 0x1b, 0x3f, 0x81, 0x9f, 0xc5, 0xe3, 0x1e, 0x79,
+	0x44, 0xed, 0x1f, 0x41, 0x71, 0xdc, 0x8a, 0x42, 0x60, 0x12, 0xea, 0xe3, 0xbd, 0xe7, 0xe4, 0x9c,
+	0x73, 0x73, 0xaf, 0x0c, 0x0f, 0xe2, 0x34, 0x5f, 0x60, 0x2e, 0x28, 0x5b, 0xb0, 0x0c, 0xc7, 0x22,
+	0xd6, 0xf8, 0x32, 0x67, 0xd9, 0xa7, 0x60, 0x9e, 0x49, 0x2d, 0xd1, 0x9d, 0x02, 0x0e, 0x2c, 0x1c,
+	0x14, 0x70, 0xb7, 0x33, 0x93, 0x72, 0x96, 0x32, 0x6c, 0x08, 0x51, 0x1e, 0x63, 0x22, 0x2c, 0xbb,
+	0x7b, 0xdf, 0x42, 0x64, 0xce, 0x31, 0x11, 0x42, 0x6a, 0xa2, 0xb9, 0x14, 0xca, 0xa2, 0xf7, 0x8c,
+	0x95, 0xb1, 0xf8, 0x70, 0x1c, 0x31, 0x4d, 0x8e, 0xb1, 0x88, 0x75, 0x09, 0xfa, 0xb7, 0xa1, 0xfd,
+	0x34, 0x25, 0x4a, 0x31, 0x15, 0xb2, 0xcb, 0x9c, 0x29, 0xed, 0xbf, 0x85, 0x83, 0x4d, 0x47, 0xcd,
+	0xa5, 0x50, 0x0c, 0x1d, 0xc2, 0x5e, 0xc2, 0xf8, 0x2c, 0xd1, 0xae, 0x73, 0xe4, 0xf4, 0x9a, 0xa1,
+	0xad, 0xd0, 0x00, 0x5a, 0xd3, 0x92, 0xea, 0xd6, 0x8f, 0x1a, 0xbd, 0xfd, 0x81, 0x1b, 0x98, 0xdc,
+	0x85, 0x57, 0x60, 0xbd, 0x02, 0x23, 0x16, 0xae, 0x89, 0x7e, 0x0c, 0xfb, 0xe3, 0xe1, 0x64, 0xed,
+	0x86, 0x3a, 0xf0, 0xbf, 0x41, 0xde, 0x73, 0x6a, 0xc4, 0x6f, 0x58, 0xe6, 0x88, 0xa2, 0x36, 0xd4,
+	0x39, 0x75, 0xeb, 0xa6, 0x59, 0xe7, 0x14, 0xdd, 0x85, 0xff, 0xe4, 0x47, 0xc1, 0x32, 0xb7, 0x61,
+	0x5a, 0x65, 0x51, 0x64, 0x53, 0x9a, 0xe8, 0x5c, 0xb9, 0x4d, 0xd3, 0xb6, 0x95, 0x7f, 0x06, 0x37,
+	0x4b, 0x9f, 0x6b, 0x66, 0xe8, 0x41, 0x43, 0xc4, 0xda, 0xe6, 0x3f, 0xac, 0xc8, 0x3f, 0x1e, 0x4e,
+	0xc2, 0x82, 0xe2, 0xbf, 0x82, 0xf6, 0x33, 0x99, 0x52, 0x96, 0xfd, 0x4b, 0x78, 0x17, 0x5a, 0x84,
+	0xd2, 0x8c, 0x29, 0x65, 0xe3, 0xaf, 0x4b, 0xff, 0x1d, 0x1c, 0x6c, 0x64, 0xaf, 0xc9, 0x7a, 0x02,
+	0xad, 0xa4, 0xa4, 0xda, 0xbc, 0x9d, 0x8a, 0xbc, 0xa5, 0x58, 0xb8, 0x66, 0x0e, 0x3e, 0x37, 0xa1,
+	0xf1, 0xf8, 0x6c, 0x84, 0xce, 0x01, 0x4e, 0x99, 0xb6, 0xab, 0x45, 0x8f, 0x82, 0xdf, 0x2e, 0x2c,
+	0xd8, 0x3e, 0x84, 0xae, 0xff, 0x37, 0x8a, 0x4d, 0xfa, 0x1a, 0x6e, 0x9d, 0xeb, 0x8c, 0x91, 0x8b,
+	0xdd, 0xea, 0xf6, 0x1d, 0xf4, 0x1c, 0x5a, 0xa7, 0x4c, 0x17, 0x2b, 0x44, 0x5e, 0xc5, 0x07, 0x3f,
+	0xdd, 0x50, 0xf7, 0xe1, 0x1f, 0x71, 0x9b, 0xf2, 0x25, 0x40, 0x99, 0x72, 0x27, 0x72, 0x7d, 0xc7,
+	0xfe, 0x4b, 0xbb, 0xb6, 0xca, 0x99, 0xb7, 0x2f, 0xa5, 0x72, 0xe6, 0x5f, 0xb7, 0xbe, 0xf9, 0x97,
+	0xbb, 0xd5, 0xed, 0x3b, 0x4f, 0x46, 0x5f, 0x97, 0x9e, 0x73, 0xb5, 0xf4, 0x9c, 0xef, 0x4b, 0xcf,
+	0xf9, 0xb2, 0xf2, 0x6a, 0x57, 0x2b, 0xaf, 0xf6, 0x6d, 0xe5, 0xd5, 0xde, 0xe0, 0x19, 0xd7, 0x49,
+	0x1e, 0x05, 0x53, 0x79, 0x81, 0x87, 0x69, 0xbe, 0x18, 0x0f, 0x27, 0x2f, 0x48, 0xa4, 0x70, 0xa1,
+	0x4a, 0xf1, 0x34, 0x21, 0x5c, 0x6c, 0x3d, 0x52, 0xd1, 0x9e, 0x79, 0x36, 0x4e, 0x7e, 0x04, 0x00,
+	0x00, 0xff, 0xff, 0x36, 0x22, 0x24, 0x8a, 0xc0, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -291,8 +408,12 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type APIClient interface {
-	GetNFTs(ctx context.Context, in *GetNFTsRequest, opts ...grpc.CallOption) (*GetNFTsResponse, error)
-	GetHolders(ctx context.Context, in *GetHoldersRequest, opts ...grpc.CallOption) (*GetHoldersResponse, error)
+	GetClasses(ctx context.Context, in *ClassesRequest, opts ...grpc.CallOption) (*ClassesResponse, error)
+	StreamClasses(ctx context.Context, in *ClassesRequest, opts ...grpc.CallOption) (API_StreamClassesClient, error)
+	GetNFTs(ctx context.Context, in *NFTsRequest, opts ...grpc.CallOption) (*NFTsResponse, error)
+	StreamNFTs(ctx context.Context, in *NFTsRequest, opts ...grpc.CallOption) (API_StreamNFTsClient, error)
+	GetHolders(ctx context.Context, in *HoldersRequest, opts ...grpc.CallOption) (*HoldersResponse, error)
+	StreamHolders(ctx context.Context, in *HoldersRequest, opts ...grpc.CallOption) (API_StreamHoldersClient, error)
 }
 
 type aPIClient struct {
@@ -303,8 +424,49 @@ func NewAPIClient(cc grpc1.ClientConn) APIClient {
 	return &aPIClient{cc}
 }
 
-func (c *aPIClient) GetNFTs(ctx context.Context, in *GetNFTsRequest, opts ...grpc.CallOption) (*GetNFTsResponse, error) {
-	out := new(GetNFTsResponse)
+func (c *aPIClient) GetClasses(ctx context.Context, in *ClassesRequest, opts ...grpc.CallOption) (*ClassesResponse, error) {
+	out := new(ClassesResponse)
+	err := c.cc.Invoke(ctx, "/flux.indexer.fnft.API/GetClasses", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aPIClient) StreamClasses(ctx context.Context, in *ClassesRequest, opts ...grpc.CallOption) (API_StreamClassesClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_API_serviceDesc.Streams[0], "/flux.indexer.fnft.API/StreamClasses", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &aPIStreamClassesClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type API_StreamClassesClient interface {
+	Recv() (*ClassesResponse, error)
+	grpc.ClientStream
+}
+
+type aPIStreamClassesClient struct {
+	grpc.ClientStream
+}
+
+func (x *aPIStreamClassesClient) Recv() (*ClassesResponse, error) {
+	m := new(ClassesResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *aPIClient) GetNFTs(ctx context.Context, in *NFTsRequest, opts ...grpc.CallOption) (*NFTsResponse, error) {
+	out := new(NFTsResponse)
 	err := c.cc.Invoke(ctx, "/flux.indexer.fnft.API/GetNFTs", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -312,8 +474,40 @@ func (c *aPIClient) GetNFTs(ctx context.Context, in *GetNFTsRequest, opts ...grp
 	return out, nil
 }
 
-func (c *aPIClient) GetHolders(ctx context.Context, in *GetHoldersRequest, opts ...grpc.CallOption) (*GetHoldersResponse, error) {
-	out := new(GetHoldersResponse)
+func (c *aPIClient) StreamNFTs(ctx context.Context, in *NFTsRequest, opts ...grpc.CallOption) (API_StreamNFTsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_API_serviceDesc.Streams[1], "/flux.indexer.fnft.API/StreamNFTs", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &aPIStreamNFTsClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type API_StreamNFTsClient interface {
+	Recv() (*NFTsResponse, error)
+	grpc.ClientStream
+}
+
+type aPIStreamNFTsClient struct {
+	grpc.ClientStream
+}
+
+func (x *aPIStreamNFTsClient) Recv() (*NFTsResponse, error) {
+	m := new(NFTsResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *aPIClient) GetHolders(ctx context.Context, in *HoldersRequest, opts ...grpc.CallOption) (*HoldersResponse, error) {
+	out := new(HoldersResponse)
 	err := c.cc.Invoke(ctx, "/flux.indexer.fnft.API/GetHolders", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -321,29 +515,116 @@ func (c *aPIClient) GetHolders(ctx context.Context, in *GetHoldersRequest, opts 
 	return out, nil
 }
 
+func (c *aPIClient) StreamHolders(ctx context.Context, in *HoldersRequest, opts ...grpc.CallOption) (API_StreamHoldersClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_API_serviceDesc.Streams[2], "/flux.indexer.fnft.API/StreamHolders", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &aPIStreamHoldersClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type API_StreamHoldersClient interface {
+	Recv() (*HoldersResponse, error)
+	grpc.ClientStream
+}
+
+type aPIStreamHoldersClient struct {
+	grpc.ClientStream
+}
+
+func (x *aPIStreamHoldersClient) Recv() (*HoldersResponse, error) {
+	m := new(HoldersResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // APIServer is the server API for API service.
 type APIServer interface {
-	GetNFTs(context.Context, *GetNFTsRequest) (*GetNFTsResponse, error)
-	GetHolders(context.Context, *GetHoldersRequest) (*GetHoldersResponse, error)
+	GetClasses(context.Context, *ClassesRequest) (*ClassesResponse, error)
+	StreamClasses(*ClassesRequest, API_StreamClassesServer) error
+	GetNFTs(context.Context, *NFTsRequest) (*NFTsResponse, error)
+	StreamNFTs(*NFTsRequest, API_StreamNFTsServer) error
+	GetHolders(context.Context, *HoldersRequest) (*HoldersResponse, error)
+	StreamHolders(*HoldersRequest, API_StreamHoldersServer) error
 }
 
 // UnimplementedAPIServer can be embedded to have forward compatible implementations.
 type UnimplementedAPIServer struct {
 }
 
-func (*UnimplementedAPIServer) GetNFTs(ctx context.Context, req *GetNFTsRequest) (*GetNFTsResponse, error) {
+func (*UnimplementedAPIServer) GetClasses(ctx context.Context, req *ClassesRequest) (*ClassesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetClasses not implemented")
+}
+func (*UnimplementedAPIServer) StreamClasses(req *ClassesRequest, srv API_StreamClassesServer) error {
+	return status.Errorf(codes.Unimplemented, "method StreamClasses not implemented")
+}
+func (*UnimplementedAPIServer) GetNFTs(ctx context.Context, req *NFTsRequest) (*NFTsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetNFTs not implemented")
 }
-func (*UnimplementedAPIServer) GetHolders(ctx context.Context, req *GetHoldersRequest) (*GetHoldersResponse, error) {
+func (*UnimplementedAPIServer) StreamNFTs(req *NFTsRequest, srv API_StreamNFTsServer) error {
+	return status.Errorf(codes.Unimplemented, "method StreamNFTs not implemented")
+}
+func (*UnimplementedAPIServer) GetHolders(ctx context.Context, req *HoldersRequest) (*HoldersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetHolders not implemented")
+}
+func (*UnimplementedAPIServer) StreamHolders(req *HoldersRequest, srv API_StreamHoldersServer) error {
+	return status.Errorf(codes.Unimplemented, "method StreamHolders not implemented")
 }
 
 func RegisterAPIServer(s grpc1.Server, srv APIServer) {
 	s.RegisterService(&_API_serviceDesc, srv)
 }
 
+func _API_GetClasses_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ClassesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(APIServer).GetClasses(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/flux.indexer.fnft.API/GetClasses",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(APIServer).GetClasses(ctx, req.(*ClassesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _API_StreamClasses_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(ClassesRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(APIServer).StreamClasses(m, &aPIStreamClassesServer{stream})
+}
+
+type API_StreamClassesServer interface {
+	Send(*ClassesResponse) error
+	grpc.ServerStream
+}
+
+type aPIStreamClassesServer struct {
+	grpc.ServerStream
+}
+
+func (x *aPIStreamClassesServer) Send(m *ClassesResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 func _API_GetNFTs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetNFTsRequest)
+	in := new(NFTsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -355,13 +636,34 @@ func _API_GetNFTs_Handler(srv interface{}, ctx context.Context, dec func(interfa
 		FullMethod: "/flux.indexer.fnft.API/GetNFTs",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(APIServer).GetNFTs(ctx, req.(*GetNFTsRequest))
+		return srv.(APIServer).GetNFTs(ctx, req.(*NFTsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
+func _API_StreamNFTs_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(NFTsRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(APIServer).StreamNFTs(m, &aPIStreamNFTsServer{stream})
+}
+
+type API_StreamNFTsServer interface {
+	Send(*NFTsResponse) error
+	grpc.ServerStream
+}
+
+type aPIStreamNFTsServer struct {
+	grpc.ServerStream
+}
+
+func (x *aPIStreamNFTsServer) Send(m *NFTsResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 func _API_GetHolders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetHoldersRequest)
+	in := new(HoldersRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -373,15 +675,40 @@ func _API_GetHolders_Handler(srv interface{}, ctx context.Context, dec func(inte
 		FullMethod: "/flux.indexer.fnft.API/GetHolders",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(APIServer).GetHolders(ctx, req.(*GetHoldersRequest))
+		return srv.(APIServer).GetHolders(ctx, req.(*HoldersRequest))
 	}
 	return interceptor(ctx, in, info, handler)
+}
+
+func _API_StreamHolders_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(HoldersRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(APIServer).StreamHolders(m, &aPIStreamHoldersServer{stream})
+}
+
+type API_StreamHoldersServer interface {
+	Send(*HoldersResponse) error
+	grpc.ServerStream
+}
+
+type aPIStreamHoldersServer struct {
+	grpc.ServerStream
+}
+
+func (x *aPIStreamHoldersServer) Send(m *HoldersResponse) error {
+	return x.ServerStream.SendMsg(m)
 }
 
 var _API_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "flux.indexer.fnft.API",
 	HandlerType: (*APIServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetClasses",
+			Handler:    _API_GetClasses_Handler,
+		},
 		{
 			MethodName: "GetNFTs",
 			Handler:    _API_GetNFTs_Handler,
@@ -391,11 +718,27 @@ var _API_serviceDesc = grpc.ServiceDesc{
 			Handler:    _API_GetHolders_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "StreamClasses",
+			Handler:       _API_StreamClasses_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "StreamNFTs",
+			Handler:       _API_StreamNFTs_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "StreamHolders",
+			Handler:       _API_StreamHolders_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "flux/indexer/fnft/query.proto",
 }
 
-func (m *GetNFTsRequest) Marshal() (dAtA []byte, err error) {
+func (m *ClassesRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -405,16 +748,88 @@ func (m *GetNFTsRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GetNFTsRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *ClassesRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GetNFTsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ClassesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *ClassesResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ClassesResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ClassesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Classes) > 0 {
+		for iNdEx := len(m.Classes) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Classes[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if m.Height != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Height))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *NFTsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *NFTsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NFTsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Status) > 0 {
+		i -= len(m.Status)
+		copy(dAtA[i:], m.Status)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Status)))
+		i--
+		dAtA[i] = 0x22
+	}
 	if len(m.Owner) > 0 {
 		i -= len(m.Owner)
 		copy(dAtA[i:], m.Owner)
@@ -439,7 +854,7 @@ func (m *GetNFTsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *GetNFTsResponse) Marshal() (dAtA []byte, err error) {
+func (m *NFTsResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -449,12 +864,12 @@ func (m *GetNFTsResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GetNFTsResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *NFTsResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GetNFTsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *NFTsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -470,13 +885,18 @@ func (m *GetNFTsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 				i = encodeVarintQuery(dAtA, i, uint64(size))
 			}
 			i--
-			dAtA[i] = 0xa
+			dAtA[i] = 0x12
 		}
+	}
+	if m.Height != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Height))
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *GetHoldersRequest) Marshal() (dAtA []byte, err error) {
+func (m *HoldersRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -486,12 +906,12 @@ func (m *GetHoldersRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GetHoldersRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *HoldersRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GetHoldersRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *HoldersRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -520,7 +940,7 @@ func (m *GetHoldersRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *GetHoldersResponse) Marshal() (dAtA []byte, err error) {
+func (m *HoldersResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -530,12 +950,12 @@ func (m *GetHoldersResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GetHoldersResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *HoldersResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GetHoldersResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *HoldersResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -551,8 +971,13 @@ func (m *GetHoldersResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 				i = encodeVarintQuery(dAtA, i, uint64(size))
 			}
 			i--
-			dAtA[i] = 0xa
+			dAtA[i] = 0x12
 		}
+	}
+	if m.Height != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Height))
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -568,7 +993,34 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *GetNFTsRequest) Size() (n int) {
+func (m *ClassesRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *ClassesResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Height != 0 {
+		n += 1 + sovQuery(uint64(m.Height))
+	}
+	if len(m.Classes) > 0 {
+		for _, e := range m.Classes {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *NFTsRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -586,15 +1038,22 @@ func (m *GetNFTsRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
+	l = len(m.Status)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
 	return n
 }
 
-func (m *GetNFTsResponse) Size() (n int) {
+func (m *NFTsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
+	if m.Height != 0 {
+		n += 1 + sovQuery(uint64(m.Height))
+	}
 	if len(m.Nft) > 0 {
 		for _, e := range m.Nft {
 			l = e.Size()
@@ -604,7 +1063,7 @@ func (m *GetNFTsResponse) Size() (n int) {
 	return n
 }
 
-func (m *GetHoldersRequest) Size() (n int) {
+func (m *HoldersRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -625,12 +1084,15 @@ func (m *GetHoldersRequest) Size() (n int) {
 	return n
 }
 
-func (m *GetHoldersResponse) Size() (n int) {
+func (m *HoldersResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
+	if m.Height != 0 {
+		n += 1 + sovQuery(uint64(m.Height))
+	}
 	if len(m.Holders) > 0 {
 		for _, e := range m.Holders {
 			l = e.Size()
@@ -646,7 +1108,7 @@ func sovQuery(x uint64) (n int) {
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *GetNFTsRequest) Unmarshal(dAtA []byte) error {
+func (m *ClassesRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -669,10 +1131,163 @@ func (m *GetNFTsRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GetNFTsRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: ClassesRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetNFTsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: ClassesRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ClassesResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ClassesResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ClassesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Height", wireType)
+			}
+			m.Height = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Height |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Classes", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Classes = append(m.Classes, &types.Class{})
+			if err := m.Classes[len(m.Classes)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *NFTsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: NFTsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: NFTsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -771,6 +1386,38 @@ func (m *GetNFTsRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.Owner = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Status = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])
@@ -792,7 +1439,7 @@ func (m *GetNFTsRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *GetNFTsResponse) Unmarshal(dAtA []byte) error {
+func (m *NFTsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -815,13 +1462,32 @@ func (m *GetNFTsResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GetNFTsResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: NFTsResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetNFTsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: NFTsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Height", wireType)
+			}
+			m.Height = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Height |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Nft", wireType)
 			}
@@ -876,7 +1542,7 @@ func (m *GetNFTsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *GetHoldersRequest) Unmarshal(dAtA []byte) error {
+func (m *HoldersRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -899,10 +1565,10 @@ func (m *GetHoldersRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GetHoldersRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: HoldersRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetHoldersRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: HoldersRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1022,7 +1688,7 @@ func (m *GetHoldersRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *GetHoldersResponse) Unmarshal(dAtA []byte) error {
+func (m *HoldersResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1045,13 +1711,32 @@ func (m *GetHoldersResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GetHoldersResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: HoldersResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetHoldersResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: HoldersResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Height", wireType)
+			}
+			m.Height = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Height |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Holders", wireType)
 			}
