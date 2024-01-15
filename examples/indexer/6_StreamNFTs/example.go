@@ -18,10 +18,10 @@ func main() {
 	client := types.NewAPIClient(cc)
 
 	stream, err := client.StreamNFTs(context.Background(), &types.NFTsRequest{
-		ClassId: "",
+		ClassId: "series",
 		Id:      "",
-		Owner:   "",
-		Status:  "",
+		Owner:   "lux1cml96vmptgw99syqrrz8az79xer2pcgp209sv4",
+		Status:  "Failed",
 	})
 	if err != nil {
 		panic(err)
