@@ -36,7 +36,7 @@ func main() {
 	// init client ctx
 	clientCtx, senderAddress, err := chaintypes.NewClientContext(
 		network.ChainId,
-		"user1",
+		"signer1",
 		kr,
 	)
 	if err != nil {

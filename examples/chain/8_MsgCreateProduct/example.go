@@ -63,6 +63,10 @@ func main() {
 		Offerings: []*bazaartypes.Offering{
 			{Price: sdk.Coin{
 				Denom:  "usdt",
+				Amount: sdkmath.NewIntFromUint64(1),
+			}},
+			{Price: sdk.Coin{
+				Denom:  "usdt",
 				Amount: sdkmath.NewIntFromUint64(2),
 			}},
 			{Price: sdk.Coin{

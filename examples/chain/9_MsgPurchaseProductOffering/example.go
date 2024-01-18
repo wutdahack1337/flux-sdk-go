@@ -59,8 +59,8 @@ func main() {
 		ClassId:          "series",
 		Id:               "0",
 		ProductId:        "0",
-		OfferingIdx:      []uint64{0},
-		OfferingQuantity: []uint64{7},
+		OfferingIdx:      []uint64{0,1},
+		OfferingQuantity: []uint64{1,2},
 	}
 
 	//AsyncBroadcastMsg, SyncBroadcastMsg, QueueBroadcastMsg
