@@ -2,21 +2,24 @@ package ante
 
 import (
 	"context"
-	storetypes "cosmossdk.io/store/types"
-	"fmt"
-	"github.com/cosmos/cosmos-sdk/types/tx/signing"
-	ibcante "github.com/cosmos/ibc-go/v8/modules/core/ante"
-	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
-
+	corestoretypes "cosmossdk.io/core/store"
 	"cosmossdk.io/errors"
-	txsigning "cosmossdk.io/x/tx/signing"
+	storetypes "cosmossdk.io/store/types"
+	circuitante "cosmossdk.io/x/circuit/ante"
+	circuitkeeper "cosmossdk.io/x/circuit/keeper"
+	"fmt"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	log "github.com/InjectiveLabs/suplog"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	"github.com/cosmos/cosmos-sdk/crypto/types/multisig"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authante "github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	ibcante "github.com/cosmos/ibc-go/v8/modules/core/ante"
+	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ethsecp256k1"
 )
@@ -61,22 +64,41 @@ type FeegrantKeeper interface {
 	UseGrantedFees(ctx context.Context, granter, grantee sdk.AccAddress, fee sdk.Coins, msgs []sdk.Msg) error
 }
 
-// NewAnteHandler returns an ante handler responsible for attempting to route an
-// Ethereum or SDK transaction to an internal ante handler for performing
-// transaction-level processing (e.g. fee payment, signature verification) before
-// being passed onto it's respective handler.
-func NewAnteHandler(
-	ak AccountKeeper,
-	bankKeeper BankKeeper,
-	feegrantKeeper FeegrantKeeper,
-	signModeHandler *txsigning.HandlerMap,
-	ibcKeeper *ibckeeper.Keeper,
-) sdk.AnteHandler {
-	return func(
-		ctx sdk.Context, tx sdk.Tx, sim bool,
-	) (newCtx sdk.Context, err error) {
-		var anteHandler sdk.AnteHandler
+type HandlerOptions struct {
+	authante.HandlerOptions
 
+	IBCKeeper             *ibckeeper.Keeper
+	WasmConfig            *wasmtypes.WasmConfig
+	WasmKeeper            *wasmkeeper.Keeper
+	TXCounterStoreService corestoretypes.KVStoreService
+	CircuitKeeper         *circuitkeeper.Keeper
+}
+
+// NewAnteHandler constructor
+func NewAnteHandler(options HandlerOptions) sdk.AnteHandler {
+	return func(ctx sdk.Context, tx sdk.Tx, sim bool) (newCtx sdk.Context, err error) {
+		var anteDecorators sdk.AnteHandler
+
+		if options.AccountKeeper == nil {
+			panic("account keeper is required for ante builder")
+		}
+		if options.BankKeeper == nil {
+			panic("bank keeper is required for ante builder")
+		}
+		if options.SignModeHandler == nil {
+			panic("sign mode handler is required for ante builder")
+		}
+		if options.WasmConfig == nil {
+			panic("wasm config is required for ante builder")
+		}
+		if options.TXCounterStoreService == nil {
+			panic("wasm store service is required for ante builder")
+		}
+		if options.CircuitKeeper == nil {
+			panic("circuit keeper is required for ante builder")
+		}
+
+		// web3 extension supporting EIP712 ante decorators
 		txWithExtensions, ok := tx.(authante.HasExtensionOptionsTx)
 		if ok {
 			opts := txWithExtensions.GetExtensionOptions()
@@ -86,18 +108,23 @@ func NewAnteHandler(
 					// handle as normal Cosmos SDK tx, except signature is checked for EIP712 representation
 					switch tx.(type) {
 					case sdk.Tx:
-						anteHandler = sdk.ChainAnteDecorators(
-							authante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
+						anteDecorators = sdk.ChainAnteDecorators(
+							authante.NewSetUpContextDecorator(),                                              // outermost AnteDecorator. SetUpContext must be called first
+							wasmkeeper.NewLimitSimulationGasDecorator(options.WasmConfig.SimulationGasLimit), // after setup context to enforce limits early
+							wasmkeeper.NewCountTXDecorator(options.TXCounterStoreService),
+							wasmkeeper.NewGasRegisterDecorator(options.WasmKeeper.GetGasRegister()),
+							circuitante.NewCircuitBreakerDecorator(options.CircuitKeeper),
 							authante.NewValidateBasicDecorator(),
 							authante.NewTxTimeoutHeightDecorator(),
-							authante.NewValidateMemoDecorator(ak),
-							authante.NewConsumeGasForTxSizeDecorator(ak),
-							authante.NewSetPubKeyDecorator(ak), // SetPubKeyDecorator must be called before all signature verification decorators
-							authante.NewValidateSigCountDecorator(ak),
-							NewDeductFeeDecorator(ak, bankKeeper), // overridden for fee delegation
-							authante.NewSigGasConsumeDecorator(ak, DefaultSigVerificationGasConsumer),
-							NewEip712SigVerificationDecorator(ak, signModeHandler), // overidden for EIP712 Tx signatures
-							authante.NewIncrementSequenceDecorator(ak),             // innermost AnteDecorator
+							authante.NewValidateMemoDecorator(options.AccountKeeper),
+							authante.NewConsumeGasForTxSizeDecorator(options.AccountKeeper),
+							authante.NewSetPubKeyDecorator(options.AccountKeeper),
+							authante.NewValidateSigCountDecorator(options.AccountKeeper),
+							NewDeductFeeDecorator(options.AccountKeeper.(AccountKeeper), options.BankKeeper),
+							authante.NewSigGasConsumeDecorator(options.AccountKeeper, DefaultSigVerificationGasConsumer),
+							NewEip712SigVerificationDecorator(options.AccountKeeper.(AccountKeeper), options.SignModeHandler),
+							authante.NewIncrementSequenceDecorator(options.AccountKeeper),
+							ibcante.NewRedundantRelayDecorator(options.IBCKeeper),
 						)
 					default:
 						return ctx, errors.Wrapf(sdkerrors.ErrUnknownRequest, "invalid transaction type: %T", tx)
@@ -108,34 +135,32 @@ func NewAnteHandler(
 					return ctx, sdkerrors.ErrUnknownExtensionOptions
 				}
 
-				return anteHandler(ctx, tx, sim)
+				return anteDecorators(ctx, tx, sim)
 			}
 		}
 
-		// handle as totally normal Cosmos SDK tx
+		// cosmos tx ante decorators
+		anteDecorators = sdk.ChainAnteDecorators(
+			authante.NewSetUpContextDecorator(),                                              // outermost AnteDecorator. SetUpContext must be called first
+			wasmkeeper.NewLimitSimulationGasDecorator(options.WasmConfig.SimulationGasLimit), // after setup context to enforce limits early
+			wasmkeeper.NewCountTXDecorator(options.TXCounterStoreService),
+			wasmkeeper.NewGasRegisterDecorator(options.WasmKeeper.GetGasRegister()),
+			circuitante.NewCircuitBreakerDecorator(options.CircuitKeeper),
+			authante.NewExtensionOptionsDecorator(options.ExtensionOptionChecker),
+			authante.NewValidateBasicDecorator(),
+			authante.NewTxTimeoutHeightDecorator(),
+			authante.NewValidateMemoDecorator(options.AccountKeeper),
+			authante.NewConsumeGasForTxSizeDecorator(options.AccountKeeper),
+			authante.NewDeductFeeDecorator(options.AccountKeeper, options.BankKeeper, options.FeegrantKeeper, options.TxFeeChecker),
+			authante.NewSetPubKeyDecorator(options.AccountKeeper), // SetPubKeyDecorator must be called before all signature verification decorators
+			authante.NewValidateSigCountDecorator(options.AccountKeeper),
+			authante.NewSigGasConsumeDecorator(options.AccountKeeper, options.SigGasConsumer),
+			authante.NewSigVerificationDecorator(options.AccountKeeper, options.SignModeHandler),
+			authante.NewIncrementSequenceDecorator(options.AccountKeeper),
+			ibcante.NewRedundantRelayDecorator(options.IBCKeeper),
+		)
 
-		switch tx.(type) {
-		case sdk.Tx:
-			anteHandler = sdk.ChainAnteDecorators(
-				authante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
-				authante.NewExtensionOptionsDecorator(nil),
-				authante.NewValidateBasicDecorator(),
-				authante.NewTxTimeoutHeightDecorator(),
-				authante.NewValidateMemoDecorator(ak),
-				authante.NewConsumeGasForTxSizeDecorator(ak),
-				authante.NewDeductFeeDecorator(ak, bankKeeper, feegrantKeeper, nil),
-				authante.NewSetPubKeyDecorator(ak), // SetPubKeyDecorator must be called before all signature verification decorators
-				authante.NewValidateSigCountDecorator(ak),
-				authante.NewSigGasConsumeDecorator(ak, DefaultSigVerificationGasConsumer),
-				authante.NewSigVerificationDecorator(ak, signModeHandler),
-				authante.NewIncrementSequenceDecorator(ak),
-				ibcante.NewRedundantRelayDecorator(ibcKeeper),
-			)
-		default:
-			return ctx, errors.Wrapf(sdkerrors.ErrUnknownRequest, "invalid transaction type: %T", tx)
-		}
-
-		return anteHandler(ctx, tx, sim)
+		return anteDecorators(ctx, tx, sim)
 	}
 }
 
