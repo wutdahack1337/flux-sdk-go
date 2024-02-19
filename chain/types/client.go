@@ -1,6 +1,7 @@
 package types
 
 import (
+	evmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/evm/types"
 	"github.com/pkg/errors"
 	"os"
 
@@ -52,6 +53,7 @@ func RegisterTypes() types.InterfaceRegistry {
 
 	RegisterInterfaces(interfaceRegistry)
 	fnfttypes.RegisterInterfaces(interfaceRegistry)
+	evmtypes.RegisterInterfaces(interfaceRegistry)
 
 	// more cosmos types
 	authtypes.RegisterInterfaces(interfaceRegistry)

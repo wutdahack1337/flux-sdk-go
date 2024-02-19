@@ -15,7 +15,7 @@ func NewTxFactory(clientCtx client.Context) tx.Factory {
 		WithTxConfig(clientCtx.TxConfig).
 		WithAccountRetriever(clientCtx.AccountRetriever).
 		WithSimulateAndExecute(true).
-		WithGasAdjustment(1.5).
+		WithGasAdjustment(2).
 		WithChainID(clientCtx.ChainID).
 		WithSignMode(signing.SignMode_SIGN_MODE_DIRECT)
 }

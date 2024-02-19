@@ -638,7 +638,7 @@ func (c *chainClient) broadcastTx(
 	var header metadata.MD
 	ctx = c.getCookie(ctx)
 	res, err := c.txClient.BroadcastTx(ctx, &req, grpc.Header(&header))
-	if !await || err != nil {
+	if err != nil || res.TxResponse.Code != 0 || !await {
 		return res, err
 	}
 
@@ -727,6 +727,8 @@ func (c *chainClient) runBatchBroadcast() {
 		c.accSeq++
 		log.Debugln("nonce incremented to", c.accSeq)
 		log.Debugln("gas wanted: ", c.gasWanted)
+		log.Debugln("gas used: ", res.TxResponse.GasUsed)
+
 		c.Broadcasted <- struct{}{}
 	}
 
