@@ -21,7 +21,7 @@ func main() {
 		"fluxd",
 		"file",
 		os.Getenv("HOME")+"/.fluxd",
-		strings.NewReader("12345678"),
+		strings.NewReader("12345678\n"),
 		chainclient.GetCryptoCodec(),
 	)
 	if err != nil {
