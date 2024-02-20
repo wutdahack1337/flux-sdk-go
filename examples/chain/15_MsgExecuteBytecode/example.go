@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
 	"os"
 	"strings"
@@ -55,9 +56,16 @@ func main() {
 	}
 
 	// prepare tx msg
-	msg := &evmtypes.MsgExecuteContract{
-		Sender: senderAddress.String(),
-		// Bytecode: []byte("\x43\x60\x00\x52\x59\x60\x00\xf3"),
+	/*
+		{
+			mstore(0, sload(0))
+			return(0, 32)
+		}
+	*/
+	bytecode, _ := hex.DecodeString("60235f5500")
+	msg := &evmtypes.MsgExecuteBytecode{
+		Sender:   senderAddress.String(),
+		Bytecode: bytecode,
 	}
 
 	err = chainClient.QueueBroadcastMsg(msg)
