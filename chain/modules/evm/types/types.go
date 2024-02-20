@@ -9,4 +9,7 @@ const (
 
 	// RouterKey is the message route for nft
 	RouterKey = ModuleName
+
+	HashLen       = 32
+	EthAddressLen = 20
 )

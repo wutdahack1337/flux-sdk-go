@@ -2,14 +2,15 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"strings"
+
 	evmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/evm/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"os"
-	"strings"
 
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 )
@@ -54,9 +55,9 @@ func main() {
 	}
 
 	// prepare tx msg
-	msg := &evmtypes.MsgExecuteBytecode{
-		Sender:   senderAddress.String(),
-		Bytecode: []byte("\x43\x60\x00\x52\x59\x60\x00\xf3"),
+	msg := &evmtypes.MsgExecuteContract{
+		Sender: senderAddress.String(),
+		// Bytecode: []byte("\x43\x60\x00\x52\x59\x60\x00\xf3"),
 	}
 
 	err = chainClient.QueueBroadcastMsg(msg)
