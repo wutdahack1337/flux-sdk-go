@@ -64,5 +64,5 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("resp:", txResp)
+	fmt.Println("resp:", txResp.TxResponse.Data, "hash:", txResp.TxResponse.TxHash)
 }
