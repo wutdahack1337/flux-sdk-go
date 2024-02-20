@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
 	evmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/evm/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
@@ -54,9 +55,16 @@ func main() {
 	}
 
 	// prepare tx msg
+	/*
+		{
+			mstore(0, sload(0))
+			return(0, 32)
+		}
+	*/
+	bytecode, _ := hex.DecodeString("60235f5500")
 	msg := &evmtypes.MsgExecuteBytecode{
 		Sender:   senderAddress.String(),
-		Bytecode: []byte("\x43\x60\x00\x52\x59\x60\x00\xf3"),
+		Bytecode: bytecode,
 	}
 
 	err = chainClient.QueueBroadcastMsg(msg)
