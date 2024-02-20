@@ -3,14 +3,15 @@ package main
 import (
 	"encoding/hex"
 	"fmt"
+	"os"
+	"strings"
+
 	evmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/evm/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"os"
-	"strings"
 
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 )
