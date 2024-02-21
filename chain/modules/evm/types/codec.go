@@ -11,7 +11,7 @@ import (
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgDeployContract{},
-		&MsgExecuteBytecode{},
+		&MsgExecuteContract{},
 	)
 
 	//registry.RegisterImplementations(
@@ -30,5 +30,5 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 // on the provided LegacyAmino codec. These types are used for Amino JSON serialization.
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgDeployContract{}, "evm/MsgDeployContract", nil)
-	cdc.RegisterConcrete(&MsgExecuteBytecode{}, "evm/MsgExecuteBytecode", nil)
+	cdc.RegisterConcrete(&MsgExecuteContract{}, "evm/MsgExecuteContract", nil)
 }
