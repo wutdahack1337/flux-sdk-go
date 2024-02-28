@@ -6,7 +6,9 @@ package types
 import (
 	context "context"
 	fmt "fmt"
+	_ "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/cosmos-sdk/types/query"
+	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
@@ -29,21 +31,24 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type QueryGatewayContracts struct {
+type QueryDenomLinkRequest struct {
+	SrcPlane Plane  `protobuf:"varint,1,opt,name=src_plane,json=srcPlane,proto3,enum=flux.astromesh.v1beta1.Plane" json:"src_plane,omitempty"`
+	DstPlane Plane  `protobuf:"varint,2,opt,name=dst_plane,json=dstPlane,proto3,enum=flux.astromesh.v1beta1.Plane" json:"dst_plane,omitempty"`
+	SrcAddr  string `protobuf:"bytes,3,opt,name=src_addr,json=srcAddr,proto3" json:"src_addr,omitempty"`
 }
 
-func (m *QueryGatewayContracts) Reset()         { *m = QueryGatewayContracts{} }
-func (m *QueryGatewayContracts) String() string { return proto.CompactTextString(m) }
-func (*QueryGatewayContracts) ProtoMessage()    {}
-func (*QueryGatewayContracts) Descriptor() ([]byte, []int) {
+func (m *QueryDenomLinkRequest) Reset()         { *m = QueryDenomLinkRequest{} }
+func (m *QueryDenomLinkRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryDenomLinkRequest) ProtoMessage()    {}
+func (*QueryDenomLinkRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f40df128bda15e7e, []int{0}
 }
-func (m *QueryGatewayContracts) XXX_Unmarshal(b []byte) error {
+func (m *QueryDenomLinkRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryGatewayContracts) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryDenomLinkRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryGatewayContracts.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryDenomLinkRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -53,35 +58,55 @@ func (m *QueryGatewayContracts) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-func (m *QueryGatewayContracts) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryGatewayContracts.Merge(m, src)
+func (m *QueryDenomLinkRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryDenomLinkRequest.Merge(m, src)
 }
-func (m *QueryGatewayContracts) XXX_Size() int {
+func (m *QueryDenomLinkRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryGatewayContracts) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryGatewayContracts.DiscardUnknown(m)
+func (m *QueryDenomLinkRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryDenomLinkRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryGatewayContracts proto.InternalMessageInfo
+var xxx_messageInfo_QueryDenomLinkRequest proto.InternalMessageInfo
 
-type QueryGatewayContractsResponse struct {
-	Vm      []string `protobuf:"bytes,1,rep,name=vm,proto3" json:"vm,omitempty"`
-	Address []string `protobuf:"bytes,2,rep,name=address,proto3" json:"address,omitempty"`
+func (m *QueryDenomLinkRequest) GetSrcPlane() Plane {
+	if m != nil {
+		return m.SrcPlane
+	}
+	return Plane_COSMOS
 }
 
-func (m *QueryGatewayContractsResponse) Reset()         { *m = QueryGatewayContractsResponse{} }
-func (m *QueryGatewayContractsResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryGatewayContractsResponse) ProtoMessage()    {}
-func (*QueryGatewayContractsResponse) Descriptor() ([]byte, []int) {
+func (m *QueryDenomLinkRequest) GetDstPlane() Plane {
+	if m != nil {
+		return m.DstPlane
+	}
+	return Plane_COSMOS
+}
+
+func (m *QueryDenomLinkRequest) GetSrcAddr() string {
+	if m != nil {
+		return m.SrcAddr
+	}
+	return ""
+}
+
+type QueryDenomLinkResponse struct {
+	DstAddr string `protobuf:"bytes,1,opt,name=dst_addr,json=dstAddr,proto3" json:"dst_addr,omitempty"`
+}
+
+func (m *QueryDenomLinkResponse) Reset()         { *m = QueryDenomLinkResponse{} }
+func (m *QueryDenomLinkResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryDenomLinkResponse) ProtoMessage()    {}
+func (*QueryDenomLinkResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f40df128bda15e7e, []int{1}
 }
-func (m *QueryGatewayContractsResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryDenomLinkResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryGatewayContractsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryDenomLinkResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryGatewayContractsResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryDenomLinkResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -91,35 +116,28 @@ func (m *QueryGatewayContractsResponse) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
-func (m *QueryGatewayContractsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryGatewayContractsResponse.Merge(m, src)
+func (m *QueryDenomLinkResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryDenomLinkResponse.Merge(m, src)
 }
-func (m *QueryGatewayContractsResponse) XXX_Size() int {
+func (m *QueryDenomLinkResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryGatewayContractsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryGatewayContractsResponse.DiscardUnknown(m)
+func (m *QueryDenomLinkResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryDenomLinkResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryGatewayContractsResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryDenomLinkResponse proto.InternalMessageInfo
 
-func (m *QueryGatewayContractsResponse) GetVm() []string {
+func (m *QueryDenomLinkResponse) GetDstAddr() string {
 	if m != nil {
-		return m.Vm
+		return m.DstAddr
 	}
-	return nil
-}
-
-func (m *QueryGatewayContractsResponse) GetAddress() []string {
-	if m != nil {
-		return m.Address
-	}
-	return nil
+	return ""
 }
 
 func init() {
-	proto.RegisterType((*QueryGatewayContracts)(nil), "flux.astromesh.v1beta1.QueryGatewayContracts")
-	proto.RegisterType((*QueryGatewayContractsResponse)(nil), "flux.astromesh.v1beta1.QueryGatewayContractsResponse")
+	proto.RegisterType((*QueryDenomLinkRequest)(nil), "flux.astromesh.v1beta1.QueryDenomLinkRequest")
+	proto.RegisterType((*QueryDenomLinkResponse)(nil), "flux.astromesh.v1beta1.QueryDenomLinkResponse")
 }
 
 func init() {
@@ -127,28 +145,34 @@ func init() {
 }
 
 var fileDescriptor_f40df128bda15e7e = []byte{
-	// 331 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x90, 0xcd, 0x4a, 0xc3, 0x40,
-	0x14, 0x85, 0x9b, 0x88, 0x8a, 0xb3, 0x10, 0x09, 0xa8, 0xa5, 0x68, 0x90, 0x2c, 0xc4, 0x1f, 0xcc,
-	0x50, 0xc5, 0x8d, 0x4b, 0x85, 0x8a, 0x20, 0x82, 0xa5, 0x2b, 0x37, 0x72, 0x93, 0x8c, 0x69, 0x20,
-	0x33, 0x37, 0xe6, 0x4e, 0x6a, 0xbb, 0xf5, 0x09, 0x04, 0x1f, 0xc3, 0xb5, 0xef, 0xe0, 0xb2, 0xe0,
-	0xc6, 0xa5, 0xb4, 0x3e, 0x88, 0x74, 0xfa, 0xa3, 0x48, 0xbb, 0x70, 0x39, 0x73, 0xbe, 0x73, 0xce,
-	0xe5, 0x30, 0xef, 0x2e, 0x2d, 0xda, 0x1c, 0x48, 0xe7, 0x28, 0x05, 0x35, 0x79, 0xab, 0x1a, 0x08,
-	0x0d, 0x55, 0x7e, 0x5f, 0x88, 0xbc, 0xe3, 0x67, 0x39, 0x6a, 0x74, 0xd6, 0x06, 0x8c, 0x3f, 0x61,
-	0xfc, 0x11, 0x53, 0xd9, 0x0b, 0x91, 0x24, 0x12, 0x0f, 0x80, 0xc4, 0xd0, 0x30, 0xb1, 0x67, 0x10,
-	0x27, 0x0a, 0x74, 0x82, 0x6a, 0x98, 0x51, 0xd9, 0x88, 0x11, 0xe3, 0x54, 0x70, 0xc8, 0x12, 0x0e,
-	0x4a, 0xa1, 0x36, 0x22, 0x8d, 0xd4, 0xed, 0x19, 0x57, 0xfc, 0x74, 0x1a, 0xce, 0x5b, 0x67, 0xab,
-	0xd7, 0x83, 0x9e, 0x73, 0xd0, 0xe2, 0x01, 0x3a, 0x67, 0xa8, 0x74, 0x0e, 0xa1, 0x26, 0xef, 0x82,
-	0x6d, 0x4e, 0x15, 0xea, 0x82, 0x32, 0x54, 0x24, 0x9c, 0x65, 0x66, 0xb7, 0x64, 0xd9, 0xda, 0x9a,
-	0xdb, 0x59, 0xaa, 0xdb, 0x2d, 0xe9, 0x94, 0xd9, 0x22, 0x44, 0x51, 0x2e, 0x88, 0xca, 0xb6, 0xf9,
-	0x1c, 0x3f, 0x0f, 0x5f, 0x2d, 0x36, 0x6f, 0xb2, 0x9c, 0x17, 0x8b, 0xad, 0xfc, 0x0d, 0x74, 0x0e,
-	0xfc, 0xe9, 0x6b, 0xf8, 0x53, 0xfb, 0x2b, 0xc7, 0xff, 0xc2, 0xc7, 0xe7, 0x7a, 0xd5, 0xc7, 0xf7,
-	0xaf, 0x67, 0x7b, 0xdf, 0xd9, 0xe5, 0x33, 0x96, 0x89, 0x87, 0xce, 0xdb, 0x70, 0x6c, 0x3d, 0x6d,
-	0xbc, 0xf5, 0x5c, 0xab, 0xdb, 0x73, 0xad, 0xcf, 0x9e, 0x6b, 0x3d, 0xf5, 0xdd, 0x52, 0xb7, 0xef,
-	0x96, 0x3e, 0xfa, 0x6e, 0xe9, 0xe6, 0x24, 0x4e, 0x74, 0xb3, 0x08, 0xfc, 0x10, 0x25, 0xaf, 0xa5,
-	0x45, 0xfb, 0xaa, 0xd6, 0xb8, 0x84, 0x80, 0x4c, 0x74, 0xc4, 0xc3, 0x26, 0x24, 0x8a, 0x4b, 0x8c,
-	0x8a, 0x54, 0xd0, 0xaf, 0x26, 0xdd, 0xc9, 0x04, 0x05, 0x0b, 0x66, 0xf8, 0xa3, 0xef, 0x00, 0x00,
-	0x00, 0xff, 0xff, 0x47, 0x93, 0xc0, 0x50, 0x28, 0x02, 0x00, 0x00,
+	// 420 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x92, 0xbf, 0x8e, 0xd3, 0x40,
+	0x10, 0x87, 0xb3, 0x87, 0xf8, 0x13, 0x17, 0x14, 0x16, 0x9c, 0x8e, 0x08, 0xcc, 0xc9, 0xa2, 0x38,
+	0x21, 0xe1, 0xd5, 0xdd, 0x75, 0xd7, 0x81, 0x20, 0x34, 0x01, 0x41, 0x94, 0x8a, 0x26, 0x5a, 0x7b,
+	0x17, 0x67, 0x15, 0x7b, 0xc7, 0xd9, 0x59, 0xa3, 0x44, 0x51, 0x1a, 0x9e, 0x00, 0x89, 0xb7, 0xe0,
+	0x0d, 0xa8, 0x69, 0x28, 0x23, 0xd1, 0x50, 0xa2, 0x84, 0x07, 0x41, 0xbb, 0x36, 0x56, 0x74, 0x8a,
+	0xa5, 0x74, 0x23, 0xcf, 0xf7, 0xcd, 0xfc, 0x3c, 0xb6, 0x17, 0x7e, 0xcc, 0xca, 0x39, 0x65, 0x68,
+	0x34, 0xe4, 0x02, 0x27, 0xf4, 0xd3, 0x79, 0x2c, 0x0c, 0x3b, 0xa7, 0xb3, 0x52, 0xe8, 0x45, 0x54,
+	0x68, 0x30, 0xe0, 0x1f, 0x5b, 0x26, 0x6a, 0x98, 0xa8, 0x66, 0x7a, 0xf7, 0x52, 0x48, 0xc1, 0x21,
+	0xd4, 0x56, 0x15, 0xdd, 0x0b, 0x12, 0xc0, 0x1c, 0x90, 0xc6, 0x0c, 0x45, 0x33, 0x2e, 0x01, 0xa9,
+	0xea, 0xfe, 0xd3, 0xdd, 0xbe, 0x5b, 0xd3, 0x50, 0x05, 0x4b, 0xa5, 0x62, 0x46, 0xc2, 0x7f, 0xf6,
+	0x61, 0x0a, 0x90, 0x66, 0x82, 0xb2, 0x42, 0x52, 0xa6, 0x14, 0x18, 0xd7, 0xc4, 0xba, 0xfb, 0xb8,
+	0x25, 0xbb, 0x99, 0xd7, 0xc0, 0x93, 0x16, 0x20, 0x15, 0x4a, 0xa0, 0xac, 0xc7, 0x84, 0xdf, 0x88,
+	0x77, 0xff, 0xbd, 0xcd, 0xf1, 0x52, 0x28, 0xc8, 0x07, 0x52, 0x4d, 0x87, 0x62, 0x56, 0x0a, 0x34,
+	0xfe, 0x95, 0xd7, 0x45, 0x9d, 0x8c, 0x8b, 0x8c, 0x29, 0x71, 0x42, 0x4e, 0xc9, 0xd9, 0xdd, 0x8b,
+	0x47, 0xd1, 0xfe, 0x63, 0x44, 0xef, 0x2c, 0x34, 0xbc, 0x83, 0x3a, 0x71, 0x95, 0x75, 0x39, 0x9a,
+	0xda, 0x3d, 0x3a, 0xc8, 0xe5, 0x68, 0x2a, 0xf7, 0x81, 0x67, 0xe7, 0x8c, 0x19, 0xe7, 0xfa, 0xe4,
+	0xc6, 0x29, 0x39, 0xeb, 0x0e, 0x6f, 0xa3, 0x4e, 0x9e, 0x73, 0xae, 0xc3, 0x4b, 0xef, 0xf8, 0x7a,
+	0x56, 0x2c, 0x40, 0xa1, 0x93, 0xec, 0x42, 0x27, 0x91, 0x4a, 0xe2, 0x68, 0xac, 0x74, 0xf1, 0x83,
+	0x78, 0x37, 0x9d, 0xe5, 0x7f, 0x27, 0x5e, 0xb7, 0x51, 0xfd, 0x67, 0x6d, 0x81, 0xf6, 0x9e, 0xa3,
+	0x17, 0x1d, 0x8a, 0x57, 0x89, 0xc2, 0x37, 0x9f, 0x7f, 0xfd, 0xfd, 0x7a, 0xf4, 0xda, 0x7f, 0x45,
+	0x5b, 0xbe, 0x03, 0xb7, 0xca, 0x38, 0x93, 0x6a, 0x4a, 0x97, 0xcd, 0xa1, 0x57, 0x74, 0xd9, 0x1c,
+	0x6e, 0x55, 0x3d, 0xb7, 0xef, 0xb4, 0x7a, 0x31, 0xfa, 0xb9, 0x09, 0xc8, 0x7a, 0x13, 0x90, 0x3f,
+	0x9b, 0x80, 0x7c, 0xd9, 0x06, 0x9d, 0xf5, 0x36, 0xe8, 0xfc, 0xde, 0x06, 0x9d, 0x0f, 0x57, 0xa9,
+	0x34, 0x93, 0x32, 0x8e, 0x12, 0xc8, 0x69, 0x3f, 0x2b, 0xe7, 0x6f, 0xfb, 0xa3, 0x01, 0x8b, 0xd1,
+	0xad, 0xe5, 0x34, 0x99, 0x30, 0xa9, 0x68, 0x0e, 0xbc, 0xcc, 0x04, 0xee, 0xa4, 0x30, 0x8b, 0x42,
+	0x60, 0x7c, 0xcb, 0xfd, 0x04, 0x97, 0xff, 0x02, 0x00, 0x00, 0xff, 0xff, 0x54, 0x65, 0xd2, 0x65,
+	0x09, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -163,7 +187,7 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
-	GatewayContracts(ctx context.Context, in *QueryGatewayContracts, opts ...grpc.CallOption) (*QueryGatewayContractsResponse, error)
+	DenomLink(ctx context.Context, in *QueryDenomLinkRequest, opts ...grpc.CallOption) (*QueryDenomLinkResponse, error)
 }
 
 type queryClient struct {
@@ -174,9 +198,9 @@ func NewQueryClient(cc grpc1.ClientConn) QueryClient {
 	return &queryClient{cc}
 }
 
-func (c *queryClient) GatewayContracts(ctx context.Context, in *QueryGatewayContracts, opts ...grpc.CallOption) (*QueryGatewayContractsResponse, error) {
-	out := new(QueryGatewayContractsResponse)
-	err := c.cc.Invoke(ctx, "/flux.astromesh.v1beta1.Query/GatewayContracts", in, out, opts...)
+func (c *queryClient) DenomLink(ctx context.Context, in *QueryDenomLinkRequest, opts ...grpc.CallOption) (*QueryDenomLinkResponse, error) {
+	out := new(QueryDenomLinkResponse)
+	err := c.cc.Invoke(ctx, "/flux.astromesh.v1beta1.Query/DenomLink", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -185,35 +209,35 @@ func (c *queryClient) GatewayContracts(ctx context.Context, in *QueryGatewayCont
 
 // QueryServer is the server API for Query service.
 type QueryServer interface {
-	GatewayContracts(context.Context, *QueryGatewayContracts) (*QueryGatewayContractsResponse, error)
+	DenomLink(context.Context, *QueryDenomLinkRequest) (*QueryDenomLinkResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
 type UnimplementedQueryServer struct {
 }
 
-func (*UnimplementedQueryServer) GatewayContracts(ctx context.Context, req *QueryGatewayContracts) (*QueryGatewayContractsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GatewayContracts not implemented")
+func (*UnimplementedQueryServer) DenomLink(ctx context.Context, req *QueryDenomLinkRequest) (*QueryDenomLinkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DenomLink not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
 	s.RegisterService(&_Query_serviceDesc, srv)
 }
 
-func _Query_GatewayContracts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryGatewayContracts)
+func _Query_DenomLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryDenomLinkRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GatewayContracts(ctx, in)
+		return srv.(QueryServer).DenomLink(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/flux.astromesh.v1beta1.Query/GatewayContracts",
+		FullMethod: "/flux.astromesh.v1beta1.Query/DenomLink",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GatewayContracts(ctx, req.(*QueryGatewayContracts))
+		return srv.(QueryServer).DenomLink(ctx, req.(*QueryDenomLinkRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -223,15 +247,15 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GatewayContracts",
-			Handler:    _Query_GatewayContracts_Handler,
+			MethodName: "DenomLink",
+			Handler:    _Query_DenomLink_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "flux/astromesh/v1beta1/query.proto",
 }
 
-func (m *QueryGatewayContracts) Marshal() (dAtA []byte, err error) {
+func (m *QueryDenomLinkRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -241,20 +265,37 @@ func (m *QueryGatewayContracts) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryGatewayContracts) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryDenomLinkRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryGatewayContracts) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryDenomLinkRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if len(m.SrcAddr) > 0 {
+		i -= len(m.SrcAddr)
+		copy(dAtA[i:], m.SrcAddr)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.SrcAddr)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.DstPlane != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.DstPlane))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.SrcPlane != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.SrcPlane))
+		i--
+		dAtA[i] = 0x8
+	}
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryGatewayContractsResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryDenomLinkResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -264,33 +305,22 @@ func (m *QueryGatewayContractsResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryGatewayContractsResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryDenomLinkResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryGatewayContractsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryDenomLinkResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Address) > 0 {
-		for iNdEx := len(m.Address) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.Address[iNdEx])
-			copy(dAtA[i:], m.Address[iNdEx])
-			i = encodeVarintQuery(dAtA, i, uint64(len(m.Address[iNdEx])))
-			i--
-			dAtA[i] = 0x12
-		}
-	}
-	if len(m.Vm) > 0 {
-		for iNdEx := len(m.Vm) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.Vm[iNdEx])
-			copy(dAtA[i:], m.Vm[iNdEx])
-			i = encodeVarintQuery(dAtA, i, uint64(len(m.Vm[iNdEx])))
-			i--
-			dAtA[i] = 0xa
-		}
+	if len(m.DstAddr) > 0 {
+		i -= len(m.DstAddr)
+		copy(dAtA[i:], m.DstAddr)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.DstAddr)))
+		i--
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -306,32 +336,34 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *QueryGatewayContracts) Size() (n int) {
+func (m *QueryDenomLinkRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
+	if m.SrcPlane != 0 {
+		n += 1 + sovQuery(uint64(m.SrcPlane))
+	}
+	if m.DstPlane != 0 {
+		n += 1 + sovQuery(uint64(m.DstPlane))
+	}
+	l = len(m.SrcAddr)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
 	return n
 }
 
-func (m *QueryGatewayContractsResponse) Size() (n int) {
+func (m *QueryDenomLinkResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if len(m.Vm) > 0 {
-		for _, s := range m.Vm {
-			l = len(s)
-			n += 1 + l + sovQuery(uint64(l))
-		}
-	}
-	if len(m.Address) > 0 {
-		for _, s := range m.Address {
-			l = len(s)
-			n += 1 + l + sovQuery(uint64(l))
-		}
+	l = len(m.DstAddr)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
 }
@@ -342,7 +374,7 @@ func sovQuery(x uint64) (n int) {
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *QueryGatewayContracts) Unmarshal(dAtA []byte) error {
+func (m *QueryDenomLinkRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -365,12 +397,82 @@ func (m *QueryGatewayContracts) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryGatewayContracts: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryDenomLinkRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryGatewayContracts: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryDenomLinkRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SrcPlane", wireType)
+			}
+			m.SrcPlane = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.SrcPlane |= Plane(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DstPlane", wireType)
+			}
+			m.DstPlane = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.DstPlane |= Plane(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SrcAddr", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SrcAddr = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])
@@ -392,7 +494,7 @@ func (m *QueryGatewayContracts) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryGatewayContractsResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryDenomLinkResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -415,15 +517,15 @@ func (m *QueryGatewayContractsResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryGatewayContractsResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryDenomLinkResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryGatewayContractsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryDenomLinkResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Vm", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field DstAddr", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -451,39 +553,7 @@ func (m *QueryGatewayContractsResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Vm = append(m.Vm, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Address = append(m.Address, string(dAtA[iNdEx:postIndex]))
+			m.DstAddr = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

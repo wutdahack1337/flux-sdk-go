@@ -122,6 +122,8 @@ type VmKeeper interface {
 	KVGetStorage(ctx context.Context, addr, k []byte) ([]byte, bool)
 	KVSetStorage(ctx context.Context, addr, k, v []byte)
 	KVGetCode(ctx context.Context, addr []byte) ([]byte, bool)
+	EmitExecutionEvent(ctx context.Context, address []byte)
+	EmitLog(ctx context.Context, address []byte, topics [][]byte, data []byte)
 }
 
 type HostContext interface {
