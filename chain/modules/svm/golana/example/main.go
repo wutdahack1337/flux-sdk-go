@@ -53,6 +53,6 @@ func main() {
 
 	goAccounts := golana.GetTxContextAccounts(txCtx.TxContext)
 	for _, a := range goAccounts {
-		a.Debug()
+		golana.AccountDebug(a)
 	}
 }
