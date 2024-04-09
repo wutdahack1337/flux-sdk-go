@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"github.com/FluxNFTLabs/sdk-go/chain/modules/svm/golana"
+	"github.com/gagliardetto/solana-go"
+	"github.com/gagliardetto/solana-go/programs/system"
 	"os"
 	"strings"
 
-	"github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
@@ -54,81 +56,38 @@ func main() {
 		panic(err)
 	}
 
-	msg1 := &types.MsgTransaction{
-		Sender: senderAddress.String(),
-		Accounts: []string{
-			"5u3ScQH8YNWoWgjuyV2218d4V1HtQSoKf65JpuXXwXVK",
-			"CLfvh1736T8KBUWBqSNypizgL5KdZUekJ26gFXV3Lra1",
-			"8BTVbEdAFbqsEsjngmaMByn1m9j8jDFtEFFusEwGeMZY",
-			"11111111111111111111111111111111",
-			"BPFLoaderUpgradeab1e11111111111111111111111",
-		},
-		Instructions: []*types.Instruction{
-			{
-				ProgramIndex: []uint32{3},
-				Accounts: []*types.InstructionAccount{
-					{
-						IdIndex:     0,
-						CallerIndex: 0,
-						CalleeIndex: 0,
-						IsSigner:    true,
-						IsWritable:  true,
-					},
-					{
-						IdIndex:     1,
-						CallerIndex: 1,
-						CalleeIndex: 1,
-						IsSigner:    true,
-						IsWritable:  true,
-					},
-				},
-				Data: []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184, 13, 1, 0, 0, 0, 0, 0, 2, 168, 246, 145, 78, 136, 161, 176, 226, 16, 21, 62, 247, 99, 174, 43, 0, 194, 185, 61, 22, 193, 36, 210, 192, 83, 122, 16, 4, 128, 0, 0},
-			},
-			{
-				ProgramIndex: []uint32{3},
-				Accounts: []*types.InstructionAccount{
-					{
-						IdIndex:     0,
-						CallerIndex: 0,
-						CalleeIndex: 0,
-						IsSigner:    true,
-						IsWritable:  true,
-					},
-					{
-						IdIndex:     2,
-						CallerIndex: 2,
-						CalleeIndex: 1,
-						IsSigner:    true,
-						IsWritable:  true,
-					},
-				},
-				Data: []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 36, 0, 0, 0, 0, 0, 0, 0, 2, 168, 246, 145, 78, 136, 161, 176, 226, 16, 21, 62, 247, 99, 174, 43, 0, 194, 185, 61, 22, 193, 36, 210, 192, 83, 122, 16, 4, 128, 0, 0},
-			},
-			{
-				ProgramIndex: []uint32{4},
-				Accounts: []*types.InstructionAccount{
-					{
-						IdIndex:     1,
-						CallerIndex: 1,
-						CalleeIndex: 0,
-						IsSigner:    true,
-						IsWritable:  true,
-					},
-					{
-						IdIndex:     0,
-						CallerIndex: 0,
-						CalleeIndex: 1,
-						IsSigner:    true,
-						IsWritable:  true,
-					},
-				},
-				Data: []byte{0, 0, 0, 0},
-			},
-		},
-		ComputeBudget: 1000000,
-	}
+	// accounts
+	senderId := solana.PublicKeyFromBytes(senderAddress.Bytes())
+	programId := solana.MustPublicKeyFromBase58("8BTVbEdAFbqsEsjngmaMByn1m9j8jDFtEFFusEwGeMZY")
+	programBufferId := solana.NewWallet().PublicKey()
+	upgradableLoaderId := solana.BPFLoaderUpgradeableProgramID
 
-	res, err := chainClient.SyncBroadcastSvmMsg(msg1)
+	// build msg
+	initTxBuilder := solana.NewTransactionBuilder()
+	createAccountIx := system.NewCreateAccountInstruction(0, uint64(69000)+48,
+		solana.BPFLoaderUpgradeableProgramID, senderId, programBufferId,
+	).Build()
+	createProgramAccountIx := system.NewCreateAccountInstruction(
+		0, 36,
+		upgradableLoaderId, senderId, programId,
+	).Build()
+	initBufferAccountIx := solana.NewInstruction(
+		solana.BPFLoaderUpgradeableProgramID,
+		solana.AccountMetaSlice{
+			{PublicKey: programBufferId, IsWritable: true, IsSigner: true},
+			{PublicKey: senderId, IsWritable: true, IsSigner: true},
+		},
+		[]byte{0, 0, 0, 0},
+	)
+	initTxBuilder.AddInstruction(createAccountIx).
+		AddInstruction(createProgramAccountIx).
+		AddInstruction(initBufferAccountIx)
+
+	tx, err := initTxBuilder.Build()
+	msg := golana.ToCosmosMsg(senderAddress.String(), 1000000, tx)
+
+	// broadcast msg
+	res, err := chainClient.SyncBroadcastSvmMsg(msg)
 
 	fmt.Println(res, err)
 }
