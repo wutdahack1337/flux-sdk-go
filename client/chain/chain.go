@@ -4,7 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/signing"
+	"github.com/golang/protobuf/proto"
 	"math"
 	"net/http"
 	"os"
@@ -66,6 +68,8 @@ type ChainClient interface {
 	SyncBroadcastSignedTx(tyBytes []byte) (*txtypes.BroadcastTxResponse, error)
 	AsyncBroadcastSignedTx(txBytes []byte) (*txtypes.BroadcastTxResponse, error)
 	QueueBroadcastMsg(msgs ...sdk.Msg) error
+
+	SyncBroadcastSvmMsg(msg *svmtypes.MsgTransaction) (*txtypes.BroadcastTxResponse, error)
 
 	GetBankBalances(ctx context.Context, address string) (*banktypes.QueryAllBalancesResponse, error)
 	GetBankBalance(ctx context.Context, address string, denom string) (*banktypes.QueryBalanceResponse, error)
@@ -806,4 +810,71 @@ func (c *chainClient) BuildGenericAuthz(granter string, grantee string, msgtype 
 
 func (c *chainClient) BroadcastDone() {
 	<-c.Broadcasted
+}
+
+func (c *chainClient) SyncBroadcastSvmMsg(msg *svmtypes.MsgTransaction) (*txtypes.BroadcastTxResponse, error) {
+	c.txFactory = c.txFactory.WithSequence(c.accSeq)
+	c.txFactory = c.txFactory.WithAccountNumber(c.accNum)
+	txf, err := c.prepareFactory(c.ClientContext(), c.txFactory)
+	if err != nil {
+		err = errors.Wrap(err, "failed to prepareFactory")
+		return nil, err
+	}
+
+	simTxBytes, err := txf.BuildSimTx(msg)
+	if err != nil {
+		err = errors.Wrap(err, "failed to build sim tx bytes")
+		return nil, err
+	}
+
+	// simulate
+	ctx := context.Background()
+	ctx = c.getCookie(ctx)
+	var header metadata.MD
+	simRes, err := c.txClient.Simulate(ctx, &txtypes.SimulateRequest{TxBytes: simTxBytes}, grpc.Header(&header))
+	if err != nil {
+		err = errors.Wrap(err, "failed to CalculateGas")
+		return nil, err
+	}
+
+	// adjust msg compute budget
+	var msgRes svmtypes.MsgTransactionResponse
+	err = proto.Unmarshal(simRes.Result.MsgResponses[0].Value, &msgRes)
+	if err != nil {
+		panic(err)
+	}
+	msg.ComputeBudget = msgRes.UnitConsumed * 2
+
+	// adjust gas
+	adjustedGas := uint64(txf.GasAdjustment() * float64(simRes.GasInfo.GasUsed))
+	txf = txf.WithGas(adjustedGas)
+	c.gasWanted = adjustedGas
+
+	// broadcast
+	txn, err := txf.BuildUnsignedTx(msg)
+	if err != nil {
+		err = errors.Wrap(err, "failed to BuildUnsignedTx")
+		return nil, err
+	}
+	txn.SetFeeGranter(c.ClientContext().GetFeeGranterAddress())
+	err = tx.Sign(ctx, txf, c.ClientContext().GetFromName(), txn, true)
+	if err != nil {
+		err = errors.Wrap(err, "failed to Sign Tx")
+		return nil, err
+	}
+	txBytes, err := c.ClientContext().TxConfig.TxEncoder()(txn.GetTx())
+	if err != nil {
+		err = errors.Wrap(err, "failed TxEncoder to encode Tx")
+		return nil, err
+	}
+	req := txtypes.BroadcastTxRequest{
+		txBytes,
+		txtypes.BroadcastMode_BROADCAST_MODE_SYNC,
+	}
+	res, err := c.txClient.BroadcastTx(ctx, &req, grpc.Header(&header))
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }
