@@ -14,50 +14,55 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-typedef enum {
-  Ok = 0,
-  ErrVerifyExecutable = 1,
-  ErrProcessInstruction = 2,
-} ErrorCode;
-
 typedef struct c_compute_budget c_compute_budget;
 
 typedef struct c_instruction_account c_instruction_account;
 
-typedef struct c_invoke_context c_invoke_context;
+typedef struct c_ix_info c_ix_info;
 
-typedef struct c_loaded_programs_for_tx_batch c_loaded_programs_for_tx_batch;
+typedef struct c_pubkeys c_pubkeys;
 
-typedef struct c_program_runtime_env c_program_runtime_env;
-
-typedef struct c_sysvar_cache c_sysvar_cache;
+typedef struct c_result c_result;
 
 typedef struct c_transaction_account c_transaction_account;
 
-typedef struct c_transaction_context c_transaction_context;
+typedef struct c_tx_callback c_tx_callback;
 
 typedef struct {
   size_t len;
   const uint8_t *data;
 } bytes;
 
-typedef struct {
-  size_t len;
-  c_transaction_account **accounts_ptr;
-} transaction_accounts;
+typedef c_compute_budget *(*getComputeBudgetFn)(void *caller, uint64_t tx_id);
 
-typedef struct {
-  const uint8_t *pubkey;
-  bytes return_data;
-} transaction_return_data;
+typedef c_pubkeys *(*getPubkeysFn)(void *caller, uint64_t tx_id);
+
+typedef uint64_t (*getIxLenFn)(void *caller, uint64_t tx_id);
+
+typedef c_ix_info *(*getIxInfoFn)(void *caller, uint64_t tx_id, uint64_t ix_id);
+
+typedef c_transaction_account *(*getAccountSharedDataFn)(void *caller, uint8_t *pubkey);
+
+typedef bool (*setAccountSharedDataFn)(void *caller, c_transaction_account *account);
 
 #ifdef __cplusplus
 extern "C" {
 #endif // __cplusplus
 
-c_compute_budget *compute_budget_create(uint64_t compute_unit_limit);
+c_result *execute(c_tx_callback *cb, uint64_t tx_id, uint64_t *total_unit_consumed);
 
-void compute_budget_free(c_compute_budget *wrapper);
+bytes get_builtins_program_keys(void);
+
+c_tx_callback *tx_callback_create(getComputeBudgetFn get_compute_budget_fn,
+                                  getPubkeysFn get_pubkeys_fn,
+                                  getIxLenFn get_ix_len_fn,
+                                  getIxInfoFn get_ix_info_fn,
+                                  getAccountSharedDataFn get_account_shared_data_fn,
+                                  setAccountSharedDataFn set_account_shared_data_fn);
+
+void tx_callback_free(c_tx_callback *c_tx_callback);
+
+void bytes_free(bytes b);
 
 c_transaction_account *transaction_account_create(const uint8_t *pubkey_ptr,
                                                   const uint8_t *owner_ptr,
@@ -68,14 +73,6 @@ c_transaction_account *transaction_account_create(const uint8_t *pubkey_ptr,
                                                   uint64_t rent_epoch);
 
 void transaction_account_debug(const c_transaction_account *c);
-
-void transaction_account_free(c_transaction_account *wrapper);
-
-c_transaction_context *transaction_context_create(c_compute_budget *c_compute_budget,
-                                                  c_transaction_account **c_transaction_accounts_ptr,
-                                                  size_t c_transaction_accounts_len);
-
-void transaction_context_free(c_transaction_context *wrapper);
 
 const uint8_t *transaction_account_get_pubkey(c_transaction_account *a);
 
@@ -89,32 +86,11 @@ bool transaction_account_get_executable(c_transaction_account *a);
 
 uint64_t transaction_account_rent_epoch(c_transaction_account *a);
 
-transaction_accounts transaction_accounts_from_context(c_transaction_context *ctx);
+c_compute_budget *compute_budget_create(uint64_t compute_unit_limit,
+                                        size_t max_instruction_trace_length,
+                                        size_t max_invoke_stack_height);
 
-transaction_return_data transaction_return_data_from_context(c_transaction_context *ctx);
-
-void transaction_accounts_free(transaction_accounts account_array);
-
-c_sysvar_cache *sysvar_cache_create(void);
-
-void sysvar_cache_free(c_sysvar_cache *wrapper);
-
-c_invoke_context *invoke_context_create(c_transaction_context *c_transaction_context,
-                                        c_sysvar_cache *c_sysvar_cache,
-                                        c_compute_budget *c_compute_budget,
-                                        c_loaded_programs_for_tx_batch *c_loaded_programs,
-                                        c_loaded_programs_for_tx_batch *c_modified_programs);
-
-ErrorCode invoke_context_process_instruction(c_invoke_context *c_invoke_context,
-                                             uint8_t *instruction_data,
-                                             size_t instruction_data_size,
-                                             uint16_t *program_account_indexes,
-                                             size_t program_account_indexes_size,
-                                             c_instruction_account **instruction_accounts,
-                                             size_t instruction_accounts_size,
-                                             uint64_t *compute_unit_consumed);
-
-void invoke_context_free(c_invoke_context *wrapper);
+c_pubkeys *pubkeys_create(const uint8_t *const *ptr, size_t len);
 
 c_instruction_account *instruction_account_create(uint16_t index_in_transaction,
                                                   uint16_t index_in_caller,
@@ -122,19 +98,20 @@ c_instruction_account *instruction_account_create(uint16_t index_in_transaction,
                                                   bool is_signer,
                                                   bool is_writable);
 
-void instruction_account_free(c_instruction_account *wrapper);
+c_ix_info *ix_info_create(c_instruction_account **accounts_ptr,
+                          size_t accounts_len,
+                          uint16_t *program_accounts_ptr,
+                          size_t program_accounts_len,
+                          uint8_t *data_ptr,
+                          size_t data_len);
 
-c_program_runtime_env *program_runtime_create(c_compute_budget *c_compute_budget);
+void c_result_free(c_result *wrapper);
 
-void program_runtime_free(c_program_runtime_env *wrapper);
+const char *c_result_error(c_result *c_result);
 
-c_loaded_programs_for_tx_batch *loaded_programs_for_tx_batch_create(c_program_runtime_env *c_program_runtime_env,
-                                                                    c_transaction_account **c_transaction_accounts_ptr,
-                                                                    size_t c_transaction_accounts_len);
+const char *const *c_result_log_ptr(c_result *c_result);
 
-c_loaded_programs_for_tx_batch *modified_programs_by_tx_batch_create(c_loaded_programs_for_tx_batch *c_loaded_programs_for_tx_batch);
-
-void loaded_programs_for_tx_batch_free(c_loaded_programs_for_tx_batch *wrapper);
+size_t c_result_log_len(c_result *c_result);
 
 #ifdef __cplusplus
 } // extern "C"

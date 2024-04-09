@@ -6,45 +6,85 @@ package golana
 */
 import "C"
 
-type RuntimeEnv struct {
-	Env *C.c_program_runtime_env
+import (
+	"fmt"
+	"unsafe"
+
+	"github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
+	"github.com/gagliardetto/solana-go"
+)
+
+func GetBuiltinProgramIDs() (res [][]byte) {
+	programIdByteArray := C.get_builtins_program_keys()
+	goByteArray := C.GoBytes(unsafe.Pointer(programIdByteArray.data), C.int(programIdByteArray.len))
+	builtinCount := int(programIdByteArray.len) / 32
+	for i := 0; i < builtinCount; i++ {
+		bytes := goByteArray[i*32 : (i+1)*32]
+		res = append(res, bytes)
+	}
+	C.bytes_free(programIdByteArray)
+	return res
 }
 
-func NewRuntimeEnv(computeBudget uint64) *RuntimeEnv {
-	cComputeBudget := C.compute_budget_create(C.ulonglong(computeBudget))
-	return &RuntimeEnv{
-		C.program_runtime_create(cComputeBudget),
-	}
+type ProgramAccountMeta struct {
+	TypeId                  uint32
+	ProgramExecutablePubkey solana.PublicKey
 }
 
-type LoadedProgramsForTxBatch struct {
-	Programs *C.c_loaded_programs_for_tx_batch
+type ProgramExecutableMeta struct {
+	TypeId       uint32
+	Slot         uint64
+	HasAuthority bool
+	Authority    *solana.PublicKey
 }
 
-func NewLoadedProgramsForTxBatch(
-	runtimeEnv *RuntimeEnv,
-	accounts []*TransactionAccount,
-) *LoadedProgramsForTxBatch {
+// this returns 2 accounts owned by `owner`
+func ComposeProgramDataAccounts(programPubkey solana.PublicKey, loaderOwner solana.PublicKey, programBz []byte) (res []*types.Account, err error) {
+	// compose program account
+	programExecutableDataPubkey, _, err := solana.FindProgramAddress(
+		[][]byte{
+			programPubkey[:],
+		},
+		loaderOwner,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("cannot find PDA of %s: %w", programPubkey.String(), err)
+	}
 
-	cAccounts := make([]*C.c_transaction_account, len(accounts))
-	for i, acc := range accounts {
-		cAccounts[i] = acc.Account
+	programDataBz, err := MarshalBinary(ProgramAccountMeta{
+		TypeId:                  2,
+		ProgramExecutablePubkey: programExecutableDataPubkey,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("cannot marshal program account meta: %w", err)
 	}
-	return &LoadedProgramsForTxBatch{
-		C.loaded_programs_for_tx_batch_create(
-			runtimeEnv.Env,
-			(**C.c_transaction_account)(&cAccounts[0]),
-			C.ulong(len(cAccounts)),
-		),
-	}
-}
+	res = append(res, &types.Account{
+		Pubkey:     programPubkey[:],
+		Owner:      loaderOwner[:],
+		Lamports:   types.DefaultLamportForRentExempt,
+		Data:       programDataBz,
+		Executable: true,
+		RentEpoch:  0,
+	})
 
-func NewModifiedProgramsByTxBatch(
-	loaded *LoadedProgramsForTxBatch,
-) *LoadedProgramsForTxBatch {
-	return &LoadedProgramsForTxBatch{
-		C.modified_programs_by_tx_batch_create(
-			loaded.Programs,
-		),
+	programExecutableMetaBz, err := MarshalBinary(ProgramExecutableMeta{
+		TypeId:       3,
+		Slot:         0,
+		HasAuthority: true,
+		Authority:    &solana.SystemProgramID,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("cannot marshal program executable data account meta: %w", err)
 	}
+
+	// compose program data account
+	res = append(res, &types.Account{
+		Pubkey:     programExecutableDataPubkey[:],
+		Owner:      loaderOwner[:],
+		Lamports:   types.DefaultLamportForRentExempt,
+		Data:       append(programExecutableMetaBz, programBz...),
+		Executable: false, // only program account has executable flag = true
+		RentEpoch:  0,
+	})
+	return res, nil
 }

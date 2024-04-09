@@ -1,24 +1,52 @@
 package types
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-var _ sdk.Msg = &MsgCreateAccount{}
 var _ sdk.Msg = &MsgTransaction{}
 
-func (m *MsgCreateAccount) ValidateBasic() error {
-	// TODO
-	return nil
-}
-
-func (m *MsgCreateAccount) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Sender)
-	return []sdk.AccAddress{signer}
-}
-
 func (m *MsgTransaction) ValidateBasic() error {
-	// TODO
+	if _, err := sdk.AccAddressFromBech32(m.Sender); err != nil {
+		return err
+	}
+	if m.ComputeBudget == 0 {
+		return fmt.Errorf("compute budget cannot be zero")
+	}
+	if len(m.Accounts) == 0 {
+		return fmt.Errorf("tx accounts array cannot be empty")
+	}
+	if len(m.Instructions) == 0 {
+		return fmt.Errorf("tx instructions array cannot be empty")
+	}
+
+	// don't allow duplicate tx accounts
+	txAccountsMap := map[string]struct{}{}
+	for _, account := range m.Accounts {
+		if _, exist := txAccountsMap[account]; exist {
+			return fmt.Errorf("duplicate account in tx account list %s", account)
+		} else {
+			txAccountsMap[account] = struct{}{}
+		}
+	}
+
+	// verify ix account indexes
+	for _, ix := range m.Instructions {
+		for _, ixAccount := range ix.Accounts {
+			if ixAccount.IdIndex > uint32(len(m.Accounts)) {
+				return fmt.Errorf("ix account index out of range")
+			}
+			if ixAccount.CallerIndex > uint32(len(m.Accounts)) {
+				return fmt.Errorf("ix account caller index out of range")
+			}
+			if ixAccount.CalleeIndex > uint32(len(m.Accounts)) {
+				return fmt.Errorf("ix account callee index of range")
+			}
+		}
+	}
+
 	return nil
 }
 

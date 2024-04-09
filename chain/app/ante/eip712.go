@@ -2,10 +2,11 @@ package ante
 
 import (
 	"context"
-	signingv1beta1 "cosmossdk.io/api/cosmos/tx/signing/v1beta1"
-	txsigning "cosmossdk.io/x/tx/signing"
 	"fmt"
 	"strconv"
+
+	signingv1beta1 "cosmossdk.io/api/cosmos/tx/signing/v1beta1"
+	txsigning "cosmossdk.io/x/tx/signing"
 
 	log "github.com/InjectiveLabs/suplog"
 

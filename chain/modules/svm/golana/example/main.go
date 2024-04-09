@@ -1,58 +1,91 @@
 package main
 
-/*
-#cgo LDFLAGS: -L./../../lib -lgolana
-#include "./../../lib/golana.h"
-*/
-import "C"
-
 import (
 	"fmt"
 	"github.com/FluxNFTLabs/sdk-go/chain/modules/svm/golana"
-	"os"
-
-	"github.com/cosmos/btcutil/base58"
-	solanago "github.com/gagliardetto/solana-go"
+	"github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
 )
 
 func main() {
-	systemProgramId := base58.Decode("11111111111111111111111111111111")
-	bpfProgramId := base58.Decode("BPFLoader2111111111111111111111111111111111")
-	helloProgramId := []byte{8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8}
-	helloProgramDataId := []byte{1, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8}
-	senderId, _ := solanago.NewRandomPrivateKey()
+	// TODO: compose instructions properly
+	for {
+		msg := &types.MsgTransaction{
+			Sender: "lux1cml96vmptgw99syqrrz8az79xer2pcgp209sv4",
+			Accounts: []string{
+				"5u3ScQH8YNWoWgjuyV2218d4V1HtQSoKf65JpuXXwXVK",
+				"CLfvh1736T8KBUWBqSNypizgL5KdZUekJ26gFXV3Lra1",
+				"8BTVbEdAFbqsEsjngmaMByn1m9j8jDFtEFFusEwGeMZY",
+				"11111111111111111111111111111111",
+				"BPFLoaderUpgradeab1e11111111111111111111111",
+			},
+			Instructions: []*types.Instruction{
+				{
+					ProgramIndex: []uint32{3},
+					Accounts: []*types.InstructionAccount{
+						{
+							IdIndex:     0,
+							CallerIndex: 0,
+							CalleeIndex: 0,
+							IsSigner:    true,
+							IsWritable:  true,
+						},
+						{
+							IdIndex:     1,
+							CallerIndex: 1,
+							CalleeIndex: 1,
+							IsSigner:    true,
+							IsWritable:  true,
+						},
+					},
+					Data: []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 184, 13, 1, 0, 0, 0, 0, 0, 2, 168, 246, 145, 78, 136, 161, 176, 226, 16, 21, 62, 247, 99, 174, 43, 0, 194, 185, 61, 22, 193, 36, 210, 192, 83, 122, 16, 4, 128, 0, 0},
+				},
+				{
+					ProgramIndex: []uint32{3},
+					Accounts: []*types.InstructionAccount{
+						{
+							IdIndex:     0,
+							CallerIndex: 0,
+							CalleeIndex: 0,
+							IsSigner:    true,
+							IsWritable:  true,
+						},
+						{
+							IdIndex:     2,
+							CallerIndex: 2,
+							CalleeIndex: 1,
+							IsSigner:    true,
+							IsWritable:  true,
+						},
+					},
+					Data: []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 36, 0, 0, 0, 0, 0, 0, 0, 2, 168, 246, 145, 78, 136, 161, 176, 226, 16, 21, 62, 247, 99, 174, 43, 0, 194, 185, 61, 22, 193, 36, 210, 192, 83, 122, 16, 4, 128, 0, 0},
+				},
+				{
+					ProgramIndex: []uint32{4},
+					Accounts: []*types.InstructionAccount{
+						{
+							IdIndex:     1,
+							CallerIndex: 1,
+							CalleeIndex: 0,
+							IsSigner:    true,
+							IsWritable:  true,
+						},
+						{
+							IdIndex:     0,
+							CallerIndex: 0,
+							CalleeIndex: 1,
+							IsSigner:    true,
+							IsWritable:  true,
+						},
+					},
+					Data: []byte{0, 0, 0, 0},
+				},
+			},
+			ComputeBudget: 1000000,
+		}
 
-	programBz, err := os.ReadFile("example.so")
-	if err != nil {
-		panic(err)
-	}
-
-	accounts := []*golana.TransactionAccount{
-		golana.NewTransactionAccount(helloProgramId, bpfProgramId, 100000, programBz, true, 100),
-		golana.NewTransactionAccount(helloProgramDataId, helloProgramId, 200000, []byte{0, 0, 0, 0}, false, 100),
-		golana.NewTransactionAccount(senderId, systemProgramId, 200000, []byte{1, 2, 3, 4}, false, 100),
-	}
-
-	computeBudget := uint64(100000)
-	runtimeEnv := golana.NewRuntimeEnv(computeBudget)
-	loadedPrograms := golana.NewLoadedProgramsForTxBatch(runtimeEnv, accounts)
-	modifiedPrograms := golana.NewModifiedProgramsByTxBatch(loadedPrograms)
-
-	txCtx := golana.NewTransactionContext(computeBudget, accounts)
-	invokeCtx := golana.NewInvokeContext(computeBudget, txCtx, loadedPrograms, modifiedPrograms)
-
-	programIds := []uint16{0}
-	ixAccounts := []*golana.InstructionAccount{
-		golana.NewInstructionAccount(1, 0, 0, true, true),
-		golana.NewInstructionAccount(2, 1, 1, true, true),
-	}
-	ixData := []byte{0}
-
-	computeUnitConsumed, err := invokeCtx.ProcessInstruction(programIds, ixAccounts, ixData)
-	fmt.Println(computeUnitConsumed, err)
-
-	goAccounts := golana.GetTxContextAccounts(txCtx.TxContext)
-	for _, a := range goAccounts {
-		golana.AccountDebug(a)
+		cbCtx := golana.NewMockCallbackContext()
+		unitConsumed, logs, err := cbCtx.Execute(msg)
+		fmt.Println(unitConsumed, logs, err)
+		cbCtx.Done()
 	}
 }
