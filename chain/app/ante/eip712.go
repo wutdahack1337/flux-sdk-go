@@ -196,6 +196,7 @@ func VerifySignatureEIP712(
 						feeDelegated = true
 					} else {
 						// allow using EIP712 without fee delegation
+						// TODO: This is supposed to NOT return nil, which will skip signature verification
 						return nil
 					}
 				}

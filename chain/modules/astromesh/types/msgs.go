@@ -6,7 +6,47 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+var _ sdk.Msg = &MsgChargeVmAccount{}
+var _ sdk.Msg = &MsgDrainVmAccount{}
 var _ sdk.Msg = &MsgAstroTransfer{}
+
+func (m *MsgChargeVmAccount) ValidateBasic() error {
+	if m.Sender == "" {
+		return fmt.Errorf("empty sender")
+	}
+
+	if _, exist := Plane_name[int32(m.Plane)]; !exist {
+		return fmt.Errorf("unsupported vm plane: %d", m.Plane)
+	}
+
+	if err := m.Amount.Validate(); err != nil {
+		return fmt.Errorf("coin format err: %w", err)
+	}
+
+	return nil
+}
+
+func (m MsgChargeVmAccount) GetSigners() []sdk.AccAddress {
+	signer, _ := sdk.AccAddressFromBech32(m.Sender)
+	return []sdk.AccAddress{signer}
+}
+
+func (m *MsgDrainVmAccount) ValidateBasic() error {
+	if m.Sender == "" {
+		return fmt.Errorf("empty sender")
+	}
+
+	if _, exist := Plane_name[int32(m.Plane)]; !exist {
+		return fmt.Errorf("unsupported vm plane: %d", m.Plane)
+	}
+
+	return nil
+}
+
+func (m MsgDrainVmAccount) GetSigners() []sdk.AccAddress {
+	signer, _ := sdk.AccAddressFromBech32(m.Sender)
+	return []sdk.AccAddress{signer}
+}
 
 func (m *MsgAstroTransfer) ValidateBasic() error {
 	if m.Sender == "" {

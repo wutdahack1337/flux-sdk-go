@@ -4,20 +4,20 @@ package golana
 #cgo LDFLAGS: -L./../lib -lgolana
 #include "./../lib/golana.h"
 
-extern c_compute_budget *getComputeBudget(void *caller, uint64_t tx_id);
+extern golana_compute_budget *getComputeBudget(void *caller, uint64_t tx_id);
 
-extern c_pubkeys *getPubkeys(void *caller, uint64_t tx_id);
+extern golana_pubkeys *getPubkeys(void *caller, uint64_t tx_id);
 
 extern uint64_t getIxLen(void *caller, uint64_t tx_id);
 
-extern c_ix_info *getIxInfo(void *caller, uint64_t tx_id, uint64_t ix_id);
+extern golana_ix_info *getIxInfo(void *caller, uint64_t tx_id, uint64_t ix_id);
 
-extern c_transaction_account *getAccountSharedData(void *caller, uint8_t *pubkey);
+extern golana_transaction_account *getAccountSharedData(void *caller, uint8_t *pubkey);
 
-extern bool setAccountSharedData(void *caller, c_transaction_account *account);
+extern bool setAccountSharedData(void *caller, golana_transaction_account *account);
 
-static c_tx_callback *tx_callback_wrapper_new() {
-	return tx_callback_create(
+static golana_tx_callback *golana_tx_callback_wrapper_new() {
+	return golana_tx_callback_create(
 		getComputeBudget,
 		getPubkeys,
 		getIxLen,
@@ -45,8 +45,8 @@ import (
 var callbackMap = new(sync.Map)
 
 // expose golang method so multiple impls of callback interface can access
-func TxCallbackWrapperNew() *C.c_tx_callback {
-	return C.tx_callback_wrapper_new()
+func TxCallbackWrapperNew() *C.golana_tx_callback {
+	return C.golana_tx_callback_wrapper_new()
 }
 
 type VmKeeper interface {
@@ -74,7 +74,7 @@ type TxCallbackContext struct {
 	ctx      sdk.Context
 	vmKeeper VmKeeper
 	msgs     []*types.MsgTransaction
-	cbPtr    *C.c_tx_callback
+	cbPtr    *C.golana_tx_callback
 }
 
 func NewTxCallbackContext(ctx sdk.Context, keeper VmKeeper) TxCallbackContextI {
@@ -106,23 +106,23 @@ func (cb *TxCallbackContext) Execute(msg *types.MsgTransaction) (uint64, []strin
 
 	// execute all instructions in a msg
 	totalUnitConsumed := C.uint64_t(0)
-	result := C.execute(cb.cbPtr, C.uint64_t(0), &totalUnitConsumed)
+	result := C.golana_execute(cb.cbPtr, C.uint64_t(0), &totalUnitConsumed)
 
 	// unpack log
-	length := int(C.c_result_log_len(result))
-	logsPtr := (*[1 << 30]*C.char)(unsafe.Pointer(C.c_result_log_ptr(result)))[:length:length]
+	length := int(C.golana_result_log_len(result))
+	logsPtr := (*[1 << 30]*C.char)(unsafe.Pointer(C.golana_result_log_ptr(result)))[:length:length]
 	logs := make([]string, length)
 	for i, ptr := range logsPtr {
 		logs[i] = C.GoString(ptr)
 	}
 
-	if C.c_result_error(result) != nil {
-		err := C.GoString(C.c_result_error(result))
+	if C.golana_result_error(result) != nil {
+		err := C.GoString(C.golana_result_error(result))
 		return 0, logs, fmt.Errorf(err)
 	}
 
 	// free result
-	C.c_result_free(result)
+	C.golana_result_free(result)
 
 	return uint64(totalUnitConsumed), logs, nil
 }
@@ -132,23 +132,23 @@ func (cb *TxCallbackContext) ExecuteEndBlocker(nodeId int) (uint64, []string, er
 	callbackMap.Store(uintptr(unsafe.Pointer(ptr)), cb)
 
 	unitConsumed := C.uint64_t(0)
-	result := C.execute(ptr, C.uint64_t(nodeId), &unitConsumed)
+	result := C.golana_execute(ptr, C.uint64_t(nodeId), &unitConsumed)
 
 	// unpack log
-	length := int(C.c_result_log_len(result))
-	logsPtr := (*[1 << 30]*C.char)(unsafe.Pointer(C.c_result_log_ptr(result)))[:length:length]
+	length := int(C.golana_result_log_len(result))
+	logsPtr := (*[1 << 30]*C.char)(unsafe.Pointer(C.golana_result_log_ptr(result)))[:length:length]
 	logs := make([]string, length)
 	for i, ptr := range logsPtr {
 		logs[i] = C.GoString(ptr)
 	}
 
-	if C.c_result_error(result) != nil {
-		err := C.GoString(C.c_result_error(result))
+	if C.golana_result_error(result) != nil {
+		err := C.GoString(C.golana_result_error(result))
 		return 0, logs, fmt.Errorf(err)
 	}
 
 	// free result
-	C.c_result_free(result)
+	C.golana_result_free(result)
 
 	return uint64(unitConsumed), logs, nil
 }
@@ -180,11 +180,11 @@ func (cb *TxCallbackContext) SetAccount(account *types.Account) {
 func (cb *TxCallbackContext) Done() {
 	cb.msgs = []*types.MsgTransaction{}
 	callbackMap.Delete(uintptr(unsafe.Pointer(cb.cbPtr)))
-	C.tx_callback_free(cb.cbPtr)
+	C.golana_tx_callback_free(cb.cbPtr)
 }
 
 //export getComputeBudget
-func getComputeBudget(caller *C.void, tx_id C.uint64_t) *C.c_compute_budget {
+func getComputeBudget(caller *C.void, tx_id C.uint64_t) *C.golana_compute_budget {
 	id := uintptr(unsafe.Pointer(caller))
 	wrapper, exist := callbackMap.Load(id)
 	if !exist || wrapper == nil {
@@ -197,7 +197,7 @@ func getComputeBudget(caller *C.void, tx_id C.uint64_t) *C.c_compute_budget {
 }
 
 //export getPubkeys
-func getPubkeys(caller *C.void, tx_id C.uint64_t) *C.c_pubkeys {
+func getPubkeys(caller *C.void, tx_id C.uint64_t) *C.golana_pubkeys {
 	id := uintptr(unsafe.Pointer(caller))
 	wrapper, exist := callbackMap.Load(id)
 	if !exist || wrapper == nil {
@@ -225,7 +225,7 @@ func getIxLen(caller *C.void, tx_id C.uint64_t) C.uint64_t {
 }
 
 //export getIxInfo
-func getIxInfo(caller *C.void, tx_id C.uint64_t, ix_id C.uint64_t) *C.c_ix_info {
+func getIxInfo(caller *C.void, tx_id C.uint64_t, ix_id C.uint64_t) *C.golana_ix_info {
 	id := uintptr(unsafe.Pointer(caller))
 	wrapper, exist := callbackMap.Load(id)
 	if !exist || wrapper == nil {
@@ -252,7 +252,7 @@ func getIxInfo(caller *C.void, tx_id C.uint64_t, ix_id C.uint64_t) *C.c_ix_info 
 }
 
 //export getAccountSharedData
-func getAccountSharedData(caller *C.void, pubkey *C.uint8_t) *C.c_transaction_account {
+func getAccountSharedData(caller *C.void, pubkey *C.uint8_t) *C.golana_transaction_account {
 	id := uintptr(unsafe.Pointer(caller))
 	wrapper, exist := callbackMap.Load(id)
 	if !exist || wrapper == nil {
@@ -265,7 +265,7 @@ func getAccountSharedData(caller *C.void, pubkey *C.uint8_t) *C.c_transaction_ac
 }
 
 //export setAccountSharedData
-func setAccountSharedData(caller *C.void, account *C.c_transaction_account) C.bool {
+func setAccountSharedData(caller *C.void, account *C.golana_transaction_account) C.bool {
 	id := uintptr(unsafe.Pointer(caller))
 	wrapper, exist := callbackMap.Load(id)
 	if !exist || wrapper == nil {

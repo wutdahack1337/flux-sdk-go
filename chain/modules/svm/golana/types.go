@@ -15,17 +15,17 @@ import (
 )
 
 type ComputeBudget struct {
-	computeBudget *C.c_compute_budget
+	computeBudget *C.golana_compute_budget
 }
 
 func NewComputeBudget(computeUnitLimit uint64, maxInstructionTraceLength uint64, maxInvokeStackHeight uint64) ComputeBudget {
 	return ComputeBudget{
-		C.compute_budget_create(C.uint64_t(computeUnitLimit), C.size_t(maxInstructionTraceLength), C.size_t(maxInvokeStackHeight)),
+		C.golana_compute_budget_create(C.uint64_t(computeUnitLimit), C.size_t(maxInstructionTraceLength), C.size_t(maxInvokeStackHeight)),
 	}
 }
 
 type Pubkeys struct {
-	pubkeys *C.c_pubkeys
+	pubkeys *C.golana_pubkeys
 }
 
 func NewPubkeys(pubkeys [][]byte) Pubkeys {
@@ -34,7 +34,7 @@ func NewPubkeys(pubkeys [][]byte) Pubkeys {
 		cPubkeys[i] = (*C.uchar)(C.CBytes(pubkey))
 	}
 	return Pubkeys{
-		C.pubkeys_create(
+		C.golana_pubkeys_create(
 			(**C.uchar)(&cPubkeys[0]),
 			C.ulong(len(pubkeys)),
 		),
@@ -42,7 +42,7 @@ func NewPubkeys(pubkeys [][]byte) Pubkeys {
 }
 
 type InstructionAccount struct {
-	account *C.c_instruction_account
+	account *C.golana_instruction_account
 }
 
 func NewInstructionAccount(
@@ -52,7 +52,7 @@ func NewInstructionAccount(
 	isSigner bool,
 	isWritable bool) InstructionAccount {
 	return InstructionAccount{
-		C.instruction_account_create(
+		C.golana_instruction_account_create(
 			C.ushort(transactionIndex),
 			C.ushort(callerIndex),
 			C.ushort(calleeIndex),
@@ -63,11 +63,11 @@ func NewInstructionAccount(
 }
 
 type IxInfo struct {
-	ixInfo *C.c_ix_info
+	ixInfo *C.golana_ix_info
 }
 
 func NewIxInfo(ixAccounts []InstructionAccount, ixProgramAccounts []uint16, ixData []uint8) IxInfo {
-	cIxAccounts := make([]*C.c_instruction_account, len(ixAccounts))
+	cIxAccounts := make([]*C.golana_instruction_account, len(ixAccounts))
 	for i, cia := range ixAccounts {
 		cIxAccounts[i] = cia.account
 	}
@@ -76,8 +76,8 @@ func NewIxInfo(ixAccounts []InstructionAccount, ixProgramAccounts []uint16, ixDa
 		dataPtr = (*C.uchar)(&ixData[0])
 	}
 	return IxInfo{
-		C.ix_info_create(
-			(**C.c_instruction_account)(&cIxAccounts[0]), C.ulong(len(cIxAccounts)),
+		C.golana_ix_info_create(
+			(**C.golana_instruction_account)(&cIxAccounts[0]), C.ulong(len(cIxAccounts)),
 			(*C.uint16_t)(&ixProgramAccounts[0]), C.ulong(len(ixProgramAccounts)),
 			dataPtr, C.ulong(len(ixData)),
 		),
@@ -85,7 +85,7 @@ func NewIxInfo(ixAccounts []InstructionAccount, ixProgramAccounts []uint16, ixDa
 }
 
 type TransactionAccount struct {
-	account *C.c_transaction_account
+	account *C.golana_transaction_account
 }
 
 func NewTransactionAccount(
@@ -100,7 +100,7 @@ func NewTransactionAccount(
 	ownerPtr := C.CBytes(owner)
 	dataPtr := C.CBytes(data)
 	return TransactionAccount{
-		C.transaction_account_create(
+		C.golana_transaction_account_create(
 			(*C.uchar)(pubkeyPtr),
 			(*C.uchar)(ownerPtr),
 			C.uint64_t(lamports),
@@ -124,14 +124,14 @@ func AccountDebug(a *types.Account) {
 	fmt.Println("rentEpoch:", a.RentEpoch)
 }
 
-func toGoAccount(accountPtr *C.c_transaction_account) *types.Account {
-	dataVec := C.transaction_account_get_data(accountPtr)
+func toGoAccount(accountPtr *C.golana_transaction_account) *types.Account {
+	dataVec := C.golana_transaction_account_get_data(accountPtr)
 	return &types.Account{
-		Pubkey:     C.GoBytes(unsafe.Pointer(C.transaction_account_get_pubkey(accountPtr)), 32),
-		Owner:      C.GoBytes(unsafe.Pointer(C.transaction_account_get_owner(accountPtr)), 32),
-		Lamports:   uint64(C.transaction_account_get_lamports(accountPtr)),
+		Pubkey:     C.GoBytes(unsafe.Pointer(C.golana_transaction_account_get_pubkey(accountPtr)), 32),
+		Owner:      C.GoBytes(unsafe.Pointer(C.golana_transaction_account_get_owner(accountPtr)), 32),
+		Lamports:   uint64(C.golana_transaction_account_get_lamports(accountPtr)),
 		Data:       C.GoBytes(unsafe.Pointer(dataVec.data), C.int(dataVec.len)),
-		Executable: bool(C.transaction_account_get_executable(accountPtr)),
-		RentEpoch:  uint64(C.transaction_account_rent_epoch(accountPtr)),
+		Executable: bool(C.golana_transaction_account_get_executable(accountPtr)),
+		RentEpoch:  uint64(C.golana_transaction_account_rent_epoch(accountPtr)),
 	}
 }

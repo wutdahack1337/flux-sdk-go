@@ -15,14 +15,14 @@ import (
 )
 
 func GetBuiltinProgramIDs() (res [][]byte) {
-	programIdByteArray := C.get_builtins_program_keys()
+	programIdByteArray := C.golana_get_builtins_program_keys()
 	goByteArray := C.GoBytes(unsafe.Pointer(programIdByteArray.data), C.int(programIdByteArray.len))
 	builtinCount := int(programIdByteArray.len) / 32
 	for i := 0; i < builtinCount; i++ {
 		bytes := goByteArray[i*32 : (i+1)*32]
 		res = append(res, bytes)
 	}
-	C.bytes_free(programIdByteArray)
+	C.golana_bytes_free(programIdByteArray)
 	return res
 }
 

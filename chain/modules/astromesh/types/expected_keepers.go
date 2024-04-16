@@ -4,6 +4,8 @@ import (
 	"context"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
+
 	"github.com/FluxNFTLabs/sdk-go/chain/modules/evm/evmone"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -24,6 +26,14 @@ type BankKeeper interface {
 type AccountKeeper interface {
 	GetModuleAddress(name string) sdk.AccAddress
 	GetAccount(ctx context.Context, addr sdk.AccAddress) sdk.AccountI
+}
+
+type WasmViewKeeper interface {
+	wasmtypes.ViewKeeper
+}
+
+type WasmOpsKeeper interface {
+	wasmtypes.ContractOpsKeeper
 }
 
 type EvmKeeper interface {
@@ -60,12 +70,13 @@ type EvmKeeper interface {
 		calldata []byte,
 		inputAmount []byte,
 	) (evmone.Result, error)
+
+	KVGetAccount(ctx context.Context, addr []byte) ([]byte, bool)
+	KVSetAccount(ctx context.Context, addr []byte, ethBalance []byte)
 }
 
-type WasmViewKeeper interface {
-	wasmtypes.ViewKeeper
-}
-
-type WasmOpsKeeper interface {
-	wasmtypes.ContractOpsKeeper
+type SvmKeeper interface {
+	KVGetAccount(ctx context.Context, accAddr []byte) (*svmtypes.Account, bool)
+	KVSetAccount(ctx context.Context, account *svmtypes.Account)
+	SvmExecute(ctx sdk.Context, msg *svmtypes.MsgTransaction) (*svmtypes.MsgTransactionResponse, error)
 }

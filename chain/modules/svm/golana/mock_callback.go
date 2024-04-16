@@ -8,11 +8,12 @@ import "C"
 
 import (
 	"fmt"
+	"unsafe"
+
 	"github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
 	"github.com/cometbft/cometbft/libs/os"
 	"github.com/cosmos/btcutil/base58"
 	solanago "github.com/gagliardetto/solana-go"
-	"unsafe"
 )
 
 var programBz []byte
@@ -41,7 +42,7 @@ func init() {
 }
 
 type MockCallbackContext struct {
-	cbPtr *C.c_tx_callback
+	cbPtr *C.golana_tx_callback
 	msgs  []*types.MsgTransaction
 }
 
@@ -70,23 +71,23 @@ func (cb *MockCallbackContext) Execute(msg *types.MsgTransaction) (uint64, []str
 
 	// execute all instructions in a msg
 	totalUnitConsumed := C.uint64_t(0)
-	result := C.execute(cb.cbPtr, C.uint64_t(0), &totalUnitConsumed)
+	result := C.golana_execute(cb.cbPtr, C.uint64_t(0), &totalUnitConsumed)
 
 	// unpack log
-	length := int(C.c_result_log_len(result))
-	logsPtr := (*[1 << 30]*C.char)(unsafe.Pointer(C.c_result_log_ptr(result)))[:length:length]
+	length := int(C.golana_result_log_len(result))
+	logsPtr := (*[1 << 30]*C.char)(unsafe.Pointer(C.golana_result_log_ptr(result)))[:length:length]
 	logs := make([]string, length)
 	for i, ptr := range logsPtr {
 		logs[i] = C.GoString(ptr)
 	}
 
-	if C.c_result_error(result) != nil {
-		err := C.GoString(C.c_result_error(result))
+	if C.golana_result_error(result) != nil {
+		err := C.GoString(C.golana_result_error(result))
 		return 0, logs, fmt.Errorf(err)
 	}
 
 	// free result
-	C.c_result_free(result)
+	C.golana_result_free(result)
 
 	return uint64(totalUnitConsumed), logs, nil
 }
@@ -96,23 +97,23 @@ func (cb *MockCallbackContext) ExecuteEndBlocker(nodeId int) (uint64, []string, 
 	callbackMap.Store(uintptr(unsafe.Pointer(ptr)), cb)
 
 	unitConsumed := C.uint64_t(0)
-	result := C.execute(ptr, C.uint64_t(nodeId), &unitConsumed)
+	result := C.golana_execute(ptr, C.uint64_t(nodeId), &unitConsumed)
 
 	// unpack log
-	length := int(C.c_result_log_len(result))
-	logsPtr := (*[1 << 30]*C.char)(unsafe.Pointer(C.c_result_log_ptr(result)))[:length:length]
+	length := int(C.golana_result_log_len(result))
+	logsPtr := (*[1 << 30]*C.char)(unsafe.Pointer(C.golana_result_log_ptr(result)))[:length:length]
 	logs := make([]string, length)
 	for i, ptr := range logsPtr {
 		logs[i] = C.GoString(ptr)
 	}
 
-	if C.c_result_error(result) != nil {
-		err := C.GoString(C.c_result_error(result))
+	if C.golana_result_error(result) != nil {
+		err := C.GoString(C.golana_result_error(result))
 		return 0, logs, fmt.Errorf(err)
 	}
 
 	// free result
-	C.c_result_free(result)
+	C.golana_result_free(result)
 
 	return uint64(unitConsumed), logs, nil
 }
@@ -146,5 +147,5 @@ func (cb *MockCallbackContext) SetAccount(account *types.Account) {
 func (cb *MockCallbackContext) Done() {
 	cb.msgs = []*types.MsgTransaction{}
 	callbackMap.Delete(uintptr(unsafe.Pointer(cb.cbPtr)))
-	C.tx_callback_free(cb.cbPtr)
+	C.golana_tx_callback_free(cb.cbPtr)
 }
