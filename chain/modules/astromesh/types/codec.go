@@ -13,6 +13,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgChargeVmAccount{},
 		&MsgDrainVmAccount{},
 		&MsgAstroTransfer{},
+		&MsgFISTransaction{},
 	)
 
 	//registry.RegisterImplementations(
@@ -32,5 +33,6 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgChargeVmAccount{}, "astromesh/MsgChargeVmAccount", nil)
 	cdc.RegisterConcrete(&MsgDrainVmAccountResponse{}, "astromesh/MsgDrainVmAccount", nil)
-	cdc.RegisterConcrete(&MsgAstroTransfer{}, "astromesh/MsgCrossVmTransfer", nil)
+	cdc.RegisterConcrete(&MsgAstroTransfer{}, "astromesh/MsgAstroTransfer", nil)
+	cdc.RegisterConcrete(&MsgAstroTransfer{}, "astromesh/MsgFISTransaction", nil)
 }

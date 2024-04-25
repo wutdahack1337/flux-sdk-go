@@ -53,7 +53,8 @@ func (m *MsgTransaction) ValidateBasic() error {
 	// verify ix account indexes
 	signerMap := map[string]bool{}
 	for _, ix := range m.Instructions {
-		for _, ixAccount := range ix.Accounts {
+		calleeIndexMap := map[uint32]uint32{}
+		for idx, ixAccount := range ix.Accounts {
 			if ixAccount.IdIndex > uint32(len(m.Accounts)) {
 				return fmt.Errorf("ix account index out of range")
 			}
@@ -69,6 +70,14 @@ func (m *MsgTransaction) ValidateBasic() error {
 			pubkey := m.Accounts[ixAccount.IdIndex]
 			if ixAccount.IsSigner {
 				signerMap[pubkey] = true
+			}
+
+			if _, exist := calleeIndexMap[ixAccount.IdIndex]; !exist {
+				calleeIndexMap[ixAccount.IdIndex] = uint32(idx)
+			}
+
+			if ixAccount.CalleeIndex != calleeIndexMap[ixAccount.IdIndex] {
+				return fmt.Errorf("callee index must be the first position of the account in this instruction")
 			}
 		}
 	}
