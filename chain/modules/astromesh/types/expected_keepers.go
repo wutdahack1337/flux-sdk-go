@@ -2,7 +2,6 @@ package types
 
 import (
 	"context"
-
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/FluxNFTLabs/sdk-go/chain/modules/evm/evmone"
 	evmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/evm/types"
@@ -13,6 +12,8 @@ import (
 
 // BankKeeper defines the contract needed to be fulfilled for banking and supply dependencies.
 type BankKeeper interface {
+	Send(goCtx context.Context, msg *banktypes.MsgSend) (*banktypes.MsgSendResponse, error)
+
 	GetBalance(ctx context.Context, addr sdk.AccAddress, denom string) sdk.Coin
 	GetAllBalances(ctx context.Context, addr sdk.AccAddress) sdk.Coins
 	SpendableCoins(ctx context.Context, addr sdk.AccAddress) sdk.Coins

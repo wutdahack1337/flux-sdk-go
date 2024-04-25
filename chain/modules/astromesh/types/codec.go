@@ -34,5 +34,5 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgChargeVmAccount{}, "astromesh/MsgChargeVmAccount", nil)
 	cdc.RegisterConcrete(&MsgDrainVmAccountResponse{}, "astromesh/MsgDrainVmAccount", nil)
 	cdc.RegisterConcrete(&MsgAstroTransfer{}, "astromesh/MsgAstroTransfer", nil)
-	cdc.RegisterConcrete(&MsgAstroTransfer{}, "astromesh/MsgFISTransaction", nil)
+	cdc.RegisterConcrete(&MsgFISTransaction{}, "astromesh/MsgFISTransaction", nil)
 }
