@@ -9,7 +9,6 @@ import (
 var _ sdk.Msg = &MsgChargeVmAccount{}
 var _ sdk.Msg = &MsgDrainVmAccount{}
 var _ sdk.Msg = &MsgAstroTransfer{}
-var _ sdk.Msg = &MsgFISTransaction{}
 
 func (m *MsgChargeVmAccount) ValidateBasic() error {
 	if m.Sender == "" {
@@ -78,27 +77,6 @@ func (m *MsgAstroTransfer) ValidateBasic() error {
 }
 
 func (m MsgAstroTransfer) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Sender)
-	return []sdk.AccAddress{signer}
-}
-
-func (m *MsgFISTransaction) ValidateBasic() error {
-	if m.Sender == "" {
-		return fmt.Errorf("empty sender")
-	}
-
-	for _, ix := range m.Instructions {
-		if _, exist := Plane_name[int32(ix.Plane)]; !exist {
-			return fmt.Errorf("unsupported vm plane: %d", ix.Plane)
-		}
-		if _, exist := TxAction_name[int32(ix.Action)]; !exist {
-			return fmt.Errorf("unsupported instruction type: %d", ix.Action)
-		}
-	}
-	return nil
-}
-
-func (m MsgFISTransaction) GetSigners() []sdk.AccAddress {
 	signer, _ := sdk.AccAddressFromBech32(m.Sender)
 	return []sdk.AccAddress{signer}
 }

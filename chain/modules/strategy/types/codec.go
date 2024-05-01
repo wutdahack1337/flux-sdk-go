@@ -10,9 +10,8 @@ import (
 // RegisterInterfaces registers the interfaces types with the interface registry.
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgChargeVmAccount{},
-		&MsgDrainVmAccount{},
-		&MsgAstroTransfer{},
+		&MsgConfigStrategy{},
+		&MsgTriggerStrategies{},
 	)
 
 	//registry.RegisterImplementations(
@@ -30,7 +29,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 // RegisterLegacyAminoCodec registers the necessary game interfaces and concrete types
 // on the provided LegacyAmino codec. These types are used for Amino JSON serialization.
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgChargeVmAccount{}, "astromesh/MsgChargeVmAccount", nil)
-	cdc.RegisterConcrete(&MsgDrainVmAccountResponse{}, "astromesh/MsgDrainVmAccount", nil)
-	cdc.RegisterConcrete(&MsgAstroTransfer{}, "astromesh/MsgCrossVmTransfer", nil)
+	cdc.RegisterConcrete(&MsgConfigStrategy{}, "oracle/MsgConfigStrategy", nil)
+	cdc.RegisterConcrete(&MsgTriggerStrategies{}, "oracle/MsgTriggerStrategies", nil)
+
 }
