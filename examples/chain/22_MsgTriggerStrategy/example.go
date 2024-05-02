@@ -58,8 +58,10 @@ func main() {
 	}
 	msg := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"99e3cf15446aa88463aa9306fb2e2eb2076c4f792cdfed847392f05ab6c975c4"},
-		Inputs: [][]byte{{0}},
+		Ids:    []string{"bcd92b771ca49ee84eb1f3ce0584941ca28ab38fce6858b42e0c8494e5baeb4d"},
+		Inputs: [][]byte{
+			[]byte(`{"bank_send":{"msg":{"from_address":"user1","to_address":"user2","amount":[{"denom":"usdt","amount":"1000000"}]}}}`),
+		},
 	}
 
 	//AsyncBroadcastMsg, SyncBroadcastMsg, QueueBroadcastMsg
