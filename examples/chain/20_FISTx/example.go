@@ -72,7 +72,7 @@ func main() {
 				Plane:   astromeshtypes.Plane_COSMOS,
 				Action:  astromeshtypes.TxAction_COSMOS_BANK_SEND,
 				Address: []byte{},
-				Input:   [][]byte{sendMsgBz},
+				Msg:     sendMsgBz,
 			},
 		},
 	}
