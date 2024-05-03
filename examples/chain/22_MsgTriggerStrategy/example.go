@@ -58,9 +58,9 @@ func main() {
 	}
 	msg := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"bcd92b771ca49ee84eb1f3ce0584941ca28ab38fce6858b42e0c8494e5baeb4d"},
+		Ids:    []string{"9d960e195978ea548be7e2e5fea74ba4f389194b4f622c76db1baa52bccbafb3"},
 		Inputs: [][]byte{
-			[]byte(`{"bank_send":{"msg":{"from_address":"user1","to_address":"user2","amount":[{"denom":"usdt","amount":"1000000"}]}}}`),
+			[]byte(`{"send":{"accounts":["lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx","lux1dzqd00lfd4y4qy2pxa0dsdwzfnmsu27hdef8k5"],"amounts":[[{"denom":"lux","amount":"1"}],[{"denom":"lux","amount":"1"},{"denom":"usdt","amount":"1"}]]}}`),
 		},
 	}
 
