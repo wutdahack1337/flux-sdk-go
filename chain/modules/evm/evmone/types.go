@@ -137,7 +137,7 @@ type HostContext interface {
 	SelfDestruct(addr Address, beneficiary Address) bool
 	GetTxContext() TxContext
 	GetBlockHash(number int64) Hash
-	EmitLog(addr Address, topics []Hash, data []byte)
+	EmitLog(addr Address, topics [][]byte, data []byte)
 	Call(kind CallKind,
 		recipient Address, sender Address, value Hash, input []byte, gas int64, depth int,
 		static bool, salt Hash, codeAddress Address) (output []byte, gasLeft int64, gasRefund int64,

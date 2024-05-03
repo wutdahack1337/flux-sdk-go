@@ -1,16 +1,12 @@
 package main
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
-	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
+	strategytypes "github.com/FluxNFTLabs/sdk-go/chain/modules/strategy/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	sdktypes "github.com/cosmos/cosmos-sdk/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/cosmos/gogoproto/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"os"
@@ -57,28 +53,23 @@ func main() {
 	}
 
 	// prepare tx msg
-	sendMsg := &banktypes.MsgSend{
-		FromAddress: senderAddress.String(),
-		ToAddress:   "lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx",
-		Amount: []sdktypes.Coin{{
-			Denom: "lux", Amount: sdkmath.NewInt(1000000000000000000)}, // 1 LUX
-		},
+	dir, err := os.Getwd()
+	if err != nil {
+		panic(err)
 	}
-	sendMsgBz, _ := proto.Marshal(sendMsg)
-	FISMsg := &astromeshtypes.MsgFISTransaction{
-		Sender: senderAddress.String(),
-		Instructions: []*astromeshtypes.FISInstruction{
-			{
-				Plane:   astromeshtypes.Plane_COSMOS,
-				Action:  astromeshtypes.TxAction_COSMOS_BANK_SEND,
-				Address: []byte{},
-				Msg:     sendMsgBz,
-			},
-		},
+	bz, err := os.ReadFile(dir + "/examples/chain/21_MsgConfigStrategy/strategy.wasm")
+	if err != nil {
+		panic(err)
+	}
+	msg := &strategytypes.MsgConfigStrategy{
+		Sender:   senderAddress.String(),
+		Config:   strategytypes.Config_deploy,
+		Id:       "",
+		Strategy: bz,
 	}
 
 	//AsyncBroadcastMsg, SyncBroadcastMsg, QueueBroadcastMsg
-	res, err := chainClient.SyncBroadcastMsg(FISMsg)
+	res, err := chainClient.SyncBroadcastMsg(msg)
 	if err != nil {
 		fmt.Println(err)
 	}
