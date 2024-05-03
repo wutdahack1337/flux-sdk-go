@@ -31,6 +31,31 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type QueryAction int32
+
+const (
+	QueryAction_VM_QUERY            QueryAction = 0
+	QueryAction_COSMOS_BANK_BALANCE QueryAction = 1
+)
+
+var QueryAction_name = map[int32]string{
+	0: "VM_QUERY",
+	1: "COSMOS_BANK_BALANCE",
+}
+
+var QueryAction_value = map[string]int32{
+	"VM_QUERY":            0,
+	"COSMOS_BANK_BALANCE": 1,
+}
+
+func (x QueryAction) String() string {
+	return proto.EnumName(QueryAction_name, int32(x))
+}
+
+func (QueryAction) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_f40df128bda15e7e, []int{0}
+}
+
 type QueryDenomLinkRequest struct {
 	SrcPlane Plane  `protobuf:"varint,1,opt,name=src_plane,json=srcPlane,proto3,enum=flux.astromesh.v1beta1.Plane" json:"src_plane,omitempty"`
 	DstPlane Plane  `protobuf:"varint,2,opt,name=dst_plane,json=dstPlane,proto3,enum=flux.astromesh.v1beta1.Plane" json:"dst_plane,omitempty"`
@@ -255,11 +280,224 @@ func (m *BalanceResponse) GetBalance() string {
 	return ""
 }
 
+type FISQueryInstruction struct {
+	Plane   Plane       `protobuf:"varint,1,opt,name=plane,proto3,enum=flux.astromesh.v1beta1.Plane" json:"plane,omitempty"`
+	Action  QueryAction `protobuf:"varint,2,opt,name=action,proto3,enum=flux.astromesh.v1beta1.QueryAction" json:"action,omitempty"`
+	Address []byte      `protobuf:"bytes,3,opt,name=address,proto3" json:"address,omitempty"`
+	Input   [][]byte    `protobuf:"bytes,4,rep,name=input,proto3" json:"input,omitempty"`
+}
+
+func (m *FISQueryInstruction) Reset()         { *m = FISQueryInstruction{} }
+func (m *FISQueryInstruction) String() string { return proto.CompactTextString(m) }
+func (*FISQueryInstruction) ProtoMessage()    {}
+func (*FISQueryInstruction) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f40df128bda15e7e, []int{4}
+}
+func (m *FISQueryInstruction) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *FISQueryInstruction) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_FISQueryInstruction.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *FISQueryInstruction) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FISQueryInstruction.Merge(m, src)
+}
+func (m *FISQueryInstruction) XXX_Size() int {
+	return m.Size()
+}
+func (m *FISQueryInstruction) XXX_DiscardUnknown() {
+	xxx_messageInfo_FISQueryInstruction.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_FISQueryInstruction proto.InternalMessageInfo
+
+func (m *FISQueryInstruction) GetPlane() Plane {
+	if m != nil {
+		return m.Plane
+	}
+	return Plane_COSMOS
+}
+
+func (m *FISQueryInstruction) GetAction() QueryAction {
+	if m != nil {
+		return m.Action
+	}
+	return QueryAction_VM_QUERY
+}
+
+func (m *FISQueryInstruction) GetAddress() []byte {
+	if m != nil {
+		return m.Address
+	}
+	return nil
+}
+
+func (m *FISQueryInstruction) GetInput() [][]byte {
+	if m != nil {
+		return m.Input
+	}
+	return nil
+}
+
+type FISQueryInstructionResponse struct {
+	Plane  Plane  `protobuf:"varint,1,opt,name=plane,proto3,enum=flux.astromesh.v1beta1.Plane" json:"plane,omitempty"`
+	Output []byte `protobuf:"bytes,2,opt,name=output,proto3" json:"output,omitempty"`
+}
+
+func (m *FISQueryInstructionResponse) Reset()         { *m = FISQueryInstructionResponse{} }
+func (m *FISQueryInstructionResponse) String() string { return proto.CompactTextString(m) }
+func (*FISQueryInstructionResponse) ProtoMessage()    {}
+func (*FISQueryInstructionResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f40df128bda15e7e, []int{5}
+}
+func (m *FISQueryInstructionResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *FISQueryInstructionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_FISQueryInstructionResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *FISQueryInstructionResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FISQueryInstructionResponse.Merge(m, src)
+}
+func (m *FISQueryInstructionResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *FISQueryInstructionResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_FISQueryInstructionResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_FISQueryInstructionResponse proto.InternalMessageInfo
+
+func (m *FISQueryInstructionResponse) GetPlane() Plane {
+	if m != nil {
+		return m.Plane
+	}
+	return Plane_COSMOS
+}
+
+func (m *FISQueryInstructionResponse) GetOutput() []byte {
+	if m != nil {
+		return m.Output
+	}
+	return nil
+}
+
+type FISQueryRequest struct {
+	Instructions []*FISQueryInstruction `protobuf:"bytes,2,rep,name=instructions,proto3" json:"instructions,omitempty"`
+}
+
+func (m *FISQueryRequest) Reset()         { *m = FISQueryRequest{} }
+func (m *FISQueryRequest) String() string { return proto.CompactTextString(m) }
+func (*FISQueryRequest) ProtoMessage()    {}
+func (*FISQueryRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f40df128bda15e7e, []int{6}
+}
+func (m *FISQueryRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *FISQueryRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_FISQueryRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *FISQueryRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FISQueryRequest.Merge(m, src)
+}
+func (m *FISQueryRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *FISQueryRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_FISQueryRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_FISQueryRequest proto.InternalMessageInfo
+
+func (m *FISQueryRequest) GetInstructions() []*FISQueryInstruction {
+	if m != nil {
+		return m.Instructions
+	}
+	return nil
+}
+
+type FISQueryResponse struct {
+	InstructionResponses []*FISQueryInstructionResponse `protobuf:"bytes,1,rep,name=instruction_responses,json=instructionResponses,proto3" json:"instruction_responses,omitempty"`
+}
+
+func (m *FISQueryResponse) Reset()         { *m = FISQueryResponse{} }
+func (m *FISQueryResponse) String() string { return proto.CompactTextString(m) }
+func (*FISQueryResponse) ProtoMessage()    {}
+func (*FISQueryResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f40df128bda15e7e, []int{7}
+}
+func (m *FISQueryResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *FISQueryResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_FISQueryResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *FISQueryResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FISQueryResponse.Merge(m, src)
+}
+func (m *FISQueryResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *FISQueryResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_FISQueryResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_FISQueryResponse proto.InternalMessageInfo
+
+func (m *FISQueryResponse) GetInstructionResponses() []*FISQueryInstructionResponse {
+	if m != nil {
+		return m.InstructionResponses
+	}
+	return nil
+}
+
 func init() {
+	proto.RegisterEnum("flux.astromesh.v1beta1.QueryAction", QueryAction_name, QueryAction_value)
 	proto.RegisterType((*QueryDenomLinkRequest)(nil), "flux.astromesh.v1beta1.QueryDenomLinkRequest")
 	proto.RegisterType((*QueryDenomLinkResponse)(nil), "flux.astromesh.v1beta1.QueryDenomLinkResponse")
 	proto.RegisterType((*BalanceRequest)(nil), "flux.astromesh.v1beta1.BalanceRequest")
 	proto.RegisterType((*BalanceResponse)(nil), "flux.astromesh.v1beta1.BalanceResponse")
+	proto.RegisterType((*FISQueryInstruction)(nil), "flux.astromesh.v1beta1.FISQueryInstruction")
+	proto.RegisterType((*FISQueryInstructionResponse)(nil), "flux.astromesh.v1beta1.FISQueryInstructionResponse")
+	proto.RegisterType((*FISQueryRequest)(nil), "flux.astromesh.v1beta1.FISQueryRequest")
+	proto.RegisterType((*FISQueryResponse)(nil), "flux.astromesh.v1beta1.FISQueryResponse")
 }
 
 func init() {
@@ -267,42 +505,55 @@ func init() {
 }
 
 var fileDescriptor_f40df128bda15e7e = []byte{
-	// 551 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x93, 0xc1, 0x6e, 0xd3, 0x30,
-	0x18, 0xc7, 0x9b, 0x4e, 0xa5, 0xd4, 0xa0, 0x21, 0x45, 0x63, 0x2a, 0x15, 0x84, 0x11, 0x21, 0x98,
-	0x40, 0xc4, 0xda, 0x38, 0x31, 0x4e, 0x9b, 0xc6, 0xb8, 0x0c, 0x04, 0xd1, 0xc4, 0x81, 0x4b, 0xe5,
-	0xc4, 0x26, 0xb5, 0x96, 0xd8, 0x59, 0x3e, 0x07, 0xb5, 0xaa, 0x7a, 0xe1, 0x09, 0x90, 0x38, 0xf3,
-	0x02, 0xbc, 0x01, 0x6f, 0xc0, 0x71, 0x12, 0x17, 0x8e, 0xa8, 0xe5, 0x41, 0x90, 0x1d, 0x37, 0x0c,
-	0xb4, 0x88, 0xdd, 0x62, 0xfb, 0xf7, 0xff, 0xbe, 0xff, 0xf7, 0xb7, 0x83, 0xfc, 0x77, 0x69, 0x39,
-	0xc6, 0x04, 0x54, 0x21, 0x33, 0x06, 0x23, 0xfc, 0x7e, 0x2b, 0x62, 0x8a, 0x6c, 0xe1, 0x93, 0x92,
-	0x15, 0x93, 0x20, 0x2f, 0xa4, 0x92, 0xee, 0xba, 0x66, 0x82, 0x9a, 0x09, 0x2c, 0x33, 0x58, 0x4b,
-	0x64, 0x22, 0x0d, 0x82, 0xf5, 0x57, 0x45, 0x0f, 0xbc, 0x58, 0x42, 0x26, 0x01, 0x47, 0x04, 0x58,
-	0x5d, 0x2e, 0x96, 0x5c, 0xd8, 0xf3, 0x07, 0x67, 0xcf, 0x4d, 0x9b, 0x9a, 0xca, 0x49, 0xc2, 0x05,
-	0x51, 0x5c, 0x2e, 0xd9, 0x9b, 0x89, 0x94, 0x49, 0xca, 0x30, 0xc9, 0x39, 0x26, 0x42, 0x48, 0x65,
-	0x0e, 0xc1, 0x9e, 0xde, 0x6e, 0xf0, 0xae, 0xc6, 0x16, 0xb8, 0xdb, 0x00, 0x24, 0x4c, 0x30, 0xe0,
-	0xb6, 0x8c, 0xff, 0xc5, 0x41, 0xd7, 0x5f, 0x6b, 0x1f, 0xfb, 0x4c, 0xc8, 0xec, 0x90, 0x8b, 0xe3,
-	0x90, 0x9d, 0x94, 0x0c, 0x94, 0xbb, 0x83, 0x7a, 0x50, 0xc4, 0xc3, 0x3c, 0x25, 0x82, 0xf5, 0x9d,
-	0x0d, 0x67, 0x73, 0x75, 0xfb, 0x56, 0x70, 0x7e, 0x18, 0xc1, 0x2b, 0x0d, 0x85, 0x97, 0xa1, 0x88,
-	0xcd, 0x97, 0xd6, 0x52, 0x50, 0x56, 0xdb, 0xbe, 0x90, 0x96, 0x82, 0xaa, 0xb4, 0x37, 0x90, 0xae,
-	0x33, 0x24, 0x94, 0x16, 0xfd, 0x95, 0x0d, 0x67, 0xb3, 0x17, 0x76, 0xa1, 0x88, 0x77, 0x29, 0x2d,
-	0xfc, 0x09, 0x5a, 0xff, 0xd7, 0x2b, 0xe4, 0x52, 0x80, 0x11, 0xe9, 0x86, 0x46, 0xe4, 0x54, 0x22,
-	0x0a, 0x4a, 0x8b, 0xdc, 0x3b, 0xe8, 0xaa, 0xae, 0x47, 0x59, 0xcc, 0x33, 0x92, 0x82, 0xb1, 0xd3,
-	0x09, 0xaf, 0x40, 0x11, 0xef, 0xdb, 0x2d, 0x8d, 0x68, 0x75, 0x8d, 0xac, 0x54, 0x08, 0x05, 0xb5,
-	0x44, 0xfc, 0x37, 0x68, 0x75, 0x8f, 0xa4, 0x44, 0xc4, 0x6c, 0x99, 0xcf, 0x1a, 0xea, 0xfc, 0xc9,
-	0xa6, 0x17, 0x56, 0x0b, 0xbd, 0x4b, 0xb5, 0x3b, 0xd3, 0xa6, 0x17, 0x56, 0x0b, 0xb7, 0x8f, 0xba,
-	0xda, 0x1a, 0x03, 0x58, 0x8e, 0x64, 0x97, 0xfe, 0x43, 0x74, 0xad, 0xae, 0x6b, 0x67, 0xe9, 0xa3,
-	0x6e, 0x54, 0x6d, 0x2d, 0x47, 0xb1, 0xcb, 0xed, 0x45, 0x1b, 0x75, 0x4c, 0x00, 0xee, 0x57, 0x07,
-	0xf5, 0xea, 0x14, 0xdc, 0x47, 0x4d, 0xd9, 0x9e, 0x7b, 0xb3, 0x83, 0xe0, 0xa2, 0x78, 0x65, 0xc8,
-	0x7f, 0xf1, 0xe1, 0xfb, 0xaf, 0x4f, 0xed, 0xe7, 0xee, 0x33, 0xdc, 0xf0, 0xa4, 0xcc, 0x90, 0xc3,
-	0x94, 0x8b, 0x63, 0x3c, 0xad, 0xdf, 0xcc, 0x0c, 0x4f, 0xeb, 0x37, 0x30, 0xab, 0xf6, 0xf5, 0xd0,
-	0x33, 0xf7, 0xb3, 0x83, 0xba, 0x76, 0x66, 0xf7, 0x5e, 0x93, 0x95, 0xbf, 0xc3, 0x1e, 0xdc, 0xff,
-	0x2f, 0x67, 0xbd, 0xee, 0x1a, 0xaf, 0x4f, 0xdd, 0x27, 0x4d, 0x5e, 0x6d, 0x96, 0x78, 0x5a, 0x9b,
-	0xd4, 0xe6, 0x67, 0x78, 0x6a, 0x6f, 0x64, 0xb6, 0x77, 0xf4, 0x6d, 0xee, 0x39, 0xa7, 0x73, 0xcf,
-	0xf9, 0x39, 0xf7, 0x9c, 0x8f, 0x0b, 0xaf, 0x75, 0xba, 0xf0, 0x5a, 0x3f, 0x16, 0x5e, 0xeb, 0xed,
-	0x4e, 0xc2, 0xd5, 0xa8, 0x8c, 0x82, 0x58, 0x66, 0xf8, 0x20, 0x2d, 0xc7, 0x2f, 0x0f, 0x8e, 0x0e,
-	0x49, 0x04, 0xa6, 0x15, 0xc5, 0xf1, 0x88, 0x70, 0x81, 0x33, 0x49, 0xcb, 0x94, 0xc1, 0x99, 0xce,
-	0x6a, 0x92, 0x33, 0x88, 0x2e, 0x99, 0xff, 0xed, 0xf1, 0xef, 0x00, 0x00, 0x00, 0xff, 0xff, 0xde,
-	0xe3, 0x93, 0x23, 0x74, 0x04, 0x00, 0x00,
+	// 766 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x55, 0x5d, 0x4f, 0x13, 0x4b,
+	0x18, 0xee, 0xd2, 0x03, 0xa5, 0x43, 0x03, 0x64, 0xf8, 0x38, 0x3d, 0x3d, 0xe7, 0x54, 0x5c, 0x8d,
+	0x34, 0x10, 0x3b, 0x01, 0xbc, 0x11, 0xae, 0x5a, 0x3e, 0x0c, 0x91, 0x0f, 0x59, 0x90, 0x44, 0x13,
+	0xd3, 0x4c, 0x77, 0xc7, 0x76, 0x65, 0x3b, 0x53, 0x76, 0x66, 0x0d, 0xa4, 0xf6, 0xc6, 0x5f, 0x60,
+	0xe2, 0xb5, 0x7f, 0xc0, 0x3f, 0x60, 0xbc, 0xf5, 0xca, 0x4b, 0x12, 0x6f, 0xbc, 0x34, 0xe0, 0x0f,
+	0x31, 0x33, 0x3b, 0xbb, 0x14, 0xa4, 0x16, 0xbd, 0xdb, 0x79, 0xe7, 0x79, 0xde, 0xe7, 0x79, 0xdf,
+	0x77, 0x66, 0x16, 0x98, 0xcf, 0xbd, 0xe0, 0x08, 0x61, 0x2e, 0x7c, 0xd6, 0x20, 0xbc, 0x8e, 0x5e,
+	0xce, 0x55, 0x89, 0xc0, 0x73, 0xe8, 0x30, 0x20, 0xfe, 0x71, 0xb1, 0xe9, 0x33, 0xc1, 0xe0, 0xa4,
+	0xc4, 0x14, 0x63, 0x4c, 0x51, 0x63, 0x72, 0xe3, 0x35, 0x56, 0x63, 0x0a, 0x82, 0xe4, 0x57, 0x88,
+	0xce, 0xe5, 0x6d, 0xc6, 0x1b, 0x8c, 0xa3, 0x2a, 0xe6, 0x24, 0x4e, 0x67, 0x33, 0x97, 0xea, 0xfd,
+	0x99, 0xce, 0x7d, 0x25, 0x13, 0xa3, 0x9a, 0xb8, 0xe6, 0x52, 0x2c, 0x5c, 0x16, 0x61, 0xff, 0xab,
+	0x31, 0x56, 0xf3, 0x08, 0xc2, 0x4d, 0x17, 0x61, 0x4a, 0x99, 0x50, 0x9b, 0x5c, 0xef, 0xde, 0xe8,
+	0xe2, 0x5d, 0x1c, 0x69, 0xc0, 0xed, 0x2e, 0x80, 0x1a, 0xa1, 0x84, 0xbb, 0x3a, 0x8d, 0xf9, 0xde,
+	0x00, 0x13, 0x3b, 0xd2, 0xc7, 0x0a, 0xa1, 0xac, 0xb1, 0xe1, 0xd2, 0x03, 0x8b, 0x1c, 0x06, 0x84,
+	0x0b, 0xb8, 0x08, 0xd2, 0xdc, 0xb7, 0x2b, 0x4d, 0x0f, 0x53, 0x92, 0x35, 0xa6, 0x8c, 0xc2, 0xf0,
+	0xfc, 0xff, 0xc5, 0xab, 0x9b, 0x51, 0x7c, 0x24, 0x41, 0xd6, 0x20, 0xf7, 0x6d, 0xf5, 0x25, 0xb9,
+	0x0e, 0x17, 0x9a, 0xdb, 0x77, 0x2d, 0xae, 0xc3, 0x45, 0xc8, 0xfd, 0x07, 0xc8, 0x3c, 0x15, 0xec,
+	0x38, 0x7e, 0x36, 0x39, 0x65, 0x14, 0xd2, 0x56, 0x8a, 0xfb, 0x76, 0xc9, 0x71, 0x7c, 0xf3, 0x18,
+	0x4c, 0x5e, 0xf6, 0xca, 0x9b, 0x8c, 0x72, 0x45, 0x92, 0x82, 0x8a, 0x64, 0x84, 0x24, 0x87, 0x0b,
+	0x49, 0x82, 0x37, 0x41, 0x46, 0xe6, 0x73, 0x88, 0xed, 0x36, 0xb0, 0xc7, 0x95, 0x9d, 0x7e, 0x6b,
+	0x88, 0xfb, 0xf6, 0x8a, 0x0e, 0x49, 0x88, 0x64, 0xc7, 0x90, 0x64, 0x08, 0x71, 0xb8, 0x88, 0x20,
+	0xe6, 0x3e, 0x18, 0x2e, 0x63, 0x0f, 0x53, 0x9b, 0x44, 0xfd, 0x19, 0x07, 0xfd, 0xe7, 0xbd, 0x49,
+	0x5b, 0xe1, 0x42, 0x46, 0x1d, 0xe9, 0x4e, 0xc9, 0xa4, 0xad, 0x70, 0x01, 0xb3, 0x20, 0x25, 0xad,
+	0x11, 0xce, 0xa3, 0x92, 0xf4, 0xd2, 0x9c, 0x05, 0x23, 0x71, 0x5e, 0x5d, 0x4b, 0x16, 0xa4, 0xaa,
+	0x61, 0x28, 0x2a, 0x45, 0x2f, 0xcd, 0x0f, 0x06, 0x18, 0x5b, 0x5b, 0xdf, 0x55, 0x3d, 0x58, 0xa7,
+	0x5c, 0xf8, 0x81, 0x2d, 0x8f, 0x04, 0x5c, 0xe8, 0xb4, 0xd2, 0xb3, 0xd5, 0xda, 0xe9, 0x12, 0x18,
+	0xc0, 0x8a, 0xae, 0x07, 0x74, 0xab, 0x1b, 0x4b, 0xc9, 0x95, 0x14, 0xd4, 0xd2, 0x94, 0xcb, 0x05,
+	0x65, 0xe2, 0x82, 0x64, 0x03, 0x5c, 0xda, 0x0c, 0x44, 0xf6, 0xaf, 0xa9, 0x64, 0x21, 0x63, 0x85,
+	0x0b, 0xf3, 0x05, 0xf8, 0xf7, 0x0a, 0xe3, 0x71, 0xc9, 0x7f, 0x54, 0xc0, 0x24, 0x18, 0x60, 0x81,
+	0x90, 0x52, 0x7d, 0xca, 0x82, 0x5e, 0x99, 0x55, 0x30, 0x12, 0x69, 0x45, 0xb3, 0xda, 0x06, 0x19,
+	0xf7, 0x5c, 0x56, 0x9e, 0x81, 0x64, 0x61, 0x68, 0x7e, 0xb6, 0x9b, 0xcc, 0x55, 0x56, 0x2f, 0x24,
+	0x30, 0x5f, 0x81, 0xd1, 0x73, 0x0d, 0x5d, 0x44, 0x1d, 0x4c, 0x74, 0x60, 0x2a, 0xbe, 0x8e, 0xf3,
+	0xac, 0xa1, 0xd4, 0x16, 0x7e, 0x47, 0x4d, 0x73, 0xad, 0x71, 0xf7, 0xe7, 0x20, 0x9f, 0xb9, 0x07,
+	0x86, 0x3a, 0x86, 0x02, 0x33, 0x60, 0x70, 0x7f, 0xb3, 0xb2, 0xf3, 0x78, 0xd5, 0x7a, 0x32, 0x9a,
+	0x80, 0x7f, 0x83, 0xb1, 0xe5, 0xed, 0xdd, 0xcd, 0xed, 0xdd, 0x4a, 0xb9, 0xb4, 0xf5, 0xb0, 0x52,
+	0x2e, 0x6d, 0x94, 0xb6, 0x96, 0x57, 0x47, 0x8d, 0xf9, 0x4f, 0x49, 0xd0, 0xaf, 0x68, 0xf0, 0xa3,
+	0x01, 0xd2, 0xf1, 0x1d, 0x82, 0x77, 0x7f, 0x39, 0xf8, 0xcb, 0xef, 0x42, 0xae, 0x78, 0x5d, 0x78,
+	0xe8, 0xd6, 0xdc, 0x7c, 0xfd, 0xe5, 0xfb, 0xdb, 0xbe, 0x07, 0x70, 0x15, 0x75, 0x79, 0x90, 0xd4,
+	0x15, 0xa9, 0x78, 0x2e, 0x3d, 0x40, 0xad, 0xf8, 0xc5, 0x69, 0xa3, 0x56, 0xfc, 0x82, 0xb4, 0xc3,
+	0xb8, 0x3c, 0x61, 0x6d, 0xf8, 0xce, 0x00, 0x29, 0x7d, 0x63, 0xe0, 0x9d, 0x6e, 0x56, 0x2e, 0x5e,
+	0xd5, 0xdc, 0x74, 0x4f, 0x9c, 0xf6, 0x5a, 0x52, 0x5e, 0x97, 0xe0, 0xfd, 0x6e, 0x5e, 0xf5, 0x4d,
+	0x44, 0xad, 0xd8, 0xa4, 0x34, 0xdf, 0x46, 0x2d, 0x7d, 0xfc, 0xdb, 0xf0, 0x19, 0x18, 0x8c, 0x06,
+	0x0a, 0xa7, 0x7b, 0x8d, 0x3c, 0x32, 0x58, 0xe8, 0x0d, 0x0c, 0x1d, 0x96, 0xf7, 0x3e, 0x9f, 0xe6,
+	0x8d, 0x93, 0xd3, 0xbc, 0xf1, 0xed, 0x34, 0x6f, 0xbc, 0x39, 0xcb, 0x27, 0x4e, 0xce, 0xf2, 0x89,
+	0xaf, 0x67, 0xf9, 0xc4, 0xd3, 0xc5, 0x9a, 0x2b, 0xea, 0x41, 0xb5, 0x68, 0xb3, 0x06, 0x5a, 0xf3,
+	0x82, 0xa3, 0xad, 0xb5, 0xbd, 0x0d, 0x5c, 0xe5, 0xaa, 0x12, 0x07, 0xd9, 0x75, 0xec, 0x52, 0xd4,
+	0x60, 0x4e, 0xe0, 0x11, 0xde, 0x51, 0x98, 0x38, 0x6e, 0x12, 0x5e, 0x1d, 0x50, 0x3f, 0x83, 0x85,
+	0x1f, 0x01, 0x00, 0x00, 0xff, 0xff, 0xf0, 0xff, 0x5a, 0x7b, 0x11, 0x07, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -319,6 +570,7 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	DenomLink(ctx context.Context, in *QueryDenomLinkRequest, opts ...grpc.CallOption) (*QueryDenomLinkResponse, error)
 	Balance(ctx context.Context, in *BalanceRequest, opts ...grpc.CallOption) (*BalanceResponse, error)
+	FISQuery(ctx context.Context, in *FISQueryRequest, opts ...grpc.CallOption) (*FISQueryResponse, error)
 }
 
 type queryClient struct {
@@ -347,10 +599,20 @@ func (c *queryClient) Balance(ctx context.Context, in *BalanceRequest, opts ...g
 	return out, nil
 }
 
+func (c *queryClient) FISQuery(ctx context.Context, in *FISQueryRequest, opts ...grpc.CallOption) (*FISQueryResponse, error) {
+	out := new(FISQueryResponse)
+	err := c.cc.Invoke(ctx, "/flux.astromesh.v1beta1.Query/FISQuery", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	DenomLink(context.Context, *QueryDenomLinkRequest) (*QueryDenomLinkResponse, error)
 	Balance(context.Context, *BalanceRequest) (*BalanceResponse, error)
+	FISQuery(context.Context, *FISQueryRequest) (*FISQueryResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -362,6 +624,9 @@ func (*UnimplementedQueryServer) DenomLink(ctx context.Context, req *QueryDenomL
 }
 func (*UnimplementedQueryServer) Balance(ctx context.Context, req *BalanceRequest) (*BalanceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Balance not implemented")
+}
+func (*UnimplementedQueryServer) FISQuery(ctx context.Context, req *FISQueryRequest) (*FISQueryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FISQuery not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -404,6 +669,24 @@ func _Query_Balance_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_FISQuery_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FISQueryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).FISQuery(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/flux.astromesh.v1beta1.Query/FISQuery",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).FISQuery(ctx, req.(*FISQueryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "flux.astromesh.v1beta1.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -415,6 +698,10 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Balance",
 			Handler:    _Query_Balance_Handler,
+		},
+		{
+			MethodName: "FISQuery",
+			Handler:    _Query_FISQuery_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -575,6 +862,164 @@ func (m *BalanceResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *FISQueryInstruction) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *FISQueryInstruction) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *FISQueryInstruction) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Input) > 0 {
+		for iNdEx := len(m.Input) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Input[iNdEx])
+			copy(dAtA[i:], m.Input[iNdEx])
+			i = encodeVarintQuery(dAtA, i, uint64(len(m.Input[iNdEx])))
+			i--
+			dAtA[i] = 0x22
+		}
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.Action != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Action))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Plane != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Plane))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *FISQueryInstructionResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *FISQueryInstructionResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *FISQueryInstructionResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Output) > 0 {
+		i -= len(m.Output)
+		copy(dAtA[i:], m.Output)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Output)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Plane != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Plane))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *FISQueryRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *FISQueryRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *FISQueryRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Instructions) > 0 {
+		for iNdEx := len(m.Instructions) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Instructions[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *FISQueryResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *FISQueryResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *FISQueryResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.InstructionResponses) > 0 {
+		for iNdEx := len(m.InstructionResponses) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.InstructionResponses[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -654,6 +1099,77 @@ func (m *BalanceResponse) Size() (n int) {
 	l = len(m.Balance)
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *FISQueryInstruction) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Plane != 0 {
+		n += 1 + sovQuery(uint64(m.Plane))
+	}
+	if m.Action != 0 {
+		n += 1 + sovQuery(uint64(m.Action))
+	}
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if len(m.Input) > 0 {
+		for _, b := range m.Input {
+			l = len(b)
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *FISQueryInstructionResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Plane != 0 {
+		n += 1 + sovQuery(uint64(m.Plane))
+	}
+	l = len(m.Output)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *FISQueryRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Instructions) > 0 {
+		for _, e := range m.Instructions {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *FISQueryResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.InstructionResponses) > 0 {
+		for _, e := range m.InstructionResponses {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
 	}
 	return n
 }
@@ -1110,6 +1626,431 @@ func (m *BalanceResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Balance = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *FISQueryInstruction) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: FISQueryInstruction: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: FISQueryInstruction: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Plane", wireType)
+			}
+			m.Plane = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Plane |= Plane(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Action", wireType)
+			}
+			m.Action = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Action |= QueryAction(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = append(m.Address[:0], dAtA[iNdEx:postIndex]...)
+			if m.Address == nil {
+				m.Address = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Input", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Input = append(m.Input, make([]byte, postIndex-iNdEx))
+			copy(m.Input[len(m.Input)-1], dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *FISQueryInstructionResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: FISQueryInstructionResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: FISQueryInstructionResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Plane", wireType)
+			}
+			m.Plane = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Plane |= Plane(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Output", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Output = append(m.Output[:0], dAtA[iNdEx:postIndex]...)
+			if m.Output == nil {
+				m.Output = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *FISQueryRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: FISQueryRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: FISQueryRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Instructions", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Instructions = append(m.Instructions, &FISQueryInstruction{})
+			if err := m.Instructions[len(m.Instructions)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *FISQueryResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: FISQueryResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: FISQueryResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field InstructionResponses", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.InstructionResponses = append(m.InstructionResponses, &FISQueryInstructionResponse{})
+			if err := m.InstructionResponses[len(m.InstructionResponses)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
