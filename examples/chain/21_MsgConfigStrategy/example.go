@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"strings"
+
 	strategytypes "github.com/FluxNFTLabs/sdk-go/chain/modules/strategy/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
@@ -9,8 +12,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"os"
-	"strings"
 )
 
 func main() {
@@ -57,7 +58,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	bz, err := os.ReadFile(dir + "/examples/chain/21_MsgConfigStrategy/strategy.wasm")
+	bz, err := os.ReadFile(dir + "/examples/chain/21_MsgConfigStrategy/bank_strategy.wasm")
 	if err != nil {
 		panic(err)
 	}
