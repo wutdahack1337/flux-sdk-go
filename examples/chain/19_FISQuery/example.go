@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+
 	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -33,9 +34,7 @@ func main() {
 			Plane:   astromeshtypes.Plane_COSMOS,
 			Action:  astromeshtypes.QueryAction_COSMOS_BANK_BALANCE,
 			Address: acc.Bytes(),
-			Input: [][]byte{
-				[]byte("lux"),
-			},
+			Input:   []byte("lux"),
 		},
 	}}
 	res, err := astromeshClient.FISQuery(context.Background(), req)
