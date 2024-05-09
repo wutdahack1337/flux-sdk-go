@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	strategytypes "github.com/FluxNFTLabs/sdk-go/chain/modules/strategy/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
@@ -67,6 +68,16 @@ func main() {
 		Config:   strategytypes.Config_deploy,
 		Id:       "",
 		Strategy: bz,
+		Query: &types.FISQueryRequest{
+			Instructions: []*types.FISQueryInstruction{
+				{
+					Plane:   types.Plane_COSMOS,
+					Action:  types.QueryAction_COSMOS_BANK_BALANCE,
+					Address: senderAddress,
+					Input:   []byte("usdt"),
+				},
+			},
+		},
 	}
 
 	//AsyncBroadcastMsg, SyncBroadcastMsg, QueueBroadcastMsg

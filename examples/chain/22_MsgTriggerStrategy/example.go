@@ -60,9 +60,9 @@ func main() {
 
 	msg := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"154412da413e7a9f2b82e7814b9c0d04695fe9c48c6cfbeca5e88ad61676ae31"},
+		Ids:    []string{"bc322edb7547a595d76fdd11d46520771362c69b9d3d15108947cfb0720b422f"},
 		Inputs: [][]byte{
-			[]byte(`{"distribute":{"accounts":["lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx","lux1dzqd00lfd4y4qy2pxa0dsdwzfnmsu27hdef8k5"],"make_odd":true}}`),
+			[]byte(`{"threshold":"10000000000000000000","amount":"5","receivers":["lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx","lux1kmmz47pr8h46wcyxw8h3k8s85x0ncykqp0xmgj"]}`),
 		},
 	}
 
