@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"strings"
+
 	strategytypes "github.com/FluxNFTLabs/sdk-go/chain/modules/strategy/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
@@ -9,8 +12,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"os"
-	"strings"
 )
 
 func main() {
@@ -56,11 +57,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
 	msg := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"9d960e195978ea548be7e2e5fea74ba4f389194b4f622c76db1baa52bccbafb3"},
+		Ids:    []string{"de874ab7e2a9afdebe8a82ce6ed0aa22a582768f68bbee8d55b4df3de959c619"},
 		Inputs: [][]byte{
-			[]byte(`{"send":{"accounts":["lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx","lux1dzqd00lfd4y4qy2pxa0dsdwzfnmsu27hdef8k5"],"amounts":[[{"denom":"lux","amount":"1"}],[{"denom":"lux","amount":"1"},{"denom":"usdt","amount":"1"}]]}}`),
+			[]byte(`{"receivers":["lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx","lux1kmmz47pr8h46wcyxw8h3k8s85x0ncykqp0xmgj"]}`),
 		},
 	}
 

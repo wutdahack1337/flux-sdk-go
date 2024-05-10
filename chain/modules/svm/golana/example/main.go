@@ -11,7 +11,7 @@ func main() {
 	// TODO: compose instructions properly
 	for {
 		msg := &types.MsgTransaction{
-			CosmosSigners: []string{"lux1cml96vmptgw99syqrrz8az79xer2pcgp209sv4"},
+			Sender: "lux1cml96vmptgw99syqrrz8az79xer2pcgp209sv4",
 			Accounts: []string{
 				"5u3ScQH8YNWoWgjuyV2218d4V1HtQSoKf65JpuXXwXVK",
 				"CLfvh1736T8KBUWBqSNypizgL5KdZUekJ26gFXV3Lra1",

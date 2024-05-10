@@ -5,7 +5,7 @@ import (
 	"github.com/gagliardetto/solana-go"
 )
 
-func ToCosmosMsg(signers []string, computeBudget uint64, tx *solana.Transaction) *types.MsgTransaction {
+func ToCosmosMsg(signer string, computeBudget uint64, tx *solana.Transaction) *types.MsgTransaction {
 	pubkeys := []string{}
 	for _, p := range tx.Message.AccountKeys {
 		pubkeys = append(pubkeys, p.String())
@@ -36,7 +36,7 @@ func ToCosmosMsg(signers []string, computeBudget uint64, tx *solana.Transaction)
 	}
 
 	return &types.MsgTransaction{
-		CosmosSigners: signers,
+		Sender:        signer,
 		Accounts:      pubkeys,
 		Instructions:  ixs,
 		ComputeBudget: computeBudget,

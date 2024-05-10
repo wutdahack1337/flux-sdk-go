@@ -2,15 +2,18 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"strings"
+
+	"github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	strategytypes "github.com/FluxNFTLabs/sdk-go/chain/modules/strategy/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"os"
-	"strings"
 )
 
 func main() {
@@ -57,7 +60,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	bz, err := os.ReadFile(dir + "/examples/chain/21_MsgConfigStrategy/strategy.wasm")
+	bz, err := os.ReadFile(dir + "/examples/chain/21_MsgConfigStrategy/bank_strategy.wasm")
 	if err != nil {
 		panic(err)
 	}
@@ -66,6 +69,22 @@ func main() {
 		Config:   strategytypes.Config_deploy,
 		Id:       "",
 		Strategy: bz,
+		Query: &types.FISQueryRequest{
+			Instructions: []*types.FISQueryInstruction{
+				{
+					Plane:   types.Plane_COSMOS,
+					Action:  types.QueryAction_COSMOS_BANK_BALANCE,
+					Address: sdk.MustAccAddressFromBech32("lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx"),
+					Input:   []byte("lux"),
+				},
+				{
+					Plane:   types.Plane_COSMOS,
+					Action:  types.QueryAction_COSMOS_BANK_BALANCE,
+					Address: sdk.MustAccAddressFromBech32("lux1kmmz47pr8h46wcyxw8h3k8s85x0ncykqp0xmgj"),
+					Input:   []byte("lux"),
+				},
+			},
+		},
 	}
 
 	//AsyncBroadcastMsg, SyncBroadcastMsg, QueueBroadcastMsg
