@@ -3,11 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
-
 	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/gogoproto/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -34,7 +32,10 @@ func main() {
 			Plane:   astromeshtypes.Plane_COSMOS,
 			Action:  astromeshtypes.QueryAction_COSMOS_BANK_BALANCE,
 			Address: acc.Bytes(),
-			Input:   []byte("lux"),
+			Input: [][]byte{
+				[]byte("lux1cml96vmptgw99syqrrz8az79xer2pcgp209sv4,lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx"),
+				[]byte("usdt,lux"),
+			},
 		},
 	}}
 	res, err := astromeshClient.FISQuery(context.Background(), req)
@@ -42,11 +43,9 @@ func main() {
 		panic(err)
 	}
 
-	var balance sdk.Coin
-	err = proto.Unmarshal(res.InstructionResponses[0].Output, &balance)
-	if err != nil {
-		panic(err)
+	for _, ixRes := range res.InstructionResponses {
+		for _, obj := range ixRes.Output {
+			fmt.Println(string(obj))
+		}
 	}
-
-	fmt.Println(balance)
 }
