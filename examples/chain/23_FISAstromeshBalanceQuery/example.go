@@ -26,15 +26,14 @@ func main() {
 	astromeshClient := astromeshtypes.NewQueryClient(cc)
 
 	// query
-	acc := sdk.MustAccAddressFromBech32("lux1cml96vmptgw99syqrrz8az79xer2pcgp209sv4")
 	req := &astromeshtypes.FISQueryRequest{Instructions: []*astromeshtypes.FISQueryInstruction{
 		{
 			Plane:   astromeshtypes.Plane_COSMOS,
-			Action:  astromeshtypes.QueryAction_COSMOS_BANK_BALANCE,
-			Address: acc.Bytes(),
+			Action:  astromeshtypes.QueryAction_COSMOS_ASTROMESH_BALANCE,
+			Address: []byte{},
 			Input: [][]byte{
-				[]byte("lux1cml96vmptgw99syqrrz8az79xer2pcgp209sv4,lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx"),
-				[]byte("usdt,lux"),
+				[]byte("lux1cml96vmptgw99syqrrz8az79xer2pcgp209sv4"),
+				[]byte("usdt"),
 			},
 		},
 	}}
