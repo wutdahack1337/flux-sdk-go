@@ -11,7 +11,6 @@ import (
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -74,14 +73,11 @@ func main() {
 				{
 					Plane:   types.Plane_COSMOS,
 					Action:  types.QueryAction_COSMOS_BANK_BALANCE,
-					Address: sdk.MustAccAddressFromBech32("lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx"),
-					Input:   []byte("lux"),
-				},
-				{
-					Plane:   types.Plane_COSMOS,
-					Action:  types.QueryAction_COSMOS_BANK_BALANCE,
-					Address: sdk.MustAccAddressFromBech32("lux1kmmz47pr8h46wcyxw8h3k8s85x0ncykqp0xmgj"),
-					Input:   []byte("lux"),
+					Address: []byte{},
+					Input: [][]byte{
+						[]byte("lux1cml96vmptgw99syqrrz8az79xer2pcgp209sv4,lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx"),
+						[]byte("usdt,lux"),
+					},
 				},
 			},
 		},
