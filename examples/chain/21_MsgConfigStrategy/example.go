@@ -59,16 +59,18 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	bz, err := os.ReadFile(dir + "/examples/chain/21_MsgConfigStrategy/bank_strategy.wasm")
+	bz, err := os.ReadFile(dir + "/examples/chain/21_MsgConfigStrategy/strategy.wasm")
 	if err != nil {
 		panic(err)
 	}
+
 	msg := &strategytypes.MsgConfigStrategy{
 		Sender:   senderAddress.String(),
 		Config:   strategytypes.Config_deploy,
 		Id:       "",
 		Strategy: bz,
 		Query: &types.FISQueryRequest{
+			// track balances of accounts you want to make the amount even
 			Instructions: []*types.FISQueryInstruction{
 				{
 					Plane:   types.Plane_COSMOS,
