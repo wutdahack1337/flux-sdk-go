@@ -65,19 +65,19 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	astroportFactoryCode, err := os.ReadFile(dir + "/examples/chain/24_DeployWasmAstroport/artifacts/astroport_factory.wasm")
+	astroportFactoryCode, err := os.ReadFile(dir + "/examples/chain/24_DeployAstroport/artifacts/astroport_factory.wasm")
 	if err != nil {
 		panic(err)
 	}
-	astroportXYKPairCode, err := os.ReadFile(dir + "/examples/chain/24_DeployWasmAstroport/artifacts/astroport_pair.wasm")
+	astroportXYKPairCode, err := os.ReadFile(dir + "/examples/chain/24_DeployAstroport/artifacts/astroport_pair.wasm")
 	if err != nil {
 		panic(err)
 	}
-	astroportRouterCode, err := os.ReadFile(dir + "/examples/chain/24_DeployWasmAstroport/artifacts/astroport_router.wasm")
+	astroportRouterCode, err := os.ReadFile(dir + "/examples/chain/24_DeployAstroport/artifacts/astroport_router.wasm")
 	if err != nil {
 		panic(err)
 	}
-	cw20BaseCode, err := os.ReadFile(dir + "/examples/chain/24_DeployWasmAstroport/artifacts/cw20_base.wasm")
+	cw20BaseCode, err := os.ReadFile(dir + "/examples/chain/24_DeployAstroport/artifacts/cw20_base.wasm")
 	if err != nil {
 		panic(err)
 	}
