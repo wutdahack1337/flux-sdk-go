@@ -6,6 +6,7 @@ package types
 import (
 	context "context"
 	fmt "fmt"
+	_ "github.com/cosmos/cosmos-proto"
 	_ "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/cosmos-sdk/types/query"
 	_ "github.com/cosmos/gogoproto/gogoproto"
@@ -31,21 +32,21 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type QueryFoo struct {
+type ListStrategiesRequest struct {
 }
 
-func (m *QueryFoo) Reset()         { *m = QueryFoo{} }
-func (m *QueryFoo) String() string { return proto.CompactTextString(m) }
-func (*QueryFoo) ProtoMessage()    {}
-func (*QueryFoo) Descriptor() ([]byte, []int) {
+func (m *ListStrategiesRequest) Reset()         { *m = ListStrategiesRequest{} }
+func (m *ListStrategiesRequest) String() string { return proto.CompactTextString(m) }
+func (*ListStrategiesRequest) ProtoMessage()    {}
+func (*ListStrategiesRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_0aa31d246011d73a, []int{0}
 }
-func (m *QueryFoo) XXX_Unmarshal(b []byte) error {
+func (m *ListStrategiesRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryFoo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ListStrategiesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryFoo.Marshal(b, m, deterministic)
+		return xxx_messageInfo_ListStrategiesRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -55,33 +56,34 @@ func (m *QueryFoo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *QueryFoo) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryFoo.Merge(m, src)
+func (m *ListStrategiesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListStrategiesRequest.Merge(m, src)
 }
-func (m *QueryFoo) XXX_Size() int {
+func (m *ListStrategiesRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryFoo) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryFoo.DiscardUnknown(m)
+func (m *ListStrategiesRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListStrategiesRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryFoo proto.InternalMessageInfo
+var xxx_messageInfo_ListStrategiesRequest proto.InternalMessageInfo
 
-type QueryFooResponse struct {
+type ListStrategiesResponse struct {
+	Strategies []*Strategy `protobuf:"bytes,1,rep,name=strategies,proto3" json:"strategies,omitempty"`
 }
 
-func (m *QueryFooResponse) Reset()         { *m = QueryFooResponse{} }
-func (m *QueryFooResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryFooResponse) ProtoMessage()    {}
-func (*QueryFooResponse) Descriptor() ([]byte, []int) {
+func (m *ListStrategiesResponse) Reset()         { *m = ListStrategiesResponse{} }
+func (m *ListStrategiesResponse) String() string { return proto.CompactTextString(m) }
+func (*ListStrategiesResponse) ProtoMessage()    {}
+func (*ListStrategiesResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_0aa31d246011d73a, []int{1}
 }
-func (m *QueryFooResponse) XXX_Unmarshal(b []byte) error {
+func (m *ListStrategiesResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryFooResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ListStrategiesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryFooResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_ListStrategiesResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -91,46 +93,201 @@ func (m *QueryFooResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return b[:n], nil
 	}
 }
-func (m *QueryFooResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryFooResponse.Merge(m, src)
+func (m *ListStrategiesResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListStrategiesResponse.Merge(m, src)
 }
-func (m *QueryFooResponse) XXX_Size() int {
+func (m *ListStrategiesResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryFooResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryFooResponse.DiscardUnknown(m)
+func (m *ListStrategiesResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListStrategiesResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryFooResponse proto.InternalMessageInfo
+var xxx_messageInfo_ListStrategiesResponse proto.InternalMessageInfo
+
+func (m *ListStrategiesResponse) GetStrategies() []*Strategy {
+	if m != nil {
+		return m.Strategies
+	}
+	return nil
+}
+
+type ListStrategiesByOwnerRequest struct {
+	Owner string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
+}
+
+func (m *ListStrategiesByOwnerRequest) Reset()         { *m = ListStrategiesByOwnerRequest{} }
+func (m *ListStrategiesByOwnerRequest) String() string { return proto.CompactTextString(m) }
+func (*ListStrategiesByOwnerRequest) ProtoMessage()    {}
+func (*ListStrategiesByOwnerRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0aa31d246011d73a, []int{2}
+}
+func (m *ListStrategiesByOwnerRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ListStrategiesByOwnerRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ListStrategiesByOwnerRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ListStrategiesByOwnerRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListStrategiesByOwnerRequest.Merge(m, src)
+}
+func (m *ListStrategiesByOwnerRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *ListStrategiesByOwnerRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListStrategiesByOwnerRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListStrategiesByOwnerRequest proto.InternalMessageInfo
+
+func (m *ListStrategiesByOwnerRequest) GetOwner() string {
+	if m != nil {
+		return m.Owner
+	}
+	return ""
+}
+
+type GetStrategyByIdRequest struct {
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (m *GetStrategyByIdRequest) Reset()         { *m = GetStrategyByIdRequest{} }
+func (m *GetStrategyByIdRequest) String() string { return proto.CompactTextString(m) }
+func (*GetStrategyByIdRequest) ProtoMessage()    {}
+func (*GetStrategyByIdRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0aa31d246011d73a, []int{3}
+}
+func (m *GetStrategyByIdRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetStrategyByIdRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetStrategyByIdRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetStrategyByIdRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetStrategyByIdRequest.Merge(m, src)
+}
+func (m *GetStrategyByIdRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetStrategyByIdRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetStrategyByIdRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetStrategyByIdRequest proto.InternalMessageInfo
+
+func (m *GetStrategyByIdRequest) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+type GetStrategyByIdResponse struct {
+	Strategy *Strategy `protobuf:"bytes,1,opt,name=strategy,proto3" json:"strategy,omitempty"`
+}
+
+func (m *GetStrategyByIdResponse) Reset()         { *m = GetStrategyByIdResponse{} }
+func (m *GetStrategyByIdResponse) String() string { return proto.CompactTextString(m) }
+func (*GetStrategyByIdResponse) ProtoMessage()    {}
+func (*GetStrategyByIdResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0aa31d246011d73a, []int{4}
+}
+func (m *GetStrategyByIdResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetStrategyByIdResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetStrategyByIdResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetStrategyByIdResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetStrategyByIdResponse.Merge(m, src)
+}
+func (m *GetStrategyByIdResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetStrategyByIdResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetStrategyByIdResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetStrategyByIdResponse proto.InternalMessageInfo
+
+func (m *GetStrategyByIdResponse) GetStrategy() *Strategy {
+	if m != nil {
+		return m.Strategy
+	}
+	return nil
+}
 
 func init() {
-	proto.RegisterType((*QueryFoo)(nil), "flux.strategy.v1beta1.QueryFoo")
-	proto.RegisterType((*QueryFooResponse)(nil), "flux.strategy.v1beta1.QueryFooResponse")
+	proto.RegisterType((*ListStrategiesRequest)(nil), "flux.strategy.v1beta1.ListStrategiesRequest")
+	proto.RegisterType((*ListStrategiesResponse)(nil), "flux.strategy.v1beta1.ListStrategiesResponse")
+	proto.RegisterType((*ListStrategiesByOwnerRequest)(nil), "flux.strategy.v1beta1.ListStrategiesByOwnerRequest")
+	proto.RegisterType((*GetStrategyByIdRequest)(nil), "flux.strategy.v1beta1.GetStrategyByIdRequest")
+	proto.RegisterType((*GetStrategyByIdResponse)(nil), "flux.strategy.v1beta1.GetStrategyByIdResponse")
 }
 
 func init() { proto.RegisterFile("flux/strategy/v1beta1/query.proto", fileDescriptor_0aa31d246011d73a) }
 
 var fileDescriptor_0aa31d246011d73a = []byte{
-	// 294 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x8f, 0xbd, 0x4a, 0xf4, 0x40,
-	0x14, 0x86, 0x77, 0xbf, 0x0f, 0x45, 0xa6, 0x92, 0x61, 0x6d, 0x82, 0x8c, 0x18, 0x04, 0xc1, 0x62,
-	0x0e, 0xab, 0x95, 0xad, 0x45, 0x2a, 0x11, 0xfc, 0xa9, 0xec, 0x26, 0xd9, 0xd9, 0xd9, 0xc1, 0x64,
-	0x4e, 0xcc, 0x4c, 0x64, 0xd3, 0x7a, 0x05, 0x82, 0x37, 0x65, 0xb9, 0x60, 0x63, 0x29, 0x89, 0x17,
-	0x22, 0x19, 0x93, 0xa8, 0xb0, 0x60, 0x77, 0x98, 0xf7, 0x99, 0xe7, 0xbc, 0x87, 0xec, 0xcf, 0xd3,
-	0x72, 0x09, 0xd6, 0x15, 0xc2, 0x49, 0x55, 0xc1, 0xc3, 0x34, 0x96, 0x4e, 0x4c, 0xe1, 0xbe, 0x94,
-	0x45, 0xc5, 0xf3, 0x02, 0x1d, 0xd2, 0x9d, 0x16, 0xe1, 0x3d, 0xc2, 0x3b, 0x24, 0x98, 0x28, 0x54,
-	0xe8, 0x09, 0x68, 0xa7, 0x2f, 0x38, 0x60, 0x09, 0xda, 0x0c, 0x2d, 0xc4, 0xc2, 0xca, 0xc1, 0x96,
-	0xa0, 0x36, 0x5d, 0x7e, 0xf4, 0x33, 0xf7, 0x5b, 0x06, 0x2a, 0x17, 0x4a, 0x1b, 0xe1, 0x34, 0xf6,
-	0xec, 0xae, 0x42, 0x54, 0xa9, 0x04, 0x91, 0x6b, 0x10, 0xc6, 0xa0, 0xf3, 0xa1, 0xed, 0xd2, 0x83,
-	0xf5, 0xcd, 0x87, 0x9e, 0x9e, 0x0a, 0x09, 0xd9, 0xba, 0x6c, 0xb7, 0x44, 0x88, 0x21, 0x25, 0xdb,
-	0xfd, 0x7c, 0x25, 0x6d, 0x8e, 0xc6, 0xca, 0x63, 0x47, 0x36, 0xfc, 0x1b, 0xbd, 0x23, 0xff, 0x23,
-	0x44, 0xba, 0xc7, 0xd7, 0x5e, 0xcb, 0xfb, 0x8f, 0xc1, 0xe1, 0x1f, 0x40, 0x6f, 0x0e, 0x83, 0xc7,
-	0xd7, 0x8f, 0xe7, 0x7f, 0x13, 0x4a, 0xe1, 0x77, 0xd1, 0x39, 0xe2, 0xd9, 0xf5, 0x4b, 0xcd, 0xc6,
-	0xab, 0x9a, 0x8d, 0xdf, 0x6b, 0x36, 0x7e, 0x6a, 0xd8, 0x68, 0xd5, 0xb0, 0xd1, 0x5b, 0xc3, 0x46,
-	0xb7, 0xa7, 0x4a, 0xbb, 0x45, 0x19, 0xf3, 0x04, 0x33, 0x88, 0xd2, 0x72, 0x79, 0x11, 0xdd, 0x9c,
-	0x8b, 0xd8, 0x7a, 0xc7, 0x0c, 0x92, 0x85, 0xd0, 0x06, 0x32, 0x9c, 0x95, 0xa9, 0xb4, 0xdf, 0x4a,
-	0x57, 0xe5, 0xd2, 0xc6, 0x9b, 0xfe, 0xe2, 0x93, 0xcf, 0x00, 0x00, 0x00, 0xff, 0xff, 0x6d, 0xb9,
-	0xe9, 0x00, 0xd3, 0x01, 0x00, 0x00,
+	// 510 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x93, 0x3f, 0x6f, 0x13, 0x31,
+	0x18, 0xc6, 0xeb, 0x54, 0x45, 0x60, 0xa4, 0x22, 0x59, 0xfd, 0x13, 0xa2, 0xea, 0x68, 0x0f, 0x86,
+	0xb4, 0xb4, 0x67, 0x25, 0x9d, 0x10, 0x03, 0x22, 0x43, 0x11, 0x52, 0x55, 0x44, 0x82, 0x90, 0x60,
+	0x89, 0x7c, 0xb1, 0xb9, 0x5a, 0x4a, 0xce, 0xd7, 0xb3, 0x0f, 0x6a, 0x55, 0x5d, 0xf8, 0x04, 0x48,
+	0x2c, 0x7c, 0x00, 0x66, 0x26, 0x3e, 0x04, 0x63, 0x05, 0x0b, 0x23, 0x4a, 0xf8, 0x14, 0x4c, 0xe8,
+	0x6c, 0xdf, 0xd1, 0x84, 0xb4, 0x84, 0x2d, 0xce, 0xfb, 0xbc, 0xcf, 0xf3, 0xf3, 0xfb, 0xfa, 0xe0,
+	0xc6, 0xab, 0x7e, 0x76, 0x8c, 0xa5, 0x4a, 0x89, 0x62, 0x91, 0xc6, 0xaf, 0x1b, 0x21, 0x53, 0xa4,
+	0x81, 0x8f, 0x32, 0x96, 0xea, 0x20, 0x49, 0x85, 0x12, 0x68, 0x39, 0x97, 0x04, 0x85, 0x24, 0x70,
+	0x92, 0xda, 0x52, 0x24, 0x22, 0x61, 0x14, 0x38, 0xff, 0x65, 0xc5, 0x35, 0xaf, 0x27, 0xe4, 0x40,
+	0x48, 0x1c, 0x12, 0xc9, 0x4a, 0xb7, 0x9e, 0xe0, 0xb1, 0xab, 0x6f, 0x9d, 0xaf, 0x9b, 0x94, 0x52,
+	0x95, 0x90, 0x88, 0xc7, 0x44, 0x71, 0x51, 0x68, 0xd7, 0x22, 0x21, 0xa2, 0x3e, 0xc3, 0x24, 0xe1,
+	0x98, 0xc4, 0xb1, 0x50, 0xa6, 0x28, 0x5d, 0xf5, 0xce, 0x74, 0xf2, 0x92, 0xd3, 0xaa, 0x6e, 0xda,
+	0xbc, 0xae, 0x05, 0xb5, 0x07, 0x5b, 0xf2, 0x57, 0xe1, 0xf2, 0x3e, 0x97, 0xaa, 0x63, 0x1b, 0x38,
+	0x93, 0x6d, 0x76, 0x94, 0x31, 0xa9, 0xfc, 0x17, 0x70, 0x65, 0xb2, 0x20, 0x13, 0x11, 0x4b, 0x86,
+	0x1e, 0x40, 0x28, 0xcb, 0x7f, 0xab, 0x60, 0x7d, 0xbe, 0x7e, 0xbd, 0x79, 0x2b, 0x98, 0x3a, 0x9f,
+	0xc0, 0xb5, 0xeb, 0xf6, 0xb9, 0x16, 0xff, 0x00, 0xae, 0x8d, 0x5b, 0xb7, 0xf4, 0x93, 0x37, 0x31,
+	0x4b, 0x5d, 0x34, 0x0a, 0xe0, 0x82, 0xc8, 0xcf, 0x55, 0xb0, 0x0e, 0xea, 0xd7, 0x5a, 0xd5, 0xaf,
+	0x9f, 0x77, 0x96, 0x1c, 0xf4, 0x43, 0x4a, 0x53, 0x26, 0x65, 0x47, 0xa5, 0x3c, 0x8e, 0xda, 0x56,
+	0xe6, 0xd7, 0xe1, 0xca, 0x23, 0x56, 0xd8, 0xe9, 0x96, 0x7e, 0x4c, 0x0b, 0xa7, 0x45, 0x58, 0xe1,
+	0xd4, 0xda, 0xb4, 0x2b, 0x9c, 0xfa, 0xcf, 0xe1, 0xea, 0x5f, 0x4a, 0x77, 0xab, 0xfb, 0xf0, 0x6a,
+	0x41, 0x6f, 0x1a, 0x66, 0xb8, 0x53, 0xd9, 0xd0, 0xfc, 0x35, 0x0f, 0x17, 0x9e, 0xe6, 0x7b, 0x44,
+	0x1f, 0x00, 0x5c, 0x1c, 0xbf, 0x1c, 0xda, 0xbe, 0xc0, 0x67, 0xea, 0xdc, 0x6b, 0x3b, 0x33, 0xaa,
+	0x2d, 0xb6, 0xbf, 0xf9, 0xf6, 0xdb, 0xcf, 0xf7, 0x95, 0xdb, 0x68, 0x03, 0x5f, 0xfa, 0x12, 0x72,
+	0x8e, 0x4f, 0x60, 0x72, 0xd7, 0x6e, 0xee, 0x68, 0x77, 0xa6, 0xcc, 0xf1, 0x2d, 0xfd, 0x2f, 0x68,
+	0xc3, 0x80, 0xde, 0x45, 0x9b, 0xff, 0x04, 0xc5, 0x27, 0x66, 0xad, 0xa7, 0xe8, 0x23, 0x80, 0x37,
+	0x26, 0xd6, 0x85, 0x2e, 0x4a, 0x9d, 0xfe, 0x00, 0x6a, 0xc1, 0xac, 0x72, 0x47, 0xd9, 0x34, 0x94,
+	0xdb, 0x68, 0xeb, 0x72, 0x4a, 0xdd, 0x0d, 0x75, 0x97, 0x53, 0x7c, 0xc2, 0xe9, 0x69, 0xab, 0xf3,
+	0x65, 0xe8, 0x81, 0xb3, 0xa1, 0x07, 0x7e, 0x0c, 0x3d, 0xf0, 0x6e, 0xe4, 0xcd, 0x9d, 0x8d, 0xbc,
+	0xb9, 0xef, 0x23, 0x6f, 0xee, 0xe5, 0xbd, 0x88, 0xab, 0xc3, 0x2c, 0x0c, 0x7a, 0x62, 0x80, 0xf7,
+	0xfa, 0xd9, 0xf1, 0xc1, 0xde, 0xb3, 0x7d, 0x12, 0x4a, 0xe3, 0x4d, 0x71, 0xef, 0x90, 0xf0, 0x18,
+	0x0f, 0x04, 0xcd, 0xfa, 0x4c, 0xfe, 0x89, 0x52, 0x3a, 0x61, 0x32, 0xbc, 0x62, 0x3e, 0xcf, 0xdd,
+	0xdf, 0x01, 0x00, 0x00, 0xff, 0xff, 0x1a, 0xbd, 0xb5, 0x2c, 0x9b, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -145,7 +302,9 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
-	Foo(ctx context.Context, in *QueryFoo, opts ...grpc.CallOption) (*QueryFooResponse, error)
+	ListStrategies(ctx context.Context, in *ListStrategiesRequest, opts ...grpc.CallOption) (*ListStrategiesResponse, error)
+	ListStrategiesByOwner(ctx context.Context, in *ListStrategiesByOwnerRequest, opts ...grpc.CallOption) (*ListStrategiesResponse, error)
+	GetStrategyById(ctx context.Context, in *GetStrategyByIdRequest, opts ...grpc.CallOption) (*GetStrategyByIdResponse, error)
 }
 
 type queryClient struct {
@@ -156,9 +315,27 @@ func NewQueryClient(cc grpc1.ClientConn) QueryClient {
 	return &queryClient{cc}
 }
 
-func (c *queryClient) Foo(ctx context.Context, in *QueryFoo, opts ...grpc.CallOption) (*QueryFooResponse, error) {
-	out := new(QueryFooResponse)
-	err := c.cc.Invoke(ctx, "/flux.strategy.v1beta1.Query/Foo", in, out, opts...)
+func (c *queryClient) ListStrategies(ctx context.Context, in *ListStrategiesRequest, opts ...grpc.CallOption) (*ListStrategiesResponse, error) {
+	out := new(ListStrategiesResponse)
+	err := c.cc.Invoke(ctx, "/flux.strategy.v1beta1.Query/ListStrategies", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) ListStrategiesByOwner(ctx context.Context, in *ListStrategiesByOwnerRequest, opts ...grpc.CallOption) (*ListStrategiesResponse, error) {
+	out := new(ListStrategiesResponse)
+	err := c.cc.Invoke(ctx, "/flux.strategy.v1beta1.Query/ListStrategiesByOwner", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) GetStrategyById(ctx context.Context, in *GetStrategyByIdRequest, opts ...grpc.CallOption) (*GetStrategyByIdResponse, error) {
+	out := new(GetStrategyByIdResponse)
+	err := c.cc.Invoke(ctx, "/flux.strategy.v1beta1.Query/GetStrategyById", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -167,35 +344,79 @@ func (c *queryClient) Foo(ctx context.Context, in *QueryFoo, opts ...grpc.CallOp
 
 // QueryServer is the server API for Query service.
 type QueryServer interface {
-	Foo(context.Context, *QueryFoo) (*QueryFooResponse, error)
+	ListStrategies(context.Context, *ListStrategiesRequest) (*ListStrategiesResponse, error)
+	ListStrategiesByOwner(context.Context, *ListStrategiesByOwnerRequest) (*ListStrategiesResponse, error)
+	GetStrategyById(context.Context, *GetStrategyByIdRequest) (*GetStrategyByIdResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
 type UnimplementedQueryServer struct {
 }
 
-func (*UnimplementedQueryServer) Foo(ctx context.Context, req *QueryFoo) (*QueryFooResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Foo not implemented")
+func (*UnimplementedQueryServer) ListStrategies(ctx context.Context, req *ListStrategiesRequest) (*ListStrategiesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListStrategies not implemented")
+}
+func (*UnimplementedQueryServer) ListStrategiesByOwner(ctx context.Context, req *ListStrategiesByOwnerRequest) (*ListStrategiesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListStrategiesByOwner not implemented")
+}
+func (*UnimplementedQueryServer) GetStrategyById(ctx context.Context, req *GetStrategyByIdRequest) (*GetStrategyByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStrategyById not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
 	s.RegisterService(&_Query_serviceDesc, srv)
 }
 
-func _Query_Foo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryFoo)
+func _Query_ListStrategies_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListStrategiesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).Foo(ctx, in)
+		return srv.(QueryServer).ListStrategies(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/flux.strategy.v1beta1.Query/Foo",
+		FullMethod: "/flux.strategy.v1beta1.Query/ListStrategies",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Foo(ctx, req.(*QueryFoo))
+		return srv.(QueryServer).ListStrategies(ctx, req.(*ListStrategiesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_ListStrategiesByOwner_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListStrategiesByOwnerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ListStrategiesByOwner(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/flux.strategy.v1beta1.Query/ListStrategiesByOwner",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ListStrategiesByOwner(ctx, req.(*ListStrategiesByOwnerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_GetStrategyById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetStrategyByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).GetStrategyById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/flux.strategy.v1beta1.Query/GetStrategyById",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).GetStrategyById(ctx, req.(*GetStrategyByIdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -205,15 +426,23 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Foo",
-			Handler:    _Query_Foo_Handler,
+			MethodName: "ListStrategies",
+			Handler:    _Query_ListStrategies_Handler,
+		},
+		{
+			MethodName: "ListStrategiesByOwner",
+			Handler:    _Query_ListStrategiesByOwner_Handler,
+		},
+		{
+			MethodName: "GetStrategyById",
+			Handler:    _Query_GetStrategyById_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "flux/strategy/v1beta1/query.proto",
 }
 
-func (m *QueryFoo) Marshal() (dAtA []byte, err error) {
+func (m *ListStrategiesRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -223,12 +452,12 @@ func (m *QueryFoo) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryFoo) MarshalTo(dAtA []byte) (int, error) {
+func (m *ListStrategiesRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryFoo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ListStrategiesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -236,7 +465,7 @@ func (m *QueryFoo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryFooResponse) Marshal() (dAtA []byte, err error) {
+func (m *ListStrategiesResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -246,16 +475,125 @@ func (m *QueryFooResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryFooResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *ListStrategiesResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryFooResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ListStrategiesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if len(m.Strategies) > 0 {
+		for iNdEx := len(m.Strategies) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Strategies[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ListStrategiesByOwnerRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ListStrategiesByOwnerRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ListStrategiesByOwnerRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Owner) > 0 {
+		i -= len(m.Owner)
+		copy(dAtA[i:], m.Owner)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Owner)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetStrategyByIdRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetStrategyByIdRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetStrategyByIdRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetStrategyByIdResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetStrategyByIdResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetStrategyByIdResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Strategy != nil {
+		{
+			size, err := m.Strategy.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -270,7 +608,7 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *QueryFoo) Size() (n int) {
+func (m *ListStrategiesRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -279,12 +617,57 @@ func (m *QueryFoo) Size() (n int) {
 	return n
 }
 
-func (m *QueryFooResponse) Size() (n int) {
+func (m *ListStrategiesResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
+	if len(m.Strategies) > 0 {
+		for _, e := range m.Strategies {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *ListStrategiesByOwnerRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Owner)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *GetStrategyByIdRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *GetStrategyByIdResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Strategy != nil {
+		l = m.Strategy.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
 	return n
 }
 
@@ -294,7 +677,7 @@ func sovQuery(x uint64) (n int) {
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *QueryFoo) Unmarshal(dAtA []byte) error {
+func (m *ListStrategiesRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -317,10 +700,10 @@ func (m *QueryFoo) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryFoo: wiretype end group for non-group")
+			return fmt.Errorf("proto: ListStrategiesRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryFoo: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: ListStrategiesRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -344,7 +727,7 @@ func (m *QueryFoo) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryFooResponse) Unmarshal(dAtA []byte) error {
+func (m *ListStrategiesResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -367,12 +750,296 @@ func (m *QueryFooResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryFooResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: ListStrategiesResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryFooResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: ListStrategiesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Strategies", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Strategies = append(m.Strategies, &Strategy{})
+			if err := m.Strategies[len(m.Strategies)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ListStrategiesByOwnerRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ListStrategiesByOwnerRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ListStrategiesByOwnerRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Owner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetStrategyByIdRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetStrategyByIdRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetStrategyByIdRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetStrategyByIdResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetStrategyByIdResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetStrategyByIdResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Strategy", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Strategy == nil {
+				m.Strategy = &Strategy{}
+			}
+			if err := m.Strategy.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])

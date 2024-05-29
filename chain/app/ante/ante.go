@@ -11,7 +11,6 @@ import (
 	circuitkeeper "cosmossdk.io/x/circuit/keeper"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	svmante "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/ante"
 	log "github.com/InjectiveLabs/suplog"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	"github.com/cosmos/cosmos-sdk/crypto/types/multisig"
@@ -116,7 +115,6 @@ func NewAnteHandler(options HandlerOptions) sdk.AnteHandler {
 							wasmkeeper.NewCountTXDecorator(options.TXCounterStoreService),
 							wasmkeeper.NewGasRegisterDecorator(options.WasmKeeper.GetGasRegister()),
 							circuitante.NewCircuitBreakerDecorator(options.CircuitKeeper),
-							svmante.NewEnsureSingleSvmMsgDecorator(),
 							authante.NewValidateBasicDecorator(),
 							authante.NewTxTimeoutHeightDecorator(),
 							authante.NewValidateMemoDecorator(options.AccountKeeper),
@@ -150,7 +148,6 @@ func NewAnteHandler(options HandlerOptions) sdk.AnteHandler {
 			wasmkeeper.NewGasRegisterDecorator(options.WasmKeeper.GetGasRegister()),
 			circuitante.NewCircuitBreakerDecorator(options.CircuitKeeper),
 			authante.NewExtensionOptionsDecorator(options.ExtensionOptionChecker),
-			svmante.NewEnsureSingleSvmMsgDecorator(),
 			authante.NewValidateBasicDecorator(),
 			authante.NewTxTimeoutHeightDecorator(),
 			authante.NewValidateMemoDecorator(options.AccountKeeper),
