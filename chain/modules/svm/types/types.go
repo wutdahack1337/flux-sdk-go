@@ -1,15 +1,19 @@
 package types
 
-import "github.com/gagliardetto/solana-go"
+import (
+	fmt "fmt"
+
+	"github.com/gagliardetto/solana-go"
+)
 
 const (
-	// ModuleName defines the name of the nft module
+	// ModuleName defines the name of the svm module
 	ModuleName = "svm"
 
-	// StoreKey is the default store key for nft
+	// StoreKey is the default store key for svm
 	StoreKey = ModuleName
 
-	// RouterKey is the message route for nft
+	// RouterKey is the message route for svm
 	RouterKey = ModuleName
 
 	HashLen       = 32
@@ -34,6 +38,8 @@ const (
 )
 
 var (
+	TransientStoreKey = fmt.Sprintf("transient_%s", StoreKey)
+
 	NativeProgramId           = solana.MustPublicKeyFromBase58("NativeLoader1111111111111111111111111111111")
 	SplToken2022ProgramId     = solana.MustPublicKeyFromBase58("TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb")
 	AssociatedTokenProgramId  = solana.MustPublicKeyFromBase58("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL")

@@ -9,12 +9,14 @@ import (
 	fmt "fmt"
 	types1 "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	types "github.com/FluxNFTLabs/sdk-go/chain/modules/evm/types"
+	types2 "github.com/FluxNFTLabs/sdk-go/chain/modules/strategy/types"
 	_ "github.com/cosmos/cosmos-proto"
 	_ "github.com/cosmos/cosmos-sdk/codec/types"
 	query "github.com/cosmos/cosmos-sdk/types/query"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
+	types3 "github.com/cosmos/gogoproto/types"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -36,6 +38,7 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type ListEvmContractsRequest struct {
+	// owner of the contract to filter
 	Address    string             `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
 	Pagination *query.PageRequest `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
@@ -328,64 +331,304 @@ func (m *BalancesResponse) GetPagination() *query.PageResponse {
 	return nil
 }
 
+// ListStrategiesRequest is a query type to list out existing on-chain strategies
+// with some filters For unused fields, just leave them empty
+type ListStrategiesRequest struct {
+	// use pagination to limit the output item list
+	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	// strategy type, could be generic strategies or intent solver
+	Type types2.StrategyType `protobuf:"varint,2,opt,name=type,proto3,enum=flux.strategy.v1beta1.StrategyType" json:"type,omitempty"`
+	// strategy id to filter, this is useful to get info of a single strategy
+	Id string `protobuf:"bytes,3,opt,name=id,proto3" json:"id,omitempty"`
+	// strategy enable/disable status to filter
+	Enabled *types3.BoolValue `protobuf:"bytes,4,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	// tags to filter
+	Tags []string `protobuf:"bytes,5,rep,name=tags,proto3" json:"tags,omitempty"`
+}
+
+func (m *ListStrategiesRequest) Reset()         { *m = ListStrategiesRequest{} }
+func (m *ListStrategiesRequest) String() string { return proto.CompactTextString(m) }
+func (*ListStrategiesRequest) ProtoMessage()    {}
+func (*ListStrategiesRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_55f537fd2a78a541, []int{5}
+}
+func (m *ListStrategiesRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ListStrategiesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ListStrategiesRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ListStrategiesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListStrategiesRequest.Merge(m, src)
+}
+func (m *ListStrategiesRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *ListStrategiesRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListStrategiesRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListStrategiesRequest proto.InternalMessageInfo
+
+func (m *ListStrategiesRequest) GetPagination() *query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+func (m *ListStrategiesRequest) GetType() types2.StrategyType {
+	if m != nil {
+		return m.Type
+	}
+	return types2.StrategyType_GENERIC
+}
+
+func (m *ListStrategiesRequest) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *ListStrategiesRequest) GetEnabled() *types3.BoolValue {
+	if m != nil {
+		return m.Enabled
+	}
+	return nil
+}
+
+func (m *ListStrategiesRequest) GetTags() []string {
+	if m != nil {
+		return m.Tags
+	}
+	return nil
+}
+
+type ListStrategiesResponse struct {
+	// pagination response shows which page the strategy list is at
+	Pagination *query.PageResponse `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	// strategies shows existing strategies after applied the filters in
+	// ListStrategiesRequest
+	Strategies []*types2.Strategy `protobuf:"bytes,2,rep,name=strategies,proto3" json:"strategies,omitempty"`
+}
+
+func (m *ListStrategiesResponse) Reset()         { *m = ListStrategiesResponse{} }
+func (m *ListStrategiesResponse) String() string { return proto.CompactTextString(m) }
+func (*ListStrategiesResponse) ProtoMessage()    {}
+func (*ListStrategiesResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_55f537fd2a78a541, []int{6}
+}
+func (m *ListStrategiesResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ListStrategiesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ListStrategiesResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ListStrategiesResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListStrategiesResponse.Merge(m, src)
+}
+func (m *ListStrategiesResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *ListStrategiesResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListStrategiesResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListStrategiesResponse proto.InternalMessageInfo
+
+func (m *ListStrategiesResponse) GetPagination() *query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+func (m *ListStrategiesResponse) GetStrategies() []*types2.Strategy {
+	if m != nil {
+		return m.Strategies
+	}
+	return nil
+}
+
+// List strategies by an owner with some additional filters
+type ListStrategiesByOwnerRequest struct {
+	// use pagination to limit the output item list
+	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	// owner of the strategy, required by this query
+	Owner string `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
+	// strategy type, could be generic strategies or intent solver
+	Type types2.StrategyType `protobuf:"varint,3,opt,name=type,proto3,enum=flux.strategy.v1beta1.StrategyType" json:"type,omitempty"`
+	// strategy enable/disable status to filter
+	Enabled *types3.BoolValue `protobuf:"bytes,4,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	// tags to filter
+	Tags []string `protobuf:"bytes,5,rep,name=tags,proto3" json:"tags,omitempty"`
+}
+
+func (m *ListStrategiesByOwnerRequest) Reset()         { *m = ListStrategiesByOwnerRequest{} }
+func (m *ListStrategiesByOwnerRequest) String() string { return proto.CompactTextString(m) }
+func (*ListStrategiesByOwnerRequest) ProtoMessage()    {}
+func (*ListStrategiesByOwnerRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_55f537fd2a78a541, []int{7}
+}
+func (m *ListStrategiesByOwnerRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ListStrategiesByOwnerRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ListStrategiesByOwnerRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ListStrategiesByOwnerRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListStrategiesByOwnerRequest.Merge(m, src)
+}
+func (m *ListStrategiesByOwnerRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *ListStrategiesByOwnerRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListStrategiesByOwnerRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListStrategiesByOwnerRequest proto.InternalMessageInfo
+
+func (m *ListStrategiesByOwnerRequest) GetPagination() *query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+func (m *ListStrategiesByOwnerRequest) GetOwner() string {
+	if m != nil {
+		return m.Owner
+	}
+	return ""
+}
+
+func (m *ListStrategiesByOwnerRequest) GetType() types2.StrategyType {
+	if m != nil {
+		return m.Type
+	}
+	return types2.StrategyType_GENERIC
+}
+
+func (m *ListStrategiesByOwnerRequest) GetEnabled() *types3.BoolValue {
+	if m != nil {
+		return m.Enabled
+	}
+	return nil
+}
+
+func (m *ListStrategiesByOwnerRequest) GetTags() []string {
+	if m != nil {
+		return m.Tags
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*ListEvmContractsRequest)(nil), "flux.indexer.explorer.ListEvmContractsRequest")
 	proto.RegisterType((*ListEvmContractsResponse)(nil), "flux.indexer.explorer.ListEvmContractsResponse")
 	proto.RegisterType((*BalancesRequest)(nil), "flux.indexer.explorer.BalancesRequest")
 	proto.RegisterType((*BalanceInfo)(nil), "flux.indexer.explorer.BalanceInfo")
 	proto.RegisterType((*BalancesResponse)(nil), "flux.indexer.explorer.BalancesResponse")
+	proto.RegisterType((*ListStrategiesRequest)(nil), "flux.indexer.explorer.ListStrategiesRequest")
+	proto.RegisterType((*ListStrategiesResponse)(nil), "flux.indexer.explorer.ListStrategiesResponse")
+	proto.RegisterType((*ListStrategiesByOwnerRequest)(nil), "flux.indexer.explorer.ListStrategiesByOwnerRequest")
 }
 
 func init() { proto.RegisterFile("flux/indexer/explorer/query.proto", fileDescriptor_55f537fd2a78a541) }
 
 var fileDescriptor_55f537fd2a78a541 = []byte{
-	// 729 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x55, 0xcd, 0x4e, 0xdb, 0x4c,
-	0x14, 0x8d, 0x13, 0x7e, 0x27, 0x1f, 0x7c, 0x68, 0x0a, 0xc2, 0x89, 0x4a, 0x12, 0xbc, 0x80, 0xa8,
-	0x2d, 0x1e, 0x11, 0x56, 0x45, 0x55, 0x55, 0x82, 0x4a, 0x1b, 0x89, 0x56, 0xc8, 0x65, 0xd5, 0x0d,
-	0x1a, 0xdb, 0x83, 0x63, 0x35, 0x9e, 0x31, 0x9e, 0x71, 0x14, 0x84, 0xba, 0x68, 0xd5, 0x6d, 0xa5,
-	0x4a, 0x5d, 0x76, 0xd5, 0x77, 0xe0, 0x21, 0x58, 0x22, 0xba, 0xa9, 0xba, 0x88, 0x2a, 0xe8, 0xa2,
-	0x6b, 0x9e, 0xa0, 0xb2, 0x3d, 0x4e, 0xf8, 0x2d, 0x5d, 0xb0, 0xf3, 0xbd, 0xf7, 0x9c, 0x7b, 0xcf,
-	0x9c, 0xf9, 0x31, 0x98, 0xdd, 0x6e, 0x85, 0x1d, 0xe4, 0x52, 0x9b, 0x74, 0x48, 0x80, 0x48, 0xc7,
-	0x6f, 0xb1, 0x80, 0x04, 0x68, 0x27, 0x24, 0xc1, 0xae, 0xee, 0x07, 0x4c, 0x30, 0x38, 0x15, 0x41,
-	0x74, 0x09, 0xd1, 0x53, 0x48, 0xb1, 0xe0, 0x30, 0xe6, 0xb4, 0x08, 0x8a, 0x41, 0x66, 0xb8, 0x8d,
-	0x30, 0x95, 0x8c, 0xe2, 0x5d, 0x59, 0xc2, 0xbe, 0x8b, 0x30, 0xa5, 0x4c, 0x60, 0xe1, 0x32, 0xca,
-	0x65, 0xf5, 0x9e, 0xc5, 0xb8, 0xc7, 0x38, 0x32, 0x31, 0x27, 0xc9, 0x20, 0xd4, 0x5e, 0x34, 0x89,
-	0xc0, 0x8b, 0xc8, 0xc7, 0x8e, 0x4b, 0x63, 0xb0, 0xc4, 0x16, 0x63, 0x79, 0xa4, 0xed, 0xf5, 0x20,
-	0xa4, 0xed, 0xc9, 0x5a, 0x39, 0xae, 0x61, 0x2e, 0x02, 0xe6, 0x11, 0xde, 0xec, 0x21, 0x44, 0x47,
-	0x02, 0x0a, 0xc9, 0xa0, 0xad, 0x38, 0x42, 0x49, 0x20, 0x4b, 0x93, 0x0e, 0x73, 0x58, 0x92, 0x8f,
-	0xbe, 0x92, 0xac, 0xb6, 0x07, 0xa6, 0xd7, 0x5d, 0x2e, 0x9e, 0xb6, 0xbd, 0x55, 0x46, 0x45, 0x80,
-	0x2d, 0xc1, 0x0d, 0xb2, 0x13, 0x12, 0x2e, 0xa0, 0x0a, 0x86, 0xb1, 0x6d, 0x07, 0x84, 0x73, 0x55,
-	0xa9, 0x28, 0xd5, 0x51, 0x23, 0x0d, 0xe1, 0x1a, 0x00, 0x7d, 0xd9, 0x6a, 0xb6, 0xa2, 0x54, 0xf3,
-	0xb5, 0x39, 0x5d, 0x4e, 0x8b, 0xd6, 0xa8, 0x27, 0x66, 0x4a, 0x79, 0xfa, 0x06, 0x76, 0x88, 0xec,
-	0x6a, 0x9c, 0x61, 0x6a, 0x5f, 0x15, 0xa0, 0x5e, 0x9e, 0xce, 0x7d, 0x46, 0x39, 0x81, 0x8f, 0xc0,
-	0xa8, 0x95, 0x26, 0x55, 0xa5, 0x92, 0xab, 0xe6, 0x6b, 0x25, 0x3d, 0xde, 0x97, 0xc8, 0x8f, 0xb4,
-	0x75, 0xca, 0x6b, 0xd0, 0x6d, 0x66, 0xf4, 0x09, 0xf0, 0xd9, 0x15, 0x12, 0xe7, 0x6f, 0x94, 0x98,
-	0x8c, 0x3e, 0xa7, 0xf1, 0xa3, 0x02, 0xfe, 0xaf, 0xe3, 0x16, 0xa6, 0x16, 0xe9, 0x39, 0x53, 0xbb,
-	0xe0, 0x4c, 0x5d, 0x3d, 0xda, 0x5f, 0x98, 0x94, 0xcd, 0x57, 0x92, 0xca, 0x2b, 0x11, 0xb8, 0xd4,
-	0xb9, 0x7d, 0xcf, 0x7e, 0x67, 0x41, 0x5e, 0xea, 0x89, 0xd6, 0x0c, 0x27, 0x40, 0x0e, 0x5b, 0x96,
-	0xdc, 0xa1, 0xe8, 0x13, 0x2e, 0x81, 0x41, 0xbf, 0x85, 0x29, 0x89, 0x87, 0x8c, 0xd7, 0x66, 0x12,
-	0xd3, 0x7a, 0x87, 0xa6, 0x3f, 0x21, 0x02, 0x19, 0x09, 0x16, 0x4e, 0x82, 0x41, 0x9b, 0x50, 0xe6,
-	0xa9, 0xb9, 0xb8, 0x51, 0x12, 0xc0, 0x55, 0x30, 0x84, 0x3d, 0x16, 0x52, 0xa1, 0x0e, 0xc4, 0xeb,
-	0xbc, 0x7f, 0xd0, 0x2d, 0x67, 0x7e, 0x74, 0xcb, 0x53, 0x89, 0x6e, 0x6e, 0xbf, 0xd1, 0x5d, 0x86,
-	0x3c, 0x2c, 0x9a, 0x7a, 0x83, 0x8a, 0xa3, 0xfd, 0x05, 0x20, 0x17, 0xd4, 0xa0, 0xc2, 0x90, 0x54,
-	0xf8, 0x04, 0x8c, 0x87, 0xbe, 0x8d, 0x05, 0xb1, 0xb7, 0x9a, 0xc4, 0x75, 0x9a, 0x42, 0x1d, 0xac,
-	0x28, 0xd5, 0x81, 0x7a, 0xe1, 0xb4, 0x5b, 0x9e, 0x32, 0x39, 0xa3, 0xcb, 0xda, 0xf9, 0xba, 0x66,
-	0x8c, 0xc9, 0xc4, 0xf3, 0x38, 0x86, 0xcb, 0xe0, 0xbf, 0x14, 0x21, 0x5c, 0x8f, 0xa8, 0x43, 0x31,
-	0x7f, 0xfa, 0xb4, 0x5b, 0xbe, 0x73, 0x9e, 0x1f, 0x55, 0x35, 0x23, 0x2f, 0xc3, 0x4d, 0xd7, 0x23,
-	0xf0, 0x21, 0x18, 0xb1, 0x89, 0xe5, 0x7a, 0xb8, 0xc5, 0xd5, 0xe1, 0x8a, 0x52, 0x1d, 0xab, 0xcf,
-	0x9c, 0x76, 0xcb, 0x85, 0x84, 0x97, 0x56, 0x1e, 0x30, 0xcf, 0x15, 0xc4, 0xf3, 0xc5, 0xae, 0x66,
-	0xf4, 0xe0, 0xda, 0x17, 0x05, 0x4c, 0xf4, 0xb7, 0x5e, 0x1e, 0xcb, 0xc7, 0x60, 0xc4, 0x94, 0x39,
-	0x79, 0x2a, 0x35, 0xfd, 0xca, 0xd7, 0x42, 0x3f, 0xb3, 0x4b, 0x46, 0x8f, 0x73, 0x6b, 0x07, 0xb3,
-	0xf6, 0x2e, 0x0b, 0x72, 0x2b, 0x1b, 0x0d, 0xc8, 0xc1, 0xc4, 0xc5, 0x3b, 0x04, 0xf5, 0x6b, 0x24,
-	0x5d, 0x73, 0xd5, 0x8b, 0xe8, 0x9f, 0xf1, 0xd2, 0x85, 0x0f, 0x0a, 0x18, 0x49, 0xad, 0x81, 0x73,
-	0x7f, 0x37, 0xa0, 0x37, 0x65, 0xfe, 0x46, 0x5c, 0xd2, 0x5d, 0x9b, 0x7f, 0xff, 0xed, 0xd7, 0xe7,
-	0xec, 0x2c, 0x2c, 0xf7, 0x5f, 0xe7, 0xf6, 0x22, 0x4a, 0x2d, 0x44, 0x7b, 0xf2, 0x4e, 0xbd, 0xad,
-	0xbf, 0x38, 0x38, 0x2e, 0x29, 0x87, 0xc7, 0x25, 0xe5, 0xe7, 0x71, 0x49, 0xf9, 0x74, 0x52, 0xca,
-	0x1c, 0x9e, 0x94, 0x32, 0xdf, 0x4f, 0x4a, 0x99, 0xd7, 0x4b, 0x8e, 0x2b, 0x9a, 0xa1, 0xa9, 0x5b,
-	0xcc, 0x43, 0x6b, 0xad, 0xb0, 0xf3, 0x72, 0x6d, 0x73, 0x1d, 0x9b, 0x1c, 0x45, 0x0a, 0x6c, 0x64,
-	0x35, 0xb1, 0x4b, 0x2f, 0xfd, 0x02, 0xcc, 0xa1, 0xf8, 0x4d, 0x5c, 0xfa, 0x13, 0x00, 0x00, 0xff,
-	0xff, 0xed, 0x94, 0x6e, 0xd2, 0x22, 0x06, 0x00, 0x00,
+	// 995 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x56, 0x4f, 0x6f, 0x1b, 0x45,
+	0x14, 0xcf, 0xf8, 0x4f, 0xfe, 0x8c, 0x69, 0x88, 0x86, 0x84, 0xac, 0xad, 0xd4, 0x76, 0x17, 0xd4,
+	0x58, 0xd0, 0xec, 0xa8, 0x0e, 0x12, 0xa2, 0x42, 0x40, 0x5d, 0x91, 0x12, 0xa9, 0x40, 0xb5, 0x8d,
+	0x38, 0x70, 0xa9, 0xc6, 0xde, 0xc9, 0x7a, 0xc5, 0xee, 0xcc, 0x76, 0x67, 0xec, 0xda, 0x8a, 0x7a,
+	0x41, 0x5c, 0x41, 0x48, 0x1c, 0x38, 0x70, 0x02, 0xf1, 0x11, 0xfa, 0x21, 0x7a, 0xac, 0xca, 0x05,
+	0x71, 0xb0, 0x50, 0xc2, 0x81, 0x73, 0xbe, 0x00, 0x68, 0x67, 0x67, 0x77, 0xe3, 0x24, 0x6d, 0xd2,
+	0x2a, 0xb7, 0x9d, 0x79, 0xbf, 0xf7, 0xde, 0xef, 0xbd, 0xf7, 0x9b, 0x99, 0x85, 0x57, 0x76, 0xfd,
+	0xc1, 0x08, 0x7b, 0xcc, 0xa1, 0x23, 0x1a, 0x61, 0x3a, 0x0a, 0x7d, 0x1e, 0xd1, 0x08, 0x3f, 0x18,
+	0xd0, 0x68, 0x6c, 0x85, 0x11, 0x97, 0x1c, 0xad, 0xc4, 0x10, 0x4b, 0x43, 0xac, 0x14, 0x52, 0xab,
+	0xba, 0x9c, 0xbb, 0x3e, 0xc5, 0x0a, 0xd4, 0x1d, 0xec, 0x62, 0xc2, 0xb4, 0x47, 0x6d, 0x4d, 0x9b,
+	0x48, 0xe8, 0x61, 0xc2, 0x18, 0x97, 0x44, 0x7a, 0x9c, 0x09, 0x6d, 0x7d, 0xa7, 0xc7, 0x45, 0xc0,
+	0x05, 0xee, 0x12, 0x41, 0x93, 0x44, 0x78, 0x78, 0xbd, 0x4b, 0x25, 0xb9, 0x8e, 0x43, 0xe2, 0x7a,
+	0x4c, 0x81, 0x35, 0xb6, 0xa6, 0xe8, 0xd1, 0x61, 0x90, 0x41, 0xe8, 0x30, 0xd0, 0xb6, 0x86, 0xb2,
+	0x11, 0x21, 0x23, 0x1e, 0x50, 0xd1, 0xcf, 0x10, 0x72, 0xa4, 0x01, 0xd5, 0x24, 0xd1, 0x7d, 0xb5,
+	0xc2, 0xc9, 0x42, 0x9b, 0x96, 0x5d, 0xee, 0xf2, 0x64, 0x3f, 0xfe, 0xd2, 0xbb, 0x6f, 0xab, 0x88,
+	0x42, 0x46, 0x44, 0x52, 0x37, 0x67, 0x95, 0x6e, 0x68, 0x54, 0xfd, 0x78, 0xe1, 0x0f, 0x23, 0x12,
+	0x86, 0x34, 0xd2, 0xb1, 0xcd, 0x3d, 0xb8, 0x7a, 0xc7, 0x13, 0xf2, 0xd3, 0x61, 0x70, 0x8b, 0x33,
+	0x19, 0x91, 0x9e, 0x14, 0x36, 0x7d, 0x30, 0xa0, 0x42, 0x22, 0x03, 0xce, 0x11, 0xc7, 0x89, 0xa8,
+	0x10, 0x06, 0x68, 0x82, 0xd6, 0x82, 0x9d, 0x2e, 0xd1, 0x16, 0x84, 0x79, 0xf1, 0x46, 0xa1, 0x09,
+	0x5a, 0x95, 0xf6, 0x55, 0x4b, 0x73, 0x8e, 0x3b, 0x65, 0x25, 0x23, 0xd1, 0x9c, 0xac, 0xbb, 0xc4,
+	0xa5, 0x3a, 0xaa, 0x7d, 0xc4, 0xd3, 0xfc, 0x15, 0x40, 0xe3, 0x64, 0x76, 0x11, 0x72, 0x26, 0x28,
+	0xfa, 0x10, 0x2e, 0xf4, 0xd2, 0x4d, 0x03, 0x34, 0x8b, 0xad, 0x4a, 0xbb, 0x6e, 0xa9, 0xe9, 0xc6,
+	0x5d, 0x4d, 0x43, 0xa7, 0x7e, 0xdb, 0x6c, 0x97, 0xdb, 0xb9, 0x03, 0xba, 0x7d, 0x0a, 0xc5, 0xf5,
+	0x33, 0x29, 0x26, 0xa9, 0xa7, 0x38, 0x7e, 0x0f, 0xe0, 0xeb, 0x1d, 0xe2, 0x13, 0xd6, 0xa3, 0x59,
+	0x67, 0xda, 0xc7, 0x3a, 0xd3, 0x31, 0x9e, 0x3d, 0xde, 0x58, 0xd6, 0xc1, 0x6f, 0x26, 0x96, 0x7b,
+	0x32, 0xf2, 0x98, 0x7b, 0xf1, 0x3d, 0xfb, 0xb7, 0x00, 0x2b, 0x9a, 0x4f, 0x5c, 0x33, 0x5a, 0x82,
+	0x45, 0xd2, 0xeb, 0xe9, 0x09, 0xc5, 0x9f, 0x68, 0x13, 0x96, 0x43, 0x9f, 0x30, 0xaa, 0x92, 0x2c,
+	0xb6, 0x2f, 0x27, 0x4d, 0xcb, 0xa4, 0x97, 0x67, 0x88, 0x41, 0x76, 0x82, 0x45, 0xcb, 0xb0, 0xec,
+	0x50, 0xc6, 0x03, 0xa3, 0xa8, 0x02, 0x25, 0x0b, 0x74, 0x0b, 0xce, 0x92, 0x80, 0x0f, 0x98, 0x34,
+	0x4a, 0xaa, 0xce, 0x77, 0x9f, 0x4c, 0x1a, 0x33, 0x7f, 0x4d, 0x1a, 0x2b, 0x09, 0x6f, 0xe1, 0x7c,
+	0x63, 0x79, 0x1c, 0x07, 0x44, 0xf6, 0xad, 0x6d, 0x26, 0x9f, 0x3d, 0xde, 0x80, 0xba, 0xa0, 0x6d,
+	0x26, 0x6d, 0xed, 0x8a, 0x3e, 0x81, 0x8b, 0x83, 0xd0, 0x21, 0x92, 0x3a, 0xf7, 0xfb, 0xd4, 0x73,
+	0xfb, 0xd2, 0x28, 0x37, 0x41, 0xab, 0xd4, 0xa9, 0x1e, 0x4e, 0x1a, 0x2b, 0x5d, 0xc1, 0xd9, 0x0d,
+	0x73, 0xda, 0x6e, 0xda, 0x97, 0xf4, 0xc6, 0x67, 0x6a, 0x8d, 0x6e, 0xc0, 0xd7, 0x52, 0x84, 0xf4,
+	0x02, 0x6a, 0xcc, 0x2a, 0xff, 0xd5, 0xc3, 0x49, 0xe3, 0x8d, 0x69, 0xff, 0xd8, 0x6a, 0xda, 0x15,
+	0xbd, 0xdc, 0xf1, 0x02, 0x8a, 0x3e, 0x80, 0xf3, 0x0e, 0xed, 0x79, 0x01, 0xf1, 0x85, 0x31, 0xd7,
+	0x04, 0xad, 0x4b, 0x9d, 0xcb, 0x87, 0x93, 0x46, 0x35, 0xf1, 0x4b, 0x2d, 0xd7, 0x78, 0xe0, 0x49,
+	0x1a, 0x84, 0x72, 0x6c, 0xda, 0x19, 0xdc, 0xfc, 0x05, 0xc0, 0xa5, 0x7c, 0xf4, 0x5a, 0x96, 0x1f,
+	0xc1, 0xf9, 0xae, 0xde, 0xd3, 0xaa, 0x34, 0xad, 0x53, 0xef, 0x1c, 0xeb, 0xc8, 0x94, 0xec, 0xcc,
+	0xe7, 0xe2, 0x84, 0x79, 0x08, 0xe0, 0x4a, 0x7c, 0x78, 0xee, 0x25, 0x07, 0xde, 0xcb, 0xe5, 0x39,
+	0x2d, 0x35, 0xf0, 0xaa, 0x52, 0x43, 0xef, 0xc3, 0x92, 0x1c, 0x87, 0xa9, 0x8e, 0xde, 0x4a, 0xca,
+	0xcc, 0xee, 0x97, 0xd4, 0x5b, 0xe7, 0x1f, 0xef, 0x8c, 0x43, 0x6a, 0x2b, 0x07, 0xb4, 0x08, 0x0b,
+	0x9e, 0xa3, 0x95, 0x54, 0xf0, 0x1c, 0xf4, 0x1e, 0x9c, 0xa3, 0x8c, 0x74, 0x7d, 0xea, 0x28, 0x1d,
+	0x55, 0xda, 0x35, 0x2b, 0xb9, 0x96, 0xac, 0xf4, 0x5a, 0xb2, 0x3a, 0x9c, 0xfb, 0x5f, 0x11, 0x7f,
+	0x40, 0xed, 0x14, 0x8a, 0x10, 0x2c, 0x49, 0xe2, 0x0a, 0xa3, 0xdc, 0x2c, 0xb6, 0x16, 0x6c, 0xf5,
+	0x6d, 0xfe, 0x06, 0xe0, 0x9b, 0xc7, 0x8b, 0xd6, 0x83, 0xb9, 0x7d, 0x4a, 0xd5, 0xaf, 0xd2, 0x58,
+	0xf4, 0x31, 0x84, 0x22, 0x0b, 0x6f, 0x14, 0xd4, 0x8c, 0x1b, 0x67, 0x14, 0x6f, 0x1f, 0x71, 0x31,
+	0xff, 0x03, 0x70, 0x6d, 0x9a, 0x64, 0x67, 0xfc, 0xe5, 0x43, 0x46, 0xa3, 0x8b, 0x1e, 0xd0, 0x32,
+	0x2c, 0xf3, 0x38, 0xae, 0x9a, 0xd0, 0x82, 0x9d, 0x2c, 0xb2, 0xb1, 0x15, 0x5f, 0x76, 0x6c, 0x17,
+	0x36, 0xa6, 0xf6, 0xa4, 0x04, 0x8b, 0x37, 0xef, 0x6e, 0xa3, 0x9f, 0x01, 0x5c, 0x3a, 0x7e, 0xc1,
+	0x23, 0xeb, 0x39, 0xe7, 0xe5, 0x39, 0xef, 0x50, 0x0d, 0x9f, 0x1b, 0x9f, 0x0c, 0xd3, 0x34, 0xbf,
+	0xfd, 0xe3, 0x9f, 0x9f, 0x0a, 0x6b, 0xa8, 0x96, 0xff, 0x22, 0x0c, 0xd5, 0x5b, 0x8c, 0xf3, 0xf7,
+	0xe1, 0x3b, 0x00, 0xe7, 0xd3, 0xb3, 0x8d, 0xae, 0xbe, 0xf8, 0x04, 0x67, 0x4c, 0xd6, 0xcf, 0xc4,
+	0x69, 0x06, 0xeb, 0x8a, 0xc1, 0x15, 0xd4, 0x98, 0x62, 0x90, 0xde, 0x01, 0x78, 0x4f, 0x3f, 0x0a,
+	0x8f, 0xd0, 0x0f, 0x00, 0x2e, 0x4e, 0x4b, 0x05, 0x5d, 0x7b, 0x41, 0xb9, 0x27, 0xce, 0x7a, 0x6d,
+	0xe3, 0x9c, 0x68, 0x4d, 0xac, 0xa1, 0x88, 0x55, 0xd1, 0xea, 0x14, 0xb1, 0x5c, 0xbb, 0xe8, 0xf7,
+	0x13, 0xb7, 0x8a, 0xd6, 0x2e, 0xda, 0x3c, 0x57, 0xa6, 0x69, 0xa5, 0xbf, 0x2c, 0xbd, 0xd3, 0xfb,
+	0x96, 0xd3, 0xc3, 0x7b, 0x4a, 0xe2, 0x8f, 0x3a, 0x9f, 0x3f, 0xd9, 0xaf, 0x83, 0xa7, 0xfb, 0x75,
+	0xf0, 0xf7, 0x7e, 0x1d, 0xfc, 0x78, 0x50, 0x9f, 0x79, 0x7a, 0x50, 0x9f, 0xf9, 0xf3, 0xa0, 0x3e,
+	0xf3, 0xf5, 0xa6, 0xeb, 0xc9, 0xfe, 0xa0, 0x6b, 0xf5, 0x78, 0x80, 0xb7, 0xfc, 0xc1, 0xe8, 0x8b,
+	0xad, 0x9d, 0x3b, 0xa4, 0x2b, 0x70, 0xcc, 0xc3, 0xc1, 0xbd, 0x3e, 0xf1, 0xd8, 0x89, 0x3f, 0xc8,
+	0xee, 0xac, 0x12, 0xf8, 0xe6, 0xff, 0x01, 0x00, 0x00, 0xff, 0xff, 0xb4, 0xf6, 0xe7, 0x9c, 0x61,
+	0x0a, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -402,6 +645,8 @@ const _ = grpc.SupportPackageIsVersion4
 type APIClient interface {
 	ListEvmContracts(ctx context.Context, in *ListEvmContractsRequest, opts ...grpc.CallOption) (*ListEvmContractsResponse, error)
 	Balances(ctx context.Context, in *BalancesRequest, opts ...grpc.CallOption) (*BalancesResponse, error)
+	ListStrategies(ctx context.Context, in *ListStrategiesRequest, opts ...grpc.CallOption) (*ListStrategiesResponse, error)
+	ListStrategiesByOwner(ctx context.Context, in *ListStrategiesByOwnerRequest, opts ...grpc.CallOption) (*ListStrategiesResponse, error)
 }
 
 type aPIClient struct {
@@ -430,10 +675,30 @@ func (c *aPIClient) Balances(ctx context.Context, in *BalancesRequest, opts ...g
 	return out, nil
 }
 
+func (c *aPIClient) ListStrategies(ctx context.Context, in *ListStrategiesRequest, opts ...grpc.CallOption) (*ListStrategiesResponse, error) {
+	out := new(ListStrategiesResponse)
+	err := c.cc.Invoke(ctx, "/flux.indexer.explorer.API/ListStrategies", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aPIClient) ListStrategiesByOwner(ctx context.Context, in *ListStrategiesByOwnerRequest, opts ...grpc.CallOption) (*ListStrategiesResponse, error) {
+	out := new(ListStrategiesResponse)
+	err := c.cc.Invoke(ctx, "/flux.indexer.explorer.API/ListStrategiesByOwner", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // APIServer is the server API for API service.
 type APIServer interface {
 	ListEvmContracts(context.Context, *ListEvmContractsRequest) (*ListEvmContractsResponse, error)
 	Balances(context.Context, *BalancesRequest) (*BalancesResponse, error)
+	ListStrategies(context.Context, *ListStrategiesRequest) (*ListStrategiesResponse, error)
+	ListStrategiesByOwner(context.Context, *ListStrategiesByOwnerRequest) (*ListStrategiesResponse, error)
 }
 
 // UnimplementedAPIServer can be embedded to have forward compatible implementations.
@@ -445,6 +710,12 @@ func (*UnimplementedAPIServer) ListEvmContracts(ctx context.Context, req *ListEv
 }
 func (*UnimplementedAPIServer) Balances(ctx context.Context, req *BalancesRequest) (*BalancesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Balances not implemented")
+}
+func (*UnimplementedAPIServer) ListStrategies(ctx context.Context, req *ListStrategiesRequest) (*ListStrategiesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListStrategies not implemented")
+}
+func (*UnimplementedAPIServer) ListStrategiesByOwner(ctx context.Context, req *ListStrategiesByOwnerRequest) (*ListStrategiesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListStrategiesByOwner not implemented")
 }
 
 func RegisterAPIServer(s grpc1.Server, srv APIServer) {
@@ -487,6 +758,42 @@ func _API_Balances_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _API_ListStrategies_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListStrategiesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(APIServer).ListStrategies(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/flux.indexer.explorer.API/ListStrategies",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(APIServer).ListStrategies(ctx, req.(*ListStrategiesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _API_ListStrategiesByOwner_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListStrategiesByOwnerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(APIServer).ListStrategiesByOwner(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/flux.indexer.explorer.API/ListStrategiesByOwner",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(APIServer).ListStrategiesByOwner(ctx, req.(*ListStrategiesByOwnerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _API_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "flux.indexer.explorer.API",
 	HandlerType: (*APIServer)(nil),
@@ -498,6 +805,14 @@ var _API_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Balances",
 			Handler:    _API_Balances_Handler,
+		},
+		{
+			MethodName: "ListStrategies",
+			Handler:    _API_ListStrategies_Handler,
+		},
+		{
+			MethodName: "ListStrategiesByOwner",
+			Handler:    _API_ListStrategiesByOwner_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -753,6 +1068,191 @@ func (m *BalancesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *ListStrategiesRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ListStrategiesRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ListStrategiesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Tags) > 0 {
+		for iNdEx := len(m.Tags) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Tags[iNdEx])
+			copy(dAtA[i:], m.Tags[iNdEx])
+			i = encodeVarintQuery(dAtA, i, uint64(len(m.Tags[iNdEx])))
+			i--
+			dAtA[i] = 0x2a
+		}
+	}
+	if m.Enabled != nil {
+		{
+			size, err := m.Enabled.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.Type != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Type))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ListStrategiesResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ListStrategiesResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ListStrategiesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Strategies) > 0 {
+		for iNdEx := len(m.Strategies) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Strategies[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ListStrategiesByOwnerRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ListStrategiesByOwnerRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ListStrategiesByOwnerRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Tags) > 0 {
+		for iNdEx := len(m.Tags) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Tags[iNdEx])
+			copy(dAtA[i:], m.Tags[iNdEx])
+			i = encodeVarintQuery(dAtA, i, uint64(len(m.Tags[iNdEx])))
+			i--
+			dAtA[i] = 0x2a
+		}
+	}
+	if m.Enabled != nil {
+		{
+			size, err := m.Enabled.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.Type != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Type))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Owner) > 0 {
+		i -= len(m.Owner)
+		copy(dAtA[i:], m.Owner)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Owner)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -863,6 +1363,85 @@ func (m *BalancesResponse) Size() (n int) {
 	if m.Pagination != nil {
 		l = m.Pagination.Size()
 		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *ListStrategiesRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Type != 0 {
+		n += 1 + sovQuery(uint64(m.Type))
+	}
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Enabled != nil {
+		l = m.Enabled.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if len(m.Tags) > 0 {
+		for _, s := range m.Tags {
+			l = len(s)
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *ListStrategiesResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if len(m.Strategies) > 0 {
+		for _, e := range m.Strategies {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *ListStrategiesByOwnerRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Owner)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Type != 0 {
+		n += 1 + sovQuery(uint64(m.Type))
+	}
+	if m.Enabled != nil {
+		l = m.Enabled.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if len(m.Tags) > 0 {
+		for _, s := range m.Tags {
+			l = len(s)
+			n += 1 + l + sovQuery(uint64(l))
+		}
 	}
 	return n
 }
@@ -1551,6 +2130,536 @@ func (m *BalancesResponse) Unmarshal(dAtA []byte) error {
 			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ListStrategiesRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ListStrategiesRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ListStrategiesRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Type", wireType)
+			}
+			m.Type = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Type |= types2.StrategyType(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Enabled", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Enabled == nil {
+				m.Enabled = &types3.BoolValue{}
+			}
+			if err := m.Enabled.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Tags", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Tags = append(m.Tags, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ListStrategiesResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ListStrategiesResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ListStrategiesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Strategies", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Strategies = append(m.Strategies, &types2.Strategy{})
+			if err := m.Strategies[len(m.Strategies)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ListStrategiesByOwnerRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ListStrategiesByOwnerRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ListStrategiesByOwnerRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Owner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Type", wireType)
+			}
+			m.Type = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Type |= types2.StrategyType(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Enabled", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Enabled == nil {
+				m.Enabled = &types3.BoolValue{}
+			}
+			if err := m.Enabled.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Tags", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Tags = append(m.Tags, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

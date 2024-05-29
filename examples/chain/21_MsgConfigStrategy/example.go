@@ -63,7 +63,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
+	fmt.Println("sender: ", senderAddress.String())
 	msg := &strategytypes.MsgConfigStrategy{
 		Sender:   senderAddress.String(),
 		Config:   strategytypes.Config_deploy,
@@ -83,6 +83,10 @@ func main() {
 				},
 			},
 		},
+		TriggerPermission: &strategytypes.PermissionConfig{
+			Type:      strategytypes.AccessType_only_addresses,
+			Addresses: []string{senderAddress.String()},
+		},
 	}
 
 	//AsyncBroadcastMsg, SyncBroadcastMsg, QueueBroadcastMsg
@@ -91,5 +95,5 @@ func main() {
 		fmt.Println(err)
 	}
 
-	fmt.Println(res)
+	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 }

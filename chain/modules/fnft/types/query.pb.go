@@ -1044,8 +1044,8 @@ type QueryClient interface {
 	// Supply queries the number of NFTs from the given class, same as totalSupply
 	// of ERC721.
 	Supply(ctx context.Context, in *QuerySupplyRequest, opts ...grpc.CallOption) (*QuerySupplyResponse, error)
-	// Holders queries single share holders from the given class, class id, address
-	// of ERC721.
+	// Holders queries single share holders from the given class, class id,
+	// address of ERC721.
 	Holder(ctx context.Context, in *QueryHolderRequest, opts ...grpc.CallOption) (*QueryHolderResponse, error)
 	// Holders queries all share holders from the given class, class id
 	// of ERC721.
@@ -1161,8 +1161,8 @@ type QueryServer interface {
 	// Supply queries the number of NFTs from the given class, same as totalSupply
 	// of ERC721.
 	Supply(context.Context, *QuerySupplyRequest) (*QuerySupplyResponse, error)
-	// Holders queries single share holders from the given class, class id, address
-	// of ERC721.
+	// Holders queries single share holders from the given class, class id,
+	// address of ERC721.
 	Holder(context.Context, *QueryHolderRequest) (*QueryHolderResponse, error)
 	// Holders queries all share holders from the given class, class id
 	// of ERC721.
