@@ -2,18 +2,21 @@ package main
 
 import (
 	"context"
+	"cosmossdk.io/math"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"math/big"
 	"os"
+	"sort"
 	"strings"
 
 	evmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/evm/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	ethcommon "github.com/ethereum/go-ethereum/common"
 	"google.golang.org/grpc"
@@ -71,6 +74,7 @@ func main() {
 
 	// init evm client
 	evmClient := evmtypes.NewQueryClient(cc)
+	astromeshClient := astromeshtypes.NewQueryClient(cc)
 
 	// read bytecode
 	dir, err := os.Getwd()
@@ -94,18 +98,19 @@ func main() {
 	}
 
 	// parse contract addr
-	contractAddr, err := hex.DecodeString("eef74ab95099c8d1ad8de02ba6bdab9cbc9dbf93")
+	PoolManagerContractAddr := "07aa076883658b7ed99d25b1e6685808372c8fe2"
+	PoolManagerContractAddrBz, err := hex.DecodeString(PoolManagerContractAddr)
 	if err != nil {
 		panic(err)
 	}
 
-	// query some data
+	// query tick spacing
 	calldata, err := contractABI.Pack("MAX_TICK_SPACING")
 	if err != nil {
 		panic(err)
 	}
 	queryRes, err := evmClient.ContractQuery(context.Background(), &evmtypes.ContractQueryRequest{
-		Address:  "eef74ab95099c8d1ad8de02ba6bdab9cbc9dbf93",
+		Address:  PoolManagerContractAddr,
 		Calldata: calldata,
 	})
 	if err != nil {
@@ -117,50 +122,96 @@ func main() {
 	}
 	fmt.Println("query MAX_TICK_SPACING:", queryOutput)
 
+	calldata, err = contractABI.Pack("MIN_TICK_SPACING")
+	if err != nil {
+		panic(err)
+	}
+	queryRes, err = evmClient.ContractQuery(context.Background(), &evmtypes.ContractQueryRequest{
+		Address:  PoolManagerContractAddr,
+		Calldata: calldata,
+	})
+	if err != nil {
+		panic(err)
+	}
+	queryOutput, err = contractABI.Unpack("MIN_TICK_SPACING", queryRes.Output)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("query MIN_TICK_SPACING:", queryOutput)
+
+	//perform astrotransfer to evm planes for cosmos tokens
+	tokens := []string{"btc", "eth", "sol", "usdt"}
+	tokenContracts := map[string]string{}
+	for _, token := range tokens {
+		amount, _ := math.NewIntFromString("100000000000000000000") // 100 * 10^18
+		_, err := chainClient.SyncBroadcastMsg(&astromeshtypes.MsgAstroTransfer{
+			Sender:   senderAddress.String(),
+			Receiver: senderAddress.String(),
+			SrcPlane: astromeshtypes.Plane_COSMOS,
+			DstPlane: astromeshtypes.Plane_EVM,
+			Coin: sdk.Coin{
+				Denom:  token,
+				Amount: amount,
+			},
+		})
+		if err != nil {
+			panic(err)
+		}
+		denomLink, err := astromeshClient.DenomLink(context.Background(), &astromeshtypes.QueryDenomLinkRequest{
+			SrcPlane: astromeshtypes.Plane_COSMOS,
+			DstPlane: astromeshtypes.Plane_EVM,
+			SrcAddr:  token,
+		})
+		if err != nil {
+			panic(err)
+		}
+		tokenContracts[token] = denomLink.DstAddr
+		fmt.Println(fmt.Sprintf("%s on evm: %s, decimals %d", token, denomLink.DstAddr, denomLink.DstDecimals))
+	}
+
+	/*
+		btc on evm: e2f81b30e1d47dffdbb6ab41ec5f0572705b026d, decimals 8
+		eth on evm: 6e7b8a754a8a9111f211bc8c8f619e462f8ddf5f, decimals 18
+		sol on evm: 28108934a16e88cac49dd4a527fe9a87ce526173, decimals 9
+		usdt on evm: a7f16731951d943768cf2053485b69ef61fef8be, decimals 6
+	*/
 	// prepare tx msg
-	pairKey := &PairKey{
-		Currency0:   ethcommon.Address{},
-		Currency1:   ethcommon.Address{},
-		Fee:         big.NewInt(3000),
-		TickSpacing: big.NewInt(60),
-		Hooks:       ethcommon.Address{},
-	}
 
-	// 1 btc = 69000 usdt
-	sqrtPriceX96Int, _ := new(big.Int).SetString("5424589537444978962029036245656805120289623703644", 10)
-	hookData := []byte{}
-	calldata, err = contractABI.Pack("initialize", pairKey, sqrtPriceX96Int, hookData)
-	if err != nil {
-		panic(err)
-	}
+	for denom, contractAddr := range tokenContracts {
+		if denom == "usdt" {
+			continue
+		}
+		// uniswap make sure only a single pair of 2 addresses can exist by comparing token addresses
+		usdtAddr := tokenContracts["usdt"]
+		currencies := []string{usdtAddr, contractAddr}
+		sort.Strings(currencies)
+		pairKey := &PairKey{
+			Currency0:   ethcommon.Address(ethcommon.Hex2Bytes(currencies[0])),
+			Currency1:   ethcommon.Address(ethcommon.Hex2Bytes(currencies[1])),
+			Fee:         big.NewInt(3000),
+			TickSpacing: big.NewInt(60),
+			Hooks:       ethcommon.Address(make([]byte, 20)),
+		}
 
-	msg := &evmtypes.MsgExecuteContract{
-		Sender:          senderAddress.String(),
-		ContractAddress: contractAddr,
-		Calldata:        calldata,
-	}
+		// 1 btc = 69000 usdt
+		sqrtPriceX96Int, _ := new(big.Int).SetString("2070765624842583713491802379636005", 10)
+		hookData := []byte{}
+		calldata, err = contractABI.Pack("initialize", pairKey, sqrtPriceX96Int, hookData)
+		if err != nil {
+			panic(err)
+		}
 
-	txResp, err := chainClient.SyncBroadcastMsg(msg)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("tx hash:", txResp.TxResponse.TxHash)
-	fmt.Println("gas used/want:", txResp.TxResponse.GasUsed, "/", txResp.TxResponse.GasWanted)
+		msg := &evmtypes.MsgExecuteContract{
+			Sender:          senderAddress.String(),
+			ContractAddress: PoolManagerContractAddrBz,
+			Calldata:        calldata,
+		}
 
-	hexResp, err := hex.DecodeString(txResp.TxResponse.Data)
-	if err != nil {
-		panic(err)
-	}
+		txResp, err := chainClient.SyncBroadcastMsg(msg)
+		if err != nil {
+			panic(err)
+		}
 
-	// decode result to get contract address
-	var txData sdk.TxMsgData
-	if err := txData.Unmarshal(hexResp); err != nil {
-		panic(err)
+		fmt.Println(fmt.Sprintf("pair %s-%s initialized: %s", denom, "usdt", txResp.TxResponse.TxHash))
 	}
-
-	var dcr evmtypes.MsgDeployContractResponse
-	if err := dcr.Unmarshal(txData.MsgResponses[0].Value); err != nil {
-		panic(err)
-	}
-	fmt.Println("contract address:", hex.EncodeToString(dcr.ContractAddress))
 }

@@ -6,6 +6,7 @@ import (
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/gogoproto/proto"
+	ethcommon "github.com/ethereum/go-ethereum/common"
 	"os"
 	"strings"
 
@@ -105,7 +106,7 @@ func main() {
 		}
 		var msgData sdk.TxMsgData
 		var storeCodeRes wasmtypes.MsgStoreCodeResponse
-		resBz, _ := common.HexToBytes(res.TxResponse.Data)
+		resBz := ethcommon.Hex2Bytes(res.TxResponse.Data)
 		proto.Unmarshal(resBz, &msgData)
 		proto.Unmarshal(msgData.MsgResponses[0].Value, &storeCodeRes)
 		astroportCodeIds = append(astroportCodeIds, storeCodeRes.CodeID)
@@ -153,7 +154,7 @@ func main() {
 	}
 	var msgData sdk.TxMsgData
 	var instantiateRes wasmtypes.MsgInstantiateContractResponse
-	resBz, _ := common.HexToBytes(res.TxResponse.Data)
+	resBz := ethcommon.Hex2Bytes(res.TxResponse.Data)
 	proto.Unmarshal(resBz, &msgData)
 	proto.Unmarshal(msgData.MsgResponses[0].Value, &instantiateRes)
 	astroportFactoryContract := instantiateRes.Address

@@ -3,7 +3,6 @@ package common
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"encoding/hex"
 	"fmt"
 	"io/ioutil"
 	"strings"
@@ -11,19 +10,6 @@ import (
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	"google.golang.org/grpc/credentials"
 )
-
-func HexToBytes(str string) ([]byte, error) {
-	if strings.HasPrefix(str, "0x") {
-		str = str[2:]
-	}
-
-	data, err := hex.DecodeString(str)
-	if err != nil {
-		return nil, err
-	}
-
-	return data, nil
-}
 
 func LoadTlsCert(path string, serverName string) credentials.TransportCredentials {
 	if path == "" {
