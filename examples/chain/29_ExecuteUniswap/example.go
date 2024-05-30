@@ -8,6 +8,7 @@ import (
 	"fmt"
 	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/gogoproto/proto"
 	"math/big"
 	"os"
 	"sort"
@@ -169,14 +170,12 @@ func main() {
 		fmt.Println(fmt.Sprintf("%s on evm: %s, decimals %d", token, denomLink.DstAddr, denomLink.DstDecimals))
 	}
 
-	/*
-		btc on evm: e2f81b30e1d47dffdbb6ab41ec5f0572705b026d, decimals 8
-		eth on evm: 6e7b8a754a8a9111f211bc8c8f619e462f8ddf5f, decimals 18
-		sol on evm: 28108934a16e88cac49dd4a527fe9a87ce526173, decimals 9
-		usdt on evm: a7f16731951d943768cf2053485b69ef61fef8be, decimals 6
-	*/
-	// prepare tx msg
-
+	// initialize pairs
+	prices := map[string]uint64{
+		"btc": 69000,
+		"eth": 3900,
+		"sol": 185,
+	}
 	for denom, contractAddr := range tokenContracts {
 		if denom == "usdt" {
 			continue
@@ -194,7 +193,7 @@ func main() {
 		}
 
 		// 1 btc = 69000 usdt
-		sqrtPriceX96Int, _ := new(big.Int).SetString("2070765624842583713491802379636005", 10)
+		sqrtPriceX96Int := computeSqrtPriceX96Int(prices[denom])
 		hookData := []byte{}
 		calldata, err = contractABI.Pack("initialize", pairKey, sqrtPriceX96Int, hookData)
 		if err != nil {
@@ -207,11 +206,33 @@ func main() {
 			Calldata:        calldata,
 		}
 
-		txResp, err := chainClient.SyncBroadcastMsg(msg)
+		res, err := chainClient.SyncBroadcastMsg(msg)
 		if err != nil {
 			panic(err)
 		}
 
-		fmt.Println(fmt.Sprintf("pair %s-%s initialized: %s", denom, "usdt", txResp.TxResponse.TxHash))
+		// unpack execute return data
+		var msgData sdk.TxMsgData
+		var executeRes evmtypes.MsgExecuteContractResponse
+		resBz := ethcommon.Hex2Bytes(res.TxResponse.Data)
+		proto.Unmarshal(resBz, &msgData)
+		proto.Unmarshal(msgData.MsgResponses[0].Value, &executeRes)
+		initializeRes, err := contractABI.Unpack("initialize", executeRes.Output)
+		if err != nil {
+			panic(err)
+		}
+		tickId := initializeRes[0].(*big.Int)
+		fmt.Println(fmt.Sprintf("pair %s-%s initialized, tick size %s: %s", denom, "usdt", tickId, res.TxResponse.TxHash))
 	}
+
+	// provide liquidity to pairs
+}
+
+func computeSqrtPriceX96Int(p uint64) *big.Int {
+	sqrtPrice := new(big.Float).Sqrt(big.NewFloat(float64(p)))
+	factor := new(big.Float).SetInt(new(big.Int).Lsh(big.NewInt(1), 96))
+	sqrtPrice.Mul(sqrtPrice, factor)
+	sqrtPriceX96Int := new(big.Int)
+	price, _ := sqrtPrice.Int(sqrtPriceX96Int)
+	return price
 }
