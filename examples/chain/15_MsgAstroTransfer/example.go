@@ -68,7 +68,7 @@ func main() {
 		DstPlane: astromeshtypes.Plane_EVM,
 		Coin: sdk.Coin{
 			Denom:  "lux",
-			Amount: math.NewIntFromUint64(77),
+			Amount: math.NewIntFromUint64(100),
 		},
 	}
 	txResp, err := chainClient.SyncBroadcastMsg(msg1)
@@ -90,7 +90,7 @@ func main() {
 		SrcPlane: astromeshtypes.Plane_EVM,
 		DstPlane: astromeshtypes.Plane_COSMOS,
 		Coin: sdk.Coin{
-			Denom:  denomLink.DstAddr,
+			Denom:  "astro/" + denomLink.DstAddr,
 			Amount: math.NewIntFromUint64(99),
 		},
 	}
