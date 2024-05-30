@@ -214,7 +214,7 @@ func main() {
 		panic(err)
 	}
 
-	programBz, err := os.ReadFile("raydium_amm_v3.so")
+	programBz, err := os.ReadFile("raydium_cp_swap.so")
 	if err != nil {
 		panic(err)
 	}
@@ -224,9 +224,6 @@ func main() {
 	initAccountMsg := BuildInitAccountsMsg(senderAddress, len(programBz), programPubkey, programBufferPubkey)
 	deployMsg := BuildDeployMsg(senderAddress, programPubkey, programBufferPubkey, programBz)
 	fmt.Println("number of instruction to deploy:", len(deployMsg.Instructions))
-
-	deployMsgMarshaled, _ := deployMsg.Marshal()
-	fmt.Println("deploy msg sz:", len(deployMsgMarshaled))
 	//AsyncBroadcastMsg, SyncBroadcastMsg, QueueBroadcastMsg
 	res, err := chainClient.SyncBroadcastMsg(
 		initAccountMsg, deployMsg,
