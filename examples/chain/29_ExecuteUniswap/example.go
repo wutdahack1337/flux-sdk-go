@@ -2,13 +2,14 @@ package main
 
 import (
 	"context"
-	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/gogoproto/proto"
+	"math"
 	"math/big"
 	"os"
 	"sort"
@@ -32,6 +33,13 @@ type PairKey struct {
 	Fee         *big.Int          // 3000 -> 0.3%
 	TickSpacing *big.Int
 	Hooks       ethcommon.Address // hook contract addr
+}
+
+type ModifyLiquidityParams struct {
+	TickLower      *big.Int
+	TickUpper      *big.Int
+	LiquidityDelta *big.Int
+	Salt           [32]byte
 }
 
 func main() {
@@ -144,7 +152,7 @@ func main() {
 	tokens := []string{"btc", "eth", "sol", "usdt"}
 	tokenContracts := map[string]string{}
 	for _, token := range tokens {
-		amount, _ := math.NewIntFromString("100000000000000000000") // 100 * 10^18
+		amount, _ := sdkmath.NewIntFromString("100000000000000000000") // 100 * 10^18
 		_, err := chainClient.SyncBroadcastMsg(&astromeshtypes.MsgAstroTransfer{
 			Sender:   senderAddress.String(),
 			Receiver: senderAddress.String(),
@@ -180,6 +188,7 @@ func main() {
 		if denom == "usdt" {
 			continue
 		}
+
 		// uniswap make sure only a single pair of 2 addresses can exist by comparing token addresses
 		usdtAddr := tokenContracts["usdt"]
 		currencies := []string{usdtAddr, contractAddr}
@@ -192,7 +201,6 @@ func main() {
 			Hooks:       ethcommon.Address(make([]byte, 20)),
 		}
 
-		// 1 btc = 69000 usdt
 		sqrtPriceX96Int := computeSqrtPriceX96Int(prices[denom])
 		hookData := []byte{}
 		calldata, err = contractABI.Pack("initialize", pairKey, sqrtPriceX96Int, hookData)
@@ -221,11 +229,39 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		tickId := initializeRes[0].(*big.Int)
-		fmt.Println(fmt.Sprintf("pair %s-%s initialized, tick size %s: %s", denom, "usdt", tickId, res.TxResponse.TxHash))
+		currentTick := initializeRes[0].(*big.Int)
+		fmt.Println(fmt.Sprintf("pair %s-%s initialized, tick size %d: %s", denom, "usdt", currentTick.Uint64(), res.TxResponse.TxHash))
+
+		// provide liquidity
+		lowerPrice := float64(prices[denom]) * 0.8
+		upperPrice := float64(prices[denom]) * 1.2
+		modifyLiquidityParams := &ModifyLiquidityParams{
+			TickLower:      calculateTick(lowerPrice),
+			TickUpper:      calculateTick(upperPrice),
+			LiquidityDelta: big.NewInt(1000000),
+			Salt:           [32]byte{},
+		}
+		calldata, err = contractABI.Pack("modifyLiquidity", pairKey, modifyLiquidityParams, []byte{})
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println(modifyLiquidityParams)
+		fmt.Println(calldata)
+
+		//msg = &evmtypes.MsgExecuteContract{
+		//	Sender:          senderAddress.String(),
+		//	ContractAddress: PoolManagerContractAddrBz,
+		//	Calldata:        calldata,
+		//}
+		//res, err = chainClient.SyncBroadcastMsg(msg)
+		//if err != nil {
+		//	panic(err)
+		//}
+		//
+		//fmt.Println(res.TxResponse.TxHash)
 	}
 
-	// provide liquidity to pairs
 }
 
 func computeSqrtPriceX96Int(p uint64) *big.Int {
@@ -235,4 +271,20 @@ func computeSqrtPriceX96Int(p uint64) *big.Int {
 	sqrtPriceX96Int := new(big.Int)
 	price, _ := sqrtPrice.Int(sqrtPriceX96Int)
 	return price
+}
+
+func logBigFloat(x *big.Float) *big.Float {
+	f64, _ := x.Float64()
+	return big.NewFloat(math.Log(f64))
+}
+
+func calculateTick(price float64) *big.Int {
+	factor := big.NewFloat(1.0001)
+	priceBig := big.NewFloat(price)
+	logPrice := logBigFloat(priceBig)
+	logFactor := logBigFloat(factor)
+	tickBigFloat := new(big.Float).Quo(logPrice, logFactor)
+	tick := new(big.Int)
+	tickBigFloat.Int(tick)
+	return tick
 }
