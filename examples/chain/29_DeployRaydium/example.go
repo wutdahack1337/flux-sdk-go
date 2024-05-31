@@ -9,6 +9,7 @@ import (
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
+	"github.com/FluxNFTLabs/sdk-go/client/svm"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ethcrypto "github.com/ethereum/go-ethereum/crypto"
@@ -67,7 +68,7 @@ func BuildInitAccountsMsg(
 		panic(initTx)
 	}
 
-	return ToCosmosMsg(senderAddr.String(), MaxComputeBudget, initTx)
+	return svm.ToCosmosMsg(senderAddr.String(), MaxComputeBudget, initTx)
 }
 
 func BuildDeployMsg(
@@ -87,7 +88,7 @@ func BuildDeployMsg(
 		}
 
 		codeSlice := programBz[idx:end]
-		data := MustMarshalIxData(WriteBuffer{
+		data := svm.MustMarshalIxData(svm.WriteBuffer{
 			Offset: uint32(idx),
 			Data:   codeSlice,
 		})
@@ -112,7 +113,7 @@ func BuildDeployMsg(
 		idx = end
 	}
 
-	data := MustMarshalIxData(DeployWithMaxDataLen{
+	data := svm.MustMarshalIxData(svm.DeployWithMaxDataLen{
 		DataLen: uint64(len(programBz)) + 48,
 	})
 
@@ -172,7 +173,7 @@ func BuildDeployMsg(
 	if err != nil {
 		panic(err)
 	}
-	return ToCosmosMsg(senderAddr.String(), MaxComputeBudget, tx)
+	return svm.ToCosmosMsg(senderAddr.String(), MaxComputeBudget, tx)
 }
 
 func main() {
@@ -219,7 +220,7 @@ func main() {
 		panic(err)
 	}
 
-	programPubkey := solana.NewWallet().PublicKey() // TODO: Replace expected pubkey here
+	programPubkey := solana.MustPublicKeyFromBase58("CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C") // TODO: Replace expected pubkey here
 	programBufferPubkey := solana.NewWallet().PublicKey()
 	initAccountMsg := BuildInitAccountsMsg(senderAddress, len(programBz), programPubkey, programBufferPubkey)
 	deployMsg := BuildDeployMsg(senderAddress, programPubkey, programBufferPubkey, programBz)

@@ -4,9 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
-	"github.com/cosmos/cosmos-sdk/x/auth/signing"
-	"github.com/golang/protobuf/proto"
 	"math"
 	"net/http"
 	"os"
@@ -15,6 +12,11 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+
+	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
+	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
+	"github.com/cosmos/cosmos-sdk/x/auth/signing"
+	"github.com/golang/protobuf/proto"
 
 	"github.com/FluxNFTLabs/sdk-go/client/common"
 	log "github.com/InjectiveLabs/suplog"
@@ -75,6 +77,8 @@ type ChainClient interface {
 	GetBankBalance(ctx context.Context, address string, denom string) (*banktypes.QueryBalanceResponse, error)
 	GetAuthzGrants(ctx context.Context, req authztypes.QueryGrantsRequest) (*authztypes.QueryGrantsResponse, error)
 	GetAccount(ctx context.Context, address string) (*authtypes.QueryAccountResponse, error)
+	GetSvmAccount(ctx context.Context, address string) (*svmtypes.AccountResponse, error)
+	GetDenomLink(ctx context.Context, srcPlane astromeshtypes.Plane, denom string, dstPlane astromeshtypes.Plane) (*astromeshtypes.QueryDenomLinkResponse, error)
 
 	BuildGenericAuthz(granter string, grantee string, msgtype string, expireIn time.Time) *authztypes.MsgGrant
 	GetGasFee() (string, error)
@@ -103,11 +107,13 @@ type chainClient struct {
 	sessionCookie  string
 	sessionEnabled bool
 
-	nodeClient       nodetypes.ServiceClient
-	txClient         txtypes.ServiceClient
-	authQueryClient  authtypes.QueryClient
-	bankQueryClient  banktypes.QueryClient
-	authzQueryClient authztypes.QueryClient
+	nodeClient           nodetypes.ServiceClient
+	txClient             txtypes.ServiceClient
+	authQueryClient      authtypes.QueryClient
+	bankQueryClient      banktypes.QueryClient
+	authzQueryClient     authztypes.QueryClient
+	svmQueryClient       svmtypes.QueryClient
+	astromeshQueryClient astromeshtypes.QueryClient
 
 	closed  int64
 	canSign bool
@@ -149,11 +155,13 @@ func NewChainClient(
 		msgC:      make(chan sdk.Msg, msgCommitBatchSizeLimit),
 		doneC:     make(chan bool, 1),
 
-		nodeClient:       nodetypes.NewServiceClient(ctx.GRPCClient),
-		txClient:         txtypes.NewServiceClient(ctx.GRPCClient),
-		authQueryClient:  authtypes.NewQueryClient(ctx.GRPCClient),
-		bankQueryClient:  banktypes.NewQueryClient(ctx.GRPCClient),
-		authzQueryClient: authztypes.NewQueryClient(ctx.GRPCClient),
+		nodeClient:           nodetypes.NewServiceClient(ctx.GRPCClient),
+		txClient:             txtypes.NewServiceClient(ctx.GRPCClient),
+		authQueryClient:      authtypes.NewQueryClient(ctx.GRPCClient),
+		bankQueryClient:      banktypes.NewQueryClient(ctx.GRPCClient),
+		authzQueryClient:     authztypes.NewQueryClient(ctx.GRPCClient),
+		svmQueryClient:       svmtypes.NewQueryClient(ctx.GRPCClient),
+		astromeshQueryClient: astromeshtypes.NewQueryClient(ctx.GRPCClient),
 
 		Broadcasted: make(chan struct{}, 100000000),
 	}
@@ -381,6 +389,22 @@ func (c *chainClient) GetAccount(ctx context.Context, address string) (*authtype
 		Address: address,
 	}
 	return c.authQueryClient.Account(ctx, req)
+}
+
+func (c *chainClient) GetSvmAccount(ctx context.Context, address string) (*svmtypes.AccountResponse, error) {
+	req := &svmtypes.AccountRequest{
+		Address: address,
+	}
+	return c.svmQueryClient.Account(ctx, req)
+}
+
+func (c *chainClient) GetDenomLink(ctx context.Context, srcPlane astromeshtypes.Plane, denom string, dstPlane astromeshtypes.Plane) (*astromeshtypes.QueryDenomLinkResponse, error) {
+	req := &astromeshtypes.QueryDenomLinkRequest{
+		SrcPlane: srcPlane,
+		DstPlane: dstPlane,
+		SrcAddr:  denom,
+	}
+	return c.astromeshQueryClient.DenomLink(ctx, req)
 }
 
 func (c *chainClient) GetBankBalance(ctx context.Context, address string, denom string) (*banktypes.QueryBalanceResponse, error) {
