@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
@@ -20,13 +21,18 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	ethcrypto "github.com/ethereum/go-ethereum/crypto"
+	bin "github.com/gagliardetto/binary"
 	"github.com/gagliardetto/solana-go"
+	associatedtokenaccount "github.com/gagliardetto/solana-go/programs/associated-token-account"
 	"github.com/gagliardetto/solana-go/programs/system"
+	"github.com/gagliardetto/solana-go/programs/token"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 const MaxComputeBudget = 10000000
+
+var TokenProgramID = solana.MustPublicKeyFromBase58("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")
 
 func init() {
 	// use token2022 program by default
@@ -175,27 +181,30 @@ func createAmmConfig(
 	return ammConfigAccount
 }
 
+func MustFindAta(
+	wallet, tokenProgram, mint, ataProgram solana.PublicKey,
+) solana.PublicKey {
+	ata, _, err := solana.FindProgramAddress([][]byte{
+		wallet[:], tokenProgram[:], mint[:],
+	}, ataProgram)
+	if err != nil {
+		panic(err)
+	}
+
+	return ata
+}
+
 func initializeAmmPool(
 	chainClient chainclient.ChainClient,
 	ctx context.Context,
 	senderAddress sdk.AccAddress,
 	raydiumSwapProgram solana.PublicKey,
-	// raydiumAdmin solana.PublicKey,
+	raydiumFeeReceiver solana.PublicKey,
 	ammConfigAccount solana.PublicKey,
 	baseTokenMint solana.PublicKey,
 	quoteTokenMint solana.PublicKey,
 ) (poolStateAccount solana.PublicKey) {
-	senderSvmAccount := solana.PublicKey(ethcrypto.Keccak256(senderAddress.Bytes()))
-	// price 1 btc : 20000 usdt
-	authorityAccount, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("vault_and_lp_mint_auth_seed"),
-		{0, 0},
-	}, raydiumSwapProgram)
-	if err != nil {
-		panic(err)
-	}
-
-	poolStateAccount, _, err = solana.FindProgramAddress([][]byte{
+	poolStateAccount, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("pool"),
 		ammConfigAccount[:],
 		baseTokenMint[:],
@@ -204,6 +213,22 @@ func initializeAmmPool(
 	if err != nil {
 		panic(err)
 	}
+
+	_, err = chainClient.GetSvmAccount(ctx, poolStateAccount.String())
+	if err == nil {
+		fmt.Println("pool already created:", poolStateAccount.String())
+		return ammConfigAccount
+	}
+
+	senderSvmAccount := solana.PublicKey(ethcrypto.Keccak256(senderAddress.Bytes()))
+	// price 1 btc : 20000 usdt
+	authorityAccount, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("vault_and_lp_mint_auth_seed"),
+	}, raydiumSwapProgram)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("authority account:", authorityAccount.String())
 
 	lpMint, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("pool_lp_mint"),
@@ -225,11 +250,7 @@ func initializeAmmPool(
 		panic(err)
 	}
 
-	creatorLpAta, _, err := solana.FindAssociatedTokenAddress(solana.PublicKey(senderSvmAccount), lpMint)
-	if err != nil {
-		panic(err)
-	}
-
+	creatorLpAta := MustFindAta(solana.PublicKey(senderSvmAccount), TokenProgramID, lpMint, svmtypes.AssociatedTokenProgramId)
 	tokens0Vault, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("pool_vault"),
 		poolStateAccount[:],
@@ -248,7 +269,6 @@ func initializeAmmPool(
 		panic(err)
 	}
 
-	poolFeeReceiver := solana.MustPublicKeyFromBase58("DNXgeM9EiiaAbaWvwjHj9fQQLAX5ZsfHyvmYUNRAdNC8")
 	oracleObserver, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("observation"),
 		poolStateAccount[:],
@@ -273,9 +293,9 @@ func initializeAmmPool(
 		creatorLpAta,
 		tokens0Vault,
 		tokens1Vault,
-		poolFeeReceiver,
+		raydiumFeeReceiver,
 		oracleObserver,
-		svmtypes.SplToken2022ProgramId,
+		TokenProgramID,
 		svmtypes.SplToken2022ProgramId,
 		svmtypes.SplToken2022ProgramId,
 		svmtypes.AssociatedTokenProgramId,
@@ -296,7 +316,7 @@ func initializeAmmPool(
 	fmt.Println("----- log: action: Create pool ------")
 	fmt.Println("tx hash:", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
-	fmt.Println("pool state account:", poolStateAccount.String())
+	// fmt.Println("pool state account:", poolStateAccount.String())
 	return poolStateAccount
 }
 
@@ -306,6 +326,85 @@ func allocate() {
 
 func swap() {
 
+}
+
+func createNativeMint(
+	chainClient chainclient.ChainClient,
+	ctx context.Context,
+	senderAddress sdk.AccAddress,
+) {
+	_, err := chainClient.GetSvmAccount(ctx, Sol22NativeMint.String())
+	if err == nil {
+		fmt.Println("sol native mint already created:", Sol22NativeMint.String())
+		return
+	}
+
+	senderSvmAccount := solana.PublicKey(ethcrypto.Keccak256(senderAddress.Bytes()))
+	createMintIx := NewCreateNativeMintInstruction(
+		senderSvmAccount, Sol22NativeMint, solana.SystemProgramID,
+	)
+	tx, err := solana.NewTransactionBuilder().AddInstruction(createMintIx).Build()
+	if err != nil {
+		panic(err)
+	}
+
+	res, err := chainClient.SyncBroadcastMsg(svm.ToCosmosMsg(senderAddress.String(), 1000000, tx))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("----- log: action: create native mint ------")
+	fmt.Println("tx hash:", res.TxResponse.TxHash)
+	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
+	fmt.Println("sol native mint created:", Sol22NativeMint.String())
+}
+
+func createFeeReceiverAccount(
+	chainClient chainclient.ChainClient,
+	ctx context.Context,
+	senderAddress sdk.AccAddress,
+	owner solana.PublicKey,
+) solana.PublicKey {
+	senderSvmAccount := solana.PublicKey(ethcrypto.Keccak256(senderAddress.Bytes()))
+	ownerSolAta, _, err := solana.FindAssociatedTokenAddress(owner, Sol22NativeMint)
+	if err != nil {
+		panic(err)
+	}
+	accData, err := chainClient.GetSvmAccount(ctx, ownerSolAta.String())
+	if err == nil {
+		fmt.Println("sol receiver ATA created:", ownerSolAta.String())
+		var a = new(token.Account)
+		err := a.UnmarshalWithDecoder(bin.NewBinDecoder(accData.Account.Data))
+		if err != nil {
+			panic(err)
+		}
+		bz, _ := json.Marshal(a)
+		fmt.Println("account token22:", string(bz), "owner:", solana.PublicKeyFromBytes(accData.Account.Owner).String())
+		return ownerSolAta
+	}
+
+	createAtaIx := associatedtokenaccount.NewCreateInstruction(
+		senderSvmAccount,
+		owner,
+		Sol22NativeMint,
+	).Build()
+
+	tx, err := solana.NewTransactionBuilder().AddInstruction(createAtaIx).Build()
+	if err != nil {
+		panic(err)
+	}
+
+	res, err := chainClient.SyncBroadcastMsg(svm.ToCosmosMsg(senderAddress.String(), 1000000, tx))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("----- log: action: create fee receiver ATA ------")
+	fmt.Println("tx hash:", res.TxResponse.TxHash)
+	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
+	fmt.Println("admint SOL (token2022) ata:", ownerSolAta)
+
+	return ownerSolAta
 }
 
 func main() {
@@ -350,7 +449,6 @@ func main() {
 	ctx := context.Background()
 	senderSvmAddress := solana.PublicKey(ethcrypto.Keccak256(senderAddress))
 	createSvmAccountIfNotExist(chainClient, ctx, senderAddress, senderSvmAddress)
-	transferBalance(chainClient, ctx, senderAddress)
 
 	var btcMint, usdtMint solana.PublicKey
 	btcLink, err := chainClient.GetDenomLink(ctx, astromeshtypes.Plane_COSMOS, "btc", astromeshtypes.Plane_SVM)
@@ -381,9 +479,9 @@ func main() {
 
 	fmt.Println("btc mint:", btcMint.String())
 	fmt.Println("usdt mint:", usdtMint.String())
-
 	adminAccount := solana.MustPublicKeyFromBase58("GThUX1Atko4tqhN2NaiTazWSeFWMuiUvfFnyJyUghFMJ")
-	createSvmAccountIfNotExist(chainClient, ctx, senderAddress, adminAccount)
+	createNativeMint(chainClient, ctx, senderAddress)
+	feeReceiverAccount := createFeeReceiverAccount(chainClient, ctx, senderAddress, adminAccount)
 
 	// create amm config
 	raydiumProgramId := solana.MustPublicKeyFromBase58("CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C")
@@ -392,11 +490,12 @@ func main() {
 	// create pool, oracle? no need ATM
 	poolAccount := initializeAmmPool(
 		chainClient,
-		ctx, senderAddress, raydiumProgramId,
+		ctx, senderAddress,
+		raydiumProgramId,
+		feeReceiverAccount,
 		ammConfigAccount,
 		btcMint, usdtMint,
 	)
 
 	fmt.Println("pool account:", poolAccount)
-	// swap
 }
