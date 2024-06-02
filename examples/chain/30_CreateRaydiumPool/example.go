@@ -203,7 +203,7 @@ func initializeAmmPool(
 	ammConfigAccount solana.PublicKey,
 	baseTokenMint solana.PublicKey,
 	quoteTokenMint solana.PublicKey,
-) (poolStateAccount solana.PublicKey) {
+) (poolStateAccount solana.PublicKey, poolState *raydium_cp_swap.PoolState) {
 	poolStateAccount, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("pool"),
 		ammConfigAccount[:],
@@ -214,21 +214,23 @@ func initializeAmmPool(
 		panic(err)
 	}
 
-	_, err = chainClient.GetSvmAccount(ctx, poolStateAccount.String())
+	poolStateResponse, err := chainClient.GetSvmAccount(ctx, poolStateAccount.String())
 	if err == nil {
 		fmt.Println("pool already created:", poolStateAccount.String())
-		return ammConfigAccount
+		poolState := new(raydium_cp_swap.PoolState)
+		if err := poolState.UnmarshalWithDecoder(bin.NewBinDecoder(poolStateResponse.Account.Data)); err != nil {
+			panic(err)
+		}
+		return poolStateAccount, poolState
 	}
 
 	senderSvmAccount := solana.PublicKey(ethcrypto.Keccak256(senderAddress.Bytes()))
-	// price 1 btc : 20000 usdt
 	authorityAccount, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("vault_and_lp_mint_auth_seed"),
 	}, raydiumSwapProgram)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("authority account:", authorityAccount.String())
 
 	lpMint, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("pool_lp_mint"),
@@ -316,16 +318,90 @@ func initializeAmmPool(
 	fmt.Println("----- log: action: Create pool ------")
 	fmt.Println("tx hash:", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
-	// fmt.Println("pool state account:", poolStateAccount.String())
-	return poolStateAccount
+	fmt.Println("pool state account:", poolStateAccount.String())
+
+	poolStateResponse, err = chainClient.GetSvmAccount(ctx, poolStateAccount.String())
+	if err != nil {
+		panic(err)
+	}
+	poolState = new(raydium_cp_swap.PoolState)
+	if err := poolState.UnmarshalWithDecoder(bin.NewBinDecoder(poolStateResponse.Account.Data)); err != nil {
+		panic(err)
+	}
+	return poolStateAccount, poolState
 }
 
-func allocate() {
+func allocate() {}
 
+func mustGetTokenAccount(
+	chainClient chainclient.ChainClient,
+	ctx context.Context,
+	account solana.PublicKey,
+) *token.Account {
+	var tokenAcc token.Account
+	acc, err := chainClient.GetSvmAccount(ctx, account.String())
+	if err != nil {
+		panic(err)
+	}
+
+	if err := tokenAcc.UnmarshalWithDecoder(bin.NewBinDecoder(acc.Account.Data)); err != nil {
+		panic(err)
+	}
+	return &tokenAcc
 }
 
-func swap() {
+func swapBaseInput(
+	chainClient chainclient.ChainClient,
+	ctx context.Context,
+	senderAddress sdk.AccAddress,
+	raydiumSwapProgram solana.PublicKey,
+	authorityAccount solana.PublicKey, // TODO: What is this for?
+	amountIn uint64,
+	minAmountOut int64,
+	inputTokenAccount solana.PublicKey,
+	outputTokenAccount solana.PublicKey,
+	ammConfigAccount solana.PublicKey,
+	poolState solana.PublicKey,
+	inputVault solana.PublicKey,
+	outputVault solana.PublicKey,
+	inputTokenMint solana.PublicKey,
+	outputTokenMint solana.PublicKey,
+	observerState solana.PublicKey,
+) {
+	senderSvmAccount := solana.PublicKey(ethcrypto.Keccak256(senderAddress.Bytes()))
+	ix := raydium_cp_swap.NewSwapBaseInputInstruction(
+		amountIn,
+		uint64(minAmountOut),
+		senderSvmAccount,
+		authorityAccount,
+		ammConfigAccount,
+		poolState,
+		inputTokenAccount,
+		outputTokenAccount,
+		inputVault,
+		outputVault,
+		svmtypes.SplToken2022ProgramId,
+		svmtypes.SplToken2022ProgramId,
+		inputTokenMint,
+		outputTokenMint,
+		observerState,
+	)
 
+	tx, err := solana.NewTransactionBuilder().AddInstruction(ix.Build()).Build()
+	if err != nil {
+		panic(err)
+	}
+
+	res, err := chainClient.SyncBroadcastMsg(svm.ToCosmosMsg(senderAddress.String(), MaxComputeBudget, tx))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("----- log: action: Swap ------")
+	fmt.Println("tx hash:", res.TxResponse.TxHash)
+	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
+	fmt.Println("input vault balance after swap:", mustGetTokenAccount(chainClient, ctx, inputTokenAccount).Amount)
+	fmt.Println("output vault balance after swap:", mustGetTokenAccount(chainClient, ctx, outputTokenAccount).Amount)
 }
 
 func createNativeMint(
@@ -488,7 +564,14 @@ func main() {
 	raydium_cp_swap.SetProgramID(raydiumProgramId)
 	ammConfigAccount := createAmmConfig(chainClient, ctx, senderAddress, adminAccount, raydiumProgramId)
 	// create pool, oracle? no need ATM
-	poolAccount := initializeAmmPool(
+	authorityAccount, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("vault_and_lp_mint_auth_seed"),
+	}, raydiumProgramId)
+	if err != nil {
+		panic(err)
+	}
+
+	poolAccount, poolState := initializeAmmPool(
 		chainClient,
 		ctx, senderAddress,
 		raydiumProgramId,
@@ -497,5 +580,24 @@ func main() {
 		btcMint, usdtMint,
 	)
 
-	fmt.Println("pool account:", poolAccount)
+	traderBtcAta := MustFindAta(senderSvmAddress, svmtypes.SplToken2022ProgramId, btcMint, svmtypes.AssociatedTokenProgramId)
+	traderUsdtAta := MustFindAta(senderSvmAddress, svmtypes.SplToken2022ProgramId, usdtMint, svmtypes.AssociatedTokenProgramId)
+	swapBaseInput(
+		chainClient,
+		ctx,
+		senderAddress,
+		raydiumProgramId,
+		authorityAccount,
+		2000000, // 0.02 BTC
+		100_000000,
+		traderBtcAta,
+		traderUsdtAta,
+		poolState.AmmConfig,
+		poolAccount,
+		poolState.Token0Vault,
+		poolState.Token1Vault,
+		btcMint,
+		usdtMint,
+		poolState.ObservationKey,
+	)
 }
