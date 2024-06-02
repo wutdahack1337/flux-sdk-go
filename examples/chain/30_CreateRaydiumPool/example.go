@@ -155,9 +155,9 @@ func createAmmConfig(
 
 	createAmmConfigIx := raydium_cp_swap.NewCreateAmmConfigInstruction(
 		0,
-		100000,       // trade fee (rate)
-		200000,       // protocol fee
-		100000,       // fund fee
+		1000,         // trade fee (rate) / 10^6 = 0.1%
+		2000,         // protocol fee
+		1000,         // fund fee
 		0,            // create pool fee
 		raydiumAdmin, // config owner
 		ammConfigAccount,
@@ -526,6 +526,7 @@ func main() {
 	senderSvmAddress := solana.PublicKey(ethcrypto.Keccak256(senderAddress))
 	createSvmAccountIfNotExist(chainClient, ctx, senderAddress, senderSvmAddress)
 
+	// get btc, usdt denom on svm
 	var btcMint, usdtMint solana.PublicKey
 	btcLink, err := chainClient.GetDenomLink(ctx, astromeshtypes.Plane_COSMOS, "btc", astromeshtypes.Plane_SVM)
 	if err != nil {
@@ -563,7 +564,8 @@ func main() {
 	raydiumProgramId := solana.MustPublicKeyFromBase58("CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C")
 	raydium_cp_swap.SetProgramID(raydiumProgramId)
 	ammConfigAccount := createAmmConfig(chainClient, ctx, senderAddress, adminAccount, raydiumProgramId)
-	// create pool, oracle? no need ATM
+
+	// create pool
 	authorityAccount, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("vault_and_lp_mint_auth_seed"),
 	}, raydiumProgramId)
@@ -579,7 +581,8 @@ func main() {
 		ammConfigAccount,
 		btcMint, usdtMint,
 	)
-
+	// allocate (deposit) more funds for liquidity
+	// start swap
 	traderBtcAta := MustFindAta(senderSvmAddress, svmtypes.SplToken2022ProgramId, btcMint, svmtypes.AssociatedTokenProgramId)
 	traderUsdtAta := MustFindAta(senderSvmAddress, svmtypes.SplToken2022ProgramId, usdtMint, svmtypes.AssociatedTokenProgramId)
 	swapBaseInput(
