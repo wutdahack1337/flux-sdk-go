@@ -16,7 +16,7 @@ import (
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
 	"github.com/FluxNFTLabs/sdk-go/client/svm"
-	raydium_cp_swap "github.com/FluxNFTLabs/sdk-go/examples/chain/30_CreateRaydiumPool/raydium"
+	raydium_cp_swap "github.com/FluxNFTLabs/sdk-go/examples/chain/31_CreateRaydiumPool/raydium"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
@@ -331,8 +331,6 @@ func initializeAmmPool(
 	return poolStateAccount, poolState
 }
 
-func allocate() {}
-
 func mustGetTokenAccount(
 	chainClient chainclient.ChainClient,
 	ctx context.Context,
@@ -483,6 +481,29 @@ func createFeeReceiverAccount(
 	return ownerSolAta
 }
 
+func deposit(
+	chainClient chainclient.ChainClient,
+	ctx context.Context,
+	senderAddress sdk.AccAddress,
+	maxToken0Amount, maxToken1Amount uint64,
+	token0Mint solana.PublicKey,
+	token1Mint solana.PublicKey,
+	owner solana.PublicKey,
+	authority solana.PublicKey, // program PDA as mint authority
+	poolStateAccount solana.PublicKey,
+	lpMint solana.PublicKey,
+) {
+	senderSvmAccount := solana.PublicKey(ethcrypto.Keccak256(senderAddress.Bytes()))
+	depositIx := raydium_cp_swap.NewDepositInstruction(
+		1000_000_000,
+		maxToken0Amount,
+		maxToken1Amount,
+		senderSvmAccount,
+		authority,
+		poolStateAccount,
+	)
+}
+
 func main() {
 	network := common.LoadNetwork("local", "")
 	kr, err := keyring.New(
@@ -582,6 +603,7 @@ func main() {
 		btcMint, usdtMint,
 	)
 	// allocate (deposit) more funds for liquidity
+
 	// start swap
 	traderBtcAta := MustFindAta(senderSvmAddress, svmtypes.SplToken2022ProgramId, btcMint, svmtypes.AssociatedTokenProgramId)
 	traderUsdtAta := MustFindAta(senderSvmAddress, svmtypes.SplToken2022ProgramId, usdtMint, svmtypes.AssociatedTokenProgramId)
