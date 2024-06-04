@@ -122,3 +122,17 @@ func positionOfPubkeyInAccountMetas(a solana.PublicKey, metas []*solana.AccountM
 
 	return -1
 }
+
+// Find associated token account, panic when not found (not likely to happen)
+func MustFindAta(
+	wallet, tokenProgram, mint, ataProgram solana.PublicKey,
+) solana.PublicKey {
+	ata, _, err := solana.FindProgramAddress([][]byte{
+		wallet[:], tokenProgram[:], mint[:],
+	}, ataProgram)
+	if err != nil {
+		panic(err)
+	}
+
+	return ata
+}

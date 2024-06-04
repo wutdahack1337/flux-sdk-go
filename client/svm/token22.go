@@ -1,4 +1,4 @@
-package main
+package svm
 
 import (
 	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
