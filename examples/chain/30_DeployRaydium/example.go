@@ -215,7 +215,7 @@ func main() {
 		panic(err)
 	}
 
-	programBz, err := os.ReadFile("raydium_cp_swap.so")
+	programBz, err := os.ReadFile("examples/chain/30_DeployRaydium/raydium_cp_swap.so")
 	if err != nil {
 		panic(err)
 	}
