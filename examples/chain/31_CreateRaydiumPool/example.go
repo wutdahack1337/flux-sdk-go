@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"cosmossdk.io/math"
 	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
@@ -32,6 +33,8 @@ import (
 
 const MaxComputeBudget = 10000000
 
+const InitialBtcUsdtPrice = uint64(70000)
+
 var TokenProgramID = solana.MustPublicKeyFromBase58("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")
 
 func init() {
@@ -44,7 +47,6 @@ func calculateLpToken(
 	token0Vault, token1Vault uint64,
 	currentLpAmount uint64,
 ) (lpAmount, actualToken0Deposit, actualToken1Deposit uint64) {
-	fmt.Println("token0Vault,token1Vault:", token0Vault, token1Vault)
 	// lpAmount / currentLpAmount * token0Vault <= token0Amount
 	// lpAmount / currentLpAmount * token1Vault <= token1Amount
 	lpAmountToken0Based := math.NewIntFromUint64(maxToken0Amount).Mul(math.NewIntFromUint64(currentLpAmount)).Quo(math.NewIntFromUint64(token0Vault))
@@ -146,7 +148,7 @@ func transfer(chainClient chainclient.ChainClient, ctx context.Context, senderAd
 
 func transferBalance(chainClient chainclient.ChainClient, ctx context.Context, senderAddress sdk.Address) {
 	transfer(chainClient, ctx, senderAddress, "btc", 2_00000000)
-	transfer(chainClient, ctx, senderAddress, "usdt", 80000_000000)
+	transfer(chainClient, ctx, senderAddress, "usdt", 160000_000000)
 }
 
 func createAmmConfig(
@@ -296,9 +298,11 @@ func initializeAmmPool(
 		panic(err)
 	}
 
+	btcAmount := uint64(100000000)
+	usdtAmount := btcAmount * InitialBtcUsdtPrice * 1000000 / uint64(100000000)
 	createPoolIx := raydium_cp_swap.NewInitializeInstruction(
-		1_00000000,
-		20_000_000000,
+		uint64(btcAmount),
+		uint64(usdtAmount),
 		0,
 		senderSvmAccount,
 		ammConfigAccount,
@@ -416,8 +420,6 @@ func swapBaseInput(
 	fmt.Println("----- log: action: Swap ------")
 	fmt.Println("tx hash:", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
-	fmt.Println("input vault balance after swap:", mustGetTokenAccount(chainClient, ctx, inputTokenAccount).Amount)
-	fmt.Println("output vault balance after swap:", mustGetTokenAccount(chainClient, ctx, outputTokenAccount).Amount)
 }
 
 func createNativeMint(
@@ -495,7 +497,6 @@ func createFeeReceiverAccount(
 	fmt.Println("tx hash:", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 	fmt.Println("admin SOL (token2022) ata:", ownerSolAta)
-
 	return ownerSolAta
 }
 
@@ -671,43 +672,102 @@ func main() {
 
 	traderBtcAta := MustFindAta(senderSvmAddress, svmtypes.SplToken2022ProgramId, btcMint, svmtypes.AssociatedTokenProgramId)
 	traderUsdtAta := MustFindAta(senderSvmAddress, svmtypes.SplToken2022ProgramId, usdtMint, svmtypes.AssociatedTokenProgramId)
-	// deposit more funds for liquidity
-	deposit(
-		chainClient,
-		ctx,
-		senderAddress,
-		50000000,
-		10000_000000,
-		traderBtcAta,
-		traderUsdtAta,
-		poolState.Token0Vault,
-		poolState.Token1Vault,
-		btcMint,
-		usdtMint,
-		senderSvmAddress,
-		authorityAccount,
-		poolAccount,
-		poolState.LpMint,
-		*poolState,
-	)
+	btcAmount := mustGetTokenAccount(chainClient, ctx, poolState.Token0Vault).Amount
 
-	// start swap
-	swapBaseInput(
-		chainClient,
-		ctx,
-		senderAddress,
-		raydiumProgramId,
-		authorityAccount,
-		2000000, // 0.02 BTC
-		100_000000,
-		traderBtcAta,
-		traderUsdtAta,
-		poolState.AmmConfig,
-		poolAccount,
-		poolState.Token0Vault,
-		poolState.Token1Vault,
-		btcMint,
-		usdtMint,
-		poolState.ObservationKey,
-	)
+	isBuy := true
+	for {
+		if btcAmount < 1000000 {
+			// btc < 0.1, deposit more btc
+			// deposit more funds for liquidity
+			btcAmount := uint64(1000000)
+			usdtAmount := btcAmount * InitialBtcUsdtPrice * 1000000 / uint64(100000000)
+			deposit(
+				chainClient,
+				ctx,
+				senderAddress,
+				btcAmount,
+				usdtAmount,
+				traderBtcAta,
+				traderUsdtAta,
+				poolState.Token0Vault,
+				poolState.Token1Vault,
+				btcMint,
+				usdtMint,
+				senderSvmAddress,
+				authorityAccount,
+				poolAccount,
+				poolState.LpMint,
+				*poolState,
+			)
+		}
+
+		// start swap
+		btcDecimals := math.NewInt(100000000)
+		usdtDecimals := math.NewInt(1000000)
+		if isBuy {
+			traderBtcBefore := mustGetTokenAccount(chainClient, ctx, traderBtcAta).Amount
+			traderUsdtBefore := mustGetTokenAccount(chainClient, ctx, traderUsdtAta).Amount
+			swapBaseInput(
+				chainClient,
+				ctx,
+				senderAddress,
+				raydiumProgramId,
+				authorityAccount,
+				2000000, // 0.02 BTC
+				100_000000,
+				traderBtcAta,
+				traderUsdtAta,
+				poolState.AmmConfig,
+				poolAccount,
+				poolState.Token0Vault,
+				poolState.Token1Vault,
+				btcMint,
+				usdtMint,
+				poolState.ObservationKey,
+			)
+
+			traderBtcAfter := mustGetTokenAccount(chainClient, ctx, traderBtcAta).Amount
+			traderUsdtAfter := mustGetTokenAccount(chainClient, ctx, traderUsdtAta).Amount
+			btcChange := math.LegacyNewDecFromInt(math.NewIntFromUint64(traderBtcAfter).Sub(math.NewIntFromUint64(traderBtcBefore)))
+			usdtChange := math.LegacyNewDecFromInt(math.NewIntFromUint64(traderUsdtAfter).Sub(math.NewIntFromUint64(traderUsdtBefore)))
+			btcChangeFloat, _ := btcChange.Abs().QuoInt(btcDecimals).Float64()
+			usdtChangeFloat, _ := usdtChange.QuoInt(usdtDecimals).Float64()
+			fmt.Println("Sold", btcChangeFloat, "BTC for", usdtChangeFloat, "USDT")
+		} else {
+			traderBtcBefore := mustGetTokenAccount(chainClient, ctx, traderBtcAta).Amount
+			traderUsdtBefore := mustGetTokenAccount(chainClient, ctx, traderUsdtAta).Amount
+			swapBaseInput(
+				chainClient,
+				ctx,
+				senderAddress,
+				raydiumProgramId,
+				authorityAccount,
+				400_000000,
+				500000,
+				traderUsdtAta,
+				traderBtcAta,
+				poolState.AmmConfig,
+				poolAccount,
+				poolState.Token1Vault,
+				poolState.Token0Vault,
+				usdtMint,
+				btcMint,
+				poolState.ObservationKey,
+			)
+
+			traderBtcAfter := mustGetTokenAccount(chainClient, ctx, traderBtcAta).Amount
+			traderUsdtAfter := mustGetTokenAccount(chainClient, ctx, traderUsdtAta).Amount
+			btcChange := math.LegacyNewDecFromInt(math.NewIntFromUint64(traderBtcAfter).Sub(math.NewIntFromUint64(traderBtcBefore)))
+			usdtChange := math.LegacyNewDecFromInt(math.NewIntFromUint64(traderUsdtAfter).Sub(math.NewIntFromUint64(traderUsdtBefore)))
+			btcChangeFloat, _ := btcChange.Abs().QuoInt(btcDecimals).Float64()
+			usdtChangeFloat, _ := usdtChange.Abs().QuoInt(usdtDecimals).Float64()
+			fmt.Println("Buy", btcChangeFloat, "BTC from", usdtChangeFloat, "USDT")
+		}
+		isBuy = !isBuy
+
+		btcAmount := mustGetTokenAccount(chainClient, ctx, poolState.Token0Vault).Amount
+		usdtAmount := mustGetTokenAccount(chainClient, ctx, poolState.Token1Vault).Amount
+		fmt.Println("Vault balance:", float64(btcAmount)/100000000, "BTC /", float64(usdtAmount)/1000000, "USDT")
+		time.Sleep(2 * time.Second)
+	}
 }
