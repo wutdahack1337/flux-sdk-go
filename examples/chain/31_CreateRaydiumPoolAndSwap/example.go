@@ -98,7 +98,7 @@ func createSvmAccount(chainClient chainclient.ChainClient, ctx context.Context, 
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println("----- log: Create Svm account ------")
+		fmt.Println("----- action: Create Svm account ------")
 		fmt.Println("cosmos account:", senderAddress.String())
 		fmt.Println("svm account:", solana.PublicKey(senderSvmAccount).String())
 		fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
@@ -126,7 +126,7 @@ func transfer(chainClient chainclient.ChainClient, ctx context.Context, senderAd
 	}
 
 	ataAccount := svm.MustFindAta(solana.PublicKey(senderSvmAccount), svmtypes.SplToken2022ProgramId, solana.PublicKey(parsedResult.DestinationDenom), svmtypes.AssociatedTokenProgramId)
-	fmt.Println("----- log: transfer ------")
+	fmt.Println("----- action: Transfer ------")
 	fmt.Println("tx hash:", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 	fmt.Println("cosmos account:", senderAddress.String())
@@ -182,7 +182,7 @@ func createAmmConfig(
 		panic(err)
 	}
 
-	fmt.Println("----- log: create AMM Config ------")
+	fmt.Println("----- action: create AMM Config ------")
 	fmt.Println("tx hash:", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 	fmt.Println("amm config account", ammConfigAccount.String())
@@ -304,7 +304,7 @@ func initializeAmmPool(
 		panic(err)
 	}
 
-	fmt.Println("----- log: Create pool ------")
+	fmt.Println("----- action: Create pool ------")
 	fmt.Println("tx hash:", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 	fmt.Println("pool state account:", poolStateAccount.String())
@@ -385,7 +385,7 @@ func swapBaseInput(
 		panic(err)
 	}
 
-	fmt.Println("----- log: Swap ------")
+	fmt.Println("----- action: Swap ------")
 	fmt.Println("tx hash:", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 }
@@ -415,7 +415,7 @@ func createNativeMint(
 		panic(err)
 	}
 
-	fmt.Println("----- log: create native mint ------")
+	fmt.Println("----- action: create native mint ------")
 	fmt.Println("tx hash:", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 	fmt.Println("sol native mint created:", svm.Sol22NativeMint.String())
@@ -460,7 +460,7 @@ func createFeeReceiverAccount(
 		panic(err)
 	}
 
-	fmt.Println("----- log: create fee receiver ATA ------")
+	fmt.Println("----- action: create fee receiver ATA ------")
 	fmt.Println("tx hash:", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 	fmt.Println("admin SOL (token 2022) ata:", ownerSolAta)
@@ -474,15 +474,11 @@ func deposit(
 	maxToken0Amount, maxToken1Amount uint64,
 	token0Account solana.PublicKey,
 	token1Account solana.PublicKey,
-	token0Vault solana.PublicKey,
-	token1Vault solana.PublicKey,
-	token0Mint solana.PublicKey,
-	token1Mint solana.PublicKey,
 	owner solana.PublicKey,
 	authority solana.PublicKey, // program PDA as mint authority
 	poolStateAccount solana.PublicKey,
 	lpMint solana.PublicKey,
-	poolState raydium_cp_swap.PoolState,
+	poolState *raydium_cp_swap.PoolState,
 ) {
 	senderSvmAccount := solana.PublicKey(ethcrypto.Keccak256(senderAddress.Bytes()))
 	ownerLpToken := svm.MustFindAta(
@@ -490,9 +486,9 @@ func deposit(
 	)
 
 	// get token 0 vault balance
-	token0VaultBalance := mustGetTokenAccount(chainClient, ctx, token0Vault)
+	token0VaultBalance := mustGetTokenAccount(chainClient, ctx, poolState.Token0Vault)
 	// get token 1 vault balance
-	token1VaultBalance := mustGetTokenAccount(chainClient, ctx, token1Vault)
+	token1VaultBalance := mustGetTokenAccount(chainClient, ctx, poolState.Token1Vault)
 
 	lpAmount, _, _ := calculateLpToken(
 		maxToken0Amount, maxToken1Amount,
@@ -510,12 +506,12 @@ func deposit(
 		ownerLpToken,
 		token0Account,
 		token1Account,
-		token0Vault,
-		token1Vault,
+		poolState.Token0Vault,
+		poolState.Token1Vault,
 		solana.TokenProgramID,
 		svmtypes.SplToken2022ProgramId,
-		token0Mint,
-		token1Mint,
+		poolState.Token0Mint,
+		poolState.Token1Mint,
 		lpMint,
 	).Build()
 
@@ -529,11 +525,11 @@ func deposit(
 		panic(err)
 	}
 
-	fmt.Println("----- log: deposit ------")
+	fmt.Println("----- action: Deposit ------")
 	fmt.Println("tx hash:", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
-	fmt.Println("input vault balance after deposit:", mustGetTokenAccount(chainClient, ctx, token0Vault).Amount)
-	fmt.Println("output vault balance after deposit:", mustGetTokenAccount(chainClient, ctx, token1Vault).Amount)
+	fmt.Println("input vault balance after deposit:", mustGetTokenAccount(chainClient, ctx, poolState.Token0Vault).Amount)
+	fmt.Println("output vault balance after deposit:", mustGetTokenAccount(chainClient, ctx, poolState.Token1Vault).Amount)
 	fmt.Println("owner's lp new amount:", mustGetTokenAccount(chainClient, ctx, ownerLpToken).Amount)
 }
 
@@ -641,15 +637,11 @@ func main() {
 		usdtAmountToDeposit,
 		traderBtcAta,
 		traderUsdtAta,
-		poolState.Token0Vault,
-		poolState.Token1Vault,
-		btcMint,
-		usdtMint,
 		senderSvmAddress,
 		authorityAccount,
 		poolAccount,
 		poolState.LpMint,
-		*poolState,
+		poolState,
 	)
 
 	// swap
@@ -678,6 +670,6 @@ func main() {
 	traderUsdtAfter := mustGetTokenAccount(chainClient, ctx, traderUsdtAta).Amount
 	btcChange := traderBtcBefore - traderBtcAfter
 	usdtChange := traderUsdtAfter - traderUsdtBefore
-	// convert to human readable by dividing to their decimals
-	fmt.Println("Sold", float64(btcChange)/100000000, "BTC for", float64(usdtChange)/1000000, "USDT")
+	// convert to human readable format by dividing to their decimals
+	fmt.Println("sold", float64(btcChange)/100000000, "BTC for", float64(usdtChange)/1000000, "USDT")
 }
