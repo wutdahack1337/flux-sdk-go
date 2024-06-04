@@ -37,8 +37,8 @@ type DenomConfig struct {
 	InitialPriceUsdt uint64
 	InitialDeposit   uint64
 
-	LiquidityAmount uint64
-	SwapAmount      uint64
+	DepositAmount uint64
+	SwapAmount    uint64
 }
 
 const (
@@ -48,30 +48,30 @@ const (
 
 var (
 	svmDenomMap = map[string]*DenomConfig{
-		"btc": &DenomConfig{
+		"btc": {
 			TenPowerDecimals: 100_000_000,
 			InitialDeposit:   100_000_000,
 			InitialPriceUsdt: 70000,
 
-			LiquidityAmount: 100_000_000,
-			SwapAmount:      100_000_000,
+			DepositAmount: 100_000_000,
+			SwapAmount:    1_000_000,
 		},
-		"eth": &DenomConfig{
-			TenPowerDecimals: 1_000_000_000_000_000_000,
-			InitialDeposit:   1_000_000_000_000_000_000,
+		"eth": {
+			TenPowerDecimals: 1_000_000_000,
+			InitialDeposit:   1_000_000_000,
 			InitialPriceUsdt: 3600,
 
-			LiquidityAmount: 100_000_000_000_000_000,
-			SwapAmount:      100_000_000_000_000_000,
+			DepositAmount: 100_000_000,
+			SwapAmount:    100_000_000,
 		},
-		"sol": &DenomConfig{
+		"sol": {
 			TenPowerDecimals: 1_000_000_000,
 			InitialDeposit:   10_000_000_000,
 			InitialPriceUsdt: 200,
-			LiquidityAmount:  1_000_000_000,
-			SwapAmount:       100_000_000,
+			DepositAmount:    1_000_000_000,
+			SwapAmount:       50_000_000,
 		},
-		"usdt": &DenomConfig{
+		"usdt": {
 			TenPowerDecimals: 1_000_000,
 			InitialPriceUsdt: 1,
 		},
@@ -80,19 +80,43 @@ var (
 	raydiumProgramId = solana.MustPublicKeyFromBase58("CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C")
 )
 
+func getPoolNameByPubkey(pk solana.PublicKey) string {
+	for denom, config := range svmDenomMap {
+		if config.DenomUsdtPool.Equals(pk) {
+			return denom + "-usdt"
+		}
+	}
+	return ""
+}
+
+func getDenomByMint(mint solana.PublicKey) string {
+	for denom, config := range svmDenomMap {
+		if config.Mint.Equals(mint) {
+			return denom
+		}
+	}
+	return ""
+}
+
+func calculateMinimumOutputUsdt(denomAmount uint64, inVaultBalance, outVaultBalance uint64, slippage float64) uint64 {
+	price := float64(inVaultBalance) / float64(outVaultBalance) * (1 + slippage)
+	return uint64(float64(denomAmount) / price)
+}
+
 func calculateLpToken(
 	maxToken0Amount, maxToken1Amount uint64,
 	token0Vault, token1Vault uint64,
 	currentLpAmount uint64,
 ) (lpAmount, actualToken0Deposit, actualToken1Deposit uint64) {
-	// lpAmount / currentLpAmount * token0Vault <= token0Amount
-	// lpAmount / currentLpAmount * token1Vault <= token1Amount
+	// lpAmountToken0Based / currentLpAmount * token0Vault <= token0Amount
+	// lpAmountToken1Based / currentLpAmount * token1Vault <= token1Amount
+	// => find lpAmount = min(lpAmountToken0Based, lpAmountToken1Based)
 	lpAmountToken0Based := math.NewIntFromUint64(maxToken0Amount).Mul(math.NewIntFromUint64(currentLpAmount)).Quo(math.NewIntFromUint64(token0Vault))
 	lpAmountToken1Based := math.NewIntFromUint64(maxToken1Amount).Mul(math.NewIntFromUint64(currentLpAmount)).Quo(math.NewIntFromUint64(token1Vault))
 
 	netLpAmount := lpAmountToken0Based
 	if netLpAmount.GT(lpAmountToken1Based) {
-		lpAmountToken1Based = netLpAmount
+		netLpAmount = lpAmountToken1Based
 	}
 
 	lpAmount = netLpAmount.Uint64()
@@ -184,13 +208,14 @@ func transferCosmosToSvm(
 	fmt.Println("svm account:", solana.PublicKey(senderSvmAccount).String())
 	fmt.Printf("%s mint svm: %s\n", denom, solana.PublicKey(parsedResult.DestinationDenom).String())
 	fmt.Println("ata account (token22):", ataAccount.String())
+	fmt.Println("current balance on svm:", mustGetTokenAccount(chainClient, ctx, ataAccount).Amount)
 }
 
 func transferBalances(chainClient chainclient.ChainClient, ctx context.Context, senderAddress sdk.Address) {
-	transferCosmosToSvm(chainClient, ctx, senderAddress, "btc", 2_00000000)
-	transferCosmosToSvm(chainClient, ctx, senderAddress, "sol", 100_000000000)
-	transferCosmosToSvm(chainClient, ctx, senderAddress, "eth", 1_000000000000000000)
-	transferCosmosToSvm(chainClient, ctx, senderAddress, "usdt", 200000_000000)
+	transferCosmosToSvm(chainClient, ctx, senderAddress, "btc", 300_000_000)
+	transferCosmosToSvm(chainClient, ctx, senderAddress, "sol", 100_000_000_000)
+	transferCosmosToSvm(chainClient, ctx, senderAddress, "eth", 3_000_000_000_000_000_000)
+	transferCosmosToSvm(chainClient, ctx, senderAddress, "usdt", 200_000_000_000)
 }
 
 func createAmmConfig(
@@ -362,6 +387,7 @@ func initializeAmmPool(
 	fmt.Println("----- action: Create pool ------")
 	fmt.Println("tx hash:", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
+	fmt.Println("pool created:", getPoolNameByPubkey(poolStateAccount))
 	fmt.Println("pool state account:", poolStateAccount.String())
 	fmt.Println("creator owner lp amount:", mustGetTokenAccount(chainClient, ctx, creatorLpAta).Amount)
 
@@ -400,7 +426,7 @@ func swapBaseInput(
 	raydiumSwapProgram solana.PublicKey,
 	authorityAccount solana.PublicKey, // TODO: What is this for?
 	amountIn uint64,
-	minAmountOut int64,
+	minAmountOut uint64,
 	inputTokenAccount solana.PublicKey,
 	outputTokenAccount solana.PublicKey,
 	poolStateAccount solana.PublicKey,
@@ -583,8 +609,9 @@ func deposit(
 	fmt.Println("----- action: Deposit ------")
 	fmt.Println("tx hash:", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
-	fmt.Println("input vault balance after deposit:", mustGetTokenAccount(chainClient, ctx, poolState.Token0Vault).Amount)
-	fmt.Println("output vault balance after deposit:", mustGetTokenAccount(chainClient, ctx, poolState.Token1Vault).Amount)
+	fmt.Println("deposited to vault:", getPoolNameByPubkey(poolStateAccount))
+	fmt.Printf("token 0 (%s) vault amount after deposit: %d\n", getDenomByMint(poolState.Token0Mint), mustGetTokenAccount(chainClient, ctx, poolState.Token0Vault).Amount)
+	fmt.Printf("token 1 (%s) vault amount after deposit: %d\n", getDenomByMint(poolState.Token1Mint), mustGetTokenAccount(chainClient, ctx, poolState.Token1Vault).Amount)
 	fmt.Println("owner's lp new amount:", mustGetTokenAccount(chainClient, ctx, ownerLpToken).Amount)
 }
 
@@ -644,7 +671,6 @@ func main() {
 		mint := solana.PublicKey(denomBytes)
 		svmDenomMap[denom].Mint = mint
 	}
-	fmt.Printf("denom map: %+v\n", svmDenomMap)
 
 	// create fee receiver account
 	adminAccount := solana.MustPublicKeyFromBase58("GThUX1Atko4tqhN2NaiTazWSeFWMuiUvfFnyJyUghFMJ")
@@ -671,12 +697,6 @@ func main() {
 
 		denomAmount := config.InitialDeposit
 		tenPowerDecimals := config.TenPowerDecimals
-		if denom == "eth" {
-			// flux will auto convert 18-decimal denom to 9 decimal when converting to svm
-			denomAmount /= 1000_000_000
-			tenPowerDecimals /= 1000_000_000
-		}
-
 		usdtAmount := denomAmount * config.InitialPriceUsdt / tenPowerDecimals * 1000_000
 		poolAccount, poolState := initializeAmmPool(
 			chainClient,
@@ -695,17 +715,17 @@ func main() {
 
 	// deposit (provide liquidity) for each pool
 	for denom, config := range svmDenomMap {
+		if denom == "usdt" {
+			continue
+		}
+
 		traderDenomAta := svm.MustFindAta(senderSvmAddress, svmtypes.SplToken2022ProgramId, config.Mint, svmtypes.AssociatedTokenProgramId)
 		traderUsdtAta := svm.MustFindAta(senderSvmAddress, svmtypes.SplToken2022ProgramId, svmDenomMap["usdt"].Mint, svmtypes.AssociatedTokenProgramId)
-		denomDepositAmount := uint64(config.LiquidityAmount)
+		denomDepositAmount := uint64(config.DepositAmount)
 		decimalDivisor := config.TenPowerDecimals
-		if denom == "eth" {
-			denomDepositAmount /= 1000_000_000
-			decimalDivisor /= 1000_000_000
-		}
-		usdtAmountToDeposit := denomDepositAmount * config.InitialPriceUsdt / decimalDivisor * 1000_000
 
-		amounts := []uint64{denomDepositAmount, usdtAmountToDeposit}
+		usdtDepositAmount := denomDepositAmount * config.InitialPriceUsdt / decimalDivisor * 1000_000
+		amounts := []uint64{denomDepositAmount, usdtDepositAmount}
 		atas := []solana.PublicKey{traderDenomAta, traderUsdtAta}
 		if bytes.Compare(config.Mint[:], svmDenomMap["usdt"].Mint[:]) > 0 {
 			amounts = []uint64{amounts[1], amounts[0]}
@@ -729,6 +749,10 @@ func main() {
 
 	// swap
 	for denom, config := range svmDenomMap {
+		if denom == "usdt" {
+			continue
+		}
+
 		denomAta := svm.MustFindAta(senderSvmAddress, svmtypes.SplToken2022ProgramId, config.Mint, svmtypes.AssociatedTokenProgramId)
 		usdtAta := svm.MustFindAta(senderSvmAddress, svmtypes.SplToken2022ProgramId, svmDenomMap["usdt"].Mint, svmtypes.AssociatedTokenProgramId)
 
@@ -736,16 +760,13 @@ func main() {
 		usdtAmount := mustGetTokenAccount(chainClient, ctx, usdtAta).Amount
 		swapAmount := uint64(config.SwapAmount)
 		decimalDivisor := config.TenPowerDecimals
-		if denom == "eth" {
-			swapAmount /= 1000_000_000
-			decimalDivisor /= 1000_000_000
-		}
-
 		// swap denom > usdt, we need to sort to ensure we use correct in => out order
 		inVault, outVault := config.PoolState.Token0Vault, config.PoolState.Token1Vault
 		if !config.PoolState.Token0Mint.Equals(config.Mint) {
 			inVault, outVault = outVault, inVault
 		}
+		inVaultBalance := mustGetTokenAccount(chainClient, ctx, inVault).Amount
+		outVaultBalance := mustGetTokenAccount(chainClient, ctx, outVault).Amount
 
 		swapBaseInput(
 			chainClient,
@@ -754,7 +775,7 @@ func main() {
 			raydiumProgramId,
 			authorityAccount,
 			swapAmount,
-			0, // minimum amount = 0 <=> any slippage
+			calculateMinimumOutputUsdt(swapAmount, inVaultBalance, outVaultBalance, 0.1), // 10% slippage
 			denomAta,
 			usdtAta,
 			config.DenomUsdtPool,
