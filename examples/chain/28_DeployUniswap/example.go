@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	ethcommon "github.com/ethereum/go-ethereum/common"
 	"math/big"
 	"os"
 	"strings"
@@ -64,17 +65,21 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	bz, err := os.ReadFile(dir + "/examples/chain/28_DeployUniswap/PoolManager.json")
+	poolManagerBz, err := os.ReadFile(dir + "/examples/chain/28_DeployUniswap/PoolManager.json")
+	if err != nil {
+		panic(err)
+	}
+	poolActionsBz, err := os.ReadFile(dir + "/examples/chain/28_DeployUniswap/PoolActions.json")
 	if err != nil {
 		panic(err)
 	}
 
 	var compData map[string]interface{}
-	err = json.Unmarshal(bz, &compData)
+	err = json.Unmarshal(poolManagerBz, &compData)
 	if err != nil {
 		panic(err)
 	}
-	bytecode, err := hex.DecodeString(compData["bytecode"].(map[string]interface{})["object"].(string))
+	poolManagerBytecode, err := hex.DecodeString(compData["bytecode"].(map[string]interface{})["object"].(string))
 	if err != nil {
 		panic(err)
 	}
@@ -82,22 +87,38 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	contractABI, err := abi.JSON(strings.NewReader(string(abiBz)))
+	poolManagerABI, err := abi.JSON(strings.NewReader(string(abiBz)))
 	if err != nil {
 		panic(err)
 	}
 
-	// pack constructor data
-	controllerGasLimit, err := contractABI.Pack("", big.NewInt(4000000))
+	err = json.Unmarshal(poolActionsBz, &compData)
+	if err != nil {
+		panic(err)
+	}
+	PoolActionsBytecode, err := hex.DecodeString(compData["bytecode"].(map[string]interface{})["object"].(string))
+	if err != nil {
+		panic(err)
+	}
+	abiBz, err = json.Marshal(compData["abi"].([]interface{}))
+	if err != nil {
+		panic(err)
+	}
+	PoolActionsABI, err := abi.JSON(strings.NewReader(string(abiBz)))
 	if err != nil {
 		panic(err)
 	}
 
-	// prepare tx msg
+	// deploy pool manager
+	calldata, err := poolManagerABI.Pack("", big.NewInt(4000000))
+	if err != nil {
+		panic(err)
+	}
+
 	msg := &evmtypes.MsgDeployContract{
 		Sender:   senderAddress.String(),
-		Bytecode: bytecode,
-		Calldata: controllerGasLimit,
+		Bytecode: poolManagerBytecode,
+		Calldata: calldata,
 	}
 
 	txResp, err := chainClient.SyncBroadcastMsg(msg)
@@ -112,7 +133,6 @@ func main() {
 		panic(err)
 	}
 
-	// decode result to get contract address
 	var txData sdk.TxMsgData
 	if err := txData.Unmarshal(hexResp); err != nil {
 		panic(err)
@@ -122,5 +142,39 @@ func main() {
 	if err := dcr.Unmarshal(txData.MsgResponses[0].Value); err != nil {
 		panic(err)
 	}
-	fmt.Println("contract address:", hex.EncodeToString(dcr.ContractAddress))
+	poolManagerAddr := dcr.ContractAddress
+	fmt.Println("pool manager address:", hex.EncodeToString(poolManagerAddr))
+
+	// deploy pool actions
+	calldata, err = PoolActionsABI.Pack("", ethcommon.Address(poolManagerAddr))
+	if err != nil {
+		panic(err)
+	}
+	msg = &evmtypes.MsgDeployContract{
+		Sender:   senderAddress.String(),
+		Bytecode: PoolActionsBytecode,
+		Calldata: calldata,
+	}
+
+	txResp, err = chainClient.SyncBroadcastMsg(msg)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("tx hash:", txResp.TxResponse.TxHash)
+	fmt.Println("gas used/want:", txResp.TxResponse.GasUsed, "/", txResp.TxResponse.GasWanted)
+
+	hexResp, err = hex.DecodeString(txResp.TxResponse.Data)
+	if err != nil {
+		panic(err)
+	}
+
+	txData = sdk.TxMsgData{}
+	if err := txData.Unmarshal(hexResp); err != nil {
+		panic(err)
+	}
+	if err := dcr.Unmarshal(txData.MsgResponses[0].Value); err != nil {
+		panic(err)
+	}
+	poolActionsAddr := dcr.ContractAddress
+	fmt.Println("pool actions address:", hex.EncodeToString(poolActionsAddr))
 }
