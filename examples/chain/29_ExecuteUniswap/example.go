@@ -7,22 +7,21 @@ import (
 	"encoding/json"
 	"fmt"
 	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
+	evmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/evm/types"
+	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
+	"github.com/FluxNFTLabs/sdk-go/client/common"
+	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/gogoproto/proto"
+	"github.com/ethereum/go-ethereum/accounts/abi"
+	ethcommon "github.com/ethereum/go-ethereum/common"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"math"
 	"math/big"
 	"os"
 	"sort"
 	"strings"
-
-	evmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/evm/types"
-	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
-	"github.com/FluxNFTLabs/sdk-go/client/common"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	"github.com/ethereum/go-ethereum/accounts/abi"
-	ethcommon "github.com/ethereum/go-ethereum/common"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 )
@@ -40,6 +39,12 @@ type ModifyLiquidityParams struct {
 	TickUpper      *big.Int
 	LiquidityDelta *big.Int
 	Salt           [32]byte
+}
+
+type SwapParams struct {
+	ZeroForOne        bool     // swap direction currency0 -> currency1
+	AmountSpecified   *big.Int // positive: input amount, negative: output amount
+	SqrtPriceLimitX96 *big.Int // equivalent slippage limit
 }
 
 func main() {
@@ -82,7 +87,6 @@ func main() {
 	}
 
 	// init evm client
-	evmClient := evmtypes.NewQueryClient(cc)
 	astromeshClient := astromeshtypes.NewQueryClient(cc)
 
 	// read bytecode
@@ -91,17 +95,32 @@ func main() {
 		panic(err)
 	}
 
-	bz, err := os.ReadFile(dir + "/examples/chain/29_ExecuteUniswap/PoolManager.json")
+	bz, err := os.ReadFile(dir + "/examples/chain/28_DeployUniswap/PoolManager.json")
 	if err != nil {
 		panic(err)
 	}
+	var compData0 map[string]interface{}
+	err = json.Unmarshal(bz, &compData0)
+	abiBz, err := json.Marshal(compData0["abi"].([]interface{}))
+	if err != nil {
+		panic(err)
+	}
+	poolManagerABI, err := abi.JSON(strings.NewReader(string(abiBz)))
+	if err != nil {
+		panic(err)
+	}
+
 	var compData map[string]interface{}
-	err = json.Unmarshal(bz, &compData)
-	abiBz, err := json.Marshal(compData["abi"].([]interface{}))
+	bz, err = os.ReadFile(dir + "/examples/chain/28_DeployUniswap/PoolActions.json")
 	if err != nil {
 		panic(err)
 	}
-	contractABI, err := abi.JSON(strings.NewReader(string(abiBz)))
+	err = json.Unmarshal(bz, &compData)
+	abiBz, err = json.Marshal(compData["abi"].([]interface{}))
+	if err != nil {
+		panic(err)
+	}
+	poolActionsABI, err := abi.JSON(strings.NewReader(string(abiBz)))
 	if err != nil {
 		panic(err)
 	}
@@ -121,49 +140,20 @@ func main() {
 	}
 
 	// parse contract addr
-	PoolManagerContractAddr := "07aa076883658b7ed99d25b1e6685808372c8fe2"
-	PoolManagerContractAddrBz, err := hex.DecodeString(PoolManagerContractAddr)
+	PoolManagerContractAddr, err := hex.DecodeString("07aa076883658b7ed99d25b1e6685808372c8fe2")
+	if err != nil {
+		panic(err)
+	}
+	PoolActionsContractAddr, err := hex.DecodeString("e2f81b30e1d47dffdbb6ab41ec5f0572705b026d")
 	if err != nil {
 		panic(err)
 	}
 
-	// query tick spacing
-	calldata, err := contractABI.Pack("MAX_TICK_SPACING")
-	if err != nil {
-		panic(err)
-	}
-	queryRes, err := evmClient.ContractQuery(context.Background(), &evmtypes.ContractQueryRequest{
-		Address:  PoolManagerContractAddr,
-		Calldata: calldata,
-	})
-	if err != nil {
-		panic(err)
-	}
-	queryOutput, err := contractABI.Unpack("MAX_TICK_SPACING", queryRes.Output)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("query MAX_TICK_SPACING:", queryOutput)
-
-	calldata, err = contractABI.Pack("MIN_TICK_SPACING")
-	if err != nil {
-		panic(err)
-	}
-	queryRes, err = evmClient.ContractQuery(context.Background(), &evmtypes.ContractQueryRequest{
-		Address:  PoolManagerContractAddr,
-		Calldata: calldata,
-	})
-	if err != nil {
-		panic(err)
-	}
-	queryOutput, err = contractABI.Unpack("MIN_TICK_SPACING", queryRes.Output)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("query MIN_TICK_SPACING:", queryOutput)
-
+	// tick spacing: 2^0 - 2^15
 	tokens := []string{"btc", "eth", "sol", "usdt"}
 	tokenContracts := map[string]string{}
+	fmt.Println("===========Transfer tokens to EVM Plane to create ERC20 contracts===========")
+
 	for _, token := range tokens {
 		//perform astrotransfer to evm planes for cosmos tokens
 		amount, _ := sdkmath.NewIntFromString("100000000000000000000") // 100 * 10^18
@@ -189,11 +179,11 @@ func main() {
 			panic(err)
 		}
 		tokenContracts[token] = denomLink.DstAddr
-		fmt.Println(fmt.Sprintf("%s on evm: %s, decimals %d", token, denomLink.DstAddr, denomLink.DstDecimals))
+		fmt.Println(fmt.Sprintf("%s: %s, decimals %d", token, denomLink.DstAddr, denomLink.DstDecimals))
 
-		// approve PoolManager Contract to spend token
-		allowance := big.NewInt(1000000000000)
-		calldata, err = erc20ABI.Pack("approve", ethcommon.Address(PoolManagerContractAddrBz), allowance)
+		// approve PoolActions contract to spend token
+		allowance := big.NewInt(100000000000000000)
+		calldata, err := erc20ABI.Pack("approve", ethcommon.Address(PoolActionsContractAddr), allowance)
 		if err != nil {
 			panic(err)
 		}
@@ -206,7 +196,7 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println(fmt.Sprintf("sender approved pool manager to spend %d %s", allowance.Int64(), token))
+		fmt.Println(fmt.Sprintf("approved pool actions contract to spend %d%s", allowance.Int64(), token))
 	}
 
 	// initialize pairs
@@ -235,23 +225,26 @@ func main() {
 			denom1 = denom
 		}
 
+		fmt.Println(fmt.Sprintf("===========Pool %s-%s===========", denom0, denom1))
+
+		tickSpacing := int64(60)
 		pairKey := &PairKey{
 			Currency0:   ethcommon.HexToAddress(currencies[0]),
 			Currency1:   ethcommon.HexToAddress(currencies[1]),
 			Fee:         big.NewInt(3000),
-			TickSpacing: big.NewInt(60),
-			Hooks:       ethcommon.HexToAddress("0x0"),
+			TickSpacing: big.NewInt(tickSpacing),
+			Hooks:       ethcommon.HexToAddress("0x"),
 		}
 
 		sqrtPriceX96Int := computeSqrtPriceX96Int(price)
-		calldata, err = contractABI.Pack("initialize", pairKey, sqrtPriceX96Int, []byte{})
+		calldata, err := poolManagerABI.Pack("initialize", pairKey, sqrtPriceX96Int, []byte{})
 		if err != nil {
 			panic(err)
 		}
 
 		msg := &evmtypes.MsgExecuteContract{
 			Sender:          senderAddress.String(),
-			ContractAddress: PoolManagerContractAddrBz,
+			ContractAddress: PoolManagerContractAddr,
 			Calldata:        calldata,
 		}
 
@@ -266,38 +259,57 @@ func main() {
 		resBz := ethcommon.Hex2Bytes(res.TxResponse.Data)
 		proto.Unmarshal(resBz, &msgData)
 		proto.Unmarshal(msgData.MsgResponses[0].Value, &executeRes)
-		initializeRes, err := contractABI.Unpack("initialize", executeRes.Output)
+		initializeRes, err := poolManagerABI.Unpack("initialize", executeRes.Output)
 		if err != nil {
 			panic(err)
 		}
 		currentTick := initializeRes[0].(*big.Int)
-		fmt.Println(fmt.Sprintf("pair %s-%s initialized, tick size %d: %s", denom0, denom1, currentTick.Uint64(), res.TxResponse.TxHash))
+		fmt.Println(fmt.Sprintf("initialized tick %d: %s", currentTick.Uint64(), res.TxResponse.TxHash))
 
 		// provide liquidity in +-20% range
 		lowerPrice := float64(price) * 0.8
 		upperPrice := float64(price) * 1.2
 		modifyLiquidityParams := &ModifyLiquidityParams{
-			TickLower:      calculateTick(lowerPrice),
-			TickUpper:      calculateTick(upperPrice),
-			LiquidityDelta: big.NewInt(100),
+			TickLower:      computeTick(lowerPrice, tickSpacing),
+			TickUpper:      computeTick(upperPrice, tickSpacing),
+			LiquidityDelta: big.NewInt(1000000000),
 			Salt:           [32]byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2},
 		}
-
-		calldata, err = contractABI.Pack("modifyLiquidity", pairKey, modifyLiquidityParams, []byte{})
+		calldata, err = poolActionsABI.Pack("actionModifyLiquidity", pairKey, modifyLiquidityParams, []byte{})
 		if err != nil {
 			panic(err)
 		}
 		msg = &evmtypes.MsgExecuteContract{
 			Sender:          senderAddress.String(),
-			ContractAddress: PoolManagerContractAddrBz,
+			ContractAddress: PoolActionsContractAddr,
 			Calldata:        calldata,
 		}
 		res, err = chainClient.SyncBroadcastMsg(msg)
 		if err != nil {
 			panic(err)
 		}
+		fmt.Println(fmt.Sprintf("liquidity added: %s", res.TxResponse.TxHash))
 
-		fmt.Println(res.TxResponse.TxHash)
+		// perform swap on pool
+		swapParams := &SwapParams{
+			ZeroForOne:        true,
+			AmountSpecified:   big.NewInt(100),
+			SqrtPriceLimitX96: computeSqrtPriceX96Int(lowerPrice),
+		}
+		calldata, err = poolActionsABI.Pack("actionSwap", pairKey, swapParams, []byte{})
+		if err != nil {
+			panic(err)
+		}
+		msg = &evmtypes.MsgExecuteContract{
+			Sender:          senderAddress.String(),
+			ContractAddress: PoolActionsContractAddr,
+			Calldata:        calldata,
+		}
+		res, err = chainClient.SyncBroadcastMsg(msg)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("swapped:", res.TxResponse.TxHash)
 	}
 
 }
@@ -316,13 +328,17 @@ func logBigFloat(x *big.Float) *big.Float {
 	return big.NewFloat(math.Log(f64))
 }
 
-func calculateTick(price float64) *big.Int {
+func computeTick(price float64, spacing int64) *big.Int {
 	factor := big.NewFloat(1.0001)
 	priceBig := big.NewFloat(price)
 	logPrice := logBigFloat(priceBig)
 	logFactor := logBigFloat(factor)
-	tickBigFloat := new(big.Float).Quo(logPrice, logFactor)
-	tick := new(big.Int)
-	tickBigFloat.Int(tick)
-	return tick
+	floatTick := new(big.Float).Quo(logPrice, logFactor)
+	spc := big.NewInt(spacing)
+
+	// round tick to closest spacing
+	intTick := new(big.Int)
+	floatTick.Int(intTick)
+	roundedTick := new(big.Int).Mul(new(big.Int).Quo(intTick, spc), spc)
+	return roundedTick
 }
