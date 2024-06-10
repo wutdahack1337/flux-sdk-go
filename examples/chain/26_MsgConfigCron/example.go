@@ -79,14 +79,20 @@ func main() {
 			Addresses: []string{senderAddress.String()},
 		},
 		Metadata: &strategytypes.StrategyMetadata{
-			Name:        "bank cron",
-			Description: "transfer 1 usdt to account lux158ucxjzr6ccrlpmz8z05wylu8tr5eueqcp2afu every block",
-			Logo:        "",
-			Website:     "",
-			Type:        strategytypes.StrategyType_CRON,
-			Tags:        []string{"cron", "bank", "util"},
-			Schema:      "",
-			GasPrice:    math.NewIntFromUint64(500000000),
+			Name:         "bank cron",
+			Description:  "transfer _ usdt to account _ every block",
+			Logo:         "",
+			Website:      "",
+			Type:         strategytypes.StrategyType_CRON,
+			Tags:         []string{"cron", "bank", "util"},
+			Schema:       "",
+			CronGasPrice: math.NewIntFromUint64(500000000),
+			CronInput: `{
+			  "receiver": "lux158ucxjzr6ccrlpmz8z05wylu8tr5eueqcp2afu",
+			  "amount": "1",
+			  "denom": "lux"
+			}`,
+			CronInterval: 2,
 		},
 	}
 
