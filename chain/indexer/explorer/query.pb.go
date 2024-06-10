@@ -390,7 +390,7 @@ func (m *ListStrategiesRequest) GetType() types2.StrategyType {
 	if m != nil {
 		return m.Type
 	}
-	return types2.StrategyType_GENERIC
+	return types2.StrategyType_STRATEGY
 }
 
 func (m *ListStrategiesRequest) GetId() string {
@@ -534,7 +534,7 @@ func (m *ListStrategiesByOwnerRequest) GetType() types2.StrategyType {
 	if m != nil {
 		return m.Type
 	}
-	return types2.StrategyType_GENERIC
+	return types2.StrategyType_STRATEGY
 }
 
 func (m *ListStrategiesByOwnerRequest) GetEnabled() *types3.BoolValue {

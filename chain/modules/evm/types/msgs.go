@@ -12,7 +12,7 @@ var _ sdk.Msg = &MsgExecuteContract{}
 
 func (m *MsgDeployContract) ValidateBasic() error {
 	if len(m.Bytecode) == 0 {
-		return errors.New("byte code annot be empty")
+		return errors.New("byte code cannot be empty")
 	}
 
 	if len(m.InputAmount) > HashLen {

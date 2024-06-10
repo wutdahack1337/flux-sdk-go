@@ -192,7 +192,7 @@ func getComputeBudget(caller *C.void, tx_id C.uint64_t) *C.golana_compute_budget
 	}
 
 	msg := wrapper.(TxCallbackContextI).GetMsg(uint64(tx_id))
-	computeBudget := NewComputeBudget(msg.ComputeBudget, 512, 8)
+	computeBudget := NewComputeBudget(msg.ComputeBudget, types.DefaultMaxInstructionTraceLength, 8)
 	return computeBudget.computeBudget
 }
 

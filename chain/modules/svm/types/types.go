@@ -24,7 +24,7 @@ const (
 	DefaultLamportForRentExempt uint64 = 3480 * 10 * 1024 * 1024 * 3
 
 	// Maximum cross-program invocation and instructions per transaction
-	DefaultMaxInstructionTraceLength uint64 = 512
+	DefaultMaxInstructionTraceLength uint64 = 2048
 
 	// From solana: Maximum program instruction invocation stack height
 	// It's same as EVM call depth
@@ -45,6 +45,7 @@ var (
 	AssociatedTokenProgramId  = solana.MustPublicKeyFromBase58("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL")
 	UpgradableLoaderProgramId = solana.MustPublicKeyFromBase58("BPFLoaderUpgradeab1e11111111111111111111111")
 	SystemProgramId           = solana.MustPublicKeyFromBase58("11111111111111111111111111111111")
+	SplTokenProgramId         = solana.MustPublicKeyFromBase58("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")
 
 	// sysvars
 	SysVarRent = solana.MustHashFromBase58("SysvarRent111111111111111111111111111111111")

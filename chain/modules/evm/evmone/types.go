@@ -144,6 +144,8 @@ type HostContext interface {
 		createAddr Address, err error)
 	AccessAccount(addr Address) AccessStatus
 	AccessStorage(addr Address, key Hash) AccessStatus
+	GetTransientStorage(addr Address, key Hash) Hash
+	SetTransientStorage(addr Address, key Hash, value Hash)
 }
 
 type Result struct {
@@ -172,4 +174,6 @@ type TxContext struct {
 	bytecodeExecutor BytecodeExecutor
 	hostKeeper       HostKeeper
 	vmRevision       Revision
+
+	transientStorage map[Address]map[Hash]Hash
 }

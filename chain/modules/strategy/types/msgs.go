@@ -1,6 +1,7 @@
 package types
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -87,6 +88,13 @@ func (m *StrategyMetadata) ValidateBasic() error {
 	if err := validateSchema(m.Schema); err != nil {
 		return err
 	}
+
+	// TODO: load from config
+	minimumGasPrice := sdkmath.NewIntFromUint64(500000000)
+	if m.Type == StrategyType_CRON && m.GasPrice.LT(minimumGasPrice) {
+		return fmt.Errorf("cron bot minimum gas price must greater than or equal chain minimum gas price: %s", minimumGasPrice.String())
+	}
+
 	return nil
 }
 
