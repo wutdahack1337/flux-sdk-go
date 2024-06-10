@@ -2,10 +2,16 @@ package main
 
 import (
 	"context"
-	sdkmath "cosmossdk.io/math"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"math"
+	"math/big"
+	"os"
+	"sort"
+	"strings"
+
+	sdkmath "cosmossdk.io/math"
 	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	evmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/evm/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
@@ -17,11 +23,6 @@ import (
 	ethcommon "github.com/ethereum/go-ethereum/common"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"math"
-	"math/big"
-	"os"
-	"sort"
-	"strings"
 
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 )
@@ -43,8 +44,20 @@ type ModifyLiquidityParams struct {
 
 type SwapParams struct {
 	ZeroForOne        bool     // swap direction currency0 -> currency1
-	AmountSpecified   *big.Int // positive: input amount, negative: output amount
+	AmountSpecified   *big.Int // positive: output amount, negative: input amount
 	SqrtPriceLimitX96 *big.Int // equivalent slippage limit
+}
+
+func signedBigIntFromBytes(b []byte) *big.Int {
+	res := new(big.Int).SetBytes(b)
+	// first bit is set, then it's negative
+	if b[0]&0x80 != 0 {
+		bitCount := len(b) * 8
+		complement := new(big.Int).Lsh(big.NewInt(1), uint(bitCount))
+		res = new(big.Int).Sub(res, complement)
+	}
+
+	return res
 }
 
 func main() {
@@ -293,13 +306,15 @@ func main() {
 		// perform swap on pool
 		swapParams := &SwapParams{
 			ZeroForOne:        true,
-			AmountSpecified:   big.NewInt(100),
+			AmountSpecified:   big.NewInt(-5000),
 			SqrtPriceLimitX96: computeSqrtPriceX96Int(lowerPrice),
 		}
+
 		calldata, err = poolActionsABI.Pack("actionSwap", pairKey, swapParams, []byte{})
 		if err != nil {
 			panic(err)
 		}
+
 		msg = &evmtypes.MsgExecuteContract{
 			Sender:          senderAddress.String(),
 			ContractAddress: PoolActionsContractAddr,
@@ -310,6 +325,35 @@ func main() {
 			panic(err)
 		}
 		fmt.Println("swapped:", res.TxResponse.TxHash)
+
+		hexResp, err := hex.DecodeString(res.TxResponse.Data)
+		if err != nil {
+			panic(fmt.Errorf("decode response hex err: %w", err))
+		}
+
+		var txData sdk.TxMsgData
+		if err := txData.Unmarshal(hexResp); err != nil {
+			panic(err)
+		}
+
+		var r evmtypes.MsgExecuteContractResponse
+		if err := r.Unmarshal(txData.MsgResponses[0].Value); err != nil {
+			panic(fmt.Errorf("unmarshal evm execute contract err: %w", err))
+		}
+
+		// we know for sure it will return an int256
+		if len(r.Output) < 32 {
+			panic(fmt.Errorf("swap output must have 32 bytes: %v", r.Output))
+		}
+
+		deltaCurrency0, deltaCurrency1 := r.Output[:16], r.Output[16:32]
+		deltaCurrency0Int, deltaCurrency1Int := new(big.Int).Abs(signedBigIntFromBytes(deltaCurrency0)), new(big.Int).Abs(signedBigIntFromBytes(deltaCurrency1))
+		// swap amount for correct display if we swap 1 => 0
+		if !swapParams.ZeroForOne {
+			deltaCurrency0Int, deltaCurrency1Int = deltaCurrency1Int, deltaCurrency0Int
+		}
+
+		fmt.Println("swapped", deltaCurrency0Int.String(), denom0, "for", deltaCurrency1Int.String(), denom1)
 	}
 
 }
