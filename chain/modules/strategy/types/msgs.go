@@ -91,8 +91,14 @@ func (m *StrategyMetadata) ValidateBasic() error {
 
 	// TODO: load from config
 	minimumGasPrice := sdkmath.NewIntFromUint64(500000000)
-	if m.Type == StrategyType_CRON && m.GasPrice.LT(minimumGasPrice) {
+	if m.Type == StrategyType_CRON && m.CronGasPrice.LT(minimumGasPrice) {
 		return fmt.Errorf("cron bot minimum gas price must greater than or equal chain minimum gas price: %s", minimumGasPrice.String())
+	}
+
+	// validate cron input
+	var s interface{}
+	if err := json.Unmarshal([]byte(m.CronInput), &s); err != nil {
+		return fmt.Errorf("cron bot expects json string input")
 	}
 
 	return nil
