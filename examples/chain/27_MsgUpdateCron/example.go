@@ -1,10 +1,12 @@
 package main
 
 import (
+	"cosmossdk.io/math"
 	"fmt"
 	"os"
 	"strings"
 
+	"github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	strategytypes "github.com/FluxNFTLabs/sdk-go/chain/modules/strategy/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
@@ -54,15 +56,42 @@ func main() {
 	}
 
 	// prepare tx msg
+	dir, err := os.Getwd()
 	if err != nil {
 		panic(err)
 	}
-
-	msg := &strategytypes.MsgTriggerStrategies{
-		Sender: senderAddress.String(),
-		Ids:    []string{"7F0F8A1C1FF06F3C2F045BFF82902541986298264E56D6695D436CD0548206A3"},
-		Inputs: [][]byte{
-			[]byte(`{"receivers":["lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx","lux1kmmz47pr8h46wcyxw8h3k8s85x0ncykqp0xmgj"]}`),
+	bz, err := os.ReadFile(dir + "/examples/chain/26_MsgConfigCron/cron.wasm")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("sender: ", senderAddress.String())
+	msg := &strategytypes.MsgConfigStrategy{
+		Sender:   senderAddress.String(),
+		Config:   strategytypes.Config_update,
+		Id:       "010A79B0D5B00E9D71EB829837B3E7BFD281FE5AD6E7EAB2837D3384724D12D7",
+		Strategy: bz,
+		Query: &types.FISQueryRequest{
+			Instructions: []*types.FISQueryInstruction{},
+		},
+		TriggerPermission: &strategytypes.PermissionConfig{
+			Type:      strategytypes.AccessType_only_addresses,
+			Addresses: []string{senderAddress.String()},
+		},
+		Metadata: &strategytypes.StrategyMetadata{
+			Name:         "bank cron v1.2",
+			Description:  "transfer _ usdt to account _ every block",
+			Logo:         "",
+			Website:      "",
+			Type:         strategytypes.StrategyType_CRON,
+			Tags:         []string{"cron", "bank", "util", "updated"},
+			Schema:       "",
+			CronGasPrice: math.NewIntFromUint64(600000000),
+			CronInput: `{
+			  "receiver": "lux158ucxjzr6ccrlpmz8z05wylu8tr5eueqcp2afu",
+			  "amount": "5",
+			  "denom": "lux"
+			}`,
+			CronInterval: 5,
 		},
 	}
 
@@ -72,5 +101,5 @@ func main() {
 		fmt.Println(err)
 	}
 
-	fmt.Println(res)
+	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 }
