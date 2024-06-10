@@ -306,7 +306,7 @@ func main() {
 		// perform swap on pool
 		swapParams := &SwapParams{
 			ZeroForOne:        true,
-			AmountSpecified:   big.NewInt(-1000),
+			AmountSpecified:   big.NewInt(-5000),
 			SqrtPriceLimitX96: computeSqrtPriceX96Int(lowerPrice),
 		}
 
