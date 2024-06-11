@@ -60,7 +60,7 @@ func main() {
 		panic(err)
 	}
 
-	bz, err := os.ReadFile(dir + "/examples/chain/25_ConfigIntentSolver/intent_solver.wasm")
+	bz, err := os.ReadFile(dir + "/examples/chain/24_ConfigIntentSolver/intent_solver.wasm")
 	if err != nil {
 		panic(err)
 	}

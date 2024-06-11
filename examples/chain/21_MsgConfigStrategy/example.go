@@ -87,6 +87,9 @@ func main() {
 			Type:      strategytypes.AccessType_only_addresses,
 			Addresses: []string{senderAddress.String()},
 		},
+		Metadata: &strategytypes.StrategyMetadata{
+			Type: strategytypes.StrategyType_STRATEGY,
+		},
 	}
 
 	//AsyncBroadcastMsg, SyncBroadcastMsg, QueueBroadcastMsg
