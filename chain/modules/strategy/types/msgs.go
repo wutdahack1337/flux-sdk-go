@@ -33,23 +33,22 @@ func (m *MsgConfigStrategy) ValidateBasic() error {
 		if err := m.Metadata.ValidateBasic(); err != nil {
 			return fmt.Errorf("metadata validate error: %w", err)
 		}
-
-	case Config_disable, Config_revoke, Config_enable, Config_update:
+	case Config_disable, Config_revoke, Config_enable:
 		if len(m.Strategy) > 0 {
 			return fmt.Errorf("strategy should be empty for disable, revoke options")
 		}
 		if len(m.Id) == 0 {
 			return fmt.Errorf("invalid strategy id for disable, revoke options")
 		}
-
 		_, err := hex.DecodeString(m.Id)
 		if err != nil {
 			return fmt.Errorf("strategy id hex parse err: %w", err)
 		}
-
 		if err := m.Metadata.ValidateBasic(); err != nil {
 			return fmt.Errorf("metadata validate error: %w", err)
 		}
+	case Config_update:
+		return nil
 	default:
 		return fmt.Errorf("invalid strategy config option")
 	}
@@ -82,23 +81,34 @@ func (m MsgTriggerStrategies) GetSigners() []sdk.AccAddress {
 
 func (m *StrategyMetadata) ValidateBasic() error {
 	if m == nil {
-		return nil
+		return fmt.Errorf("strategy metadata cannot be nil")
 	}
 
-	if err := validateSchema(m.Schema); err != nil {
-		return err
-	}
+	switch m.Type {
+	case StrategyType_STRATEGY:
+	case StrategyType_INTENT_SOLVER:
+		if err := validateSchema(m.Schema); err != nil {
+			return err
+		}
+	case StrategyType_CRON:
+		// validate cron gas price
+		minimumGasPrice := sdkmath.NewIntFromUint64(500000000) // TODO: load from config
+		if m.Type == StrategyType_CRON && m.CronGasPrice.LT(minimumGasPrice) {
+			return fmt.Errorf("cron bot minimum gas price must greater than or equal chain minimum gas price: %s", minimumGasPrice.String())
+		}
 
-	// TODO: load from config
-	minimumGasPrice := sdkmath.NewIntFromUint64(500000000)
-	if m.Type == StrategyType_CRON && m.CronGasPrice.LT(minimumGasPrice) {
-		return fmt.Errorf("cron bot minimum gas price must greater than or equal chain minimum gas price: %s", minimumGasPrice.String())
-	}
+		// validate cron input
+		var s interface{}
+		if err := json.Unmarshal([]byte(m.CronInput), &s); err != nil {
+			return fmt.Errorf("cron bot expects json string input")
+		}
 
-	// validate cron input
-	var s interface{}
-	if err := json.Unmarshal([]byte(m.CronInput), &s); err != nil {
-		return fmt.Errorf("cron bot expects json string input")
+		// validate cron interval
+		if m.CronInterval == 0 {
+			return fmt.Errorf("cron bot timestamp interval cannot be zero")
+		}
+	default:
+		return fmt.Errorf("invalid value for mandatory field strategy.Metadata.Type")
 	}
 
 	return nil

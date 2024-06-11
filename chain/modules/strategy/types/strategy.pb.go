@@ -527,7 +527,7 @@ type StrategyMetadata struct {
 	CronGasPrice cosmossdk_io_math.Int `protobuf:"bytes,8,opt,name=cron_gas_price,json=cronGasPrice,proto3,customtype=cosmossdk.io/math.Int" json:"cron_gas_price"`
 	// input to control cron bots
 	CronInput string `protobuf:"bytes,9,opt,name=cron_input,json=cronInput,proto3" json:"cron_input,omitempty"`
-	// timestamp interval to trigger cron bots
+	// timestamp interval (s) to trigger cron bots
 	CronInterval uint64 `protobuf:"varint,10,opt,name=cron_interval,json=cronInterval,proto3" json:"cron_interval,omitempty"`
 }
 
