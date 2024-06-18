@@ -10,7 +10,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	sdktypes "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/cosmos/gogoproto/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"os"
@@ -64,13 +63,14 @@ func main() {
 			Denom: "lux", Amount: sdkmath.NewInt(1000000000000000000)}, // 1 LUX
 		},
 	}
-	sendMsgBz, _ := proto.Marshal(sendMsg)
+	sendMsgBz, _ := clientCtx.Codec.MarshalInterfaceJSON(sendMsg)
+
 	FISMsg := &astromeshtypes.MsgFISTransaction{
 		Sender: senderAddress.String(),
 		Instructions: []*astromeshtypes.FISInstruction{
 			{
 				Plane:   astromeshtypes.Plane_COSMOS,
-				Action:  astromeshtypes.TxAction_COSMOS_BANK_SEND,
+				Action:  astromeshtypes.TxAction_COSMOS_INVOKE,
 				Address: []byte{},
 				Msg:     sendMsgBz,
 			},
