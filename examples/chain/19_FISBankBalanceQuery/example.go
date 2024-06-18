@@ -5,7 +5,9 @@ import (
 	"fmt"
 	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
+	"github.com/FluxNFTLabs/sdk-go/client/common"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -22,24 +24,41 @@ func main() {
 		panic(err)
 	}
 
+	// init client ctx
+	network := common.LoadNetwork("local", "")
+	clientCtx, _, err := chaintypes.NewClientContext(
+		network.ChainId,
+		"",
+		nil,
+	)
+	if err != nil {
+		panic(err)
+	}
+	clientCtx = clientCtx.WithGRPCClient(cc)
+
 	// init query client
 	astromeshClient := astromeshtypes.NewQueryClient(cc)
 
 	// query
-	req := &astromeshtypes.FISQueryRequest{Instructions: []*astromeshtypes.FISQueryInstruction{
+	path := "/cosmos.bank.v1beta1.Query/AllBalances"
+	req := &banktypes.QueryAllBalancesRequest{
+		Address: "lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx",
+	}
+	reqBz, _ := clientCtx.Codec.Marshal(req)
+	fisReq := &astromeshtypes.FISQueryRequest{Instructions: []*astromeshtypes.FISQueryInstruction{
 		{
 			Plane:   astromeshtypes.Plane_COSMOS,
-			Action:  astromeshtypes.QueryAction_COSMOS_BANK_BALANCE,
+			Action:  astromeshtypes.QueryAction_COSMOS_QUERY,
 			Address: []byte{},
 			Input: [][]byte{
-				[]byte("lux1cml96vmptgw99syqrrz8az79xer2pcgp209sv4,lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx"),
-				[]byte("usdt,lux"),
+				[]byte(path),
+				reqBz,
 			},
 		},
 	}}
-	res, err := astromeshClient.FISQuery(context.Background(), req)
+	res, err := astromeshClient.FISQuery(context.Background(), fisReq)
 	if err != nil {
-		panic(err)
+		fmt.Println(res, err)
 	}
 
 	for _, ixRes := range res.InstructionResponses {
