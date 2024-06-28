@@ -555,8 +555,9 @@ func (c *chainClient) SyncBroadcastSignedTx(txBytes []byte) (*txtypes.BroadcastT
 	ctx := context.Background()
 	var header metadata.MD
 	ctx = c.getCookie(ctx)
+
 	res, err := c.txClient.BroadcastTx(ctx, &req, grpc.Header(&header))
-	if err != nil {
+	if err != nil || res.TxResponse.Code != 0 {
 		return res, err
 	}
 
