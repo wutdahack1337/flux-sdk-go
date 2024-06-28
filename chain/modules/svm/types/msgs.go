@@ -32,9 +32,11 @@ func (m *MsgLinkSVMAccount) GetSigners() (signers []sdk.AccAddress) {
 
 func (m *MsgTransaction) ValidateBasic() error {
 	// parse signers and check their uniqueness
-	_, err := sdk.AccAddressFromBech32(m.Sender)
-	if err != nil {
-		return fmt.Errorf("signer is not valid bech32 format")
+	for _, signer := range m.Signers {
+		_, err := sdk.AccAddressFromBech32(signer)
+		if err != nil {
+			return fmt.Errorf("signer is not valid bech32 format")
+		}
 	}
 
 	if m.ComputeBudget == 0 {
@@ -90,6 +92,9 @@ func (m *MsgTransaction) ValidateBasic() error {
 
 // This is for legacy version of cosmos sdk (< 0.5), for newer version, use the cosmos.v1.msg.signer option
 func (m *MsgTransaction) GetSigners() (signers []sdk.AccAddress) {
-	signer, _ := sdk.AccAddressFromBech32(m.Sender)
-	return []sdk.AccAddress{signer}
+	for _, signer := range m.Signers {
+		s := sdk.MustAccAddressFromBech32(signer)
+		signers = append(signers, s)
+	}
+	return signers
 }
