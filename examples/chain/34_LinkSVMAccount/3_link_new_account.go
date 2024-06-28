@@ -54,18 +54,18 @@ func main() {
 		fmt.Println(err)
 	}
 
-	// prepare tx msg
-	programPrivKey := ed25519.PrivKey{Key: base58.Decode("afQDa9e9tZiKQPdxu6BBBkwgLRRLVZFykjvJZWLgKUpw685XzdhCK1qjRRT4FscXxDyKwjknfZVPQG75PaT7vzd")}
+	// prepare tx msgs
+	programBufferPrivKey := ed25519.PrivKey{Key: base58.Decode("3uEdHTmgWcU2iMp7msjZ777LCB1qvwW1WcFoJof5hzFzusg6wJ7XZZjA77scbwrrscSYEf1zuiqn2kod3q853b7A")}
 	if err != nil {
 		panic(err)
 	}
-	sig, err := programPrivKey.Sign(senderAddress.Bytes())
+	sig, err := programBufferPrivKey.Sign(senderAddress.Bytes())
 	if err != nil {
 		panic(err)
 	}
 	msg := &svmtypes.MsgLinkSVMAccount{
 		Sender:       senderAddress.String(),
-		SvmPubkey:    programPrivKey.PubKey().Bytes(),
+		SvmPubkey:    programBufferPrivKey.PubKey().Bytes(),
 		SvmSignature: sig,
 	}
 

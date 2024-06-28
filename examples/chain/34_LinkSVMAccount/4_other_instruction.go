@@ -3,29 +3,30 @@ package main
 import (
 	"context"
 	signingv1beta1 "cosmossdk.io/api/cosmos/tx/signing/v1beta1"
-	"github.com/FluxNFTLabs/sdk-go/chain/modules/svm/golana"
-	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
-	"github.com/gagliardetto/solana-go"
-	"github.com/gagliardetto/solana-go/programs/system"
-
 	sdkmath "cosmossdk.io/math"
 	"cosmossdk.io/x/tx/signing"
 	"fmt"
+	"github.com/FluxNFTLabs/sdk-go/chain/modules/svm/golana"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
+	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ethsecp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	signingtypes "github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/gagliardetto/solana-go"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 func main() {
 	// prepare info
-	senderPrivKey := ethsecp256k1.PrivKey{Key: common.Hex2Bytes("88CBEAD91AEE890D27BF06E003ADE3D4E952427E88F88D31D61D3EF5E5D54305")}
+	senderPrivKey := ethsecp256k1.PrivKey{Key: common.Hex2Bytes("88cbead91aee890d27bf06e003ade3d4e952427e88f88d31d61d3ef5e5d54305")}
 	senderPubKey := senderPrivKey.PubKey()
 	senderAddr := sdk.AccAddress(senderPubKey.Address().Bytes())
+	programBufferPrivKey := ethsecp256k1.PrivKey{Key: common.Hex2Bytes("741de4f8988ea941d3ff0287911ca4074e62b7d45c991a51186455366f10b544")}
+	programBufferPubkey := programBufferPrivKey.PubKey()
+	programBufferAddr := sdk.AccAddress(programBufferPubkey.Address().Bytes())
 
 	// init grpc connection
 	cc, err := grpc.Dial("localhost:9900", grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -46,10 +47,6 @@ func main() {
 	)
 
 	senderId := solana.MustPublicKeyFromBase58("31kto8zBQ7c4mUhy2qnvBw6RGzhTFDr25HD2NNmpU8LW")
-	programKeypair, err := solana.PrivateKeyFromBase58("afQDa9e9tZiKQPdxu6BBBkwgLRRLVZFykjvJZWLgKUpw685XzdhCK1qjRRT4FscXxDyKwjknfZVPQG75PaT7vzd")
-	if err != nil {
-		panic(err)
-	}
 	programBufferKeypair, err := solana.PrivateKeyFromBase58("3uEdHTmgWcU2iMp7msjZ777LCB1qvwW1WcFoJof5hzFzusg6wJ7XZZjA77scbwrrscSYEf1zuiqn2kod3q853b7A")
 	if err != nil {
 		panic(err)
@@ -58,13 +55,28 @@ func main() {
 
 	// create instruction
 	svmTxBuilder := solana.NewTransactionBuilder()
-	svmTxBuilder.AddInstruction(system.NewCreateAccountInstruction(0, 36, upgradableLoaderId, senderId, programKeypair.PublicKey()).Build())
-	svmTxBuilder.AddInstruction(system.NewCreateAccountInstruction(0, uint64(69000)+48, upgradableLoaderId, senderId, programBufferKeypair.PublicKey()).Build())
+	ix := solana.NewInstruction(
+		upgradableLoaderId,
+		solana.AccountMetaSlice{
+			{PublicKey: programBufferKeypair.PublicKey(), IsWritable: true, IsSigner: true},
+			{PublicKey: senderId, IsWritable: true, IsSigner: true},
+		},
+		[]byte{0, 0, 0, 0},
+	)
+
+	svmTxBuilder.AddInstruction(ix)
 	tx, err := svmTxBuilder.Build()
-	msg := golana.ToCosmosMsg([]string{senderAddr.String()}, 1000000, tx)
+	msg := golana.ToCosmosMsg([]string{
+		senderAddr.String(),
+		programBufferAddr.String(),
+	}, 1000000, tx)
 
 	// init tx builder
 	senderNum, senderSeq, err := clientCtx.AccountRetriever.GetAccountNumberSequence(clientCtx, senderAddr)
+	if err != nil {
+		panic(err)
+	}
+	programBufferNum, programBufferSeq, err := clientCtx.AccountRetriever.GetAccountNumberSequence(clientCtx, programBufferAddr)
 	if err != nil {
 		panic(err)
 	}
@@ -88,6 +100,14 @@ func main() {
 		},
 		Sequence: senderSeq,
 	}
+	programBufferSigV2 := signingtypes.SignatureV2{
+		PubKey: programBufferPubkey,
+		Data: &signingtypes.SingleSignatureData{
+			SignMode:  signingtypes.SignMode_SIGN_MODE_DIRECT,
+			Signature: nil,
+		},
+		Sequence: programBufferSeq,
+	}
 
 	// build tx
 	txBuilder.SetMsgs(msg)
@@ -95,7 +115,7 @@ func main() {
 	txBuilder.SetTimeoutHeight(timeoutHeight)
 	txBuilder.SetMemo("abc")
 	txBuilder.SetFeeAmount(fee)
-	txBuilder.SetSignatures(senderSigV2)
+	txBuilder.SetSignatures(senderSigV2, programBufferSigV2)
 
 	// build sign data
 	signerData := signing.SignerData{
@@ -119,9 +139,31 @@ func main() {
 		panic(err)
 	}
 
+	signerData = signing.SignerData{
+		ChainID:       clientCtx.ChainID,
+		AccountNumber: programBufferNum,
+		Sequence:      programBufferSeq,
+		//PubKey:        senderPubKey,
+		Address: programBufferAddr.String(),
+	}
+	data, err = txConfig.SignModeHandler().GetSignBytes(
+		context.Background(),
+		signingv1beta1.SignMode_SIGN_MODE_DIRECT,
+		signerData,
+		txBuilder.(authsigning.V2AdaptableTx).GetSigningTxData(),
+	)
+	if err != nil {
+		panic(err)
+	}
+	programBufferSig, err := programBufferPrivKey.Sign(data)
+	if err != nil {
+		panic(err)
+	}
+
 	// set signatures again
 	senderSigV2.Data.(*signingtypes.SingleSignatureData).Signature = senderSig
-	txBuilder.SetSignatures(senderSigV2)
+	programBufferSigV2.Data.(*signingtypes.SingleSignatureData).Signature = programBufferSig
+	txBuilder.SetSignatures(senderSigV2, programBufferSigV2)
 
 	// broadcast tx
 	txBytes, err := clientCtx.TxConfig.TxEncoder()(txBuilder.GetTx())
