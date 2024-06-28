@@ -6,7 +6,29 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+var _ sdk.Msg = &MsgLinkSVMAccount{}
 var _ sdk.Msg = &MsgTransaction{}
+
+func (m *MsgLinkSVMAccount) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(m.Sender)
+	if err != nil {
+		return fmt.Errorf("signer is not valid bech32 format")
+	}
+
+	if len(m.SvmPubkey) != 32 {
+		return fmt.Errorf("invalid length for svm pubkey")
+	}
+	if len(m.SvmSignature) != 64 {
+		return fmt.Errorf("invalid length for svm signature")
+	}
+	return nil
+}
+
+// This is for legacy version of cosmos sdk (< 0.5), for newer version, use the cosmos.v1.msg.signer option
+func (m *MsgLinkSVMAccount) GetSigners() (signers []sdk.AccAddress) {
+	signer, _ := sdk.AccAddressFromBech32(m.Sender)
+	return []sdk.AccAddress{signer}
+}
 
 func (m *MsgTransaction) ValidateBasic() error {
 	// parse signers and check their uniqueness

@@ -3,6 +3,7 @@ package ante
 import (
 	"context"
 	"fmt"
+	svmkeeper "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/keeper"
 
 	corestoretypes "cosmossdk.io/core/store"
 	"cosmossdk.io/errors"
@@ -11,6 +12,7 @@ import (
 	circuitkeeper "cosmossdk.io/x/circuit/keeper"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	svmante "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/ante"
 	log "github.com/InjectiveLabs/suplog"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	"github.com/cosmos/cosmos-sdk/crypto/types/multisig"
@@ -73,6 +75,8 @@ type HandlerOptions struct {
 	WasmKeeper            *wasmkeeper.Keeper
 	TXCounterStoreService corestoretypes.KVStoreService
 	CircuitKeeper         *circuitkeeper.Keeper
+
+	SvmKeeper *svmkeeper.Keeper
 }
 
 // NewAnteHandler constructor
@@ -97,6 +101,9 @@ func NewAnteHandler(options HandlerOptions) sdk.AnteHandler {
 		}
 		if options.CircuitKeeper == nil {
 			panic("circuit keeper is required for ante builder")
+		}
+		if options.SvmKeeper == nil {
+			panic("svm keeper is required for ante builder")
 		}
 
 		// web3 extension supporting EIP712 ante decorators
@@ -124,6 +131,7 @@ func NewAnteHandler(options HandlerOptions) sdk.AnteHandler {
 							NewDeductFeeDecorator(options.AccountKeeper.(AccountKeeper), options.BankKeeper),
 							authante.NewSigGasConsumeDecorator(options.AccountKeeper, DefaultSigVerificationGasConsumer),
 							NewEip712SigVerificationDecorator(options.AccountKeeper.(AccountKeeper), options.SignModeHandler),
+							svmante.NewSvmDecorator(options.SvmKeeper),
 							authante.NewIncrementSequenceDecorator(options.AccountKeeper),
 							ibcante.NewRedundantRelayDecorator(options.IBCKeeper),
 						)
@@ -157,6 +165,7 @@ func NewAnteHandler(options HandlerOptions) sdk.AnteHandler {
 			authante.NewValidateSigCountDecorator(options.AccountKeeper),
 			authante.NewSigGasConsumeDecorator(options.AccountKeeper, options.SigGasConsumer),
 			authante.NewSigVerificationDecorator(options.AccountKeeper, options.SignModeHandler),
+			svmante.NewSvmDecorator(options.SvmKeeper),
 			authante.NewIncrementSequenceDecorator(options.AccountKeeper),
 			ibcante.NewRedundantRelayDecorator(options.IBCKeeper),
 		)

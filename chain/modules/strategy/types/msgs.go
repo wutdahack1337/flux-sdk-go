@@ -1,12 +1,13 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"regexp"
 	"strings"
+
+	sdkmath "cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -27,30 +28,57 @@ func (m *MsgConfigStrategy) ValidateBasic() error {
 		if len(m.Strategy) == 0 {
 			return fmt.Errorf("strategy binary for deploy must not be empty")
 		}
+
 		if len(m.Id) > 0 {
 			return fmt.Errorf("strategy id should be empty for deploy, update options")
 		}
+
 		if err := m.Metadata.ValidateBasic(); err != nil {
 			return fmt.Errorf("metadata validate error: %w", err)
 		}
-	case Config_disable, Config_revoke, Config_enable:
+
+	case Config_update:
 		if len(m.Strategy) > 0 {
-			return fmt.Errorf("strategy should be empty for disable, revoke options")
+			return fmt.Errorf("strategy binary must be empty")
 		}
+
 		if len(m.Id) == 0 {
-			return fmt.Errorf("invalid strategy id for disable, revoke options")
+			return fmt.Errorf("invalid strategy id to update")
 		}
+
 		_, err := hex.DecodeString(m.Id)
 		if err != nil {
 			return fmt.Errorf("strategy id hex parse err: %w", err)
 		}
-		if err := m.Metadata.ValidateBasic(); err != nil {
-			return fmt.Errorf("metadata validate error: %w", err)
+
+		if m.Metadata != nil {
+			if err := m.Metadata.ValidateBasic(); err != nil {
+				return fmt.Errorf("metadata validate error: %w", err)
+			}
 		}
-	case Config_update:
-		return nil
+	case Config_disable, Config_revoke, Config_enable:
+		if len(m.Strategy) > 0 {
+			return fmt.Errorf("strategy should be empty for enable, disable, revoke options")
+		}
+
+		if len(m.Id) == 0 {
+			return fmt.Errorf("invalid strategy id for enable, disable, revoke options")
+		}
+
+		_, err := hex.DecodeString(m.Id)
+		if err != nil {
+			return fmt.Errorf("strategy id hex parse err: %w", err)
+		}
+
+		if m.Query != nil {
+			return fmt.Errorf("query not allowed in enable, disable and revoke")
+		}
+
+		if m.Metadata != nil {
+			return fmt.Errorf("metadata config not allowed in enable, enable and revoke")
+		}
 	default:
-		return fmt.Errorf("invalid strategy config option")
+		return fmt.Errorf("invalid strategy config option: %s", m.Config.String())
 	}
 	return nil
 }
@@ -81,7 +109,7 @@ func (m MsgTriggerStrategies) GetSigners() []sdk.AccAddress {
 
 func (m *StrategyMetadata) ValidateBasic() error {
 	if m == nil {
-		return fmt.Errorf("strategy metadata cannot be nil")
+		return fmt.Errorf("strategy metadata cannot be nil. Type must be defined")
 	}
 
 	switch m.Type {
@@ -97,7 +125,6 @@ func (m *StrategyMetadata) ValidateBasic() error {
 			return fmt.Errorf("cron bot minimum gas price must greater than or equal chain minimum gas price: %s", minimumGasPrice.String())
 		}
 
-		// validate cron input
 		var s interface{}
 		if err := json.Unmarshal([]byte(m.CronInput), &s); err != nil {
 			return fmt.Errorf("cron bot expects json string input")
@@ -108,7 +135,7 @@ func (m *StrategyMetadata) ValidateBasic() error {
 			return fmt.Errorf("cron bot timestamp interval cannot be zero")
 		}
 	default:
-		return fmt.Errorf("invalid value for mandatory field strategy.Metadata.Type")
+		return fmt.Errorf("invalid value for mandatory field strategy.Metadata.Type: %s", m.Type.String())
 	}
 
 	return nil

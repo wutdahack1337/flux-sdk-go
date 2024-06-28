@@ -32,6 +32,81 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type MsgLinkSVMAccount struct {
+	Sender       string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	SvmPubkey    []byte `protobuf:"bytes,2,opt,name=svm_pubkey,json=svmPubkey,proto3" json:"svm_pubkey,omitempty"`
+	SvmSignature []byte `protobuf:"bytes,4,opt,name=svm_signature,json=svmSignature,proto3" json:"svm_signature,omitempty"`
+}
+
+func (m *MsgLinkSVMAccount) Reset()         { *m = MsgLinkSVMAccount{} }
+func (m *MsgLinkSVMAccount) String() string { return proto.CompactTextString(m) }
+func (*MsgLinkSVMAccount) ProtoMessage()    {}
+func (*MsgLinkSVMAccount) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6010395245cd7264, []int{0}
+}
+func (m *MsgLinkSVMAccount) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgLinkSVMAccount) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgLinkSVMAccount.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgLinkSVMAccount) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgLinkSVMAccount.Merge(m, src)
+}
+func (m *MsgLinkSVMAccount) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgLinkSVMAccount) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgLinkSVMAccount.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgLinkSVMAccount proto.InternalMessageInfo
+
+type MsgLinkSVMAccountResponse struct {
+}
+
+func (m *MsgLinkSVMAccountResponse) Reset()         { *m = MsgLinkSVMAccountResponse{} }
+func (m *MsgLinkSVMAccountResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgLinkSVMAccountResponse) ProtoMessage()    {}
+func (*MsgLinkSVMAccountResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6010395245cd7264, []int{1}
+}
+func (m *MsgLinkSVMAccountResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgLinkSVMAccountResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgLinkSVMAccountResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgLinkSVMAccountResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgLinkSVMAccountResponse.Merge(m, src)
+}
+func (m *MsgLinkSVMAccountResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgLinkSVMAccountResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgLinkSVMAccountResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgLinkSVMAccountResponse proto.InternalMessageInfo
+
 type MsgTransaction struct {
 	// signers are cosmos addresses that signs this message
 	Sender        string         `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
@@ -44,7 +119,7 @@ func (m *MsgTransaction) Reset()         { *m = MsgTransaction{} }
 func (m *MsgTransaction) String() string { return proto.CompactTextString(m) }
 func (*MsgTransaction) ProtoMessage()    {}
 func (*MsgTransaction) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6010395245cd7264, []int{0}
+	return fileDescriptor_6010395245cd7264, []int{2}
 }
 func (m *MsgTransaction) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -81,7 +156,7 @@ func (m *MsgTransactionResponse) Reset()         { *m = MsgTransactionResponse{}
 func (m *MsgTransactionResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgTransactionResponse) ProtoMessage()    {}
 func (*MsgTransactionResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6010395245cd7264, []int{1}
+	return fileDescriptor_6010395245cd7264, []int{3}
 }
 func (m *MsgTransactionResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -118,6 +193,8 @@ func (m *MsgTransactionResponse) GetUnitConsumed() uint64 {
 }
 
 func init() {
+	proto.RegisterType((*MsgLinkSVMAccount)(nil), "flux.svm.v1beta1.MsgLinkSVMAccount")
+	proto.RegisterType((*MsgLinkSVMAccountResponse)(nil), "flux.svm.v1beta1.MsgLinkSVMAccountResponse")
 	proto.RegisterType((*MsgTransaction)(nil), "flux.svm.v1beta1.MsgTransaction")
 	proto.RegisterType((*MsgTransactionResponse)(nil), "flux.svm.v1beta1.MsgTransactionResponse")
 }
@@ -125,35 +202,41 @@ func init() {
 func init() { proto.RegisterFile("flux/svm/v1beta1/tx.proto", fileDescriptor_6010395245cd7264) }
 
 var fileDescriptor_6010395245cd7264 = []byte{
-	// 449 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x51, 0x41, 0x6b, 0x13, 0x41,
-	0x14, 0xce, 0x9a, 0x58, 0xda, 0xb1, 0x2d, 0x3a, 0x14, 0xdd, 0x2e, 0xb8, 0x2e, 0x15, 0x65, 0x09,
-	0xb8, 0x63, 0xaa, 0x27, 0xc1, 0x43, 0x23, 0x14, 0x04, 0xdb, 0xc3, 0x5a, 0x3c, 0x78, 0x09, 0xbb,
-	0xb3, 0xe3, 0x74, 0x20, 0x33, 0x13, 0xf6, 0xcd, 0x84, 0x78, 0x13, 0x4f, 0xe2, 0xc9, 0x9f, 0xe0,
-	0x4f, 0xc8, 0xc1, 0x1f, 0xe1, 0xb1, 0x78, 0xf2, 0x28, 0xc9, 0x21, 0x57, 0x7f, 0x82, 0xec, 0x64,
-	0x5a, 0x89, 0x39, 0x78, 0xd9, 0x9d, 0xf7, 0x7d, 0xdf, 0x7b, 0xef, 0x7b, 0xef, 0xa1, 0xfd, 0x77,
-	0x43, 0x3b, 0x21, 0x30, 0x96, 0x64, 0xdc, 0x2b, 0x99, 0x29, 0x7a, 0xc4, 0x4c, 0xb2, 0x51, 0xad,
-	0x8d, 0xc6, 0x37, 0x1b, 0x2a, 0x83, 0xb1, 0xcc, 0x3c, 0x15, 0xed, 0x53, 0x0d, 0x52, 0xc3, 0xc0,
-	0xf1, 0x64, 0x19, 0x2c, 0xc5, 0xd1, 0x9d, 0x65, 0x44, 0x24, 0x70, 0x32, 0xee, 0x35, 0x3f, 0x4f,
-	0xec, 0x71, 0xcd, 0xf5, 0x32, 0xa1, 0x79, 0x79, 0xf4, 0x56, 0x21, 0x85, 0xd2, 0xc4, 0x7d, 0x3d,
-	0x14, 0xfb, 0x0a, 0x65, 0x01, 0xec, 0xca, 0x0c, 0xd5, 0x42, 0x79, 0x3e, 0x5a, 0x73, 0xda, 0x58,
-	0x73, 0xdc, 0xc1, 0xef, 0x00, 0xed, 0x9e, 0x00, 0x3f, 0xab, 0x0b, 0x05, 0x05, 0x35, 0x42, 0x2b,
-	0xfc, 0x18, 0x6d, 0x00, 0x53, 0x15, 0xab, 0xc3, 0x20, 0x09, 0xd2, 0xad, 0x7e, 0xf8, 0xe3, 0xdb,
-	0xa3, 0x3d, 0x6f, 0xf9, 0xa8, 0xaa, 0x6a, 0x06, 0xf0, 0xda, 0xd4, 0x42, 0xf1, 0xdc, 0xeb, 0x70,
-	0x84, 0x36, 0x0b, 0x4a, 0xb5, 0x55, 0x06, 0xc2, 0x6b, 0x49, 0x3b, 0xdd, 0xca, 0xaf, 0x62, 0x7c,
-	0x84, 0xb6, 0x85, 0x02, 0x53, 0x5b, 0x57, 0x1c, 0xc2, 0x76, 0xd2, 0x4e, 0x6f, 0x1c, 0xde, 0xcd,
-	0xfe, 0x5d, 0x51, 0xf6, 0xf2, 0xaf, 0x2a, 0x5f, 0x49, 0xc1, 0x0f, 0xd0, 0x2e, 0xd5, 0x72, 0x64,
-	0x0d, 0x1b, 0x94, 0xb6, 0xe2, 0xcc, 0x84, 0x9d, 0x24, 0x48, 0x3b, 0xf9, 0x8e, 0x47, 0xfb, 0x0e,
-	0x7c, 0xf6, 0xf0, 0xd3, 0xd7, 0x7b, 0xad, 0x8f, 0x8b, 0x69, 0xd7, 0xdb, 0xfa, 0xbc, 0x98, 0x76,
-	0x71, 0x33, 0xf5, 0xea, 0x7c, 0x07, 0xcf, 0xd1, 0xed, 0x55, 0x24, 0x67, 0x30, 0xd2, 0x0a, 0x18,
-	0xbe, 0x8f, 0x76, 0xac, 0x12, 0x66, 0x40, 0xb5, 0x02, 0x2b, 0x59, 0xe5, 0x16, 0xd0, 0xc9, 0xb7,
-	0x1b, 0xf0, 0x85, 0xc7, 0x0e, 0x2b, 0xd4, 0x3e, 0x01, 0x8e, 0xdf, 0xa0, 0xcd, 0xcb, 0x12, 0x38,
-	0x59, 0x9f, 0x66, 0xb5, 0x43, 0x94, 0xfe, 0x4f, 0x71, 0xe9, 0x21, 0xba, 0xfe, 0x61, 0x31, 0xed,
-	0x06, 0xfd, 0xd3, 0xef, 0xb3, 0x38, 0xb8, 0x98, 0xc5, 0xc1, 0xaf, 0x59, 0x1c, 0x7c, 0x99, 0xc7,
-	0xad, 0x8b, 0x79, 0xdc, 0xfa, 0x39, 0x8f, 0x5b, 0x6f, 0x9f, 0x72, 0x61, 0xce, 0x6d, 0x99, 0x51,
-	0x2d, 0xc9, 0xf1, 0xd0, 0x4e, 0x4e, 0x8f, 0xcf, 0x5e, 0x15, 0x25, 0x90, 0xa6, 0x41, 0x45, 0xe8,
-	0x79, 0x21, 0x14, 0x91, 0xba, 0xb2, 0x43, 0x06, 0xee, 0xe6, 0xe6, 0xfd, 0x88, 0x41, 0xb9, 0xe1,
-	0xce, 0xfd, 0xe4, 0x4f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x8f, 0x14, 0x48, 0xb0, 0xb6, 0x02, 0x00,
+	// 545 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x53, 0x4d, 0x6f, 0xd3, 0x40,
+	0x10, 0x8d, 0x9b, 0x50, 0x35, 0x4b, 0x1a, 0x51, 0xab, 0x80, 0x63, 0x54, 0x13, 0xa5, 0x02, 0x85,
+	0x20, 0x6c, 0x52, 0x38, 0x55, 0xe2, 0x90, 0x20, 0x55, 0x42, 0x6a, 0x2a, 0xe4, 0x54, 0x3d, 0x70,
+	0x89, 0xfc, 0xb1, 0xb8, 0x56, 0xb3, 0xbb, 0x91, 0x67, 0xd7, 0x4a, 0x6f, 0x88, 0x13, 0xe2, 0xc4,
+	0x4f, 0xe0, 0x27, 0xe4, 0xd0, 0x1f, 0xd1, 0x63, 0xc5, 0x89, 0x23, 0x4a, 0x0e, 0xb9, 0xf2, 0x13,
+	0x90, 0x37, 0x9b, 0xd0, 0x36, 0x95, 0x40, 0xbd, 0xd8, 0x9e, 0xf7, 0xde, 0x8c, 0xdf, 0x3c, 0x7b,
+	0x51, 0xe5, 0x63, 0x5f, 0x0c, 0x1d, 0x48, 0x89, 0x93, 0x36, 0x7d, 0xcc, 0xbd, 0xa6, 0xc3, 0x87,
+	0xf6, 0x20, 0x61, 0x9c, 0xe9, 0xf7, 0x32, 0xca, 0x86, 0x94, 0xd8, 0x8a, 0x32, 0x2b, 0x01, 0x03,
+	0xc2, 0xa0, 0x27, 0x79, 0x67, 0x56, 0xcc, 0xc4, 0xe6, 0xc3, 0x59, 0xe5, 0x10, 0x88, 0x9c, 0xb4,
+	0x99, 0xdd, 0x14, 0xb1, 0x19, 0xb1, 0x88, 0xcd, 0x1a, 0xb2, 0x27, 0x85, 0x6e, 0x78, 0x24, 0xa6,
+	0xcc, 0x91, 0x57, 0x05, 0x59, 0x6a, 0x82, 0xef, 0x01, 0x5e, 0x98, 0x09, 0x58, 0x4c, 0x15, 0x6f,
+	0x2e, 0x39, 0xcd, 0xac, 0x49, 0xae, 0x76, 0xa6, 0xa1, 0x8d, 0x0e, 0x44, 0xfb, 0x31, 0x3d, 0xe9,
+	0x1e, 0x75, 0x5a, 0x41, 0xc0, 0x04, 0xe5, 0xfa, 0x4b, 0xb4, 0x0a, 0x98, 0x86, 0x38, 0x31, 0xb4,
+	0xaa, 0x56, 0x2f, 0xb6, 0x8d, 0x1f, 0x67, 0x2f, 0x36, 0x95, 0xeb, 0x56, 0x18, 0x26, 0x18, 0xa0,
+	0xcb, 0x93, 0x98, 0x46, 0xae, 0xd2, 0xe9, 0x5b, 0x08, 0x41, 0x4a, 0x7a, 0x03, 0xe1, 0x9f, 0xe0,
+	0x53, 0x63, 0xa5, 0xaa, 0xd5, 0x4b, 0x6e, 0x11, 0x52, 0xf2, 0x5e, 0x02, 0xfa, 0x36, 0x5a, 0xcf,
+	0x68, 0x88, 0x23, 0xea, 0x71, 0x91, 0x60, 0xa3, 0x20, 0x15, 0x25, 0x48, 0x49, 0x77, 0x8e, 0xed,
+	0x3e, 0xfb, 0xf2, 0xfd, 0x71, 0xee, 0xf3, 0x74, 0xd4, 0x50, 0x43, 0xbf, 0x4e, 0x47, 0x8d, 0xfb,
+	0x99, 0xed, 0x25, 0x83, 0xb5, 0x47, 0xa8, 0xb2, 0x04, 0xba, 0x18, 0x06, 0x8c, 0x02, 0xae, 0xfd,
+	0xd6, 0x50, 0xb9, 0x03, 0xd1, 0x61, 0xe2, 0x51, 0xf0, 0x02, 0x1e, 0x33, 0x7a, 0x8b, 0x85, 0x4c,
+	0xb4, 0xe6, 0xcd, 0xe6, 0x82, 0xb1, 0x52, 0xcd, 0xd7, 0x8b, 0xee, 0xa2, 0xd6, 0x5b, 0xa8, 0x14,
+	0x53, 0xe0, 0x89, 0x90, 0xc3, 0xc1, 0xc8, 0x57, 0xf3, 0xf5, 0xbb, 0x3b, 0x5b, 0xf6, 0xf5, 0xcf,
+	0x6e, 0xbf, 0xfb, 0xab, 0x72, 0xaf, 0xb4, 0xe8, 0x4f, 0x50, 0x39, 0x60, 0x64, 0x20, 0x38, 0xee,
+	0xf9, 0x22, 0x8c, 0x30, 0x97, 0x89, 0x14, 0xdc, 0x75, 0x85, 0xb6, 0x25, 0xb8, 0xfb, 0xf4, 0x86,
+	0x48, 0x74, 0x15, 0xc9, 0xa5, 0xfd, 0x6a, 0x6f, 0xd0, 0x83, 0xab, 0xc8, 0x3c, 0x8c, 0x2c, 0x79,
+	0x41, 0x63, 0xde, 0x0b, 0x18, 0x05, 0x41, 0x70, 0x28, 0x03, 0x28, 0xb8, 0xa5, 0x0c, 0x7c, 0xab,
+	0xb0, 0x9d, 0x73, 0x0d, 0xe5, 0x3b, 0x10, 0xe9, 0x3e, 0x2a, 0x5f, 0xfb, 0x13, 0xb6, 0x97, 0x97,
+	0x5a, 0x0a, 0xde, 0x7c, 0xfe, 0x1f, 0xa2, 0x85, 0xa1, 0x23, 0xb4, 0x36, 0xf7, 0xa9, 0x57, 0x6f,
+	0x6c, 0xbc, 0xb4, 0x86, 0x59, 0xff, 0x97, 0x62, 0x3e, 0xd7, 0xbc, 0xf3, 0x69, 0x3a, 0x6a, 0x68,
+	0xed, 0x83, 0xf3, 0xb1, 0xa5, 0x5d, 0x8c, 0x2d, 0xed, 0xd7, 0xd8, 0xd2, 0xbe, 0x4d, 0xac, 0xdc,
+	0xc5, 0xc4, 0xca, 0xfd, 0x9c, 0x58, 0xb9, 0x0f, 0xaf, 0xa3, 0x98, 0x1f, 0x0b, 0xdf, 0x0e, 0x18,
+	0x71, 0xf6, 0xfa, 0x62, 0x78, 0xb0, 0x77, 0xb8, 0xef, 0xf9, 0xe0, 0x64, 0x2f, 0x08, 0x9d, 0xe0,
+	0xd8, 0x8b, 0xa9, 0x43, 0x58, 0x28, 0xfa, 0x18, 0xe4, 0x61, 0xe1, 0xa7, 0x03, 0x0c, 0xfe, 0xaa,
+	0x3c, 0x27, 0xaf, 0xfe, 0x04, 0x00, 0x00, 0xff, 0xff, 0xe0, 0xa5, 0xef, 0x7b, 0xef, 0x03, 0x00,
 	0x00,
 }
 
@@ -169,6 +252,7 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
+	LinkSVMAccount(ctx context.Context, in *MsgLinkSVMAccount, opts ...grpc.CallOption) (*MsgLinkSVMAccountResponse, error)
 	Transact(ctx context.Context, in *MsgTransaction, opts ...grpc.CallOption) (*MsgTransactionResponse, error)
 }
 
@@ -178,6 +262,15 @@ type msgClient struct {
 
 func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
+}
+
+func (c *msgClient) LinkSVMAccount(ctx context.Context, in *MsgLinkSVMAccount, opts ...grpc.CallOption) (*MsgLinkSVMAccountResponse, error) {
+	out := new(MsgLinkSVMAccountResponse)
+	err := c.cc.Invoke(ctx, "/flux.svm.v1beta1.Msg/LinkSVMAccount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *msgClient) Transact(ctx context.Context, in *MsgTransaction, opts ...grpc.CallOption) (*MsgTransactionResponse, error) {
@@ -191,6 +284,7 @@ func (c *msgClient) Transact(ctx context.Context, in *MsgTransaction, opts ...gr
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
+	LinkSVMAccount(context.Context, *MsgLinkSVMAccount) (*MsgLinkSVMAccountResponse, error)
 	Transact(context.Context, *MsgTransaction) (*MsgTransactionResponse, error)
 }
 
@@ -198,12 +292,33 @@ type MsgServer interface {
 type UnimplementedMsgServer struct {
 }
 
+func (*UnimplementedMsgServer) LinkSVMAccount(ctx context.Context, req *MsgLinkSVMAccount) (*MsgLinkSVMAccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LinkSVMAccount not implemented")
+}
 func (*UnimplementedMsgServer) Transact(ctx context.Context, req *MsgTransaction) (*MsgTransactionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Transact not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
+}
+
+func _Msg_LinkSVMAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgLinkSVMAccount)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).LinkSVMAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/flux.svm.v1beta1.Msg/LinkSVMAccount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).LinkSVMAccount(ctx, req.(*MsgLinkSVMAccount))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Msg_Transact_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -229,12 +344,83 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "LinkSVMAccount",
+			Handler:    _Msg_LinkSVMAccount_Handler,
+		},
+		{
 			MethodName: "Transact",
 			Handler:    _Msg_Transact_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "flux/svm/v1beta1/tx.proto",
+}
+
+func (m *MsgLinkSVMAccount) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgLinkSVMAccount) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgLinkSVMAccount) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.SvmSignature) > 0 {
+		i -= len(m.SvmSignature)
+		copy(dAtA[i:], m.SvmSignature)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.SvmSignature)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.SvmPubkey) > 0 {
+		i -= len(m.SvmPubkey)
+		copy(dAtA[i:], m.SvmPubkey)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.SvmPubkey)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgLinkSVMAccountResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgLinkSVMAccountResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgLinkSVMAccountResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
 }
 
 func (m *MsgTransaction) Marshal() (dAtA []byte, err error) {
@@ -334,6 +520,36 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *MsgLinkSVMAccount) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.SvmPubkey)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.SvmSignature)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgLinkSVMAccountResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
 func (m *MsgTransaction) Size() (n int) {
 	if m == nil {
 		return 0
@@ -379,6 +595,206 @@ func sovTx(x uint64) (n int) {
 }
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *MsgLinkSVMAccount) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgLinkSVMAccount: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgLinkSVMAccount: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SvmPubkey", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SvmPubkey = append(m.SvmPubkey[:0], dAtA[iNdEx:postIndex]...)
+			if m.SvmPubkey == nil {
+				m.SvmPubkey = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SvmSignature", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SvmSignature = append(m.SvmSignature[:0], dAtA[iNdEx:postIndex]...)
+			if m.SvmSignature == nil {
+				m.SvmSignature = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgLinkSVMAccountResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgLinkSVMAccountResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgLinkSVMAccountResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *MsgTransaction) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)

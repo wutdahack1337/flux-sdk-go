@@ -10,6 +10,7 @@ import (
 // RegisterInterfaces registers the interfaces types with the interface registry.
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgLinkSVMAccount{},
 		&MsgTransaction{},
 	)
 
@@ -19,5 +20,6 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 // RegisterLegacyAminoCodec registers the necessary game interfaces and concrete types
 // on the provided LegacyAmino codec. These types are used for Amino JSON serialization.
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
+	cdc.RegisterConcrete(&MsgLinkSVMAccount{}, "svm/MsgLinkSVMAccount", nil)
 	cdc.RegisterConcrete(&MsgTransaction{}, "svm/MsgTransaction", nil)
 }
