@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"strings"
+
 	"github.com/FluxNFTLabs/sdk-go/chain/modules/svm/golana"
 	"github.com/gagliardetto/solana-go"
 	"github.com/gagliardetto/solana-go/programs/system"
-	"os"
-	"strings"
 
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
@@ -84,7 +85,7 @@ func main() {
 		AddInstruction(initBufferAccountIx)
 
 	tx, err := initTxBuilder.Build()
-	msg := golana.ToCosmosMsg(senderAddress.String(), 1000000, tx)
+	msg := golana.ToCosmosMsg([]string{senderAddress.String()}, 1000000, tx)
 
 	// broadcast msg
 	res, err := chainClient.SyncBroadcastSvmMsg(msg)

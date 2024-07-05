@@ -3,6 +3,7 @@ package ante
 import (
 	"context"
 	"fmt"
+
 	svmkeeper "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/keeper"
 
 	corestoretypes "cosmossdk.io/core/store"
@@ -32,6 +33,10 @@ const (
 	// which currently defaults at 10, if intended
 	// memoCostPerByte     sdk.Gas = 3
 	ethSecp256k1VerifyCost uint64 = 21000
+)
+
+var (
+	SvmDecoratorEnabled = false
 )
 
 // AccountKeeper defines an expected keeper interface for the auth module's AccountKeeper
@@ -131,7 +136,7 @@ func NewAnteHandler(options HandlerOptions) sdk.AnteHandler {
 							NewDeductFeeDecorator(options.AccountKeeper.(AccountKeeper), options.BankKeeper),
 							authante.NewSigGasConsumeDecorator(options.AccountKeeper, DefaultSigVerificationGasConsumer),
 							NewEip712SigVerificationDecorator(options.AccountKeeper.(AccountKeeper), options.SignModeHandler),
-							svmante.NewSvmDecorator(options.SvmKeeper),
+							svmante.NewSvmDecorator(options.SvmKeeper, SvmDecoratorEnabled),
 							authante.NewIncrementSequenceDecorator(options.AccountKeeper),
 							ibcante.NewRedundantRelayDecorator(options.IBCKeeper),
 						)
@@ -165,7 +170,7 @@ func NewAnteHandler(options HandlerOptions) sdk.AnteHandler {
 			authante.NewValidateSigCountDecorator(options.AccountKeeper),
 			authante.NewSigGasConsumeDecorator(options.AccountKeeper, options.SigGasConsumer),
 			authante.NewSigVerificationDecorator(options.AccountKeeper, options.SignModeHandler),
-			svmante.NewSvmDecorator(options.SvmKeeper),
+			svmante.NewSvmDecorator(options.SvmKeeper, SvmDecoratorEnabled),
 			authante.NewIncrementSequenceDecorator(options.AccountKeeper),
 			ibcante.NewRedundantRelayDecorator(options.IBCKeeper),
 		)

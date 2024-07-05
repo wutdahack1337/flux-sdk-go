@@ -1,10 +1,11 @@
 package main
 
 import (
-	"cosmossdk.io/math"
 	"fmt"
 	"os"
 	"strings"
+
+	"cosmossdk.io/math"
 
 	"github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	strategytypes "github.com/FluxNFTLabs/sdk-go/chain/modules/strategy/types"
