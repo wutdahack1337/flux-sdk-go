@@ -47,7 +47,6 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println("sender:", senderAddress.String())
 	clientCtx = clientCtx.WithGRPCClient(cc)
 	// init chain client
 	chainClient, err := chainclient.NewChainClient(
@@ -106,5 +105,7 @@ func main() {
 	if err := dcr.Unmarshal(txData.MsgResponses[0].Value); err != nil {
 		panic(err)
 	}
+
+	fmt.Println("contract owner:", senderAddress.String())
 	fmt.Println("contract address:", hex.EncodeToString(dcr.ContractAddress))
 }
