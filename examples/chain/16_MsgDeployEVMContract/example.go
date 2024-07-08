@@ -40,14 +40,14 @@ func main() {
 	// init client ctx
 	clientCtx, senderAddress, err := chaintypes.NewClientContext(
 		network.ChainId,
-		"user1",
+		"user2",
 		kr,
 	)
 	if err != nil {
 		panic(err)
 	}
-	clientCtx = clientCtx.WithGRPCClient(cc)
 
+	clientCtx = clientCtx.WithGRPCClient(cc)
 	// init chain client
 	chainClient, err := chainclient.NewChainClient(
 		clientCtx,
@@ -105,5 +105,7 @@ func main() {
 	if err := dcr.Unmarshal(txData.MsgResponses[0].Value); err != nil {
 		panic(err)
 	}
+
+	fmt.Println("contract owner:", senderAddress.String())
 	fmt.Println("contract address:", hex.EncodeToString(dcr.ContractAddress))
 }

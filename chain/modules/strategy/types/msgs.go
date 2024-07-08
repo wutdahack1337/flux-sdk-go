@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	"regexp"
 	"strings"
 
@@ -33,7 +34,7 @@ func (m *MsgConfigStrategy) ValidateBasic() error {
 			return fmt.Errorf("strategy id should be empty for deploy, update options")
 		}
 
-		if err := m.Metadata.ValidateBasic(); err != nil {
+		if err := m.Metadata.ValidateBasic(m.Query); err != nil {
 			return fmt.Errorf("metadata validate error: %w", err)
 		}
 
@@ -52,7 +53,7 @@ func (m *MsgConfigStrategy) ValidateBasic() error {
 		}
 
 		if m.Metadata != nil {
-			if err := m.Metadata.ValidateBasic(); err != nil {
+			if err := m.Metadata.ValidateBasic(m.Query); err != nil {
 				return fmt.Errorf("metadata validate error: %w", err)
 			}
 		}
@@ -107,7 +108,7 @@ func (m MsgTriggerStrategies) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
-func (m *StrategyMetadata) ValidateBasic() error {
+func (m *StrategyMetadata) ValidateBasic(query *types.FISQueryRequest) error {
 	if m == nil {
 		return fmt.Errorf("strategy metadata cannot be nil. Type must be defined")
 	}
@@ -132,7 +133,19 @@ func (m *StrategyMetadata) ValidateBasic() error {
 
 		// validate cron interval
 		if m.CronInterval == 0 {
-			return fmt.Errorf("cron bot timestamp interval cannot be zero")
+			if len(query.Instructions) == 0 {
+				return fmt.Errorf("event-based cron service should have at least 1 fis event query")
+			}
+			validQuery := false
+			for _, q := range query.Instructions {
+				if q.Action == types.QueryAction_COSMOS_EVENT {
+					validQuery = true
+					break
+				}
+			}
+			if !validQuery {
+				return fmt.Errorf("event-based cron service doesn't have any fis event query")
+			}
 		}
 	default:
 		return fmt.Errorf("invalid value for mandatory field strategy.Metadata.Type: %s", m.Type.String())
