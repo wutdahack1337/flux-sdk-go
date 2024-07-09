@@ -29,7 +29,7 @@ func main() {
 	programBufferAddr := sdk.AccAddress(programBufferPubkey.Address().Bytes())
 
 	// init grpc connection
-	cc, err := grpc.Dial("localhost:9900", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	cc, err := grpc.Dial(network.ChainGrpcEndpoint, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err)
 	}

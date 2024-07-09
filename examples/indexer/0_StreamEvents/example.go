@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/FluxNFTLabs/sdk-go/client/common"
 	coretypes "github.com/cometbft/cometbft/rpc/core/types"
 	"github.com/goccy/go-json"
 	"google.golang.org/grpc"
@@ -12,7 +13,8 @@ import (
 )
 
 func main() {
-	cc, err := grpc.Dial("localhost:9900", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	network := common.LoadNetwork("local", "")
+	cc, err := grpc.Dial(network.ChainGrpcEndpoint, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	defer cc.Close()
 	if err != nil {
 		panic(err)

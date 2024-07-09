@@ -28,7 +28,7 @@ func main() {
 	}
 
 	// init grpc connection
-	cc, err := grpc.Dial("localhost:9900", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	cc, err := grpc.Dial(network.ChainGrpcEndpoint, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err)
 	}
@@ -59,8 +59,8 @@ func main() {
 		ClassId:          "series",
 		Id:               "0",
 		ProductId:        "0",
-		OfferingIdx:      []uint64{0,1},
-		OfferingQuantity: []uint64{1,2},
+		OfferingIdx:      []uint64{0, 1},
+		OfferingQuantity: []uint64{1, 2},
 	}
 
 	//AsyncBroadcastMsg, SyncBroadcastMsg, QueueBroadcastMsg

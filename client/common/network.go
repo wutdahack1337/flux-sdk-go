@@ -16,7 +16,6 @@ type Network struct {
 	ChainGrpcEndpoint string
 	ChainTlsCert      credentials.TransportCredentials
 	ChainId           string
-	Fee_denom         string
 	Name              string
 }
 
@@ -31,10 +30,18 @@ func LoadNetwork(name string, node string) Network {
 		return Network{
 			LcdEndpoint:       "http://localhost:10337",
 			TmEndpoint:        "http://localhost:26657",
-			ChainGrpcEndpoint: "tcp://localhost:9900",
+			ChainGrpcEndpoint: "localhost:9900",
 			ChainId:           "flux-1",
-			Fee_denom:         "lux",
 			Name:              "local",
+		}
+
+	case "devnet":
+		return Network{
+			LcdEndpoint:       "https://devnet.lcd.fluxnft.space/",
+			TmEndpoint:        "https://devnet.tm.fluxnft.space/",
+			ChainGrpcEndpoint: "52.22.4.129:9900",
+			ChainId:           "flux-1",
+			Name:              "devnet",
 		}
 	}
 
