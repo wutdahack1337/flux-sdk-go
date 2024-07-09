@@ -61,7 +61,7 @@ func main() {
 
 	msg := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"F03BE7C54C3B01DFA36118EF104AE8C4FCD82C32CAC6E6D0D23D832AA207BDDB"},
+		Ids:    []string{"49E125F9C1C9B86AF72FE2F985BCCCB0EAB52C59D4685C2A83E7D188E90A44EF"},
 		Inputs: [][]byte{
 			[]byte(`{"withdraw_all_planes":{}}`),
 		},
@@ -85,8 +85,9 @@ func main() {
 	//AsyncBroadcastMsg, SyncBroadcastMsg, QueueBroadcastMsg
 	res, err := chainClient.SyncBroadcastMsg(msg)
 	if err != nil {
-		fmt.Println(err)
+		panic(err)
 	}
 
-	fmt.Println(res)
+	fmt.Println("tx hash:", res.TxResponse.TxHash)
+	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 }
