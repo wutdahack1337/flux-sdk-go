@@ -60,7 +60,7 @@ func main() {
 
 	msg := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"7F0F8A1C1FF06F3C2F045BFF82902541986298264E56D6695D436CD0548206A3"},
+		Ids:    []string{"40E0BB3AC954B171883FB15383C159B04D02A6B64000532D18DF7709315DFE97"},
 		Inputs: [][]byte{
 			[]byte(`{"receivers":["lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx","lux1kmmz47pr8h46wcyxw8h3k8s85x0ncykqp0xmgj"]}`),
 		},

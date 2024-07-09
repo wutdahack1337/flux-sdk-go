@@ -5,6 +5,8 @@ import (
 	"os"
 	"strings"
 
+	_ "embed"
+
 	"github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	strategytypes "github.com/FluxNFTLabs/sdk-go/chain/modules/strategy/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
@@ -13,6 +15,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+)
+
+var (
+	//go:embed plane_util.wasm
+	intentSolverBinary []byte
 )
 
 func main() {
@@ -54,22 +61,11 @@ func main() {
 		fmt.Println(err)
 	}
 
-	// prepare tx msg
-	dir, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-
-	bz, err := os.ReadFile(dir + "/examples/chain/24_ConfigIntentSolver/intent_solver.wasm")
-	if err != nil {
-		panic(err)
-	}
-
 	msg := &strategytypes.MsgConfigStrategy{
 		Sender:   senderAddress.String(),
 		Config:   strategytypes.Config_deploy,
 		Id:       "",
-		Strategy: bz,
+		Strategy: intentSolverBinary,
 		Query:    &types.FISQueryRequest{},
 		Metadata: &strategytypes.StrategyMetadata{
 			Name:        "Astromesh plane util",
@@ -78,7 +74,7 @@ func main() {
 			Website:     "https://www.astromesh.xyz",
 			Type:        strategytypes.StrategyType_INTENT_SOLVER,
 			Tags:        []string{"helper"},
-			Schema:      "{\"groups\":[{\"name\":\"transfer helper\",\"prompts\":{\"withdraw_all_planes\":{\"template\":\"withdraw ${denom:string} from planes to cosmos\",\"query\":{\"instructions\":[{\"plane\":\"COSMOS\",\"action\":\"COSMOS_ASTROMESH_BALANCE\",\"address\":\"\",\"input\":[\"JHt3YWxsZXR9\",\"JHtkZW5vbX0=\"]}]}}}}]}",
+			Schema:      `{"groups":[{"name":"transfer helper","prompts":{"withdraw_all_planes":{"template":"withdraw ${denom:string} from planes to cosmos","query":{"instructions":[{"plane":"COSMOS","action":"COSMOS_ASTROMESH_BALANCE","address":"","input":["JHt3YWxsZXR9","JHtkZW5vbX0="]}]}}}}]}`,
 		},
 	}
 
@@ -88,5 +84,6 @@ func main() {
 		fmt.Println(err)
 	}
 
+	fmt.Println("tx hash:", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 }
