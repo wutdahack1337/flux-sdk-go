@@ -63,7 +63,7 @@ func main() {
 		Sender: senderAddress.String(),
 		Ids:    []string{"F03BE7C54C3B01DFA36118EF104AE8C4FCD82C32CAC6E6D0D23D832AA207BDDB"},
 		Inputs: [][]byte{
-			[]byte(`{"withdraw_all_plane":{}}`),
+			[]byte(`{"withdraw_all_planes":{}}`),
 		},
 		Queries: []*astromeshtypes.FISQueryRequest{
 			{

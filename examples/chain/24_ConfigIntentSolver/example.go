@@ -60,7 +60,7 @@ func main() {
 		panic(err)
 	}
 
-	bz, err := os.ReadFile(dir + "/examples/chain/24_ConfigIntentSolver/intent_solver.wasm")
+	bz, err := os.ReadFile(dir + "/examples/chain/24_ConfigIntentSolver/plane_util.wasm")
 	if err != nil {
 		panic(err)
 	}
@@ -78,7 +78,7 @@ func main() {
 			Website:     "https://www.astromesh.xyz",
 			Type:        strategytypes.StrategyType_INTENT_SOLVER,
 			Tags:        []string{"helper"},
-			Schema:      "{\"groups\":[{\"name\":\"transfer helper\",\"prompts\":{\"withdraw_all_planes\":{\"template\":\"withdraw ${denom:string} from planes to cosmos\",\"query\":{\"instructions\":[{\"plane\":\"COSMOS\",\"action\":\"COSMOS_ASTROMESH_BALANCE\",\"address\":\"\",\"input\":[\"JHt3YWxsZXR9\",\"JHtkZW5vbX0=\"]}]}}}}]}",
+			Schema:      `{"groups":[{"name":"transfer helper","prompts":{"withdraw_all_planes":{"template":"withdraw ${denom:string} from planes to cosmos","query":{"instructions":[{"plane":"COSMOS","action":"COSMOS_ASTROMESH_BALANCE","address":"","input":["JHt3YWxsZXR9","JHtkZW5vbX0="]}]}}}}]}`,
 		},
 	}
 
