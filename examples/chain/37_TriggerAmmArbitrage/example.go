@@ -19,9 +19,6 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-//go:embed schema.json
-var schema []byte
-
 func main() {
 	network := common.LoadNetwork("local", "")
 	kr, err := keyring.New(
@@ -62,6 +59,16 @@ func main() {
 	}
 
 	// prepare tx msg
+	if err != nil {
+		panic(err)
+	}
+
+	dir, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+
+	schema, err := os.ReadFile(dir + "/examples/chain/36_ConfigAmmSolver/schema.json")
 	if err != nil {
 		panic(err)
 	}
