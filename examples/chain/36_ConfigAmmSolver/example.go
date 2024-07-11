@@ -1,19 +1,29 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
 	"os"
 	"strings"
 
-	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
+	_ "embed"
+
+	"github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	strategytypes "github.com/FluxNFTLabs/sdk-go/chain/modules/strategy/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
+
+//go:embed amm_solver.wasm
+var strategyBinary []byte
+
+//go:embed schema.json
+var schema []byte
 
 func main() {
 	network := common.LoadNetwork("local", "")
@@ -37,7 +47,7 @@ func main() {
 	// init client ctx
 	clientCtx, senderAddress, err := chaintypes.NewClientContext(
 		network.ChainId,
-		"user2",
+		"user1",
 		kr,
 	)
 	if err != nil {
@@ -51,35 +61,27 @@ func main() {
 		common.OptionGasPrices("500000000lux"),
 	)
 	if err != nil {
-		fmt.Println(err)
-	}
-
-	// prepare tx msg
-	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println("sender address:", senderAddress.String())
-	msg := &strategytypes.MsgTriggerStrategies{
-		Sender: senderAddress.String(),
-		Ids:    []string{"e221cd5209228dbdaa446dd0b037d444ca71af42a08e70b07e783a4c72a5aa5e"},
-		Inputs: [][]byte{
-			[]byte(`{"deposit_equally":{"denom":"usdt","amount":"3000000"}}`),
+	// prepare tx msg
+	fmt.Println("intent owner:", senderAddress.String())
+	msg := &strategytypes.MsgConfigStrategy{
+		Sender:   senderAddress.String(),
+		Config:   strategytypes.Config_deploy,
+		Strategy: strategyBinary,
+		Query:    &types.FISQueryRequest{},
+		TriggerPermission: &strategytypes.PermissionConfig{
+			Type: strategytypes.AccessType_anyone,
 		},
-		Queries: []*astromeshtypes.FISQueryRequest{
-			{
-				Instructions: []*astromeshtypes.FISQueryInstruction{
-					{
-						Plane:   astromeshtypes.Plane_COSMOS,
-						Action:  astromeshtypes.QueryAction_COSMOS_BANK_BALANCE,
-						Address: nil,
-						Input: [][]byte{
-							[]byte(senderAddress.String()),
-							[]byte("usdt"),
-						},
-					},
-				},
-			},
+		Metadata: &strategytypes.StrategyMetadata{
+			Name:        "AMM solver wizard",
+			Description: "",
+			Logo:        "https://cdn-icons-png.freepik.com/512/8482/8482621.png",
+			Website:     "",
+			Type:        strategytypes.StrategyType_INTENT_SOLVER,
+			Tags:        []string{"util", "defi"},
+			Schema:      string(schema),
 		},
 	}
 
@@ -91,4 +93,23 @@ func main() {
 
 	fmt.Println("tx hash:", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
+
+	hexResp, err := hex.DecodeString(res.TxResponse.Data)
+	if err != nil {
+		panic(err)
+	}
+
+	// decode result to get contract address
+	var txData sdk.TxMsgData
+	if err := txData.Unmarshal(hexResp); err != nil {
+		panic(err)
+	}
+
+	var response strategytypes.MsgConfigStrategyResponse
+	if err := response.Unmarshal(txData.MsgResponses[0].Value); err != nil {
+		panic(err)
+	}
+
+	fmt.Println("intent solver id:", response.Id)
+	fmt.Println("hint: use this Id to trigger it in examples/chain/37_TriggerAmmArbitrage/example.go !!!")
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
 	"os"
 	"strings"
@@ -13,6 +14,7 @@ import (
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -74,7 +76,7 @@ func main() {
 			Website:     "https://www.astromesh.xyz",
 			Type:        strategytypes.StrategyType_INTENT_SOLVER,
 			Tags:        []string{"helper"},
-			Schema:      `{"groups":[{"name":"transfer helper","prompts":{"withdraw_all_planes":{"template":"withdraw ${denom:string} from planes to cosmos","query":{"instructions":[{"plane":"COSMOS","action":"COSMOS_ASTROMESH_BALANCE","address":"","input":["JHt3YWxsZXR9","JHtkZW5vbX0="]}]}}}}]}`,
+			Schema:      `{"groups":[{"name":"transfer helper","prompts":{"withdraw_all_planes":{"template":"withdraw ${denom:string} from planes to cosmos","query":{"instructions":[{"plane":"COSMOS","action":"COSMOS_ASTROMESH_BALANCE","address":"","input":["JHt3YWxsZXR9","JHtkZW5vbX0="]}]}},"deposit_equally":{"template":"deposit ${amount:number} ${denom:string} from cosmos to all planes equally","msg_fields":["amount","denom"],"query":{"instructions":[{"plane":"COSMOS","action":"COSMOS_BANK_BALANCE","address":"","input":["JHt3YWxsZXR9","JHtkZW5vbX0="]}]}}}}]}`,
 		},
 	}
 
@@ -86,4 +88,22 @@ func main() {
 
 	fmt.Println("tx hash:", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
+
+	hexResp, err := hex.DecodeString(res.TxResponse.Data)
+	if err != nil {
+		panic(err)
+	}
+
+	// decode result to get contract address
+	var txData sdk.TxMsgData
+	if err := txData.Unmarshal(hexResp); err != nil {
+		panic(err)
+	}
+
+	var response strategytypes.MsgConfigStrategyResponse
+	if err := response.Unmarshal(txData.MsgResponses[0].Value); err != nil {
+		panic(err)
+	}
+
+	fmt.Println("strategy id:", response.Id)
 }

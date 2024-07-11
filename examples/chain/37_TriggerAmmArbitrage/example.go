@@ -1,9 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
+
+	_ "embed"
 
 	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	strategytypes "github.com/FluxNFTLabs/sdk-go/chain/modules/strategy/types"
@@ -11,6 +14,7 @@ import (
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	"github.com/cosmos/gogoproto/jsonpb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -59,31 +63,38 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println("sender address:", senderAddress.String())
-	msg := &strategytypes.MsgTriggerStrategies{
-		Sender: senderAddress.String(),
-		Ids:    []string{"e221cd5209228dbdaa446dd0b037d444ca71af42a08e70b07e783a4c72a5aa5e"},
-		Inputs: [][]byte{
-			[]byte(`{"deposit_equally":{"denom":"usdt","amount":"3000000"}}`),
-		},
-		Queries: []*astromeshtypes.FISQueryRequest{
-			{
-				Instructions: []*astromeshtypes.FISQueryInstruction{
-					{
-						Plane:   astromeshtypes.Plane_COSMOS,
-						Action:  astromeshtypes.QueryAction_COSMOS_BANK_BALANCE,
-						Address: nil,
-						Input: [][]byte{
-							[]byte(senderAddress.String()),
-							[]byte("usdt"),
-						},
-					},
-				},
-			},
-		},
+	dir, err := os.Getwd()
+	if err != nil {
+		panic(err)
 	}
 
-	//AsyncBroadcastMsg, SyncBroadcastMsg, QueueBroadcastMsg
+	schema, err := os.ReadFile(dir + "/examples/chain/36_ConfigAmmSolver/schema.json")
+	if err != nil {
+		panic(err)
+	}
+
+	var schemaStruct strategytypes.Schema
+	if err := json.Unmarshal(schema, &schemaStruct); err != nil {
+		panic(err)
+	}
+
+	arbitrageQuery := schemaStruct.Groups[0].Prompts["arbitrage"].Query
+	arbitrageQueryBz, _ := json.Marshal(arbitrageQuery)
+	var fisQueryRequest astromeshtypes.FISQueryRequest
+	if err := jsonpb.UnmarshalString(string(arbitrageQueryBz), &fisQueryRequest); err != nil {
+		panic(err)
+	}
+
+	fmt.Println("sender account:", senderAddress.String())
+	msg := &strategytypes.MsgTriggerStrategies{
+		Sender: senderAddress.String(),
+		Ids:    []string{"e9c9b5d050324513606a8f57e95c85a0b61a6941bca8ee25f85b2ef19b55ba92"},
+		Inputs: [][]byte{
+			[]byte(`{"arbitrage":{"pair":"btc-usdt","amount":"10000000","min_profit":"100000"}}`),
+		},
+		Queries: []*astromeshtypes.FISQueryRequest{&fisQueryRequest},
+	}
+
 	res, err := chainClient.SyncBroadcastMsg(msg)
 	if err != nil {
 		panic(err)
