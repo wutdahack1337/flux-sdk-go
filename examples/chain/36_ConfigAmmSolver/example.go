@@ -72,8 +72,7 @@ func main() {
 		Strategy: strategyBinary,
 		Query:    &types.FISQueryRequest{},
 		TriggerPermission: &strategytypes.PermissionConfig{
-			Type:      strategytypes.AccessType_only_addresses,
-			Addresses: []string{senderAddress.String()},
+			Type: strategytypes.AccessType_anyone,
 		},
 		Metadata: &strategytypes.StrategyMetadata{
 			Name:        "AMM solver wizard",
