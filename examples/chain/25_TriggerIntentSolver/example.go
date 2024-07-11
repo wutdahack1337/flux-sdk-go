@@ -37,7 +37,7 @@ func main() {
 	// init client ctx
 	clientCtx, senderAddress, err := chaintypes.NewClientContext(
 		network.ChainId,
-		"user1",
+		"user2",
 		kr,
 	)
 	if err != nil {
@@ -59,18 +59,19 @@ func main() {
 		panic(err)
 	}
 
+	fmt.Println("sender address:", senderAddress.String())
 	msg := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"49E125F9C1C9B86AF72FE2F985BCCCB0EAB52C59D4685C2A83E7D188E90A44EF"},
+		Ids:    []string{"e221cd5209228dbdaa446dd0b037d444ca71af42a08e70b07e783a4c72a5aa5e"},
 		Inputs: [][]byte{
-			[]byte(`{"withdraw_all_planes":{}}`),
+			[]byte(`{"deposit_equally":{"denom":"usdt","amount":"3000000"}}`),
 		},
 		Queries: []*astromeshtypes.FISQueryRequest{
 			{
 				Instructions: []*astromeshtypes.FISQueryInstruction{
 					{
 						Plane:   astromeshtypes.Plane_COSMOS,
-						Action:  astromeshtypes.QueryAction_COSMOS_ASTROMESH_BALANCE,
+						Action:  astromeshtypes.QueryAction_COSMOS_BANK_BALANCE,
 						Address: nil,
 						Input: [][]byte{
 							[]byte(senderAddress.String()),

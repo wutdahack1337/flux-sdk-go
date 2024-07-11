@@ -78,8 +78,6 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println("query bz:", string(arbitrageQueryBz))
-
 	fmt.Println("sender account:", senderAddress.String())
 	msg := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),

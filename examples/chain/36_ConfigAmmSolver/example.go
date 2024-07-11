@@ -110,5 +110,6 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println("strategy id:", response.Id)
+	fmt.Println("intent solver id:", response.Id)
+	fmt.Println("hint: use this Id to trigger it in examples/chain/37_TriggerAmmArbitrage/example.go !!!")
 }
