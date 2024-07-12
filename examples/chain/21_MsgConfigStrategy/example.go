@@ -78,7 +78,7 @@ func main() {
 					Address: []byte{},
 					Input: [][]byte{
 						[]byte("lux1cml96vmptgw99syqrrz8az79xer2pcgp209sv4,lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx"),
-						[]byte("usdt,lux"),
+						[]byte("lux,lux"),
 					},
 				},
 			},

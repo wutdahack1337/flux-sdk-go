@@ -62,7 +62,7 @@ func main() {
 		Sender: senderAddress.String(),
 		Ids:    []string{"40E0BB3AC954B171883FB15383C159B04D02A6B64000532D18DF7709315DFE97"},
 		Inputs: [][]byte{
-			[]byte(`{"receivers":["lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx","lux1kmmz47pr8h46wcyxw8h3k8s85x0ncykqp0xmgj"]}`),
+			[]byte(`{"receivers":["lux1cml96vmptgw99syqrrz8az79xer2pcgp209sv4","lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx"]}`),
 		},
 	}
 
