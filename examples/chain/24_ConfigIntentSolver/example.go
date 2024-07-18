@@ -25,7 +25,11 @@ var (
 )
 
 func main() {
-	network := common.LoadNetwork("local", "")
+	networkName := "local"
+	if len(os.Args) > 1 {
+		networkName = os.Args[1]
+	}
+	network := common.LoadNetwork(networkName, "")
 	kr, err := keyring.New(
 		"fluxd",
 		"file",
@@ -70,13 +74,13 @@ func main() {
 		Strategy: intentSolverBinary,
 		Query:    &types.FISQueryRequest{},
 		Metadata: &strategytypes.StrategyMetadata{
-			Name:        "Astromesh plane util",
-			Description: "Astromesh transfer intent solver that helps user manage tokens easily",
-			Logo:        "https://media.licdn.com/dms/image/D560BAQG83Lxt5OyW4Q/company-logo_200_200/0/1706516333778?e=1724889600&v=beta&t=_fD4VtBEpNKJ8gESgFOcZyTDrQFlRUfxw1iQD8mItnM",
+			Name:        "Nexus Transfer Solver",
+			Description: "Simplifies financial transfers by allowing retail users to batch multiple requests using easy, human-readable prompts.",
+			Logo:        "https://img.icons8.com/?size=100&id=Wnx66N0cnKa7&format=png&color=000000",
 			Website:     "https://www.astromesh.xyz",
 			Type:        strategytypes.StrategyType_INTENT_SOLVER,
-			Tags:        []string{"helper"},
-			Schema:      `{"groups":[{"name":"transfer helper","prompts":{"withdraw_all_planes":{"template":"withdraw ${denom:string} from planes to cosmos","query":{"instructions":[{"plane":"COSMOS","action":"COSMOS_ASTROMESH_BALANCE","address":"","input":["JHt3YWxsZXR9","JHtkZW5vbX0="]}]}},"deposit_equally":{"template":"deposit ${amount:number} ${denom:string} from cosmos to all planes equally","msg_fields":["amount","denom"],"query":{"instructions":[{"plane":"COSMOS","action":"COSMOS_BANK_BALANCE","address":"","input":["JHt3YWxsZXR9","JHtkZW5vbX0="]}]}}}}]}`,
+			Tags:        strings.Split("Solver, Bank, Utility", ", "),
+			Schema:      `{"groups":[{"name":"Nexus Transfer Solver","prompts":{"withdraw_all_planes":{"template":"withdraw ${denom:string} from planes to cosmos","query":{"instructions":[{"plane":"COSMOS","action":"COSMOS_ASTROMESH_BALANCE","address":"","input":["JHt3YWxsZXR9","JHtkZW5vbX0="]}]}},"deposit_equally":{"template":"deposit ${amount:number} ${denom:string} from cosmos to all planes equally","msg_fields":["amount","denom"],"query":{"instructions":[{"plane":"COSMOS","action":"COSMOS_BANK_BALANCE","address":"","input":["JHt3YWxsZXR9","JHtkZW5vbX0="]}]}}}}]}`,
 		},
 	}
 

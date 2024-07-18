@@ -5,6 +5,8 @@ import (
 	"os"
 	"strings"
 
+	_ "embed"
+
 	"github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	strategytypes "github.com/FluxNFTLabs/sdk-go/chain/modules/strategy/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
@@ -15,8 +17,17 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
+var (
+	//go:embed strategy.wasm
+	strategyBinary []byte
+)
+
 func main() {
-	network := common.LoadNetwork("local", "")
+	networkName := "local"
+	if len(os.Args) > 1 {
+		networkName = os.Args[1]
+	}
+	network := common.LoadNetwork(networkName, "")
 	kr, err := keyring.New(
 		"fluxd",
 		"file",
@@ -54,21 +65,12 @@ func main() {
 		fmt.Println(err)
 	}
 
-	// prepare tx msg
-	dir, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-	bz, err := os.ReadFile(dir + "/examples/chain/21_MsgConfigStrategy/strategy.wasm")
-	if err != nil {
-		panic(err)
-	}
 	fmt.Println("sender: ", senderAddress.String())
 	msg := &strategytypes.MsgConfigStrategy{
 		Sender:   senderAddress.String(),
 		Config:   strategytypes.Config_deploy,
 		Id:       "",
-		Strategy: bz,
+		Strategy: strategyBinary,
 		Query: &types.FISQueryRequest{
 			// track balances of accounts you want to make the amount even
 			Instructions: []*types.FISQueryInstruction{
@@ -88,7 +90,10 @@ func main() {
 			Addresses: []string{senderAddress.String()},
 		},
 		Metadata: &strategytypes.StrategyMetadata{
-			Type: strategytypes.StrategyType_STRATEGY,
+			Description: "Listen to balances change and even out account balance for certain denom",
+			Type:        strategytypes.StrategyType_STRATEGY,
+			Logo:        "https://img.icons8.com/?size=100&id=GRjuzy9lKwQD&format=png&color=000000",
+			Website:     "https://www.astromesh.xyz/",
 		},
 	}
 

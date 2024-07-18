@@ -19,14 +19,20 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-//go:embed amm_solver.wasm
-var strategyBinary []byte
+var (
+	//go:embed amm_solver.wasm
+	strategyBinary []byte
 
-//go:embed schema.json
-var schema []byte
+	//go:embed schema.json
+	schema []byte
+)
 
 func main() {
-	network := common.LoadNetwork("local", "")
+	networkName := "local"
+	if len(os.Args) > 1 {
+		networkName = os.Args[1]
+	}
+	network := common.LoadNetwork(networkName, "")
 	kr, err := keyring.New(
 		"fluxd",
 		"file",
@@ -75,12 +81,12 @@ func main() {
 			Type: strategytypes.AccessType_anyone,
 		},
 		Metadata: &strategytypes.StrategyMetadata{
-			Name:        "AMM solver wizard",
-			Description: "",
-			Logo:        "https://cdn-icons-png.freepik.com/512/8482/8482621.png",
-			Website:     "",
+			Name:        "AMM Solver",
+			Description: "Versatile solver designed to simplify swap and arbitrage operations across all Automated Market Makers (AMMs) in all Planes including Uniswap on EVM, Astroport on WasmVM and Raydium on SVM.\n\ndex_name options: wasm astroport, evm uniswap, svm raydium\npair options: btc-usdt, eth-usdt, sol-usdt",
+			Logo:        "https://img.icons8.com/?size=100&id=DRqSfJR0cb56&format=png&color=000000",
+			Website:     "https://www.astromesh.xyz/",
 			Type:        strategytypes.StrategyType_INTENT_SOLVER,
-			Tags:        []string{"util", "defi"},
+			Tags:        strings.Split("Solver, Uniswap, Astroport, Raydium, DeFi, Arbitrage", ", "),
 			Schema:      string(schema),
 		},
 	}
@@ -110,6 +116,6 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println("intent solver id:", response.Id)
+	fmt.Println("deployed, intent solver id:", response.Id)
 	fmt.Println("hint: use this Id to trigger it in examples/chain/37_TriggerAmmArbitrage/example.go !!!")
 }

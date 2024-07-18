@@ -97,7 +97,7 @@ func ToCosmosMsg(signer string, computeBudget uint64, tx *solana.Transaction) *t
 	}
 
 	return &types.MsgTransaction{
-		Sender:        signer,
+		Signers:       []string{signer},
 		Accounts:      pubkeys,
 		Instructions:  ixs,
 		ComputeBudget: computeBudget,

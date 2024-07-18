@@ -7,6 +7,8 @@ import (
 
 	"cosmossdk.io/math"
 
+	_ "embed"
+
 	"github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	strategytypes "github.com/FluxNFTLabs/sdk-go/chain/modules/strategy/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
@@ -17,8 +19,17 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
+var (
+	//go:embed cron.wasm
+	cronBinary []byte
+)
+
 func main() {
-	network := common.LoadNetwork("local", "")
+	networkName := "local"
+	if len(os.Args) > 1 {
+		networkName = os.Args[1]
+	}
+	network := common.LoadNetwork(networkName, "")
 	kr, err := keyring.New(
 		"fluxd",
 		"file",
@@ -56,21 +67,12 @@ func main() {
 		fmt.Println(err)
 	}
 
-	// prepare tx msg
-	dir, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-	bz, err := os.ReadFile(dir + "/examples/chain/26_MsgConfigCron/cron.wasm")
-	if err != nil {
-		panic(err)
-	}
 	fmt.Println("sender: ", senderAddress.String())
 	msg := &strategytypes.MsgConfigStrategy{
 		Sender:   senderAddress.String(),
 		Config:   strategytypes.Config_deploy,
 		Id:       "",
-		Strategy: bz,
+		Strategy: cronBinary,
 		Query: &types.FISQueryRequest{
 			// track balances of accounts you want to make the amount even
 			Instructions: []*types.FISQueryInstruction{},
@@ -80,19 +82,15 @@ func main() {
 			Addresses: []string{senderAddress.String()},
 		},
 		Metadata: &strategytypes.StrategyMetadata{
-			Name:         "bank cron",
-			Description:  "transfer _ usdt to account _ every block",
-			Logo:         "",
-			Website:      "",
+			Name:         "Bank Cron Demo",
+			Description:  "Transfer _ usdt to account _ at _ interval",
+			Logo:         "https://img.icons8.com/?size=100&id=eXagLnlG4m29&format=png&color=000000",
+			Website:      "https://www.astromesh.xyz/",
 			Type:         strategytypes.StrategyType_CRON,
 			Tags:         []string{"cron", "bank", "util"},
 			Schema:       "",
 			CronGasPrice: math.NewIntFromUint64(500000000),
-			CronInput: `{
-			  "receiver": "lux158ucxjzr6ccrlpmz8z05wylu8tr5eueqcp2afu",
-			  "amount": "1",
-			  "denom": "lux"
-			}`,
+			CronInput:    `{"receiver":"lux158ucxjzr6ccrlpmz8z05wylu8tr5eueqcp2afu","amount":"1","denom":"lux"}`,
 			CronInterval: 2,
 		},
 	}
