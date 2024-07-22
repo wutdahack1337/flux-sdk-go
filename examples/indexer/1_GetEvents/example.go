@@ -6,10 +6,12 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	"github.com/FluxNFTLabs/sdk-go/chain/stream/types"
+	"github.com/FluxNFTLabs/sdk-go/chain/eventstream/types"
+	"github.com/FluxNFTLabs/sdk-go/client/common"
 )
 
 func main() {
+	network := common.LoadNetwork("devnet", "")
 	cc, err := grpc.Dial(network.ChainGrpcEndpoint, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	defer cc.Close()
 	if err != nil {

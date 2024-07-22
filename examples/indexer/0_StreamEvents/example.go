@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	"github.com/FluxNFTLabs/sdk-go/chain/stream/types"
+	"github.com/FluxNFTLabs/sdk-go/chain/eventstream/types"
 )
 
 func main() {
