@@ -22,3 +22,8 @@ type AccountKeeper interface {
 	GetModuleAddress(name string) sdk.AccAddress
 	GetAccount(ctx context.Context, addr sdk.AccAddress) sdk.AccountI
 }
+
+type SvmKeeper interface {
+	GetCosmosAccountLink(ctx context.Context, cosmosAddr []byte) (*AccountLink, bool)
+	GetSvmAccountLink(ctx context.Context, svmPubkey []byte) (*AccountLink, bool)
+}

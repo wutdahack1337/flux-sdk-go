@@ -25,6 +25,7 @@ chain-types:
 
 	cp -r ../fluxd/chain/modules/svm/types/ chain/modules/svm/types
 	cp -r ../fluxd/chain/modules/svm/golana/ chain/modules/svm/golana
+	cp -r ../fluxd/chain/modules/svm/ante/ chain/modules/svm/ante
 
 	cp -r ../fluxd/chain/modules/astromesh/types/ chain/modules/astromesh/types
 

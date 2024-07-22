@@ -2,18 +2,16 @@ package ante
 
 import (
 	"context"
-	"fmt"
-
-	svmkeeper "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/keeper"
-
 	corestoretypes "cosmossdk.io/core/store"
 	"cosmossdk.io/errors"
 	storetypes "cosmossdk.io/store/types"
 	circuitante "cosmossdk.io/x/circuit/ante"
 	circuitkeeper "cosmossdk.io/x/circuit/keeper"
+	"fmt"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	svmante "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/ante"
+	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
 	log "github.com/InjectiveLabs/suplog"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	"github.com/cosmos/cosmos-sdk/crypto/types/multisig"
@@ -81,7 +79,7 @@ type HandlerOptions struct {
 	TXCounterStoreService corestoretypes.KVStoreService
 	CircuitKeeper         *circuitkeeper.Keeper
 
-	SvmKeeper *svmkeeper.Keeper
+	SvmKeeper svmtypes.SvmKeeper
 }
 
 // NewAnteHandler constructor
