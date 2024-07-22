@@ -24,9 +24,9 @@ import (
 	ethcrypto "github.com/ethereum/go-ethereum/crypto"
 	ethlibsecp256k1 "github.com/ethereum/go-ethereum/crypto/secp256k1"
 
-	"github.com/FluxNFTLabs/sdk-go/chain/app/ante/typeddata"
+	"github.com/FluxNFTLabs/fluxd/chain/app/ante/typeddata"
 
-	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
+	chaintypes "github.com/FluxNFTLabs/fluxd/chain/types"
 )
 
 // Verify all signatures for a tx and return an error if any are invalid. Note,
@@ -194,10 +194,6 @@ func VerifySignatureEIP712(
 						}
 
 						feeDelegated = true
-					} else {
-						// allow using EIP712 without fee delegation
-						// TODO: This is supposed to NOT return nil, which will skip signature verification
-						return nil
 					}
 				}
 			}

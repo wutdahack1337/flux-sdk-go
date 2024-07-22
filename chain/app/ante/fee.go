@@ -11,7 +11,7 @@ import (
 	authante "github.com/cosmos/cosmos-sdk/x/auth/ante"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
+	chaintypes "github.com/FluxNFTLabs/fluxd/chain/types"
 )
 
 // DeductFeeDecorator deducts fees from the first signer of the tx
