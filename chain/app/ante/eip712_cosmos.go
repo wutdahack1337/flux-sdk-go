@@ -17,7 +17,7 @@ import (
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/pkg/errors"
 
-	"github.com/FluxNFTLabs/fluxd/chain/app/ante/typeddata"
+	"github.com/FluxNFTLabs/sdk-go/chain/app/ante/typeddata"
 )
 
 // WrapTxToEIP712 is an ultimate method that wraps Amino-encoded Cosmos Tx JSON data

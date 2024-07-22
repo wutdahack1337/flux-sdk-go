@@ -9,11 +9,11 @@ chain-types:
 	chain/modules/astromesh chain/modules/astromesh/types \
 	chain/modules/oracle chain/modules/oracle/types \
 	chain/modules/strategy chain/modules/strategy/types \
-	chain/stream chain/stream/types
+	chain/eventstream chain/eventstream/types
 
 	cp -r ../fluxd/chain/types/ chain/types
 	cp -r ../fluxd/chain/app/ante/ chain/app/ante
-	cp -r ../fluxd/chain/stream/types/ chain/stream/types
+	cp -r ../fluxd/chain/eventstream/types/ chain/eventstream/types
 	cp -r ../fluxd/chain/indexer/ chain/indexer
 
 	cp -r ../fluxd/chain/modules/fnft/types/ chain/modules/fnft/types

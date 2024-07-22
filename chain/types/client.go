@@ -1,7 +1,7 @@
 package types
 
 import (
-	evmtypes "github.com/FluxNFTLabs/fluxd/chain/modules/evm/types"
+	evmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/evm/types"
 	"github.com/pkg/errors"
 	"os"
 
@@ -32,7 +32,7 @@ import (
 	ibcapplicationtypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
 	ibccoretypes "github.com/cosmos/ibc-go/v8/modules/core/types"
 
-	fnfttypes "github.com/FluxNFTLabs/fluxd/chain/modules/fnft/types"
+	fnfttypes "github.com/FluxNFTLabs/sdk-go/chain/modules/fnft/types"
 )
 
 type EncodingConfig struct {

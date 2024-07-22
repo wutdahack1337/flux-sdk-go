@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	svmkeeper "github.com/FluxNFTLabs/fluxd/chain/modules/svm/keeper"
+	svmkeeper "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/keeper"
 
 	corestoretypes "cosmossdk.io/core/store"
 	"cosmossdk.io/errors"
@@ -13,7 +13,7 @@ import (
 	circuitkeeper "cosmossdk.io/x/circuit/keeper"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	svmante "github.com/FluxNFTLabs/fluxd/chain/modules/svm/ante"
+	svmante "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/ante"
 	log "github.com/InjectiveLabs/suplog"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	"github.com/cosmos/cosmos-sdk/crypto/types/multisig"
