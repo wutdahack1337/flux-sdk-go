@@ -4,7 +4,9 @@ import (
 	"context"
 	signingv1beta1 "cosmossdk.io/api/cosmos/tx/signing/v1beta1"
 	"github.com/FluxNFTLabs/sdk-go/chain/modules/svm/golana"
+	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
+	"github.com/FluxNFTLabs/sdk-go/client/common"
 	"github.com/gagliardetto/solana-go"
 	"github.com/gagliardetto/solana-go/programs/system"
 
@@ -16,14 +18,16 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	signingtypes "github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
-	"github.com/ethereum/go-ethereum/common"
+	ethcommon "github.com/ethereum/go-ethereum/common"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 func main() {
+	network := common.LoadNetwork("local", "")
+
 	// prepare info
-	senderPrivKey := ethsecp256k1.PrivKey{Key: common.Hex2Bytes("88CBEAD91AEE890D27BF06E003ADE3D4E952427E88F88D31D61D3EF5E5D54305")}
+	senderPrivKey := ethsecp256k1.PrivKey{Key: ethcommon.Hex2Bytes("88CBEAD91AEE890D27BF06E003ADE3D4E952427E88F88D31D61D3EF5E5D54305")}
 	senderPubKey := senderPrivKey.PubKey()
 	senderAddr := sdk.AccAddress(senderPubKey.Address().Bytes())
 
@@ -56,10 +60,18 @@ func main() {
 	}
 	upgradableLoaderId := solana.BPFLoaderUpgradeableProgramID
 
+	// define space and rent-exempt lamports
+	programIdSize := uint64(36)
+	programIdLamports := svmtypes.GetRentExemptLamportAmount(programIdSize)
+	programBufferIdSize := uint64(69000 + 48)
+	programBufferLamports := svmtypes.GetRentExemptLamportAmount(programBufferIdSize)
+	fmt.Println("program pubkey:", programKeypair.PublicKey().String(), programIdLamports)
+	fmt.Println("program buffer pubkey:", programBufferKeypair.PublicKey().String(), programBufferLamports)
+
 	// create instruction
 	svmTxBuilder := solana.NewTransactionBuilder()
-	svmTxBuilder.AddInstruction(system.NewCreateAccountInstruction(0, 36, upgradableLoaderId, senderId, programKeypair.PublicKey()).Build())
-	svmTxBuilder.AddInstruction(system.NewCreateAccountInstruction(0, uint64(69000)+48, upgradableLoaderId, senderId, programBufferKeypair.PublicKey()).Build())
+	svmTxBuilder.AddInstruction(system.NewCreateAccountInstruction(programIdLamports, programIdSize, upgradableLoaderId, senderId, programKeypair.PublicKey()).Build())
+	svmTxBuilder.AddInstruction(system.NewCreateAccountInstruction(programBufferLamports, programBufferIdSize, upgradableLoaderId, senderId, programBufferKeypair.PublicKey()).Build())
 	tx, err := svmTxBuilder.Build()
 	msg := golana.ToCosmosMsg([]string{senderAddr.String()}, 1000000, tx)
 

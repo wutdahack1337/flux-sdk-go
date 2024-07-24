@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cosmossdk.io/math"
 	"fmt"
 	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
@@ -9,6 +10,7 @@ import (
 	"github.com/cosmos/btcutil/base58"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"os"
@@ -67,6 +69,10 @@ func main() {
 		Sender:       senderAddress.String(),
 		SvmPubkey:    programBufferPrivKey.PubKey().Bytes(),
 		SvmSignature: sig,
+		Amount: sdk.Coin{
+			Denom:  "lux",
+			Amount: math.NewIntFromUint64(1),
+		},
 	}
 
 	//AsyncBroadcastMsg, SyncBroadcastMsg, QueueBroadcastMsg
