@@ -50,7 +50,6 @@ func TxCallbackWrapperNew() *C.golana_tx_callback {
 }
 
 type VmKeeper interface {
-	DefaultLamportForRentExempt() uint64
 	GetDefaultAccount(accBz []byte) *types.Account
 	KVGetAccount(ctx context.Context, accAddr []byte) (*types.Account, bool)
 	KVSetAccount(ctx context.Context, account *types.Account)
@@ -170,8 +169,14 @@ func (cb *TxCallbackContext) GetAccount(pubkey []byte) TransactionAccount {
 }
 
 func (cb *TxCallbackContext) SetAccount(account *types.Account) {
-	if account.Lamports == 0 {
-		account.Lamports = cb.vmKeeper.DefaultLamportForRentExempt()
+	/*
+		svm allows account creation with
+		0 lamports / 0 data => rent exempted
+		0 lamports / n data => not rent exempted => will be reclaimed right away by solana
+	*/
+	// we can stay in line with solana behavior here by simply skipping persisting data when lamports < rent exemption amount
+	if account.Lamports < types.GetRentExemptLamportAmount(uint64(len(account.Data))) {
+		return
 	}
 	cb.vmKeeper.KVSetAccount(cb.ctx, account)
 	cb.vmKeeper.KVSetProgramAccount(cb.ctx, account.Owner, account.Pubkey)

@@ -19,10 +19,6 @@ const (
 	HashLen       = 32
 	EthAddressLen = 20
 
-	// in solana DEFAULT_LAMPORTS_PER_BYTE_YEAR = ~3480 lamports, number of year for being rent exempt is 2
-	// => 10MB needs 3480 * 10 * 1024 * 1024 * 2, multiplied to three to have a redundant value
-	DefaultLamportForRentExempt uint64 = 3480 * 10 * 1024 * 1024 * 3
-
 	// Maximum cross-program invocation and instructions per transaction
 	DefaultMaxInstructionTraceLength uint64 = 2048
 
@@ -36,6 +32,11 @@ const (
 
 	DefaultAccountStorageOverhead uint64 = 128
 )
+
+// rent exempt amount  = lamports per byte per year * size in byte * 2 years
+func GetRentExemptLamportAmount(size uint64) uint64 {
+	return 3480 * size * 2
+}
 
 var (
 	TransientStoreKey = fmt.Sprintf("transient_%s", StoreKey)

@@ -61,7 +61,7 @@ func ComposeProgramDataAccounts(programPubkey solana.PublicKey, loaderOwner sola
 	res = append(res, &types.Account{
 		Pubkey:     programPubkey[:],
 		Owner:      loaderOwner[:],
-		Lamports:   types.DefaultLamportForRentExempt,
+		Lamports:   types.GetRentExemptLamportAmount(uint64(len(programDataBz))),
 		Data:       programDataBz,
 		Executable: true,
 		RentEpoch:  0,
@@ -81,7 +81,7 @@ func ComposeProgramDataAccounts(programPubkey solana.PublicKey, loaderOwner sola
 	res = append(res, &types.Account{
 		Pubkey:     programExecutableDataPubkey[:],
 		Owner:      loaderOwner[:],
-		Lamports:   types.DefaultLamportForRentExempt,
+		Lamports:   types.GetRentExemptLamportAmount(uint64(len(programExecutableMetaBz) + len(programBz))),
 		Data:       append(programExecutableMetaBz, programBz...),
 		Executable: false, // only program account has executable flag = true
 		RentEpoch:  0,
