@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"os"
 	"strings"
 
@@ -60,7 +62,7 @@ func main() {
 
 	msg := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"40E0BB3AC954B171883FB15383C159B04D02A6B64000532D18DF7709315DFE97"},
+		Ids:    []string{"3aa5950ba84793c22beffbe095278a3626fefdb5f2dc6c62042faa1da7a272bf"},
 		Inputs: [][]byte{
 			[]byte(`{"receivers":["lux1cml96vmptgw99syqrrz8az79xer2pcgp209sv4","lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx"]}`),
 		},
@@ -72,5 +74,20 @@ func main() {
 		fmt.Println(err)
 	}
 
-	fmt.Println(res)
+	// decode result to get contract address
+	hexResp, err := hex.DecodeString(res.TxResponse.Data)
+	if err != nil {
+		panic(err)
+	}
+	var txData sdk.TxMsgData
+	if err := txData.Unmarshal(hexResp); err != nil {
+		panic(err)
+	}
+
+	var response strategytypes.MsgTriggerStrategiesResponse
+	if err := response.Unmarshal(txData.MsgResponses[0].Value); err != nil {
+		panic(err)
+	}
+
+	fmt.Println(response)
 }

@@ -62,7 +62,7 @@ func main() {
 	fmt.Println("sender address:", senderAddress.String())
 	msg := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"e221cd5209228dbdaa446dd0b037d444ca71af42a08e70b07e783a4c72a5aa5e"},
+		Ids:    []string{"d0eb2681ac5fe4f07c4d97a0f9a11daf1a2acb9007bb5c3ac5e123c66c40c0cf"},
 		Inputs: [][]byte{
 			[]byte(`{"deposit_equally":{"denom":"usdt","amount":"3000000"}}`),
 		},
@@ -89,6 +89,7 @@ func main() {
 		panic(err)
 	}
 
+	fmt.Println(res.TxResponse.Data)
 	fmt.Println("tx hash:", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 }

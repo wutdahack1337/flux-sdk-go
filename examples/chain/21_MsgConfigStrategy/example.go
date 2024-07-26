@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"os"
 	"strings"
 
@@ -104,4 +106,21 @@ func main() {
 	}
 
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
+	hexResp, err := hex.DecodeString(res.TxResponse.Data)
+	if err != nil {
+		panic(err)
+	}
+
+	// decode result to get contract address
+	var txData sdk.TxMsgData
+	if err := txData.Unmarshal(hexResp); err != nil {
+		panic(err)
+	}
+
+	var response strategytypes.MsgConfigStrategyResponse
+	if err := response.Unmarshal(txData.MsgResponses[0].Value); err != nil {
+		panic(err)
+	}
+
+	fmt.Println("strategy id:", response.Id)
 }
