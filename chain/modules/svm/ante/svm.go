@@ -3,13 +3,11 @@ package ante
 import (
 	errorsmod "cosmossdk.io/errors"
 	"fmt"
+	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
 	"github.com/cosmos/btcutil/base58"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
-	"github.com/gagliardetto/solana-go"
-
-	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/gogoproto/proto"
 )
 
@@ -81,48 +79,21 @@ func (svd SvmDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, ne
 	}
 
 	for _, ix := range svmMsg.Instructions {
-		// current instruction is create new account
-		if svmMsg.Accounts[ix.ProgramIndex[0]] == svmtypes.SystemProgramId.String() && ix.Data[0] == 0 {
-			valid := false
-			for _, ixAcc := range ix.Accounts {
-				if ixAcc.IsSigner {
-					// the signer must be valid on-curve pubkey
-					pubkey, err := solana.PublicKeyFromBase58(svmMsg.Accounts[ixAcc.CallerIndex])
-					if err != nil {
-						return ctx, fmt.Errorf("invalid signer pubkey: %s", svmMsg.Accounts[ixAcc.CallerIndex])
-					}
-
-					if !pubkey.IsOnCurve() {
-						return ctx, fmt.Errorf("signer must be on curve: %s", svmMsg.Accounts[ixAcc.CallerIndex])
-					}
-
-					// verify sender link appears in signer map, always the 1st account
-					sender := signerLinks[0]
-					if base58.Encode(sender.To) == svmMsg.Accounts[ixAcc.CallerIndex] && signerMap[string(sender.From)] {
-						valid = true
-					}
+		// for all instructions
+		for _, ixAcc := range ix.Accounts {
+			if ixAcc.IsSigner {
+				// account link must exist
+				link, exist := svd.k.GetSvmAccountLink(ctx, base58.Decode(svmMsg.Accounts[ixAcc.CallerIndex]))
+				if !exist {
+					return ctx, fmt.Errorf("ix account %s is not linked to any cosmos addr", svmMsg.Accounts[ixAcc.CallerIndex])
 				}
-			}
-
-			if !valid {
-				return ctx, fmt.Errorf("sender cosmos account doesn't appear in signer list")
-			}
-		} else {
-			// for all other instructions
-			for _, ixAcc := range ix.Accounts {
-				if ixAcc.IsSigner {
-					// account link must exist
-					link, exist := svd.k.GetSvmAccountLink(ctx, base58.Decode(svmMsg.Accounts[ixAcc.CallerIndex]))
-					if !exist {
-						return ctx, fmt.Errorf("ix account %s is not linked to any cosmos addr", svmMsg.Accounts[ixAcc.CallerIndex])
-					}
-					// account must appear in signer map
-					if !signerMap[string(link.To)] {
-						return ctx, fmt.Errorf("ix account %s linked cosmos addr %s doesn't appear in signer map", svmMsg.Accounts[ixAcc.CallerIndex], sdk.AccAddress(link.To).String())
-					}
+				// account must appear in signer map
+				if !signerMap[string(link.To)] {
+					return ctx, fmt.Errorf("ix account %s linked cosmos addr %s doesn't appear in signer map", svmMsg.Accounts[ixAcc.CallerIndex], sdk.AccAddress(link.To).String())
 				}
 			}
 		}
+
 	}
 
 	return next(ctx, tx, simulate)

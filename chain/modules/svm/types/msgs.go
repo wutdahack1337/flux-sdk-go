@@ -1,7 +1,6 @@
 package types
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -20,12 +19,6 @@ func (m *MsgLinkSVMAccount) ValidateBasic() error {
 	}
 	if len(m.SvmSignature) != 64 {
 		return fmt.Errorf("invalid length for svm signature")
-	}
-	if m.Amount.Denom != "lux" {
-		return fmt.Errorf("invalid denom, should be lux")
-	}
-	if m.Amount.Amount.LTE(sdkmath.ZeroInt()) {
-		return fmt.Errorf("invalid amount, should be positive value")
 	}
 	return nil
 }
