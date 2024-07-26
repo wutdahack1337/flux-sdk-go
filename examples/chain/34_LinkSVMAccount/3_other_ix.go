@@ -9,22 +9,27 @@ import (
 	"github.com/FluxNFTLabs/sdk-go/chain/modules/svm/golana"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
+	"github.com/FluxNFTLabs/sdk-go/client/common"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ethsecp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	signingtypes "github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
-	"github.com/ethereum/go-ethereum/common"
+	ethcommon "github.com/ethereum/go-ethereum/common"
 	"github.com/gagliardetto/solana-go"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 func main() {
+	network := common.LoadNetwork("local", "")
+
 	// prepare info
-	senderPrivKey := ethsecp256k1.PrivKey{Key: common.Hex2Bytes("88cbead91aee890d27bf06e003ade3d4e952427e88f88d31d61d3ef5e5d54305")}
+	// user1
+	senderPrivKey := ethsecp256k1.PrivKey{Key: ethcommon.Hex2Bytes("88cbead91aee890d27bf06e003ade3d4e952427e88f88d31d61d3ef5e5d54305")}
 	senderPubKey := senderPrivKey.PubKey()
 	senderAddr := sdk.AccAddress(senderPubKey.Address().Bytes())
-	programBufferPrivKey := ethsecp256k1.PrivKey{Key: common.Hex2Bytes("741de4f8988ea941d3ff0287911ca4074e62b7d45c991a51186455366f10b544")}
+	// user3
+	programBufferPrivKey := ethsecp256k1.PrivKey{Key: ethcommon.Hex2Bytes("39a4c898dda351d54875d5ebb3e1c451189116faa556c3c04adc860dd1000608")}
 	programBufferPubkey := programBufferPrivKey.PubKey()
 	programBufferAddr := sdk.AccAddress(programBufferPubkey.Address().Bytes())
 

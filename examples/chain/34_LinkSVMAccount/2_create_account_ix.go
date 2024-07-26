@@ -26,10 +26,18 @@ import (
 func main() {
 	network := common.LoadNetwork("local", "")
 
-	// prepare info
-	senderPrivKey := ethsecp256k1.PrivKey{Key: ethcommon.Hex2Bytes("88CBEAD91AEE890D27BF06E003ADE3D4E952427E88F88D31D61D3EF5E5D54305")}
+	// prepare users
+	senderPrivKey := ethsecp256k1.PrivKey{Key: ethcommon.Hex2Bytes("88cbead91aee890d27bf06e003ade3d4e952427e88f88d31d61d3ef5e5d54305")}
 	senderPubKey := senderPrivKey.PubKey()
 	senderAddr := sdk.AccAddress(senderPubKey.Address().Bytes())
+
+	user2PrivKey := ethsecp256k1.PrivKey{Key: ethcommon.Hex2Bytes("741de4f8988ea941d3ff0287911ca4074e62b7d45c991a51186455366f10b544")}
+	user2PubKey := user2PrivKey.PubKey()
+	user2Addr := sdk.AccAddress(user2PubKey.Address().Bytes())
+
+	user3PrivKey := ethsecp256k1.PrivKey{Key: ethcommon.Hex2Bytes("39a4c898dda351d54875d5ebb3e1c451189116faa556c3c04adc860dd1000608")}
+	user3PubKey := user3PrivKey.PubKey()
+	user3Addr := sdk.AccAddress(user3PubKey.Address().Bytes())
 
 	// init grpc connection
 	cc, err := grpc.Dial(network.ChainGrpcEndpoint, grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -73,10 +81,24 @@ func main() {
 	svmTxBuilder.AddInstruction(system.NewCreateAccountInstruction(programIdLamports, programIdSize, upgradableLoaderId, senderId, programKeypair.PublicKey()).Build())
 	svmTxBuilder.AddInstruction(system.NewCreateAccountInstruction(programBufferLamports, programBufferIdSize, upgradableLoaderId, senderId, programBufferKeypair.PublicKey()).Build())
 	tx, err := svmTxBuilder.Build()
-	msg := golana.ToCosmosMsg([]string{senderAddr.String()}, 1000000, tx)
+	msg := golana.ToCosmosMsg([]string{
+		senderAddr.String(),
+		user2Addr.String(),
+		user3Addr.String()},
+		1000000,
+		tx,
+	)
 
 	// init tx builder
 	senderNum, senderSeq, err := clientCtx.AccountRetriever.GetAccountNumberSequence(clientCtx, senderAddr)
+	if err != nil {
+		panic(err)
+	}
+	user2Num, user2Seq, err := clientCtx.AccountRetriever.GetAccountNumberSequence(clientCtx, user2Addr)
+	if err != nil {
+		panic(err)
+	}
+	user3Num, user3Seq, err := clientCtx.AccountRetriever.GetAccountNumberSequence(clientCtx, user3Addr)
 	if err != nil {
 		panic(err)
 	}
@@ -100,6 +122,22 @@ func main() {
 		},
 		Sequence: senderSeq,
 	}
+	user2SigV2 := signingtypes.SignatureV2{
+		PubKey: user2PubKey,
+		Data: &signingtypes.SingleSignatureData{
+			SignMode:  signingtypes.SignMode_SIGN_MODE_DIRECT,
+			Signature: nil,
+		},
+		Sequence: user2Seq,
+	}
+	user3SigV2 := signingtypes.SignatureV2{
+		PubKey: user3PubKey,
+		Data: &signingtypes.SingleSignatureData{
+			SignMode:  signingtypes.SignMode_SIGN_MODE_DIRECT,
+			Signature: nil,
+		},
+		Sequence: user3Seq,
+	}
 
 	// build tx
 	txBuilder.SetMsgs(msg)
@@ -107,15 +145,14 @@ func main() {
 	txBuilder.SetTimeoutHeight(timeoutHeight)
 	txBuilder.SetMemo("abc")
 	txBuilder.SetFeeAmount(fee)
-	txBuilder.SetSignatures(senderSigV2)
+	txBuilder.SetSignatures(senderSigV2, user2SigV2, user3SigV2)
 
 	// build sign data
 	signerData := signing.SignerData{
 		ChainID:       clientCtx.ChainID,
 		AccountNumber: senderNum,
 		Sequence:      senderSeq,
-		//PubKey:        senderPubKey,
-		Address: senderAddr.String(),
+		Address:       senderAddr.String(),
 	}
 	data, err := txConfig.SignModeHandler().GetSignBytes(
 		context.Background(),
@@ -131,9 +168,51 @@ func main() {
 		panic(err)
 	}
 
+	signerData = signing.SignerData{
+		ChainID:       clientCtx.ChainID,
+		AccountNumber: user2Num,
+		Sequence:      user2Seq,
+		Address:       user2Addr.String(),
+	}
+	data, err = txConfig.SignModeHandler().GetSignBytes(
+		context.Background(),
+		signingv1beta1.SignMode_SIGN_MODE_DIRECT,
+		signerData,
+		txBuilder.(authsigning.V2AdaptableTx).GetSigningTxData(),
+	)
+	if err != nil {
+		panic(err)
+	}
+	user2Sig, err := user2PrivKey.Sign(data)
+	if err != nil {
+		panic(err)
+	}
+
+	signerData = signing.SignerData{
+		ChainID:       clientCtx.ChainID,
+		AccountNumber: user3Num,
+		Sequence:      user3Seq,
+		Address:       user3Addr.String(),
+	}
+	data, err = txConfig.SignModeHandler().GetSignBytes(
+		context.Background(),
+		signingv1beta1.SignMode_SIGN_MODE_DIRECT,
+		signerData,
+		txBuilder.(authsigning.V2AdaptableTx).GetSigningTxData(),
+	)
+	if err != nil {
+		panic(err)
+	}
+	user3Sig, err := user3PrivKey.Sign(data)
+	if err != nil {
+		panic(err)
+	}
+
 	// set signatures again
 	senderSigV2.Data.(*signingtypes.SingleSignatureData).Signature = senderSig
-	txBuilder.SetSignatures(senderSigV2)
+	user2SigV2.Data.(*signingtypes.SingleSignatureData).Signature = user2Sig
+	user3SigV2.Data.(*signingtypes.SingleSignatureData).Signature = user3Sig
+	txBuilder.SetSignatures(senderSigV2, user2SigV2, user3SigV2)
 
 	// broadcast tx
 	txBytes, err := clientCtx.TxConfig.TxEncoder()(txBuilder.GetTx())
