@@ -2,16 +2,19 @@ package main
 
 import (
 	"context"
+	"cosmossdk.io/collections"
 	"fmt"
 	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 func main() {
+	network := common.LoadNetwork("local", "")
 	cfg := sdk.GetConfig()
 	chaintypes.SetBech32Prefixes(cfg)
 	chaintypes.SetBip44CoinType(cfg)
@@ -24,7 +27,6 @@ func main() {
 	}
 
 	// init client ctx
-	network := common.LoadNetwork("local", "")
 	clientCtx, _, err := chaintypes.NewClientContext(
 		network.ChainId,
 		"",
@@ -39,13 +41,17 @@ func main() {
 	astromeshClient := astromeshtypes.NewQueryClient(cc)
 
 	// query
+	keypairCodec := collections.PairKeyCodec(sdk.AccAddressKey, collections.StringKey)
+	addr := sdk.MustAccAddressFromBech32("lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx")
+	key, _ := collections.EncodeKeyWithPrefix(banktypes.BalancesPrefix, keypairCodec, collections.Join(addr, "lux"))
 	fisReq := &astromeshtypes.FISQueryRequest{Instructions: []*astromeshtypes.FISQueryInstruction{
 		{
 			Plane:   astromeshtypes.Plane_COSMOS,
-			Action:  astromeshtypes.QueryAction_COSMOS_QUERY,
+			Action:  astromeshtypes.QueryAction_COSMOS_KVSTORE,
 			Address: []byte{},
 			Input: [][]byte{
-				[]byte("/cosmos/bank/v1beta1/balances/lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx"),
+				[]byte("bank"),
+				key,
 			},
 		},
 	}}
