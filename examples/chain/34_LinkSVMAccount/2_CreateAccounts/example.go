@@ -226,5 +226,6 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println(txRes)
+	fmt.Println("txHash:", txRes.TxResponse.TxHash)
+	fmt.Println("gas used/want:", txRes.TxResponse.GasUsed, "/", txRes.TxResponse.GasWanted)
 }

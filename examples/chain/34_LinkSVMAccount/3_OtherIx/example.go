@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
+	"fmt"
+
 	signingv1beta1 "cosmossdk.io/api/cosmos/tx/signing/v1beta1"
 	sdkmath "cosmossdk.io/math"
 	"cosmossdk.io/x/tx/signing"
-	"fmt"
 	"github.com/FluxNFTLabs/sdk-go/chain/modules/svm/golana"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
@@ -180,5 +181,6 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println(txRes)
+	fmt.Println("txHash:", txRes.TxResponse.TxHash)
+	fmt.Println("gas used/want:", txRes.TxResponse.GasUsed, "/", txRes.TxResponse.GasWanted)
 }
