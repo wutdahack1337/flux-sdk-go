@@ -2,6 +2,7 @@ package types
 
 import (
 	"context"
+
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	evmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/evm/types"
 	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
@@ -49,4 +50,5 @@ type SvmKeeper interface {
 	KVGetAccount(ctx context.Context, accAddr []byte) (*svmtypes.Account, bool)
 	KVSetAccount(ctx context.Context, account *svmtypes.Account)
 	SvmExecute(ctx sdk.Context, msg *svmtypes.MsgTransaction) (*svmtypes.MsgTransactionResponse, error)
+	GetCosmosAccountLink(ctx context.Context, cosmosAddr []byte) (*svmtypes.AccountLink, bool)
 }

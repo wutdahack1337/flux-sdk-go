@@ -26,16 +26,17 @@ const (
 	// It's same as EVM call depth
 	DefaultMaxInvokeStackHeight uint64 = 5
 
-	DefaultLamportsPerByteYear uint64  = 1000000000 / 100 * 365 / (1024 * 1024)
+	DefaultLamportsPerByteYear uint64  = 1000000000 * 365 / 100 / (1024 * 1024)
 	DefaultExemptionThreshold  float64 = 2.0
 	DefaultBurnPercent         byte    = 50
 
 	DefaultAccountStorageOverhead uint64 = 128
 )
 
-// rent exempt amount  = lamports per byte per year * size in byte * 2 years
+// rent exempt amount  = lamports per byte per year * (DefaultAccountStorageOverhead+size in byte) * 2 years
+// see solana Rent::minimum_balance
 func GetRentExemptLamportAmount(size uint64) uint64 {
-	return 3480 * size * 2
+	return 3480 * (DefaultAccountStorageOverhead + size) * 2
 }
 
 var (

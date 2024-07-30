@@ -205,42 +205,231 @@ func (m *ProgramAccountsResponse) GetAddresses() []string {
 	return nil
 }
 
+type CosmosAccountLinkRequest struct {
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+func (m *CosmosAccountLinkRequest) Reset()         { *m = CosmosAccountLinkRequest{} }
+func (m *CosmosAccountLinkRequest) String() string { return proto.CompactTextString(m) }
+func (*CosmosAccountLinkRequest) ProtoMessage()    {}
+func (*CosmosAccountLinkRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_99679498a27461b0, []int{4}
+}
+func (m *CosmosAccountLinkRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CosmosAccountLinkRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CosmosAccountLinkRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CosmosAccountLinkRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CosmosAccountLinkRequest.Merge(m, src)
+}
+func (m *CosmosAccountLinkRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *CosmosAccountLinkRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_CosmosAccountLinkRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CosmosAccountLinkRequest proto.InternalMessageInfo
+
+func (m *CosmosAccountLinkRequest) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+type CosmosAccountLinkResponse struct {
+	SvmAddress string `protobuf:"bytes,1,opt,name=svm_address,json=svmAddress,proto3" json:"svm_address,omitempty"`
+}
+
+func (m *CosmosAccountLinkResponse) Reset()         { *m = CosmosAccountLinkResponse{} }
+func (m *CosmosAccountLinkResponse) String() string { return proto.CompactTextString(m) }
+func (*CosmosAccountLinkResponse) ProtoMessage()    {}
+func (*CosmosAccountLinkResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_99679498a27461b0, []int{5}
+}
+func (m *CosmosAccountLinkResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CosmosAccountLinkResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CosmosAccountLinkResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CosmosAccountLinkResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CosmosAccountLinkResponse.Merge(m, src)
+}
+func (m *CosmosAccountLinkResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *CosmosAccountLinkResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_CosmosAccountLinkResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CosmosAccountLinkResponse proto.InternalMessageInfo
+
+func (m *CosmosAccountLinkResponse) GetSvmAddress() string {
+	if m != nil {
+		return m.SvmAddress
+	}
+	return ""
+}
+
+type SvmAccountLinkRequest struct {
+	// svm address in base58
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+func (m *SvmAccountLinkRequest) Reset()         { *m = SvmAccountLinkRequest{} }
+func (m *SvmAccountLinkRequest) String() string { return proto.CompactTextString(m) }
+func (*SvmAccountLinkRequest) ProtoMessage()    {}
+func (*SvmAccountLinkRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_99679498a27461b0, []int{6}
+}
+func (m *SvmAccountLinkRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SvmAccountLinkRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SvmAccountLinkRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SvmAccountLinkRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SvmAccountLinkRequest.Merge(m, src)
+}
+func (m *SvmAccountLinkRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *SvmAccountLinkRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_SvmAccountLinkRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SvmAccountLinkRequest proto.InternalMessageInfo
+
+func (m *SvmAccountLinkRequest) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+type SvmAccountLinkResponse struct {
+	CosmosAddress string `protobuf:"bytes,1,opt,name=cosmos_address,json=cosmosAddress,proto3" json:"cosmos_address,omitempty"`
+}
+
+func (m *SvmAccountLinkResponse) Reset()         { *m = SvmAccountLinkResponse{} }
+func (m *SvmAccountLinkResponse) String() string { return proto.CompactTextString(m) }
+func (*SvmAccountLinkResponse) ProtoMessage()    {}
+func (*SvmAccountLinkResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_99679498a27461b0, []int{7}
+}
+func (m *SvmAccountLinkResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SvmAccountLinkResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SvmAccountLinkResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SvmAccountLinkResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SvmAccountLinkResponse.Merge(m, src)
+}
+func (m *SvmAccountLinkResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *SvmAccountLinkResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_SvmAccountLinkResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SvmAccountLinkResponse proto.InternalMessageInfo
+
+func (m *SvmAccountLinkResponse) GetCosmosAddress() string {
+	if m != nil {
+		return m.CosmosAddress
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*AccountRequest)(nil), "flux.svm.v1beta1.AccountRequest")
 	proto.RegisterType((*AccountResponse)(nil), "flux.svm.v1beta1.AccountResponse")
 	proto.RegisterType((*ProgramAccountsRequest)(nil), "flux.svm.v1beta1.ProgramAccountsRequest")
 	proto.RegisterType((*ProgramAccountsResponse)(nil), "flux.svm.v1beta1.ProgramAccountsResponse")
+	proto.RegisterType((*CosmosAccountLinkRequest)(nil), "flux.svm.v1beta1.CosmosAccountLinkRequest")
+	proto.RegisterType((*CosmosAccountLinkResponse)(nil), "flux.svm.v1beta1.CosmosAccountLinkResponse")
+	proto.RegisterType((*SvmAccountLinkRequest)(nil), "flux.svm.v1beta1.SvmAccountLinkRequest")
+	proto.RegisterType((*SvmAccountLinkResponse)(nil), "flux.svm.v1beta1.SvmAccountLinkResponse")
 }
 
 func init() { proto.RegisterFile("flux/svm/v1beta1/query.proto", fileDescriptor_99679498a27461b0) }
 
 var fileDescriptor_99679498a27461b0 = []byte{
-	// 396 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x92, 0x4f, 0x6b, 0xe2, 0x40,
-	0x18, 0xc6, 0x8d, 0xcb, 0xae, 0x38, 0x0b, 0xeb, 0x32, 0x87, 0x5d, 0x37, 0x48, 0x70, 0xb3, 0x2c,
-	0x58, 0x5b, 0x32, 0xf8, 0x07, 0x7a, 0x6e, 0x0f, 0x9e, 0x8a, 0xb4, 0xd2, 0x53, 0x2f, 0x65, 0x92,
-	0x4c, 0x63, 0x20, 0xc9, 0xc4, 0xbc, 0x13, 0x51, 0xa4, 0x97, 0x7e, 0x82, 0x42, 0xaf, 0xbd, 0xf5,
-	0xcb, 0xf4, 0x28, 0xf4, 0xd2, 0x63, 0xd1, 0x7e, 0x90, 0x92, 0x64, 0x54, 0x30, 0xfd, 0x77, 0xcc,
-	0xfb, 0x3c, 0x4f, 0x9e, 0xdf, 0xfb, 0x32, 0xa8, 0x76, 0xe1, 0xc5, 0x13, 0x02, 0x63, 0x9f, 0x8c,
-	0x5b, 0x26, 0x13, 0xb4, 0x45, 0x46, 0x31, 0x8b, 0xa6, 0x46, 0x18, 0x71, 0xc1, 0xf1, 0xcf, 0x44,
-	0x35, 0x60, 0xec, 0x1b, 0x52, 0x55, 0x9b, 0x16, 0x07, 0x9f, 0x03, 0x31, 0x29, 0xb0, 0xcc, 0xba,
-	0x0e, 0x86, 0xd4, 0x71, 0x03, 0x2a, 0x5c, 0x1e, 0x64, 0x69, 0xb5, 0xe6, 0x70, 0xee, 0x78, 0x8c,
-	0xd0, 0xd0, 0x25, 0x34, 0x08, 0xb8, 0x48, 0x45, 0x90, 0xaa, 0x9a, 0x6b, 0x4e, 0x7a, 0x52, 0x4d,
-	0x6f, 0xa2, 0x1f, 0x07, 0x96, 0xc5, 0xe3, 0x40, 0x0c, 0xd8, 0x28, 0x66, 0x20, 0x70, 0x15, 0x95,
-	0xa8, 0x6d, 0x47, 0x0c, 0xa0, 0xaa, 0xd4, 0x95, 0x46, 0x79, 0xb0, 0xfa, 0xd4, 0x7b, 0xa8, 0xb2,
-	0xf6, 0x42, 0xc8, 0x03, 0x60, 0xb8, 0x83, 0x4a, 0x34, 0x1b, 0xa5, 0xe6, 0xef, 0xed, 0x3f, 0xc6,
-	0xf6, 0x22, 0xc6, 0x2a, 0xb3, 0x72, 0xea, 0x6d, 0xf4, 0xeb, 0x38, 0xe2, 0x4e, 0x44, 0x7d, 0x29,
-	0xc1, 0xc7, 0xdd, 0xfb, 0xe8, 0x77, 0x2e, 0x23, 0x19, 0x6a, 0xa8, 0x2c, 0x5d, 0x2c, 0x89, 0x7d,
-	0x69, 0x94, 0x07, 0x9b, 0x41, 0xfb, 0xae, 0x88, 0xbe, 0x9e, 0x24, 0xd7, 0xc3, 0x33, 0x54, 0x92,
-	0x59, 0x5c, 0x7f, 0x9b, 0x32, 0x23, 0x51, 0xff, 0xbe, 0xe3, 0xc8, 0x7a, 0xf5, 0xdd, 0xab, 0x87,
-	0xe7, 0x9b, 0xe2, 0x7f, 0xfc, 0x8f, 0xe4, 0xee, 0x2b, 0x37, 0x25, 0x33, 0xc9, 0x71, 0x89, 0x6f,
-	0x15, 0x54, 0xd9, 0x5a, 0x00, 0x37, 0xf2, 0x1d, 0xaf, 0xdf, 0x45, 0xdd, 0xf9, 0x84, 0x53, 0x52,
-	0x75, 0x53, 0x2a, 0x03, 0xef, 0xe5, 0xa9, 0xc2, 0x2c, 0x72, 0x2e, 0xe9, 0x60, 0x83, 0x77, 0xd8,
-	0xbf, 0x5f, 0x68, 0xca, 0x7c, 0xa1, 0x29, 0x4f, 0x0b, 0x4d, 0xb9, 0x5e, 0x6a, 0x85, 0xf9, 0x52,
-	0x2b, 0x3c, 0x2e, 0xb5, 0xc2, 0x59, 0xd7, 0x71, 0xc5, 0x30, 0x36, 0x0d, 0x8b, 0xfb, 0xa4, 0xe7,
-	0xc5, 0x93, 0x7e, 0xef, 0xf4, 0x88, 0x9a, 0x90, 0xfe, 0xdd, 0x26, 0xd6, 0x90, 0xba, 0x01, 0xf1,
-	0xb9, 0x1d, 0x7b, 0x0c, 0xd2, 0x32, 0x31, 0x0d, 0x19, 0x98, 0xdf, 0xd2, 0xd7, 0xd5, 0x79, 0x09,
-	0x00, 0x00, 0xff, 0xff, 0x84, 0xa2, 0x5e, 0xa2, 0xf5, 0x02, 0x00, 0x00,
+	// 523 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x94, 0x5f, 0x6b, 0xd3, 0x50,
+	0x18, 0xc6, 0x1b, 0xff, 0x95, 0xbe, 0xc3, 0x4e, 0x0f, 0x38, 0xbb, 0x50, 0xe2, 0x8c, 0x0c, 0x6b,
+	0x27, 0x39, 0xb4, 0x2b, 0xec, 0x46, 0x90, 0x29, 0xf4, 0x6a, 0x0c, 0xad, 0x5e, 0x79, 0x53, 0x4e,
+	0xd2, 0x63, 0x16, 0x96, 0xe4, 0x64, 0x79, 0x93, 0xb0, 0x31, 0xbc, 0xf1, 0x13, 0x08, 0x5e, 0x09,
+	0xde, 0xfa, 0x5d, 0xbc, 0x1c, 0x78, 0xe3, 0xa5, 0xb4, 0x82, 0x5f, 0x43, 0x92, 0x9c, 0x76, 0xb6,
+	0x69, 0x6d, 0x77, 0xd9, 0xf3, 0x3c, 0xcf, 0x79, 0x7e, 0x3d, 0xef, 0xdb, 0x42, 0xfd, 0xbd, 0x1b,
+	0x9f, 0x52, 0x4c, 0x3c, 0x9a, 0xb4, 0x4c, 0x1e, 0xb1, 0x16, 0x3d, 0x89, 0x79, 0x78, 0x66, 0x04,
+	0xa1, 0x88, 0x04, 0xb9, 0x93, 0xaa, 0x06, 0x26, 0x9e, 0x21, 0x55, 0xb5, 0x69, 0x09, 0xf4, 0x04,
+	0x52, 0x93, 0x21, 0xcf, 0xad, 0x93, 0x60, 0xc0, 0x6c, 0xc7, 0x67, 0x91, 0x23, 0xfc, 0x3c, 0xad,
+	0xd6, 0x6d, 0x21, 0x6c, 0x97, 0x53, 0x16, 0x38, 0x94, 0xf9, 0xbe, 0x88, 0x32, 0x11, 0xa5, 0xaa,
+	0x16, 0x9a, 0xd3, 0x9e, 0x4c, 0xd3, 0x9b, 0x50, 0xdd, 0xb7, 0x2c, 0x11, 0xfb, 0x51, 0x8f, 0x9f,
+	0xc4, 0x1c, 0x23, 0x52, 0x83, 0x32, 0x1b, 0x0c, 0x42, 0x8e, 0x58, 0x53, 0xb6, 0x94, 0x46, 0xa5,
+	0x37, 0xfe, 0xa8, 0x77, 0x61, 0x7d, 0xe2, 0xc5, 0x40, 0xf8, 0xc8, 0xc9, 0x2e, 0x94, 0x59, 0x7e,
+	0x94, 0x99, 0xd7, 0xda, 0x9b, 0xc6, 0xec, 0x17, 0x31, 0xc6, 0x99, 0xb1, 0x53, 0x6f, 0xc3, 0xc6,
+	0xab, 0x50, 0xd8, 0x21, 0xf3, 0xa4, 0x84, 0xcb, 0xbb, 0xf7, 0xe0, 0x7e, 0x21, 0x23, 0x19, 0xea,
+	0x50, 0x91, 0x2e, 0x9e, 0xc6, 0xae, 0x37, 0x2a, 0xbd, 0xcb, 0x03, 0xbd, 0x03, 0xb5, 0x97, 0xd9,
+	0x43, 0xca, 0xdc, 0x81, 0xe3, 0x1f, 0x2f, 0xaf, 0x7b, 0x06, 0x9b, 0x73, 0x52, 0xb2, 0xf0, 0x01,
+	0xac, 0x61, 0xe2, 0xf5, 0xa7, 0xa3, 0x80, 0x89, 0xb7, 0x2f, 0xd3, 0x2d, 0xb8, 0xf7, 0x26, 0xf1,
+	0xae, 0x54, 0xf8, 0x1c, 0x36, 0x66, 0x23, 0xb2, 0x6d, 0x1b, 0xaa, 0xf9, 0x26, 0xcc, 0x14, 0xde,
+	0xce, 0x4f, 0x65, 0x67, 0xfb, 0xcf, 0x0d, 0xb8, 0xf9, 0x3a, 0xdd, 0x12, 0x72, 0x0e, 0x65, 0x79,
+	0x0f, 0xd9, 0x5a, 0x3c, 0x8d, 0x9c, 0x48, 0x7d, 0xf8, 0x1f, 0x47, 0x0e, 0xa0, 0xef, 0x7c, 0xfc,
+	0xf1, 0xfb, 0xf3, 0xb5, 0x6d, 0xf2, 0x88, 0x16, 0xf6, 0x48, 0x4e, 0x94, 0x9e, 0x4b, 0xb4, 0x0f,
+	0xe4, 0xab, 0x02, 0xeb, 0x33, 0x83, 0x22, 0x8d, 0x62, 0xc7, 0xfc, 0xf9, 0xab, 0x4f, 0x56, 0x70,
+	0x4a, 0xaa, 0x4e, 0x46, 0x65, 0x90, 0xa7, 0x45, 0xaa, 0x20, 0x8f, 0xf4, 0x25, 0x1d, 0xfe, 0x83,
+	0xf7, 0x4d, 0x81, 0xbb, 0x85, 0xc1, 0x92, 0x66, 0xb1, 0x76, 0xd1, 0xce, 0xa8, 0x3b, 0x2b, 0x79,
+	0x25, 0xe4, 0x5e, 0x06, 0xd9, 0x22, 0x74, 0xe1, 0xd3, 0xf5, 0x5d, 0xc7, 0x3f, 0xa6, 0xf2, 0xa7,
+	0x7e, 0xc9, 0xf9, 0x45, 0x81, 0xea, 0xf4, 0x3e, 0x90, 0xc7, 0xc5, 0xe2, 0xb9, 0x4b, 0xa6, 0x36,
+	0x96, 0x1b, 0x97, 0xbf, 0xe1, 0x14, 0x5e, 0x2a, 0x4c, 0xd8, 0x5e, 0x1c, 0x7e, 0x1f, 0x6a, 0xca,
+	0xc5, 0x50, 0x53, 0x7e, 0x0d, 0x35, 0xe5, 0xd3, 0x48, 0x2b, 0x5d, 0x8c, 0xb4, 0xd2, 0xcf, 0x91,
+	0x56, 0x7a, 0xd7, 0xb1, 0x9d, 0xe8, 0x28, 0x36, 0x0d, 0x4b, 0x78, 0xb4, 0xeb, 0xc6, 0xa7, 0x87,
+	0xdd, 0xb7, 0x07, 0xcc, 0xc4, 0xec, 0xf6, 0x01, 0xb5, 0x8e, 0x98, 0xe3, 0x53, 0x4f, 0x0c, 0x62,
+	0x97, 0x63, 0x76, 0x67, 0x74, 0x16, 0x70, 0x34, 0x6f, 0x65, 0xff, 0x44, 0xbb, 0x7f, 0x03, 0x00,
+	0x00, 0xff, 0xff, 0x6a, 0xcb, 0x4b, 0x8f, 0x21, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -257,6 +446,8 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	Account(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*AccountResponse, error)
 	ProgramAccounts(ctx context.Context, in *ProgramAccountsRequest, opts ...grpc.CallOption) (*ProgramAccountsResponse, error)
+	CosmosAccountLink(ctx context.Context, in *CosmosAccountLinkRequest, opts ...grpc.CallOption) (*CosmosAccountLinkResponse, error)
+	SvmAccountLink(ctx context.Context, in *SvmAccountLinkRequest, opts ...grpc.CallOption) (*SvmAccountLinkResponse, error)
 }
 
 type queryClient struct {
@@ -285,10 +476,30 @@ func (c *queryClient) ProgramAccounts(ctx context.Context, in *ProgramAccountsRe
 	return out, nil
 }
 
+func (c *queryClient) CosmosAccountLink(ctx context.Context, in *CosmosAccountLinkRequest, opts ...grpc.CallOption) (*CosmosAccountLinkResponse, error) {
+	out := new(CosmosAccountLinkResponse)
+	err := c.cc.Invoke(ctx, "/flux.svm.v1beta1.Query/CosmosAccountLink", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) SvmAccountLink(ctx context.Context, in *SvmAccountLinkRequest, opts ...grpc.CallOption) (*SvmAccountLinkResponse, error) {
+	out := new(SvmAccountLinkResponse)
+	err := c.cc.Invoke(ctx, "/flux.svm.v1beta1.Query/SvmAccountLink", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	Account(context.Context, *AccountRequest) (*AccountResponse, error)
 	ProgramAccounts(context.Context, *ProgramAccountsRequest) (*ProgramAccountsResponse, error)
+	CosmosAccountLink(context.Context, *CosmosAccountLinkRequest) (*CosmosAccountLinkResponse, error)
+	SvmAccountLink(context.Context, *SvmAccountLinkRequest) (*SvmAccountLinkResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -300,6 +511,12 @@ func (*UnimplementedQueryServer) Account(ctx context.Context, req *AccountReques
 }
 func (*UnimplementedQueryServer) ProgramAccounts(ctx context.Context, req *ProgramAccountsRequest) (*ProgramAccountsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProgramAccounts not implemented")
+}
+func (*UnimplementedQueryServer) CosmosAccountLink(ctx context.Context, req *CosmosAccountLinkRequest) (*CosmosAccountLinkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CosmosAccountLink not implemented")
+}
+func (*UnimplementedQueryServer) SvmAccountLink(ctx context.Context, req *SvmAccountLinkRequest) (*SvmAccountLinkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SvmAccountLink not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -342,6 +559,42 @@ func _Query_ProgramAccounts_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_CosmosAccountLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CosmosAccountLinkRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).CosmosAccountLink(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/flux.svm.v1beta1.Query/CosmosAccountLink",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).CosmosAccountLink(ctx, req.(*CosmosAccountLinkRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_SvmAccountLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SvmAccountLinkRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).SvmAccountLink(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/flux.svm.v1beta1.Query/SvmAccountLink",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).SvmAccountLink(ctx, req.(*SvmAccountLinkRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "flux.svm.v1beta1.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -353,6 +606,14 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ProgramAccounts",
 			Handler:    _Query_ProgramAccounts_Handler,
+		},
+		{
+			MethodName: "CosmosAccountLink",
+			Handler:    _Query_CosmosAccountLink_Handler,
+		},
+		{
+			MethodName: "SvmAccountLink",
+			Handler:    _Query_SvmAccountLink_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -486,6 +747,126 @@ func (m *ProgramAccountsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
+func (m *CosmosAccountLinkRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CosmosAccountLinkRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CosmosAccountLinkRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CosmosAccountLinkResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CosmosAccountLinkResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CosmosAccountLinkResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.SvmAddress) > 0 {
+		i -= len(m.SvmAddress)
+		copy(dAtA[i:], m.SvmAddress)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.SvmAddress)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *SvmAccountLinkRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SvmAccountLinkRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SvmAccountLinkRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *SvmAccountLinkResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SvmAccountLinkResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SvmAccountLinkResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.CosmosAddress) > 0 {
+		i -= len(m.CosmosAddress)
+		copy(dAtA[i:], m.CosmosAddress)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.CosmosAddress)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -547,6 +928,58 @@ func (m *ProgramAccountsResponse) Size() (n int) {
 			l = len(s)
 			n += 1 + l + sovQuery(uint64(l))
 		}
+	}
+	return n
+}
+
+func (m *CosmosAccountLinkRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *CosmosAccountLinkResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.SvmAddress)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *SvmAccountLinkRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *SvmAccountLinkResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.CosmosAddress)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
 }
@@ -867,6 +1300,334 @@ func (m *ProgramAccountsResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Addresses = append(m.Addresses, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CosmosAccountLinkRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CosmosAccountLinkRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CosmosAccountLinkRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CosmosAccountLinkResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CosmosAccountLinkResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CosmosAccountLinkResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SvmAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SvmAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SvmAccountLinkRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SvmAccountLinkRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SvmAccountLinkRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SvmAccountLinkResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SvmAccountLinkResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SvmAccountLinkResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CosmosAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CosmosAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
