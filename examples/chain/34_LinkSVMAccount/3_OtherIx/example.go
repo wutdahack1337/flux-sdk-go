@@ -23,7 +23,6 @@ import (
 
 func main() {
 	network := common.LoadNetwork("local", "")
-
 	// prepare info
 	// user1
 	senderPrivKey := ethsecp256k1.PrivKey{Key: ethcommon.Hex2Bytes("88cbead91aee890d27bf06e003ade3d4e952427e88f88d31d61d3ef5e5d54305")}

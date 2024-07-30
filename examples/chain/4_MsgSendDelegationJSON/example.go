@@ -2,16 +2,18 @@ package main
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+
 	signingv1beta1 "cosmossdk.io/api/cosmos/tx/signing/v1beta1"
 	sdkmath "cosmossdk.io/math"
 	"cosmossdk.io/x/tx/signing"
-	"encoding/json"
-	"fmt"
 	eip712 "github.com/FluxNFTLabs/sdk-go/chain/app/ante"
 	"github.com/FluxNFTLabs/sdk-go/chain/app/ante/typeddata"
 	types "github.com/FluxNFTLabs/sdk-go/chain/indexer/web3gw"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
+	"github.com/FluxNFTLabs/sdk-go/client/common"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
@@ -20,7 +22,7 @@ import (
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/ethereum/go-ethereum/common"
+	ethcommon "github.com/ethereum/go-ethereum/common"
 	ethcrypto "github.com/ethereum/go-ethereum/crypto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -28,7 +30,7 @@ import (
 
 func main() {
 	// prepare info
-	senderPrivKey := secp256k1.PrivKey{Key: common.Hex2Bytes("88CBEAD91AEE890D27BF06E003ADE3D4E952427E88F88D31D61D3EF5E5D54305")}
+	senderPrivKey := secp256k1.PrivKey{Key: ethcommon.Hex2Bytes("88CBEAD91AEE890D27BF06E003ADE3D4E952427E88F88D31D61D3EF5E5D54305")}
 	senderPubKey := senderPrivKey.PubKey()
 	senderAddr := sdk.AccAddress(senderPubKey.Address().Bytes())
 	receiverAddr := sdk.MustAccAddressFromBech32("lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx")
@@ -49,6 +51,7 @@ func main() {
 	feePayerAddr := sdk.MustAccAddressFromBech32(metadata.Address)
 
 	// init grpc connection
+	network := common.LoadNetwork("local", "")
 	cc, err = grpc.Dial(network.ChainGrpcEndpoint, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err)
@@ -153,7 +156,7 @@ func main() {
 		panic(err)
 	}
 
-	if common.Bytes2Hex(typedDataHash) != common.Bytes2Hex(res.Hash) {
+	if ethcommon.Bytes2Hex(typedDataHash) != ethcommon.Bytes2Hex(res.Hash) {
 		panic("mismatched typed data hash from fee payer")
 	}
 
