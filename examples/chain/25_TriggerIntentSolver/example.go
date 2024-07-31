@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -10,7 +11,9 @@ import (
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
+	"github.com/cosmos/btcutil/base58"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -60,7 +63,24 @@ func main() {
 	}
 
 	fmt.Println("sender address:", senderAddress.String())
-	msg := &strategytypes.MsgTriggerStrategies{
+
+	// check if account is linked, not then create
+	isSvmLinked, svmPubkey, err := chainClient.GetSVMAccountLink(context.Background(), senderAddress)
+	if err != nil {
+		panic(err)
+	}
+	if !isSvmLinked {
+		svmKey := ed25519.GenPrivKey() // Good practice: Backup this private key
+		res, err := chainClient.LinkSVMAccount(svmKey)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("linked sender to svm address:", base58.Encode(svmKey.PubKey().Bytes()), "txHash:", res.TxResponse.TxHash)
+	} else {
+		fmt.Println("sender is already linked to svm address:", svmPubkey.String())
+	}
+
+	msgTriggerStategy := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
 		Ids:    []string{"d0eb2681ac5fe4f07c4d97a0f9a11daf1a2acb9007bb5c3ac5e123c66c40c0cf"},
 		Inputs: [][]byte{
@@ -82,14 +102,11 @@ func main() {
 			},
 		},
 	}
-
-	//AsyncBroadcastMsg, SyncBroadcastMsg, QueueBroadcastMsg
-	res, err := chainClient.SyncBroadcastMsg(msg)
+	res, err := chainClient.SyncBroadcastMsg(msgTriggerStategy)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(res.TxResponse.Data)
 	fmt.Println("tx hash:", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 }

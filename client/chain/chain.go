@@ -16,6 +16,7 @@ import (
 	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/signing"
+	"github.com/gagliardetto/solana-go"
 	"github.com/golang/protobuf/proto"
 
 	"github.com/FluxNFTLabs/sdk-go/client/common"
@@ -24,6 +25,7 @@ import (
 	nodetypes "github.com/cosmos/cosmos-sdk/client/grpc/node"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	cosmtypes "github.com/cosmos/cosmos-sdk/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
@@ -72,6 +74,9 @@ type ChainClient interface {
 	QueueBroadcastMsg(msgs ...sdk.Msg) error
 
 	SyncBroadcastSvmMsg(msg *svmtypes.MsgTransaction) (*txtypes.BroadcastTxResponse, error)
+
+	GetSVMAccountLink(ctx context.Context, cosmosAddress sdk.AccAddress) (isLinked bool, pubkey solana.PublicKey, err error)
+	LinkSVMAccount(svmPrivKey *ed25519.PrivKey) (*txtypes.BroadcastTxResponse, error)
 
 	GetBankBalances(ctx context.Context, address string) (*banktypes.QueryAllBalancesResponse, error)
 	GetBankBalance(ctx context.Context, address string, denom string) (*banktypes.QueryBalanceResponse, error)
@@ -893,8 +898,8 @@ func (c *chainClient) SyncBroadcastSvmMsg(msg *svmtypes.MsgTransaction) (*txtype
 		return nil, err
 	}
 	req := txtypes.BroadcastTxRequest{
-		txBytes,
-		txtypes.BroadcastMode_BROADCAST_MODE_SYNC,
+		TxBytes: txBytes,
+		Mode:    txtypes.BroadcastMode_BROADCAST_MODE_SYNC,
 	}
 	res, err := c.txClient.BroadcastTx(ctx, &req, grpc.Header(&header))
 	if err != nil {
@@ -902,4 +907,38 @@ func (c *chainClient) SyncBroadcastSvmMsg(msg *svmtypes.MsgTransaction) (*txtype
 	}
 
 	return res, nil
+}
+
+func (c *chainClient) GetSVMAccountLink(ctx context.Context, cosmosAddress sdk.AccAddress) (isLinked bool, pubkey solana.PublicKey, err error) {
+	resp, err := c.svmQueryClient.CosmosAccountLink(context.Background(), &svmtypes.CosmosAccountLinkRequest{
+		Address: c.FromAddress().String(),
+	})
+
+	if err != nil {
+		if !strings.Contains(err.Error(), "account link not found") {
+			return false, solana.PublicKey{}, err
+		}
+		return false, solana.PublicKey{}, nil
+	}
+
+	pubkey, err = solana.PublicKeyFromBase58(resp.SvmAddress)
+	if err != nil {
+		return true, pubkey, fmt.Errorf("parse base58 pubkey err: %w", err)
+	}
+
+	return true, pubkey, nil
+}
+
+func (c *chainClient) LinkSVMAccount(svmPrivKey *ed25519.PrivKey) (*txtypes.BroadcastTxResponse, error) {
+	svmAccountLinkSig, err := svmPrivKey.Sign(c.FromAddress().Bytes())
+	if err != nil {
+		return nil, fmt.Errorf("svm privkey sign err: %w", err)
+	}
+
+	return c.SyncBroadcastMsg(&svmtypes.MsgLinkSVMAccount{
+		Sender:       c.FromAddress().String(),
+		SvmPubkey:    svmPrivKey.PubKey().Bytes(),
+		SvmSignature: svmAccountLinkSig,
+		Amount:       sdk.NewInt64Coin("lux", 1000000000),
+	})
 }
