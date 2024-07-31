@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -14,7 +15,9 @@ import (
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	"github.com/cosmos/gogoproto/jsonpb"
+	"github.com/mr-tron/base58"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -63,6 +66,22 @@ func main() {
 		panic(err)
 	}
 
+	// check if account is linked, not then create
+	isSvmLinked, svmPubkey, err := chainClient.GetSVMAccountLink(context.Background(), senderAddress)
+	if err != nil {
+		panic(err)
+	}
+	if !isSvmLinked {
+		svmKey := ed25519.GenPrivKey() // Good practice: Backup this private key
+		res, err := chainClient.LinkSVMAccount(svmKey)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("linked sender to svm address:", base58.Encode(svmKey.PubKey().Bytes()), "txHash:", res.TxResponse.TxHash)
+	} else {
+		fmt.Println("sender is already linked to svm address:", svmPubkey.String())
+	}
+
 	dir, err := os.Getwd()
 	if err != nil {
 		panic(err)
@@ -85,10 +104,15 @@ func main() {
 		panic(err)
 	}
 
+	// replace wallet address in schema
+	fisQueryRequest.Instructions[6].Input[0] = []byte(
+		strings.Replace(string(fisQueryRequest.Instructions[6].Input[0]), "${wallet}", senderAddress.String(), 1),
+	)
+
 	fmt.Println("sender account:", senderAddress.String())
 	msg := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"e9c9b5d050324513606a8f57e95c85a0b61a6941bca8ee25f85b2ef19b55ba92"},
+		Ids:    []string{"9af1ff2288a33397fee77796c766081218afacf5dbec14a7c6e4fc8c5a45ec58"},
 		Inputs: [][]byte{
 			[]byte(`{"arbitrage":{"pair":"btc-usdt","amount":"10000000","min_profit":"100000"}}`),
 		},
