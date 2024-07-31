@@ -1,6 +1,8 @@
 package types
 
-import "github.com/ethereum/go-ethereum/crypto"
+import (
+	"github.com/gagliardetto/solana-go"
+)
 
 const (
 	// ModuleName defines the name of the astromesh module
@@ -14,5 +16,19 @@ const (
 )
 
 var (
-	SvmMintAuthority = crypto.Keccak256Hash([]byte(ModuleName))
+	// generate completely non key-pair account by using PDA where the program ID owner is also off-curve
+	// just to make sure it couldn't be signed by any external accounts/any PDA
+	SvmMintAuthority solana.PublicKey
 )
+
+func init() {
+	authority, _, err := solana.FindProgramAddress(
+		[][]byte{[]byte("MintAuthority")},
+		solana.MustPublicKeyFromBase58("Astromesh1111111111111111111111111111111111"),
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	SvmMintAuthority = authority
+}
