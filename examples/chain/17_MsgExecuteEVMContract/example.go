@@ -70,7 +70,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("resp:", txResp.TxResponse.TxHash)
+	fmt.Println("txHash:", txResp.TxResponse.TxHash)
 	fmt.Println("gas used/want:", txResp.TxResponse.GasUsed, "/", txResp.TxResponse.GasWanted)
 
 	// to double check locally:

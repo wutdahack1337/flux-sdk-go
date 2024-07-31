@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
+	"fmt"
+
 	signingv1beta1 "cosmossdk.io/api/cosmos/tx/signing/v1beta1"
 	sdkmath "cosmossdk.io/math"
 	"cosmossdk.io/x/tx/signing"
-	"fmt"
 	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
@@ -22,13 +23,11 @@ import (
 
 func main() {
 	network := common.LoadNetwork("local", "")
-
 	// init grpc connection
 	cc, err := grpc.Dial(network.ChainGrpcEndpoint, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err)
 	}
-
 	// init client ctx
 	clientCtx, _, err := chaintypes.NewClientContext("flux-1", "", nil)
 	if err != nil {
@@ -64,6 +63,7 @@ func main() {
 			Sender:       userAddr.String(),
 			SvmPubkey:    svmPubkey.Bytes(),
 			SvmSignature: svmSig[:],
+			Amount:       sdk.NewInt64Coin("lux", 1000000000),
 		}
 		// link and fund user1, link user2 user3
 		if i == 0 {
@@ -137,11 +137,12 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		txRes, err := chainClient.SyncBroadcastSignedTx(txBytes)
+		txResp, err := chainClient.SyncBroadcastSignedTx(txBytes)
 		if err != nil {
 			panic(err)
 		}
 
-		fmt.Println(txRes)
+		fmt.Println("txHash:", txResp.TxResponse.TxHash)
+		fmt.Println("gas used/want:", txResp.TxResponse.GasUsed, "/", txResp.TxResponse.GasWanted)
 	}
 }

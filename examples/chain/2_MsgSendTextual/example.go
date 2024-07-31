@@ -2,13 +2,15 @@ package main
 
 import (
 	"context"
+	"fmt"
+
 	"cosmossdk.io/api/cosmos/crypto/secp256k1"
 	signingv1beta1 "cosmossdk.io/api/cosmos/tx/signing/v1beta1"
 	sdkmath "cosmossdk.io/math"
 	"cosmossdk.io/x/tx/signing"
-	"fmt"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
+	"github.com/FluxNFTLabs/sdk-go/client/common"
 	"github.com/cosmos/cosmos-proto/anyutil"
 	sdksecp256k1 "github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -17,14 +19,14 @@ import (
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtxconfig "github.com/cosmos/cosmos-sdk/x/auth/tx/config"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/ethereum/go-ethereum/common"
+	ethcommon "github.com/ethereum/go-ethereum/common"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 func main() {
 	// prepare info
-	senderPrivKey := sdksecp256k1.PrivKey{Key: common.Hex2Bytes("88CBEAD91AEE890D27BF06E003ADE3D4E952427E88F88D31D61D3EF5E5D54305")}
+	senderPrivKey := sdksecp256k1.PrivKey{Key: ethcommon.Hex2Bytes("88CBEAD91AEE890D27BF06E003ADE3D4E952427E88F88D31D61D3EF5E5D54305")}
 	senderPubKey := senderPrivKey.PubKey()
 	pk := &secp256k1.PubKey{Key: senderPrivKey.PubKey().Bytes()} // WARN: must use cosmossdk.io/api/cosmos/crypto/secp256k1
 	senderPubKeyAny, _ := anyutil.New(pk)
@@ -32,6 +34,7 @@ func main() {
 	receiverAddr := sdk.MustAccAddressFromBech32("lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx")
 
 	// init grpc connection
+	network := common.LoadNetwork("local", "")
 	cc, err := grpc.Dial(network.ChainGrpcEndpoint, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err)

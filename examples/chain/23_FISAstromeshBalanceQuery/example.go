@@ -3,8 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+
 	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
+	"github.com/FluxNFTLabs/sdk-go/client/common"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -17,6 +19,7 @@ func main() {
 	cfg.Seal()
 
 	// init grpc connection
+	network := common.LoadNetwork("local", "")
 	cc, err := grpc.Dial(network.ChainGrpcEndpoint, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err)
