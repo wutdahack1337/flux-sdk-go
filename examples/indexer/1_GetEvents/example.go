@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	network := common.LoadNetwork("devnet", "")
+	network := common.LoadNetwork("local", "")
 	cc, err := grpc.Dial(network.ChainGrpcEndpoint, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	defer cc.Close()
 	if err != nil {
@@ -20,8 +20,8 @@ func main() {
 	client := types.NewQueryClient(cc)
 
 	res, err := client.GetEvents(context.Background(), &types.EventsRequest{
-		Height:    67,
-		Modules:   []string{"fnft"},
+		Height:    80,
+		Modules:   []string{"astromesh"},
 		TmQueries: []string{"block", "block_results", "validators"},
 	})
 	if err != nil {

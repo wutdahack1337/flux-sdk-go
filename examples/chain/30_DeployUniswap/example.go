@@ -65,14 +65,16 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	poolManagerBz, err := os.ReadFile(dir + "/examples/chain/28_DeployUniswap/PoolManager.json")
+	poolManagerBz, err := os.ReadFile(dir + "/examples/chain/30_DeployUniswap/PoolManager.json")
 	if err != nil {
 		panic(err)
 	}
-	poolActionsBz, err := os.ReadFile(dir + "/examples/chain/28_DeployUniswap/PoolActions.json")
+	poolActionsBz, err := os.ReadFile(dir + "/examples/chain/30_DeployUniswap/PoolActions.json")
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Println(len(poolManagerBz), len(poolActionsBz))
 
 	var compData map[string]interface{}
 	err = json.Unmarshal(poolManagerBz, &compData)

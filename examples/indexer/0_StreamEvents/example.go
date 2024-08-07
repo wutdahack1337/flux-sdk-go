@@ -22,7 +22,7 @@ func main() {
 	client := types.NewQueryClient(cc)
 
 	stream, err := client.StreamEvents(context.Background(), &types.EventsRequest{
-		Modules:   []string{"fnft"},
+		Modules:   []string{"astromesh"},
 		TmQueries: []string{"block", "block_results", "validators"},
 	})
 	if err != nil {
@@ -37,7 +37,7 @@ func main() {
 		fmt.Println("===================", res.Height, res.Time)
 		for i, module := range res.Modules {
 			fmt.Println(module)
-			for _, eventOp := range res.Events[i].EventOps {
+			for _, eventOp := range res.Events[i].AnyEvents {
 				fmt.Println(eventOp)
 			}
 		}
