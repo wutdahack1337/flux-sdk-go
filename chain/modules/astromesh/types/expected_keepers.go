@@ -31,7 +31,7 @@ type EvmKeeper interface {
 		inputValue []byte,
 		sender []byte,
 		contractAddress []byte,
-	) error
+	) (*evmtypes.EvmResult, error)
 
 	ExecuteContractByAddress(
 		ctx sdk.Context,
@@ -39,7 +39,7 @@ type EvmKeeper interface {
 		contractAddress []byte,
 		calldata []byte,
 		inputAmount []byte,
-	) (evmtypes.Result, error)
+	) (*evmtypes.EvmResult, error)
 
 	KVGetAccount(ctx context.Context, addr []byte) ([]byte, bool)
 	KVSetAccount(ctx context.Context, addr []byte, ethBalance []byte)

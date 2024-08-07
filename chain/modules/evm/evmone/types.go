@@ -8,7 +8,10 @@ package evmone
 
 */
 import "C"
-import "context"
+import (
+	"context"
+	"github.com/FluxNFTLabs/sdk-go/chain/modules/evm/types"
+)
 
 type Capability uint32
 
@@ -107,13 +110,14 @@ type BytecodeExecutor interface {
 		kind CallKind, static bool, depth int, gas int64,
 		recipient Address, sender Address, input []byte, value Hash,
 		code []byte,
-	) (res Result, err error)
+	) (res types.EvmResult, err error)
 }
 
 type HostKeeper interface {
 	KVSetAccount(ctx context.Context, addr []byte, balance []byte)
 	KVSetCode(ctx context.Context, addr, bytecode []byte)
 	KVHasCode(ctx context.Context, addr []byte) bool
+	EmitExecutionEvent(ctx context.Context, address []byte)
 }
 
 type VmKeeper interface {
@@ -122,7 +126,6 @@ type VmKeeper interface {
 	KVGetStorage(ctx context.Context, addr, k []byte) ([]byte, bool)
 	KVSetStorage(ctx context.Context, addr, k, v []byte)
 	KVGetCode(ctx context.Context, addr []byte) ([]byte, bool)
-	EmitExecutionEvent(ctx context.Context, address []byte)
 	EmitLog(ctx context.Context, address []byte, topics [][]byte, data []byte)
 }
 
@@ -146,13 +149,6 @@ type HostContext interface {
 	AccessStorage(addr Address, key Hash) AccessStatus
 	GetTransientStorage(addr Address, key Hash) Hash
 	SetTransientStorage(addr Address, key Hash, value Hash)
-}
-
-type Result struct {
-	Output     []byte
-	GasLeft    int64
-	GasRefund  int64
-	StatusCode string
 }
 
 // TxContext contains information about current transaction and block.

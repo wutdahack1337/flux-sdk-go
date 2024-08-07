@@ -14,7 +14,7 @@ const (
 	EthAddressLen = 20
 )
 
-type Result struct {
+type EvmResult struct {
 	Output     []byte
 	GasLeft    int64
 	GasRefund  int64
