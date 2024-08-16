@@ -50,5 +50,5 @@ type SvmKeeper interface {
 	KVGetAccount(ctx context.Context, accAddr []byte) (*svmtypes.Account, bool)
 	KVSetAccount(ctx context.Context, account *svmtypes.Account)
 	SvmExecute(ctx sdk.Context, msg *svmtypes.MsgTransaction) (*svmtypes.MsgTransactionResponse, error)
-	GetCosmosAccountLink(ctx context.Context, cosmosAddr []byte) (*svmtypes.AccountLink, bool)
+	GetAccountLink(ctx context.Context, cosmosAddr []byte) (*svmtypes.AccountLink, bool)
 }

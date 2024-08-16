@@ -24,6 +24,6 @@ type AccountKeeper interface {
 }
 
 type SvmKeeper interface {
-	GetCosmosAccountLink(ctx context.Context, cosmosAddr []byte) (*AccountLink, bool)
-	GetSvmAccountLink(ctx context.Context, svmPubkey []byte) (*AccountLink, bool)
+	GetAccountLink(ctx context.Context, cosmosAddr []byte) (*AccountLink, bool)
+	GetAccountLinkBySvmAddr(ctx context.Context, svmAddr []byte) (*AccountLink, bool)
 }

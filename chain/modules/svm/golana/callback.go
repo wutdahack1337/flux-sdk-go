@@ -53,7 +53,6 @@ type VmKeeper interface {
 	GetDefaultAccount(accBz []byte) *types.Account
 	KVGetAccount(ctx context.Context, accAddr []byte) (*types.Account, bool)
 	KVSetAccount(ctx context.Context, account *types.Account)
-	KVSetProgramAccount(ctx context.Context, programAddr, accountAddr []byte)
 }
 
 type TxCallbackContextI interface {
@@ -179,7 +178,6 @@ func (cb *TxCallbackContext) SetAccount(account *types.Account) {
 		return
 	}
 	cb.vmKeeper.KVSetAccount(cb.ctx, account)
-	cb.vmKeeper.KVSetProgramAccount(cb.ctx, account.Owner, account.Pubkey)
 }
 
 func (cb *TxCallbackContext) Done() {

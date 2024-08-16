@@ -10,6 +10,7 @@ package evmone
 import "C"
 import (
 	"context"
+
 	"github.com/FluxNFTLabs/sdk-go/chain/modules/evm/types"
 )
 
@@ -118,6 +119,9 @@ type HostKeeper interface {
 	KVSetCode(ctx context.Context, addr, bytecode []byte)
 	KVHasCode(ctx context.Context, addr []byte) bool
 	EmitExecutionEvent(ctx context.Context, address []byte)
+	GetContractNonce(ctx context.Context, addr []byte) uint64
+	SetContractNonce(ctx context.Context, addr []byte, nonce uint64)
+	EmitDeployEvent(ctx context.Context, contractInfo *types.ContractInfo)
 }
 
 type VmKeeper interface {
@@ -127,6 +131,7 @@ type VmKeeper interface {
 	KVSetStorage(ctx context.Context, addr, k, v []byte)
 	KVGetCode(ctx context.Context, addr []byte) ([]byte, bool)
 	EmitLog(ctx context.Context, address []byte, topics [][]byte, data []byte)
+	GetBlockHash(ctx context.Context, height int64) ([]byte, error)
 }
 
 type HostContext interface {
@@ -159,7 +164,7 @@ type TxContext struct {
 	GasPrice    Hash
 	Origin      Address
 	Coinbase    Address
-	Number      int64
+	Height      int64
 	Timestamp   int64
 	GasLimit    int64
 	PrevRandao  Hash

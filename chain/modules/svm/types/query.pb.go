@@ -117,22 +117,22 @@ func (m *AccountResponse) GetAccount() *Account {
 	return nil
 }
 
-type ProgramAccountsRequest struct {
+type AccountsByOwnerRequest struct {
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
 }
 
-func (m *ProgramAccountsRequest) Reset()         { *m = ProgramAccountsRequest{} }
-func (m *ProgramAccountsRequest) String() string { return proto.CompactTextString(m) }
-func (*ProgramAccountsRequest) ProtoMessage()    {}
-func (*ProgramAccountsRequest) Descriptor() ([]byte, []int) {
+func (m *AccountsByOwnerRequest) Reset()         { *m = AccountsByOwnerRequest{} }
+func (m *AccountsByOwnerRequest) String() string { return proto.CompactTextString(m) }
+func (*AccountsByOwnerRequest) ProtoMessage()    {}
+func (*AccountsByOwnerRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_99679498a27461b0, []int{2}
 }
-func (m *ProgramAccountsRequest) XXX_Unmarshal(b []byte) error {
+func (m *AccountsByOwnerRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *ProgramAccountsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *AccountsByOwnerRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_ProgramAccountsRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_AccountsByOwnerRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -142,41 +142,41 @@ func (m *ProgramAccountsRequest) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
-func (m *ProgramAccountsRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ProgramAccountsRequest.Merge(m, src)
+func (m *AccountsByOwnerRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountsByOwnerRequest.Merge(m, src)
 }
-func (m *ProgramAccountsRequest) XXX_Size() int {
+func (m *AccountsByOwnerRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *ProgramAccountsRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ProgramAccountsRequest.DiscardUnknown(m)
+func (m *AccountsByOwnerRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountsByOwnerRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ProgramAccountsRequest proto.InternalMessageInfo
+var xxx_messageInfo_AccountsByOwnerRequest proto.InternalMessageInfo
 
-func (m *ProgramAccountsRequest) GetAddress() string {
+func (m *AccountsByOwnerRequest) GetAddress() string {
 	if m != nil {
 		return m.Address
 	}
 	return ""
 }
 
-type ProgramAccountsResponse struct {
+type AccountsByOwnerResponse struct {
 	Addresses []string `protobuf:"bytes,1,rep,name=addresses,proto3" json:"addresses,omitempty"`
 }
 
-func (m *ProgramAccountsResponse) Reset()         { *m = ProgramAccountsResponse{} }
-func (m *ProgramAccountsResponse) String() string { return proto.CompactTextString(m) }
-func (*ProgramAccountsResponse) ProtoMessage()    {}
-func (*ProgramAccountsResponse) Descriptor() ([]byte, []int) {
+func (m *AccountsByOwnerResponse) Reset()         { *m = AccountsByOwnerResponse{} }
+func (m *AccountsByOwnerResponse) String() string { return proto.CompactTextString(m) }
+func (*AccountsByOwnerResponse) ProtoMessage()    {}
+func (*AccountsByOwnerResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_99679498a27461b0, []int{3}
 }
-func (m *ProgramAccountsResponse) XXX_Unmarshal(b []byte) error {
+func (m *AccountsByOwnerResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *ProgramAccountsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *AccountsByOwnerResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_ProgramAccountsResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_AccountsByOwnerResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -186,41 +186,41 @@ func (m *ProgramAccountsResponse) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-func (m *ProgramAccountsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ProgramAccountsResponse.Merge(m, src)
+func (m *AccountsByOwnerResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountsByOwnerResponse.Merge(m, src)
 }
-func (m *ProgramAccountsResponse) XXX_Size() int {
+func (m *AccountsByOwnerResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *ProgramAccountsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_ProgramAccountsResponse.DiscardUnknown(m)
+func (m *AccountsByOwnerResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountsByOwnerResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ProgramAccountsResponse proto.InternalMessageInfo
+var xxx_messageInfo_AccountsByOwnerResponse proto.InternalMessageInfo
 
-func (m *ProgramAccountsResponse) GetAddresses() []string {
+func (m *AccountsByOwnerResponse) GetAddresses() []string {
 	if m != nil {
 		return m.Addresses
 	}
 	return nil
 }
 
-type CosmosAccountLinkRequest struct {
+type AccountLinkRequest struct {
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
 }
 
-func (m *CosmosAccountLinkRequest) Reset()         { *m = CosmosAccountLinkRequest{} }
-func (m *CosmosAccountLinkRequest) String() string { return proto.CompactTextString(m) }
-func (*CosmosAccountLinkRequest) ProtoMessage()    {}
-func (*CosmosAccountLinkRequest) Descriptor() ([]byte, []int) {
+func (m *AccountLinkRequest) Reset()         { *m = AccountLinkRequest{} }
+func (m *AccountLinkRequest) String() string { return proto.CompactTextString(m) }
+func (*AccountLinkRequest) ProtoMessage()    {}
+func (*AccountLinkRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_99679498a27461b0, []int{4}
 }
-func (m *CosmosAccountLinkRequest) XXX_Unmarshal(b []byte) error {
+func (m *AccountLinkRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *CosmosAccountLinkRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *AccountLinkRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_CosmosAccountLinkRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_AccountLinkRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -230,41 +230,41 @@ func (m *CosmosAccountLinkRequest) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-func (m *CosmosAccountLinkRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CosmosAccountLinkRequest.Merge(m, src)
+func (m *AccountLinkRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountLinkRequest.Merge(m, src)
 }
-func (m *CosmosAccountLinkRequest) XXX_Size() int {
+func (m *AccountLinkRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *CosmosAccountLinkRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_CosmosAccountLinkRequest.DiscardUnknown(m)
+func (m *AccountLinkRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountLinkRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_CosmosAccountLinkRequest proto.InternalMessageInfo
+var xxx_messageInfo_AccountLinkRequest proto.InternalMessageInfo
 
-func (m *CosmosAccountLinkRequest) GetAddress() string {
+func (m *AccountLinkRequest) GetAddress() string {
 	if m != nil {
 		return m.Address
 	}
 	return ""
 }
 
-type CosmosAccountLinkResponse struct {
-	SvmAddress string `protobuf:"bytes,1,opt,name=svm_address,json=svmAddress,proto3" json:"svm_address,omitempty"`
+type AccountLinkResponse struct {
+	Link *AccountLink `protobuf:"bytes,1,opt,name=link,proto3" json:"link,omitempty"`
 }
 
-func (m *CosmosAccountLinkResponse) Reset()         { *m = CosmosAccountLinkResponse{} }
-func (m *CosmosAccountLinkResponse) String() string { return proto.CompactTextString(m) }
-func (*CosmosAccountLinkResponse) ProtoMessage()    {}
-func (*CosmosAccountLinkResponse) Descriptor() ([]byte, []int) {
+func (m *AccountLinkResponse) Reset()         { *m = AccountLinkResponse{} }
+func (m *AccountLinkResponse) String() string { return proto.CompactTextString(m) }
+func (*AccountLinkResponse) ProtoMessage()    {}
+func (*AccountLinkResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_99679498a27461b0, []int{5}
 }
-func (m *CosmosAccountLinkResponse) XXX_Unmarshal(b []byte) error {
+func (m *AccountLinkResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *CosmosAccountLinkResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *AccountLinkResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_CosmosAccountLinkResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_AccountLinkResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -274,162 +274,69 @@ func (m *CosmosAccountLinkResponse) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-func (m *CosmosAccountLinkResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CosmosAccountLinkResponse.Merge(m, src)
+func (m *AccountLinkResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountLinkResponse.Merge(m, src)
 }
-func (m *CosmosAccountLinkResponse) XXX_Size() int {
+func (m *AccountLinkResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *CosmosAccountLinkResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_CosmosAccountLinkResponse.DiscardUnknown(m)
+func (m *AccountLinkResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountLinkResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_CosmosAccountLinkResponse proto.InternalMessageInfo
+var xxx_messageInfo_AccountLinkResponse proto.InternalMessageInfo
 
-func (m *CosmosAccountLinkResponse) GetSvmAddress() string {
+func (m *AccountLinkResponse) GetLink() *AccountLink {
 	if m != nil {
-		return m.SvmAddress
+		return m.Link
 	}
-	return ""
-}
-
-type SvmAccountLinkRequest struct {
-	// svm address in base58
-	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-}
-
-func (m *SvmAccountLinkRequest) Reset()         { *m = SvmAccountLinkRequest{} }
-func (m *SvmAccountLinkRequest) String() string { return proto.CompactTextString(m) }
-func (*SvmAccountLinkRequest) ProtoMessage()    {}
-func (*SvmAccountLinkRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_99679498a27461b0, []int{6}
-}
-func (m *SvmAccountLinkRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *SvmAccountLinkRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_SvmAccountLinkRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *SvmAccountLinkRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SvmAccountLinkRequest.Merge(m, src)
-}
-func (m *SvmAccountLinkRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *SvmAccountLinkRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_SvmAccountLinkRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_SvmAccountLinkRequest proto.InternalMessageInfo
-
-func (m *SvmAccountLinkRequest) GetAddress() string {
-	if m != nil {
-		return m.Address
-	}
-	return ""
-}
-
-type SvmAccountLinkResponse struct {
-	CosmosAddress string `protobuf:"bytes,1,opt,name=cosmos_address,json=cosmosAddress,proto3" json:"cosmos_address,omitempty"`
-}
-
-func (m *SvmAccountLinkResponse) Reset()         { *m = SvmAccountLinkResponse{} }
-func (m *SvmAccountLinkResponse) String() string { return proto.CompactTextString(m) }
-func (*SvmAccountLinkResponse) ProtoMessage()    {}
-func (*SvmAccountLinkResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_99679498a27461b0, []int{7}
-}
-func (m *SvmAccountLinkResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *SvmAccountLinkResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_SvmAccountLinkResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *SvmAccountLinkResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SvmAccountLinkResponse.Merge(m, src)
-}
-func (m *SvmAccountLinkResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *SvmAccountLinkResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_SvmAccountLinkResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_SvmAccountLinkResponse proto.InternalMessageInfo
-
-func (m *SvmAccountLinkResponse) GetCosmosAddress() string {
-	if m != nil {
-		return m.CosmosAddress
-	}
-	return ""
+	return nil
 }
 
 func init() {
 	proto.RegisterType((*AccountRequest)(nil), "flux.svm.v1beta1.AccountRequest")
 	proto.RegisterType((*AccountResponse)(nil), "flux.svm.v1beta1.AccountResponse")
-	proto.RegisterType((*ProgramAccountsRequest)(nil), "flux.svm.v1beta1.ProgramAccountsRequest")
-	proto.RegisterType((*ProgramAccountsResponse)(nil), "flux.svm.v1beta1.ProgramAccountsResponse")
-	proto.RegisterType((*CosmosAccountLinkRequest)(nil), "flux.svm.v1beta1.CosmosAccountLinkRequest")
-	proto.RegisterType((*CosmosAccountLinkResponse)(nil), "flux.svm.v1beta1.CosmosAccountLinkResponse")
-	proto.RegisterType((*SvmAccountLinkRequest)(nil), "flux.svm.v1beta1.SvmAccountLinkRequest")
-	proto.RegisterType((*SvmAccountLinkResponse)(nil), "flux.svm.v1beta1.SvmAccountLinkResponse")
+	proto.RegisterType((*AccountsByOwnerRequest)(nil), "flux.svm.v1beta1.AccountsByOwnerRequest")
+	proto.RegisterType((*AccountsByOwnerResponse)(nil), "flux.svm.v1beta1.AccountsByOwnerResponse")
+	proto.RegisterType((*AccountLinkRequest)(nil), "flux.svm.v1beta1.AccountLinkRequest")
+	proto.RegisterType((*AccountLinkResponse)(nil), "flux.svm.v1beta1.AccountLinkResponse")
 }
 
 func init() { proto.RegisterFile("flux/svm/v1beta1/query.proto", fileDescriptor_99679498a27461b0) }
 
 var fileDescriptor_99679498a27461b0 = []byte{
-	// 523 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x94, 0x5f, 0x6b, 0xd3, 0x50,
-	0x18, 0xc6, 0x1b, 0xff, 0x95, 0xbe, 0xc3, 0x4e, 0x0f, 0x38, 0xbb, 0x50, 0xe2, 0x8c, 0x0c, 0x6b,
-	0x27, 0x39, 0xb4, 0x2b, 0xec, 0x46, 0x90, 0x29, 0xf4, 0x6a, 0x0c, 0xad, 0x5e, 0x79, 0x53, 0x4e,
-	0xd2, 0x63, 0x16, 0x96, 0xe4, 0x64, 0x79, 0x93, 0xb0, 0x31, 0xbc, 0xf1, 0x13, 0x08, 0x5e, 0x09,
-	0xde, 0xfa, 0x5d, 0xbc, 0x1c, 0x78, 0xe3, 0xa5, 0xb4, 0x82, 0x5f, 0x43, 0x92, 0x9c, 0x76, 0xb6,
-	0x69, 0x6d, 0x77, 0xd9, 0xf3, 0x3c, 0xcf, 0x79, 0x7e, 0x3d, 0xef, 0xdb, 0x42, 0xfd, 0xbd, 0x1b,
-	0x9f, 0x52, 0x4c, 0x3c, 0x9a, 0xb4, 0x4c, 0x1e, 0xb1, 0x16, 0x3d, 0x89, 0x79, 0x78, 0x66, 0x04,
-	0xa1, 0x88, 0x04, 0xb9, 0x93, 0xaa, 0x06, 0x26, 0x9e, 0x21, 0x55, 0xb5, 0x69, 0x09, 0xf4, 0x04,
-	0x52, 0x93, 0x21, 0xcf, 0xad, 0x93, 0x60, 0xc0, 0x6c, 0xc7, 0x67, 0x91, 0x23, 0xfc, 0x3c, 0xad,
-	0xd6, 0x6d, 0x21, 0x6c, 0x97, 0x53, 0x16, 0x38, 0x94, 0xf9, 0xbe, 0x88, 0x32, 0x11, 0xa5, 0xaa,
-	0x16, 0x9a, 0xd3, 0x9e, 0x4c, 0xd3, 0x9b, 0x50, 0xdd, 0xb7, 0x2c, 0x11, 0xfb, 0x51, 0x8f, 0x9f,
-	0xc4, 0x1c, 0x23, 0x52, 0x83, 0x32, 0x1b, 0x0c, 0x42, 0x8e, 0x58, 0x53, 0xb6, 0x94, 0x46, 0xa5,
-	0x37, 0xfe, 0xa8, 0x77, 0x61, 0x7d, 0xe2, 0xc5, 0x40, 0xf8, 0xc8, 0xc9, 0x2e, 0x94, 0x59, 0x7e,
-	0x94, 0x99, 0xd7, 0xda, 0x9b, 0xc6, 0xec, 0x17, 0x31, 0xc6, 0x99, 0xb1, 0x53, 0x6f, 0xc3, 0xc6,
-	0xab, 0x50, 0xd8, 0x21, 0xf3, 0xa4, 0x84, 0xcb, 0xbb, 0xf7, 0xe0, 0x7e, 0x21, 0x23, 0x19, 0xea,
-	0x50, 0x91, 0x2e, 0x9e, 0xc6, 0xae, 0x37, 0x2a, 0xbd, 0xcb, 0x03, 0xbd, 0x03, 0xb5, 0x97, 0xd9,
-	0x43, 0xca, 0xdc, 0x81, 0xe3, 0x1f, 0x2f, 0xaf, 0x7b, 0x06, 0x9b, 0x73, 0x52, 0xb2, 0xf0, 0x01,
-	0xac, 0x61, 0xe2, 0xf5, 0xa7, 0xa3, 0x80, 0x89, 0xb7, 0x2f, 0xd3, 0x2d, 0xb8, 0xf7, 0x26, 0xf1,
-	0xae, 0x54, 0xf8, 0x1c, 0x36, 0x66, 0x23, 0xb2, 0x6d, 0x1b, 0xaa, 0xf9, 0x26, 0xcc, 0x14, 0xde,
-	0xce, 0x4f, 0x65, 0x67, 0xfb, 0xcf, 0x0d, 0xb8, 0xf9, 0x3a, 0xdd, 0x12, 0x72, 0x0e, 0x65, 0x79,
-	0x0f, 0xd9, 0x5a, 0x3c, 0x8d, 0x9c, 0x48, 0x7d, 0xf8, 0x1f, 0x47, 0x0e, 0xa0, 0xef, 0x7c, 0xfc,
-	0xf1, 0xfb, 0xf3, 0xb5, 0x6d, 0xf2, 0x88, 0x16, 0xf6, 0x48, 0x4e, 0x94, 0x9e, 0x4b, 0xb4, 0x0f,
-	0xe4, 0xab, 0x02, 0xeb, 0x33, 0x83, 0x22, 0x8d, 0x62, 0xc7, 0xfc, 0xf9, 0xab, 0x4f, 0x56, 0x70,
-	0x4a, 0xaa, 0x4e, 0x46, 0x65, 0x90, 0xa7, 0x45, 0xaa, 0x20, 0x8f, 0xf4, 0x25, 0x1d, 0xfe, 0x83,
-	0xf7, 0x4d, 0x81, 0xbb, 0x85, 0xc1, 0x92, 0x66, 0xb1, 0x76, 0xd1, 0xce, 0xa8, 0x3b, 0x2b, 0x79,
-	0x25, 0xe4, 0x5e, 0x06, 0xd9, 0x22, 0x74, 0xe1, 0xd3, 0xf5, 0x5d, 0xc7, 0x3f, 0xa6, 0xf2, 0xa7,
-	0x7e, 0xc9, 0xf9, 0x45, 0x81, 0xea, 0xf4, 0x3e, 0x90, 0xc7, 0xc5, 0xe2, 0xb9, 0x4b, 0xa6, 0x36,
-	0x96, 0x1b, 0x97, 0xbf, 0xe1, 0x14, 0x5e, 0x2a, 0x4c, 0xd8, 0x5e, 0x1c, 0x7e, 0x1f, 0x6a, 0xca,
-	0xc5, 0x50, 0x53, 0x7e, 0x0d, 0x35, 0xe5, 0xd3, 0x48, 0x2b, 0x5d, 0x8c, 0xb4, 0xd2, 0xcf, 0x91,
-	0x56, 0x7a, 0xd7, 0xb1, 0x9d, 0xe8, 0x28, 0x36, 0x0d, 0x4b, 0x78, 0xb4, 0xeb, 0xc6, 0xa7, 0x87,
-	0xdd, 0xb7, 0x07, 0xcc, 0xc4, 0xec, 0xf6, 0x01, 0xb5, 0x8e, 0x98, 0xe3, 0x53, 0x4f, 0x0c, 0x62,
-	0x97, 0x63, 0x76, 0x67, 0x74, 0x16, 0x70, 0x34, 0x6f, 0x65, 0xff, 0x44, 0xbb, 0x7f, 0x03, 0x00,
-	0x00, 0xff, 0xff, 0x6a, 0xcb, 0x4b, 0x8f, 0x21, 0x05, 0x00, 0x00,
+	// 495 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x94, 0xc1, 0x6e, 0xd3, 0x40,
+	0x10, 0x86, 0x63, 0x28, 0x44, 0xd9, 0x4a, 0x80, 0x16, 0x04, 0xc5, 0x0a, 0x56, 0x31, 0x54, 0x0a,
+	0x05, 0x76, 0x95, 0xb4, 0xa8, 0xe7, 0xe6, 0x10, 0x71, 0xa8, 0x8a, 0x08, 0x9c, 0xb8, 0x44, 0x6b,
+	0x7b, 0x49, 0xad, 0xda, 0xbb, 0xae, 0x67, 0x1d, 0x6a, 0x55, 0x5c, 0x78, 0x02, 0xa4, 0x9e, 0x38,
+	0xf0, 0x3e, 0x1c, 0x2b, 0x21, 0x21, 0x8e, 0x28, 0xe1, 0x41, 0x90, 0xd7, 0x9b, 0x34, 0x34, 0x72,
+	0xc3, 0x81, 0x63, 0xf6, 0xff, 0xff, 0x99, 0x6f, 0x66, 0x14, 0xa3, 0xe6, 0xfb, 0x28, 0x3b, 0xa6,
+	0x30, 0x8a, 0xe9, 0xa8, 0xed, 0x71, 0xc5, 0xda, 0xf4, 0x28, 0xe3, 0x69, 0x4e, 0x92, 0x54, 0x2a,
+	0x89, 0x6f, 0x15, 0x2a, 0x81, 0x51, 0x4c, 0x8c, 0x6a, 0x6f, 0xfa, 0x12, 0x62, 0x09, 0xd4, 0x63,
+	0xc0, 0x4b, 0xeb, 0x2c, 0x98, 0xb0, 0x61, 0x28, 0x98, 0x0a, 0xa5, 0x28, 0xd3, 0x76, 0x73, 0x28,
+	0xe5, 0x30, 0xe2, 0x94, 0x25, 0x21, 0x65, 0x42, 0x48, 0xa5, 0x45, 0x30, 0xaa, 0xbd, 0xd0, 0xb9,
+	0xe8, 0xa3, 0x35, 0x77, 0x13, 0xdd, 0xd8, 0xf5, 0x7d, 0x99, 0x09, 0xd5, 0xe7, 0x47, 0x19, 0x07,
+	0x85, 0xd7, 0x50, 0x9d, 0x05, 0x41, 0xca, 0x01, 0xd6, 0xac, 0x75, 0xab, 0xd5, 0xe8, 0x4f, 0x7f,
+	0xba, 0x3d, 0x74, 0x73, 0xe6, 0x85, 0x44, 0x0a, 0xe0, 0x78, 0x0b, 0xd5, 0x59, 0xf9, 0xa4, 0xcd,
+	0xab, 0x9d, 0xfb, 0xe4, 0xe2, 0x20, 0x64, 0x9a, 0x99, 0x3a, 0xdd, 0x0e, 0xba, 0x6b, 0xde, 0xa0,
+	0x9b, 0xbf, 0xfa, 0x20, 0x78, 0xba, 0xbc, 0xf7, 0x0e, 0xba, 0xb7, 0x90, 0x31, 0x0c, 0x4d, 0xd4,
+	0x30, 0x2e, 0x5e, 0xc4, 0xae, 0xb6, 0x1a, 0xfd, 0xf3, 0x07, 0x97, 0x20, 0x6c, 0x82, 0x7b, 0xa1,
+	0x38, 0x5c, 0xde, 0xe8, 0x25, 0xba, 0xfd, 0x97, 0xdf, 0x34, 0x69, 0xa3, 0x95, 0x28, 0x14, 0x87,
+	0x66, 0xca, 0x07, 0x95, 0x53, 0xea, 0x90, 0xb6, 0x76, 0x7e, 0xac, 0xa0, 0x6b, 0xaf, 0x8b, 0xbb,
+	0xe1, 0x13, 0x54, 0x37, 0x32, 0x5e, 0xaf, 0xde, 0x4f, 0x89, 0x66, 0x3f, 0xbc, 0xc4, 0x51, 0xc2,
+	0xb8, 0x4f, 0x3f, 0x7d, 0xff, 0x7d, 0x7a, 0x65, 0x03, 0x3f, 0xa2, 0x0b, 0x97, 0x35, 0x3b, 0xa6,
+	0x27, 0x66, 0x9e, 0x8f, 0xf8, 0xab, 0x35, 0x3b, 0xdb, 0x74, 0x75, 0xb8, 0x55, 0xd9, 0xe3, 0xc2,
+	0x45, 0xec, 0x27, 0xff, 0xe0, 0x34, 0x54, 0x2f, 0x34, 0x15, 0xc5, 0xcf, 0x2b, 0xa9, 0x60, 0xe0,
+	0xe5, 0x03, 0x59, 0x84, 0xe6, 0xf8, 0x4e, 0x2d, 0xb4, 0x3a, 0xb7, 0x3c, 0xfc, 0xf8, 0xf2, 0xdd,
+	0x1a, 0xae, 0x8d, 0x25, 0x2e, 0xc3, 0xb4, 0xa3, 0x99, 0xda, 0x98, 0x56, 0x32, 0x0d, 0x8a, 0x5b,
+	0x51, 0xf3, 0x5f, 0x3b, 0xa7, 0xfa, 0x62, 0xa1, 0x3b, 0x73, 0x05, 0xbb, 0xf9, 0x9b, 0x51, 0xbc,
+	0x1b, 0x04, 0xe9, 0xff, 0xc5, 0xdb, 0xd6, 0x78, 0x04, 0x3f, 0x5b, 0x82, 0x57, 0x08, 0x33, 0xb6,
+	0xee, 0xfe, 0xb7, 0xb1, 0x63, 0x9d, 0x8d, 0x1d, 0xeb, 0xd7, 0xd8, 0xb1, 0x3e, 0x4f, 0x9c, 0xda,
+	0xd9, 0xc4, 0xa9, 0xfd, 0x9c, 0x38, 0xb5, 0x77, 0xdb, 0xc3, 0x50, 0x1d, 0x64, 0x1e, 0xf1, 0x65,
+	0x4c, 0x7b, 0x51, 0x76, 0xbc, 0xdf, 0x7b, 0xbb, 0xc7, 0x3c, 0xd0, 0xd5, 0x03, 0xea, 0x1f, 0xb0,
+	0x50, 0xd0, 0x58, 0x06, 0x59, 0xc4, 0x41, 0xd7, 0x54, 0x79, 0xc2, 0xc1, 0xbb, 0xae, 0x3f, 0x05,
+	0x5b, 0x7f, 0x02, 0x00, 0x00, 0xff, 0xff, 0x18, 0xf4, 0x31, 0x3d, 0xa2, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -445,9 +352,9 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
 	Account(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*AccountResponse, error)
-	ProgramAccounts(ctx context.Context, in *ProgramAccountsRequest, opts ...grpc.CallOption) (*ProgramAccountsResponse, error)
-	CosmosAccountLink(ctx context.Context, in *CosmosAccountLinkRequest, opts ...grpc.CallOption) (*CosmosAccountLinkResponse, error)
-	SvmAccountLink(ctx context.Context, in *SvmAccountLinkRequest, opts ...grpc.CallOption) (*SvmAccountLinkResponse, error)
+	AccountsByOwner(ctx context.Context, in *AccountsByOwnerRequest, opts ...grpc.CallOption) (*AccountsByOwnerResponse, error)
+	AccountLink(ctx context.Context, in *AccountLinkRequest, opts ...grpc.CallOption) (*AccountLinkResponse, error)
+	AccountLinkBySvmAddr(ctx context.Context, in *AccountLinkRequest, opts ...grpc.CallOption) (*AccountLinkResponse, error)
 }
 
 type queryClient struct {
@@ -467,27 +374,27 @@ func (c *queryClient) Account(ctx context.Context, in *AccountRequest, opts ...g
 	return out, nil
 }
 
-func (c *queryClient) ProgramAccounts(ctx context.Context, in *ProgramAccountsRequest, opts ...grpc.CallOption) (*ProgramAccountsResponse, error) {
-	out := new(ProgramAccountsResponse)
-	err := c.cc.Invoke(ctx, "/flux.svm.v1beta1.Query/ProgramAccounts", in, out, opts...)
+func (c *queryClient) AccountsByOwner(ctx context.Context, in *AccountsByOwnerRequest, opts ...grpc.CallOption) (*AccountsByOwnerResponse, error) {
+	out := new(AccountsByOwnerResponse)
+	err := c.cc.Invoke(ctx, "/flux.svm.v1beta1.Query/AccountsByOwner", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) CosmosAccountLink(ctx context.Context, in *CosmosAccountLinkRequest, opts ...grpc.CallOption) (*CosmosAccountLinkResponse, error) {
-	out := new(CosmosAccountLinkResponse)
-	err := c.cc.Invoke(ctx, "/flux.svm.v1beta1.Query/CosmosAccountLink", in, out, opts...)
+func (c *queryClient) AccountLink(ctx context.Context, in *AccountLinkRequest, opts ...grpc.CallOption) (*AccountLinkResponse, error) {
+	out := new(AccountLinkResponse)
+	err := c.cc.Invoke(ctx, "/flux.svm.v1beta1.Query/AccountLink", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) SvmAccountLink(ctx context.Context, in *SvmAccountLinkRequest, opts ...grpc.CallOption) (*SvmAccountLinkResponse, error) {
-	out := new(SvmAccountLinkResponse)
-	err := c.cc.Invoke(ctx, "/flux.svm.v1beta1.Query/SvmAccountLink", in, out, opts...)
+func (c *queryClient) AccountLinkBySvmAddr(ctx context.Context, in *AccountLinkRequest, opts ...grpc.CallOption) (*AccountLinkResponse, error) {
+	out := new(AccountLinkResponse)
+	err := c.cc.Invoke(ctx, "/flux.svm.v1beta1.Query/AccountLinkBySvmAddr", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -497,9 +404,9 @@ func (c *queryClient) SvmAccountLink(ctx context.Context, in *SvmAccountLinkRequ
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	Account(context.Context, *AccountRequest) (*AccountResponse, error)
-	ProgramAccounts(context.Context, *ProgramAccountsRequest) (*ProgramAccountsResponse, error)
-	CosmosAccountLink(context.Context, *CosmosAccountLinkRequest) (*CosmosAccountLinkResponse, error)
-	SvmAccountLink(context.Context, *SvmAccountLinkRequest) (*SvmAccountLinkResponse, error)
+	AccountsByOwner(context.Context, *AccountsByOwnerRequest) (*AccountsByOwnerResponse, error)
+	AccountLink(context.Context, *AccountLinkRequest) (*AccountLinkResponse, error)
+	AccountLinkBySvmAddr(context.Context, *AccountLinkRequest) (*AccountLinkResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -509,14 +416,14 @@ type UnimplementedQueryServer struct {
 func (*UnimplementedQueryServer) Account(ctx context.Context, req *AccountRequest) (*AccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Account not implemented")
 }
-func (*UnimplementedQueryServer) ProgramAccounts(ctx context.Context, req *ProgramAccountsRequest) (*ProgramAccountsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProgramAccounts not implemented")
+func (*UnimplementedQueryServer) AccountsByOwner(ctx context.Context, req *AccountsByOwnerRequest) (*AccountsByOwnerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AccountsByOwner not implemented")
 }
-func (*UnimplementedQueryServer) CosmosAccountLink(ctx context.Context, req *CosmosAccountLinkRequest) (*CosmosAccountLinkResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CosmosAccountLink not implemented")
+func (*UnimplementedQueryServer) AccountLink(ctx context.Context, req *AccountLinkRequest) (*AccountLinkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AccountLink not implemented")
 }
-func (*UnimplementedQueryServer) SvmAccountLink(ctx context.Context, req *SvmAccountLinkRequest) (*SvmAccountLinkResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SvmAccountLink not implemented")
+func (*UnimplementedQueryServer) AccountLinkBySvmAddr(ctx context.Context, req *AccountLinkRequest) (*AccountLinkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AccountLinkBySvmAddr not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -541,56 +448,56 @@ func _Query_Account_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_ProgramAccounts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProgramAccountsRequest)
+func _Query_AccountsByOwner_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AccountsByOwnerRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).ProgramAccounts(ctx, in)
+		return srv.(QueryServer).AccountsByOwner(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/flux.svm.v1beta1.Query/ProgramAccounts",
+		FullMethod: "/flux.svm.v1beta1.Query/AccountsByOwner",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).ProgramAccounts(ctx, req.(*ProgramAccountsRequest))
+		return srv.(QueryServer).AccountsByOwner(ctx, req.(*AccountsByOwnerRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_CosmosAccountLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CosmosAccountLinkRequest)
+func _Query_AccountLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AccountLinkRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).CosmosAccountLink(ctx, in)
+		return srv.(QueryServer).AccountLink(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/flux.svm.v1beta1.Query/CosmosAccountLink",
+		FullMethod: "/flux.svm.v1beta1.Query/AccountLink",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).CosmosAccountLink(ctx, req.(*CosmosAccountLinkRequest))
+		return srv.(QueryServer).AccountLink(ctx, req.(*AccountLinkRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_SvmAccountLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SvmAccountLinkRequest)
+func _Query_AccountLinkBySvmAddr_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AccountLinkRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).SvmAccountLink(ctx, in)
+		return srv.(QueryServer).AccountLinkBySvmAddr(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/flux.svm.v1beta1.Query/SvmAccountLink",
+		FullMethod: "/flux.svm.v1beta1.Query/AccountLinkBySvmAddr",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).SvmAccountLink(ctx, req.(*SvmAccountLinkRequest))
+		return srv.(QueryServer).AccountLinkBySvmAddr(ctx, req.(*AccountLinkRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -604,16 +511,16 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Account_Handler,
 		},
 		{
-			MethodName: "ProgramAccounts",
-			Handler:    _Query_ProgramAccounts_Handler,
+			MethodName: "AccountsByOwner",
+			Handler:    _Query_AccountsByOwner_Handler,
 		},
 		{
-			MethodName: "CosmosAccountLink",
-			Handler:    _Query_CosmosAccountLink_Handler,
+			MethodName: "AccountLink",
+			Handler:    _Query_AccountLink_Handler,
 		},
 		{
-			MethodName: "SvmAccountLink",
-			Handler:    _Query_SvmAccountLink_Handler,
+			MethodName: "AccountLinkBySvmAddr",
+			Handler:    _Query_AccountLinkBySvmAddr_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -685,7 +592,7 @@ func (m *AccountResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *ProgramAccountsRequest) Marshal() (dAtA []byte, err error) {
+func (m *AccountsByOwnerRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -695,12 +602,12 @@ func (m *ProgramAccountsRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *ProgramAccountsRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *AccountsByOwnerRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ProgramAccountsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *AccountsByOwnerRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -715,7 +622,7 @@ func (m *ProgramAccountsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 	return len(dAtA) - i, nil
 }
 
-func (m *ProgramAccountsResponse) Marshal() (dAtA []byte, err error) {
+func (m *AccountsByOwnerResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -725,12 +632,12 @@ func (m *ProgramAccountsResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *ProgramAccountsResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *AccountsByOwnerResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ProgramAccountsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *AccountsByOwnerResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -747,7 +654,7 @@ func (m *ProgramAccountsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
-func (m *CosmosAccountLinkRequest) Marshal() (dAtA []byte, err error) {
+func (m *AccountLinkRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -757,12 +664,12 @@ func (m *CosmosAccountLinkRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *CosmosAccountLinkRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *AccountLinkRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *CosmosAccountLinkRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *AccountLinkRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -777,7 +684,7 @@ func (m *CosmosAccountLinkRequest) MarshalToSizedBuffer(dAtA []byte) (int, error
 	return len(dAtA) - i, nil
 }
 
-func (m *CosmosAccountLinkResponse) Marshal() (dAtA []byte, err error) {
+func (m *AccountLinkResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -787,80 +694,25 @@ func (m *CosmosAccountLinkResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *CosmosAccountLinkResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *AccountLinkResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *CosmosAccountLinkResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *AccountLinkResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.SvmAddress) > 0 {
-		i -= len(m.SvmAddress)
-		copy(dAtA[i:], m.SvmAddress)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.SvmAddress)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *SvmAccountLinkRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *SvmAccountLinkRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *SvmAccountLinkRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Address) > 0 {
-		i -= len(m.Address)
-		copy(dAtA[i:], m.Address)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *SvmAccountLinkResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *SvmAccountLinkResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *SvmAccountLinkResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.CosmosAddress) > 0 {
-		i -= len(m.CosmosAddress)
-		copy(dAtA[i:], m.CosmosAddress)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.CosmosAddress)))
+	if m.Link != nil {
+		{
+			size, err := m.Link.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
 		i--
 		dAtA[i] = 0xa
 	}
@@ -904,7 +756,7 @@ func (m *AccountResponse) Size() (n int) {
 	return n
 }
 
-func (m *ProgramAccountsRequest) Size() (n int) {
+func (m *AccountsByOwnerRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -917,7 +769,7 @@ func (m *ProgramAccountsRequest) Size() (n int) {
 	return n
 }
 
-func (m *ProgramAccountsResponse) Size() (n int) {
+func (m *AccountsByOwnerResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -932,7 +784,7 @@ func (m *ProgramAccountsResponse) Size() (n int) {
 	return n
 }
 
-func (m *CosmosAccountLinkRequest) Size() (n int) {
+func (m *AccountLinkRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -945,40 +797,14 @@ func (m *CosmosAccountLinkRequest) Size() (n int) {
 	return n
 }
 
-func (m *CosmosAccountLinkResponse) Size() (n int) {
+func (m *AccountLinkResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.SvmAddress)
-	if l > 0 {
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	return n
-}
-
-func (m *SvmAccountLinkRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Address)
-	if l > 0 {
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	return n
-}
-
-func (m *SvmAccountLinkResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.CosmosAddress)
-	if l > 0 {
+	if m.Link != nil {
+		l = m.Link.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
@@ -1158,7 +984,7 @@ func (m *AccountResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *ProgramAccountsRequest) Unmarshal(dAtA []byte) error {
+func (m *AccountsByOwnerRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1181,10 +1007,10 @@ func (m *ProgramAccountsRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: ProgramAccountsRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: AccountsByOwnerRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ProgramAccountsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: AccountsByOwnerRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1240,7 +1066,7 @@ func (m *ProgramAccountsRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *ProgramAccountsResponse) Unmarshal(dAtA []byte) error {
+func (m *AccountsByOwnerResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1263,10 +1089,10 @@ func (m *ProgramAccountsResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: ProgramAccountsResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: AccountsByOwnerResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ProgramAccountsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: AccountsByOwnerResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1322,7 +1148,7 @@ func (m *ProgramAccountsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *CosmosAccountLinkRequest) Unmarshal(dAtA []byte) error {
+func (m *AccountLinkRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1345,10 +1171,10 @@ func (m *CosmosAccountLinkRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: CosmosAccountLinkRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: AccountLinkRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: CosmosAccountLinkRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: AccountLinkRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1404,7 +1230,7 @@ func (m *CosmosAccountLinkRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *CosmosAccountLinkResponse) Unmarshal(dAtA []byte) error {
+func (m *AccountLinkResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1427,17 +1253,17 @@ func (m *CosmosAccountLinkResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: CosmosAccountLinkResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: AccountLinkResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: CosmosAccountLinkResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: AccountLinkResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SvmAddress", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Link", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuery
@@ -1447,187 +1273,27 @@ func (m *CosmosAccountLinkResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthQuery
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.SvmAddress = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
+			if m.Link == nil {
+				m.Link = &AccountLink{}
+			}
+			if err := m.Link.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *SvmAccountLinkRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: SvmAccountLinkRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SvmAccountLinkRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Address = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *SvmAccountLinkResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: SvmAccountLinkResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SvmAccountLinkResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CosmosAddress", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.CosmosAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

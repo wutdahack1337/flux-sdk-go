@@ -8,8 +8,6 @@ import (
 	"regexp"
 	"strings"
 
-	sdkmath "cosmossdk.io/math"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -121,7 +119,7 @@ func (m *StrategyMetadata) ValidateBasic(query *types.FISQueryRequest) error {
 		}
 	case StrategyType_CRON:
 		// validate cron gas price
-		minimumGasPrice := sdkmath.NewIntFromUint64(500000000) // TODO: load from config
+		minimumGasPrice := CRON_MINIMUM_GAS_PRICE
 		if m.Type == StrategyType_CRON && m.CronGasPrice.LT(minimumGasPrice) {
 			return fmt.Errorf("cron bot minimum gas price must greater than or equal chain minimum gas price: %s", minimumGasPrice.String())
 		}

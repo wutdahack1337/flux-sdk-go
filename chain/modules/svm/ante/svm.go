@@ -70,7 +70,7 @@ func (svd SvmDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, ne
 	signerLinks := []*svmtypes.AccountLink{}
 	for _, signer := range svmMsg.Signers {
 		signerAcc := sdk.MustAccAddressFromBech32(signer)
-		link, exist := svd.k.GetCosmosAccountLink(ctx, signerAcc.Bytes())
+		link, exist := svd.k.GetAccountLink(ctx, signerAcc.Bytes())
 		if !exist {
 			return ctx, fmt.Errorf("signer cosmos addr %s is not linked to any svm pubkey", signerAcc.String())
 		}
@@ -83,13 +83,13 @@ func (svd SvmDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, ne
 		for _, ixAcc := range ix.Accounts {
 			if ixAcc.IsSigner {
 				// account link must exist
-				link, exist := svd.k.GetSvmAccountLink(ctx, base58.Decode(svmMsg.Accounts[ixAcc.CallerIndex]))
+				link, exist := svd.k.GetAccountLinkBySvmAddr(ctx, base58.Decode(svmMsg.Accounts[ixAcc.CallerIndex]))
 				if !exist {
 					return ctx, fmt.Errorf("ix account %s is not linked to any cosmos addr", svmMsg.Accounts[ixAcc.CallerIndex])
 				}
 				// account must appear in signer map
-				if !signerMap[string(link.To)] {
-					return ctx, fmt.Errorf("ix account %s linked cosmos addr %s doesn't appear in signer map", svmMsg.Accounts[ixAcc.CallerIndex], sdk.AccAddress(link.To).String())
+				if !signerMap[string(link.CosmosAddr)] {
+					return ctx, fmt.Errorf("ix account %s linked cosmos addr %s doesn't appear in signer map", svmMsg.Accounts[ixAcc.CallerIndex], sdk.AccAddress(link.SvmAddr).String())
 				}
 			}
 		}
