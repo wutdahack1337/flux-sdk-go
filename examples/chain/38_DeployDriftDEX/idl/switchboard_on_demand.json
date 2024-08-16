@@ -1,0 +1,165 @@
+{
+  "version": "0.1.0",
+  "name": "switchboard_on_demand",
+  "instructions": [],
+  "accounts": [
+    {
+      "name": "PullFeedAccountData",
+      "docs": [
+        "A representation of the data in a pull feed account."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "submissions",
+            "docs": [
+              "The oracle submissions for this feed."
+            ],
+            "type": {
+              "array": [
+                {
+                  "defined": "OracleSubmission"
+                },
+                32
+              ]
+            }
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "The public key of the authority that can update the feed hash that",
+              "this account will use for registering updates."
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "queue",
+            "docs": [
+              "The public key of the queue which oracles must be bound to in order to",
+              "submit data to this feed."
+            ],
+            "type": "publicKey"
+          },
+          {
+            "name": "feedHash",
+            "docs": [
+              "SHA-256 hash of the job schema oracles will execute to produce data",
+              "for this feed."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "initializedAt",
+            "docs": [
+              "The slot at which this account was initialized."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "permissions",
+            "type": "u64"
+          },
+          {
+            "name": "maxVariance",
+            "type": "u64"
+          },
+          {
+            "name": "minResponses",
+            "type": "u32"
+          },
+          {
+            "name": "name",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                3
+              ]
+            }
+          },
+          {
+            "name": "sampleSize",
+            "type": "u8"
+          },
+          {
+            "name": "lastUpdateTimestamp",
+            "type": "i64"
+          },
+          {
+            "name": "lutSlot",
+            "type": "u64"
+          },
+          {
+            "name": "ipfsHash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "result",
+            "type": {
+              "defined": "CurrentResult"
+            }
+          },
+          {
+            "name": "maxStaleness",
+            "type": "u32"
+          },
+          {
+            "name": "ebuf4",
+            "type": {
+              "array": [
+                "u8",
+                20
+              ]
+            }
+          },
+          {
+            "name": "ebuf3",
+            "type": {
+              "array": [
+                "u8",
+                24
+              ]
+            }
+          },
+          {
+            "name": "ebuf2",
+            "type": {
+              "array": [
+                "u8",
+                256
+              ]
+            }
+          },
+          {
+            "name": "ebuf1",
+            "type": {
+              "array": [
+                "u8",
+                512
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
