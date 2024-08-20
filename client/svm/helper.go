@@ -66,7 +66,7 @@ func (inst DeployWithMaxDataLen) MarshalWithEncoder(encoder *bin.Encoder) error 
 	return encoder.WriteUint64(inst.DataLen, binary.LittleEndian)
 }
 
-func ToCosmosMsg(signer string, computeBudget uint64, tx *solana.Transaction) *types.MsgTransaction {
+func ToCosmosMsg(signers []string, computeBudget uint64, tx *solana.Transaction) *types.MsgTransaction {
 	pubkeys := []string{}
 	for _, p := range tx.Message.AccountKeys {
 		pubkeys = append(pubkeys, p.String())
@@ -97,7 +97,7 @@ func ToCosmosMsg(signer string, computeBudget uint64, tx *solana.Transaction) *t
 	}
 
 	return &types.MsgTransaction{
-		Signers:       []string{signer},
+		Signers:       signers,
 		Accounts:      pubkeys,
 		Instructions:  ixs,
 		ComputeBudget: computeBudget,
