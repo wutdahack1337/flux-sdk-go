@@ -220,11 +220,10 @@ func main() {
 		panic(err)
 	}
 
-	programPubkey := solana.MustPublicKeyFromBase58("CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C") // TODO: Replace expected pubkey here
+	programPubkey := solana.MustPublicKeyFromBase58("CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C")
 	programBufferPubkey := solana.NewWallet().PublicKey()
 	initAccountMsg := BuildInitAccountsMsg(senderAddress, len(programBz), programPubkey, programBufferPubkey)
 	deployMsg := BuildDeployMsg(senderAddress, programPubkey, programBufferPubkey, programBz)
-	fmt.Println("number of instruction to deploy:", len(deployMsg.Instructions))
 	//AsyncBroadcastMsg, SyncBroadcastMsg, QueueBroadcastMsg
 	res, err := chainClient.SyncBroadcastMsg(
 		initAccountMsg, deployMsg,
