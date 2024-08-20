@@ -9521,13 +9521,19 @@
           {
             "name": "UserOrderId",
             "fields": [
-              "u8"
+              {
+                "name":"id",
+                "type":"u8"
+              }
             ]
           },
           {
             "name": "OrderId",
             "fields": [
-              "u32"
+              {
+                "name":"id",
+                "type":"u32"
+              }
             ]
           }
         ]
@@ -9956,15 +9962,24 @@
             "name": "AMM",
             "fields": [
               {
-                "option": "u64"
+                "name": "option",
+                "type":{
+                  "option": "u64"
+                }
               }
             ]
           },
           {
             "name": "Match",
             "fields": [
-              "publicKey",
-              "u16"
+              {
+                "name": "public_key",
+                "type": "publicKey"
+              }, 
+              {
+                "name": "id",
+                "type": "u16"
+              }
             ]
           }
         ]
@@ -9981,8 +9996,13 @@
           {
             "name": "Match",
             "fields": [
-              "publicKey",
-              "u16"
+              {
+                "name": "public_key",
+                "type": "publicKey"
+              }, {
+                "name": "id",
+                "type": "u16"
+              }
             ]
           }
         ]
