@@ -13,6 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	signingtypes "github.com/cosmos/cosmos-sdk/types/tx/signing"
+	"github.com/mr-tron/base58"
 
 	sdkmath "cosmossdk.io/math"
 	"github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
@@ -313,6 +314,8 @@ func LinkAccount(
 		return nil, fmt.Errorf("svm private key sign err: %w", err)
 	}
 
+	fmt.Println("gonna link:", userAddr.String(), "with", base58.Encode(svmPubkey.Bytes()))
+
 	msg := &svmtypes.MsgLinkSVMAccount{
 		Sender:       userAddr.String(),
 		SvmPubkey:    svmPubkey.Bytes(),
@@ -377,7 +380,6 @@ func main() {
 		{Key: ethcommon.Hex2Bytes("88cbead91aee890d27bf06e003ade3d4e952427e88f88d31d61d3ef5e5d54305")},
 		{Key: ethcommon.Hex2Bytes("c25e5cccd433d2c97971eaa6cfe92ea05771dc05b984c62464ab580f16a905e1")},
 		{Key: ethcommon.Hex2Bytes("26fc2228a05e83d443066f643754d5837a2b39b5783d804eb125b936d630204b")},
-		{Key: ethcommon.Hex2Bytes("6bf7877e9bf7590d94b57d409b0fcf4cc80f9cd427bc212b1a2dd7ff6b6802e1")},
 	}
 	cosmosAddrs := make([]sdk.AccAddress, len(cosmosPrivateKeys))
 	for i, pk := range cosmosPrivateKeys {
@@ -402,6 +404,11 @@ func main() {
 	btcOraclePubkey := solana.PublicKeyFromBytes(btcOraclePrivKey.PubKey().Bytes())
 
 	fmt.Println("pyth program buffer v1:", programBufferPubkey.String())
+	res, err := LinkAccount(chainClient, clientCtx, cosmosPrivateKeys[0], ownerSvmPrivKey, 1000000000000000000)
+	if err != nil {
+		panic(err)
+	}
+
 	_, err = LinkAccount(chainClient, clientCtx, cosmosPrivateKeys[1], programSvmPrivKey, 0)
 	if err != nil {
 		panic(err)
@@ -440,13 +447,15 @@ func main() {
 		panic(err)
 	}
 
-	res, err := chainClient.SyncBroadcastSignedTx(txBytes)
+	res, err = chainClient.SyncBroadcastSignedTx(txBytes)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println("tx hash:", res.TxResponse.TxHash)
+	fmt.Println("tx hash:", res.TxResponse.TxHash, res.TxResponse.RawLog)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
+
+	// deploy program
 	signedTx, err = BuildSignedTx(chainClient, []sdk.Msg{deployMsg}, cosmosPrivateKeys)
 	if err != nil {
 		panic(err)
@@ -471,52 +480,68 @@ func main() {
 	if res.TxResponse.Code != 0 {
 		panic(fmt.Errorf("code: %d, err happen: %s", res.TxResponse.Code, res.TxResponse.RawLog))
 	}
+
 	fmt.Println("✅ pyth program deployed. tx hash:", res.TxResponse.TxHash)
+
+	////////////////////////////
+	/// initialize btc oracle
+	///////////////////////////
 	time.Sleep(2 * time.Second)
+	oracleCosmosPrivKey := &ethsecp256k1.PrivKey{Key: ethcommon.Hex2Bytes("6bf7877e9bf7590d94b57d409b0fcf4cc80f9cd427bc212b1a2dd7ff6b6802e1")}
+	oracleCosmosAddr := sdk.AccAddress(oracleCosmosPrivKey.PubKey().Address().Bytes())
 
 	fmt.Println("Initialzing test BTC oracle account:", btcOraclePubkey.String())
-	_, err = LinkAccount(chainClient, clientCtx, cosmosPrivateKeys[3], btcOraclePrivKey, 0)
+	_, err = LinkAccount(chainClient, clientCtx, oracleCosmosPrivKey, btcOraclePrivKey, 0)
 	if err != nil {
 		panic(err)
 	}
 
-	oracleSize := uint64(3312) // deduce from Price struct
+	oracleSize := uint64(3840) // deduce from Price struct
 	createOracleAccountIx := system.NewCreateAccountInstruction(
 		svmtypes.GetRentExemptLamportAmount(oracleSize),
 		oracleSize,
-		solana.BPFLoaderUpgradeableProgramID, ownerPubkey,
-		programBufferPubkey,
+		programPubkey,
+		ownerPubkey,
+		btcOraclePubkey,
 	).Build()
 
+	pyth.SetProgramID(programPubkey)
 	initializeOracleIx := pyth.NewInitializeInstruction(
 		65000, 0, 1, btcOraclePubkey,
 	).Build()
 
-	initOracleTx, err := solana.NewTransactionBuilder().AddInstruction(createOracleAccountIx).AddInstruction(initializeOracleIx).Build()
+	initOracleTx, err := solana.NewTransactionBuilder().
+		AddInstruction(createOracleAccountIx).
+		AddInstruction(initializeOracleIx).
+		Build()
 	if err != nil {
 		panic(err)
 	}
 
-	initOracleMsg := svm.ToCosmosMsg([]string{cosmosAddrs[0].String(), cosmosAddrs[3].String()}, MaxComputeBudget, initOracleTx)
-	signedTx, err = BuildSignedTx(
+	initOracleMsg := svm.ToCosmosMsg([]string{
+		cosmosAddrs[0].String(),
+		oracleCosmosAddr.String(),
+	}, MaxComputeBudget, initOracleTx)
+
+	oracleSignedTx, err := BuildSignedTx(
 		chainClient, []sdk.Msg{initOracleMsg},
 		[]*ethsecp256k1.PrivKey{
-			cosmosPrivateKeys[0], cosmosPrivateKeys[3],
+			cosmosPrivateKeys[0], oracleCosmosPrivKey,
 		},
 	)
 	if err != nil {
 		panic(err)
 	}
 
-	txBytes, err = chainClient.ClientContext().TxConfig.TxEncoder()(signedTx)
+	oracleTxBytes, err := chainClient.ClientContext().TxConfig.TxEncoder()(oracleSignedTx)
 	if err != nil {
 		panic(err)
 	}
 
-	res, err = chainClient.SyncBroadcastSignedTx(txBytes)
+	res, err = chainClient.SyncBroadcastSignedTx(oracleTxBytes)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("tx hash:", res.TxResponse.TxHash)
+	fmt.Println("tx hash:", res.TxResponse.TxHash, "err:", res.TxResponse.RawLog)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 }
