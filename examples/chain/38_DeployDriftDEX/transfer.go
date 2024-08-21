@@ -57,15 +57,12 @@ func main() {
 		panic(err)
 	}
 
-	// init astromesh query client
-	astromeshClient := astromeshtypes.NewQueryClient(cc)
-
 	// prepare tx msg
 	msg1 := &astromeshtypes.MsgAstroTransfer{
 		Sender:   senderAddress.String(),
 		Receiver: senderAddress.String(),
 		SrcPlane: astromeshtypes.Plane_COSMOS,
-		DstPlane: astromeshtypes.Plane_EVM,
+		DstPlane: astromeshtypes.Plane_SVM,
 		Coin: sdk.Coin{
 			Denom:  "btc",
 			Amount: math.NewIntFromUint64(10000000000),
@@ -82,7 +79,7 @@ func main() {
 		Sender:   senderAddress.String(),
 		Receiver: senderAddress.String(),
 		SrcPlane: astromeshtypes.Plane_COSMOS,
-		DstPlane: astromeshtypes.Plane_EVM,
+		DstPlane: astromeshtypes.Plane_SVM,
 		Coin: sdk.Coin{
 			Denom:  "usdt",
 			Amount: math.NewIntFromUint64(10000000000),

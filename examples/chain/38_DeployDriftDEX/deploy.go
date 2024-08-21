@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
@@ -38,6 +39,9 @@ const MaxComputeBudget = 10000000
 var (
 	//go:embed artifacts/drift.so
 	driftBinary []byte
+
+	//go:embed artifacts/drift-keypair.json
+	driftKeypair []byte
 )
 
 func BuildInitAccountsMsg(
@@ -381,7 +385,12 @@ func main() {
 	ownerSvmPrivKey := ed25519.GenPrivKeyFromSecret([]byte("owner"))
 	ownerPubkey := solana.PublicKeyFromBytes(ownerSvmPrivKey.PubKey().Bytes())
 
-	programSvmPrivKey := ed25519.GenPrivKeyFromSecret([]byte("program"))
+	var programSvmPrivKeyBz []byte
+	if err := json.Unmarshal(driftKeypair, &programSvmPrivKeyBz); err != nil {
+		panic(err)
+	}
+
+	programSvmPrivKey := &ed25519.PrivKey{Key: programSvmPrivKeyBz}
 	programPubkey := solana.PublicKeyFromBytes(programSvmPrivKey.PubKey().Bytes())
 
 	programBufferSvmPrivKey := ed25519.GenPrivKeyFromSecret([]byte("programBuffer"))
@@ -455,7 +464,7 @@ func main() {
 	}
 	fmt.Println("program executable data pubkey:", programExecutablePubkey.String())
 
-	res, err = chainClient.SyncBroadcastSignedTx(txBytes)
+	res, err = chainClient.AsyncBroadcastSignedTx(txBytes)
 	if err != nil {
 		panic(err)
 	}
@@ -464,5 +473,4 @@ func main() {
 		panic(fmt.Errorf("code: %d, err happen: %s", res.TxResponse.Code, res.TxResponse.RawLog))
 	}
 	fmt.Println("✅ program deployed. tx hash:", res.TxResponse.TxHash)
-	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 }

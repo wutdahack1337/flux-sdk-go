@@ -63,7 +63,6 @@ func main() {
 	}
 
 	fmt.Println("sender address:", senderAddress.String())
-
 	// check if account is linked, not then create
 	isSvmLinked, svmPubkey, err := chainClient.GetSVMAccountLink(context.Background(), senderAddress)
 	if err != nil {

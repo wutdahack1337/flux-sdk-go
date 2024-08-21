@@ -939,6 +939,6 @@ func (c *chainClient) LinkSVMAccount(svmPrivKey *ed25519.PrivKey) (*txtypes.Broa
 		Sender:       c.FromAddress().String(),
 		SvmPubkey:    svmPrivKey.PubKey().Bytes(),
 		SvmSignature: svmAccountLinkSig,
-		Amount:       sdk.NewInt64Coin("lux", 1000000000),
+		Amount:       sdk.NewInt64Coin("lux", 1_000_000_000_000_000),
 	})
 }
