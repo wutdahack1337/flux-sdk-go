@@ -108,9 +108,6 @@ func main() {
 	if err := json.Unmarshal(pythKeypair, &programPythPrivKeBz); err != nil {
 		panic(err)
 	}
-	programPythPrivKey := &ed25519.PrivKey{Key: programPythPrivKeBz}
-	pythProgramId := solana.PublicKeyFromBytes(programPythPrivKey.PubKey().Bytes())
-	// fmt.Println("pyth program:", pythProgramId.String())
 
 	var programSvmPrivKeyBz []byte
 	if err := json.Unmarshal(driftKeypair, &programSvmPrivKeyBz); err != nil {
@@ -224,7 +221,8 @@ func main() {
 	}
 
 	oracleUsdt := svmtypes.SystemProgramId // default pubkey
-	oracleBtc := svmtypes.SystemProgramId
+	oracleBtc := solana.MustPublicKeyFromBase58("3HRnxmtHQrHkooPdFZn5ZQbPTKGvBSyoTi4VVkkoT6u6")
+
 	// Define other necessary public keys
 	admin := svmPubkey
 	rent := solana.SysVarRentPubkey
@@ -272,8 +270,8 @@ func main() {
 	initializeBtcSpotMarketIx := drift.NewInitializeSpotMarketInstruction(
 		/* Parameters */
 		optimalUtilization, optimalBorrowRate, maxBorrowRate,
-		oracleSourcePyth, initialAssetWeight, maintenanceAssetWeight,
-		initialLiabilityWeight, maintenanceLiabilityWeight, imfFactor,
+		oracleSourcePyth, 8000, 8000,
+		11000, 11000, imfFactor,
 		liquidatorFee, ifLiquidationFee, activeStatus, assetTier,
 		scaleInitialAssetWeightStart, withdrawGuardThreshold,
 		orderTickSize, orderStepSize, ifTotalFactor, nameBtc,
@@ -308,23 +306,23 @@ func main() {
 	unixNow := time.Now().Unix()
 	auctionDur := uint8(8)
 	orderParams := drift.OrderParams{
-		OrderType:         drift.OrderTypeLimit,             // Example value
-		MarketType:        drift.MarketTypeSpot,             // Example value
-		Direction:         drift.PositionDirectionLong,      // Example value
-		UserOrderId:       1,                                // Example user order ID
-		BaseAssetAmount:   1000000000,                       // Example amount (1.0 base asset)
-		Price:             50000,                            // Example price (50,000 units)
-		MarketIndex:       0,                                // Example market index
-		ReduceOnly:        false,                            // Example reduce only flag
-		PostOnly:          drift.PostOnlyParamMustPostOnly,  // Example post only parameter
-		ImmediateOrCancel: false,                            // Example IOC flag
-		MaxTs:             &unixNow,                         // Example max timestamp
-		TriggerPrice:      proto.Uint64(55000),              // Example trigger price
-		TriggerCondition:  drift.OrderTriggerConditionAbove, // Example trigger condition
-		OraclePriceOffset: proto.Int32(100),                 // Example oracle price offset
-		AuctionDuration:   &auctionDur,                      // Example auction duration
-		AuctionStartPrice: proto.Int64(50000),               // Example auction start price
-		AuctionEndPrice:   proto.Int64(52000),               // Example auction end price
+		OrderType:         drift.OrderTypeLimit,
+		MarketType:        drift.MarketTypeSpot,
+		Direction:         drift.PositionDirectionLong,
+		UserOrderId:       1,
+		BaseAssetAmount:   1000000000,
+		Price:             50000,
+		MarketIndex:       0,
+		ReduceOnly:        false,
+		PostOnly:          drift.PostOnlyParamMustPostOnly,
+		ImmediateOrCancel: false,
+		MaxTs:             &unixNow,
+		TriggerPrice:      proto.Uint64(55000),
+		TriggerCondition:  drift.OrderTriggerConditionAbove,
+		OraclePriceOffset: proto.Int32(100),
+		AuctionDuration:   &auctionDur,
+		AuctionStartPrice: proto.Int64(50000),
+		AuctionEndPrice:   proto.Int64(52000),
 	}
 
 	_ = orderParams

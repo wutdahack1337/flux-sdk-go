@@ -507,7 +507,7 @@ func main() {
 
 	pyth.SetProgramID(programPubkey)
 	initializeOracleIx := pyth.NewInitializeInstruction(
-		65000, 0, 1, btcOraclePubkey,
+		65000_000000, 6, 1, btcOraclePubkey,
 	).Build()
 
 	initOracleTx, err := solana.NewTransactionBuilder().
