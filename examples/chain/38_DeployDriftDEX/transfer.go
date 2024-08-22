@@ -82,7 +82,7 @@ func main() {
 		DstPlane: astromeshtypes.Plane_SVM,
 		Coin: sdk.Coin{
 			Denom:  "usdt",
-			Amount: math.NewIntFromUint64(10000000000),
+			Amount: math.NewIntFromUint64(100000000000),
 		},
 	}
 	txResp, err = chainClient.SyncBroadcastMsg(msg2)

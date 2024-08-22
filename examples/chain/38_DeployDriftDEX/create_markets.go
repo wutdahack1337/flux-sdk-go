@@ -151,7 +151,7 @@ func main() {
 		[]byte("user_stats"), svmPubkey[:],
 	}, driftProgramId)
 
-	initializeStateIx := drift.NewInitializeUserStatsInstruction(
+	initializeUserStatsIx := drift.NewInitializeUserStatsInstruction(
 		userStats, state, svmPubkey, svmPubkey, solana.PublicKey(svmtypes.SysVarRent), svmtypes.SystemProgramId,
 	).Build()
 
@@ -239,7 +239,7 @@ func main() {
 	maintenanceAssetWeight := uint32(10000)
 	initialLiabilityWeight := uint32(10000)
 	maintenanceLiabilityWeight := uint32(10000)
-	imfFactor := uint32(100)
+	imfFactor := uint32(0)
 	liquidatorFee := uint32(50)
 	ifLiquidationFee := uint32(25)
 	activeStatus := true
@@ -270,8 +270,8 @@ func main() {
 	initializeBtcSpotMarketIx := drift.NewInitializeSpotMarketInstruction(
 		/* Parameters */
 		optimalUtilization, optimalBorrowRate, maxBorrowRate,
-		oracleSourcePyth, 8000, 8000,
-		11000, 11000, imfFactor,
+		oracleSourcePyth, 8000, 9000,
+		12000, 11000, 105000,
 		liquidatorFee, ifLiquidationFee, activeStatus, assetTier,
 		scaleInitialAssetWeightStart, withdrawGuardThreshold,
 		orderTickSize, orderStepSize, ifTotalFactor, nameBtc,
@@ -283,7 +283,7 @@ func main() {
 
 	initializeTx, err := solana.NewTransactionBuilder().
 		AddInstruction(initializeIx).
-		AddInstruction(initializeStateIx).
+		AddInstruction(initializeUserStatsIx).
 		AddInstruction(initializeUserIx).
 		AddInstruction(initializeQuoteSpotMarketIx).
 		AddInstruction(initializeBtcSpotMarketIx).Build()
@@ -291,60 +291,111 @@ func main() {
 		panic(err)
 	}
 
-	svmMsg := svm.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, initializeTx)
-	res, err := chainClient.SyncBroadcastMsg(svmMsg)
-	if err != nil {
+	marketExist := true
+	_, err = chainClient.GetSvmAccount(context.Background(), spotMarketBtc.String())
+	if err != nil && !strings.Contains(err.Error(), "not existed") {
 		panic(err)
 	}
 
-	fmt.Println("== init account and create market ==")
-	fmt.Println("tx hash:", res.TxResponse.TxHash)
-	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
+	if err != nil {
+		marketExist = false
+	}
+
+	if !marketExist {
+		svmMsg := svm.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, initializeTx)
+		res, err := chainClient.SyncBroadcastMsg(svmMsg)
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println("== init account and create market ==")
+		fmt.Println("tx hash:", res.TxResponse.TxHash)
+		fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
+	} else {
+		fmt.Println("account and market already initialized")
+	}
+
+	depositAmount := 6500_000_00 // 0.1 BTC
+	userTokenAccount, _, err := solana.FindProgramAddress([][]byte{
+		svmPubkey[:], svmtypes.SplToken2022ProgramId[:], usdtMint[:],
+	}, svmtypes.AssociatedTokenProgramId)
+	if err != nil {
+		panic(err)
+	}
+	depositIxBuilder := drift.NewDepositInstruction(
+		0, uint64(depositAmount), false, state, user, userStats, svmPubkey, spotMarketUsdtVault, userTokenAccount, svmtypes.SplToken2022ProgramId,
+	)
+
+	depositIxBuilder.Append(&solana.AccountMeta{
+		PublicKey:  spotMarketUsdt,
+		IsWritable: true,
+		IsSigner:   false,
+	})
+	depositIx := depositIxBuilder.Build()
 
 	// place spot market order
 	// Define the OrderParams with default or specified values
 	unixNow := time.Now().Unix()
-	auctionDur := uint8(8)
+	auctionDur := uint8(10)
 	orderParams := drift.OrderParams{
 		OrderType:         drift.OrderTypeLimit,
 		MarketType:        drift.MarketTypeSpot,
 		Direction:         drift.PositionDirectionLong,
 		UserOrderId:       1,
-		BaseAssetAmount:   1000000000,
-		Price:             50000,
-		MarketIndex:       0,
+		BaseAssetAmount:   1000000,
+		Price:             65_000_000_000,
+		MarketIndex:       1,
 		ReduceOnly:        false,
-		PostOnly:          drift.PostOnlyParamMustPostOnly,
+		PostOnly:          drift.PostOnlyParamNone,
 		ImmediateOrCancel: false,
 		MaxTs:             &unixNow,
-		TriggerPrice:      proto.Uint64(55000),
+		TriggerPrice:      proto.Uint64(0),
 		TriggerCondition:  drift.OrderTriggerConditionAbove,
-		OraclePriceOffset: proto.Int32(100),
+		OraclePriceOffset: proto.Int32(0),
 		AuctionDuration:   &auctionDur,
-		AuctionStartPrice: proto.Int64(50000),
-		AuctionEndPrice:   proto.Int64(52000),
+		AuctionStartPrice: proto.Int64(64_000_000_000),
+		AuctionEndPrice:   proto.Int64(66_000_000_000),
 	}
 
-	_ = orderParams
+	// Create the PlaceOrder instruction
+	fmt.Println("placing order...")
+	placeOrderIx := drift.NewPlaceSpotOrderInstruction(
+		orderParams,
+		state,
+		user,
+		svmPubkey,
+	)
 
-	// // Create the PlaceOrder instruction
-	// fmt.Println("placing order...")
-	// placeOrderIx := drift.NewPlaceSpotOrderInstruction(
-	// 	orderParams,
-	// 	state,
-	// 	svmPubkey,
-	// 	svmPubkey,
-	// ).Build()
-	// placeOrderTx, err := solana.NewTransactionBuilder().
-	// 	AddInstruction(placeOrderIx).Build()
-	// if err != nil {
-	// 	panic(err)
-	// }
+	// append all oracles
+	placeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
+		PublicKey:  oracleBtc,
+		IsWritable: false,
+		IsSigner:   false,
+	})
 
-	// svmMsg = svm.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, placeOrderTx)
-	// res, err = chainClient.SyncBroadcastMsg(svmMsg)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// fmt.Println("create order:", res)
+	// append all spot market
+	placeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
+		PublicKey:  spotMarketUsdt,
+		IsWritable: false,
+		IsSigner:   false,
+	})
+	placeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
+		PublicKey:  spotMarketBtc,
+		IsWritable: false,
+		IsSigner:   false,
+	})
+
+	placeOrderTx, err := solana.NewTransactionBuilder().
+		AddInstruction(depositIx).
+		AddInstruction(placeOrderIx.Build()).Build()
+	if err != nil {
+		panic(err)
+	}
+
+	svmMsg := svm.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, placeOrderTx)
+	res, err := chainClient.SyncBroadcastMsg(svmMsg)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("create order:", res)
 }
