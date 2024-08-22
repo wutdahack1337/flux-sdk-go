@@ -2,13 +2,11 @@ package main
 
 import (
 	"context"
-	"encoding/binary"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
-	"time"
 
 	_ "embed"
 
@@ -21,7 +19,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	"github.com/gagliardetto/solana-go"
-	"github.com/golang/protobuf/proto"
 	"github.com/mr-tron/base58"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -34,19 +31,6 @@ var (
 	//go:embed artifacts/pyth-keypair.json
 	pythKeypair []byte
 )
-
-func uint16ToLeBytes(x uint16) []byte {
-	b := make([]byte, 2)
-	binary.LittleEndian.PutUint16(b, x)
-	return b
-}
-
-func newName(s string) [32]uint8 {
-	name := [32]uint8{}
-	bz := []byte(s)
-	copy(name[:], bz)
-	return name
-}
 
 func main() {
 	network := common.LoadNetwork("local", "")
@@ -135,35 +119,11 @@ func main() {
 		[]byte("drift_signer"),
 	}, driftProgramId)
 
-	// admin initialize
 	initializeIx := drift.NewInitializeInstruction(
 		svmPubkey, state, usdtMint, driftSigner,
 		solana.PublicKey(svmtypes.SysVarRent),
 		svmtypes.SystemProgramId,
 		svmtypes.SplToken2022ProgramId,
-	).Build()
-
-	user, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("user"), svmPubkey[:], []byte{0, 0},
-	}, driftProgramId)
-
-	userStats, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("user_stats"), svmPubkey[:],
-	}, driftProgramId)
-
-	initializeUserStatsIx := drift.NewInitializeUserStatsInstruction(
-		userStats, state, svmPubkey, svmPubkey, solana.PublicKey(svmtypes.SysVarRent), svmtypes.SystemProgramId,
-	).Build()
-
-	initializeUserIx := drift.NewInitializeUserInstruction(
-		0,
-		[32]uint8{},
-		user,
-		userStats,
-		state,
-		svmPubkey,
-		svmPubkey,
-		solana.PublicKey(svmtypes.SysVarRent), svmtypes.SystemProgramId,
 	).Build()
 
 	// create market
@@ -283,8 +243,6 @@ func main() {
 
 	initializeTx, err := solana.NewTransactionBuilder().
 		AddInstruction(initializeIx).
-		AddInstruction(initializeUserStatsIx).
-		AddInstruction(initializeUserIx).
 		AddInstruction(initializeQuoteSpotMarketIx).
 		AddInstruction(initializeBtcSpotMarketIx).Build()
 	if err != nil {
@@ -314,88 +272,4 @@ func main() {
 	} else {
 		fmt.Println("account and market already initialized")
 	}
-
-	depositAmount := 6500_000_00 // 0.1 BTC
-	userTokenAccount, _, err := solana.FindProgramAddress([][]byte{
-		svmPubkey[:], svmtypes.SplToken2022ProgramId[:], usdtMint[:],
-	}, svmtypes.AssociatedTokenProgramId)
-	if err != nil {
-		panic(err)
-	}
-	depositIxBuilder := drift.NewDepositInstruction(
-		0, uint64(depositAmount), false, state, user, userStats, svmPubkey, spotMarketUsdtVault, userTokenAccount, svmtypes.SplToken2022ProgramId,
-	)
-
-	depositIxBuilder.Append(&solana.AccountMeta{
-		PublicKey:  spotMarketUsdt,
-		IsWritable: true,
-		IsSigner:   false,
-	})
-	depositIx := depositIxBuilder.Build()
-
-	// place spot market order
-	// Define the OrderParams with default or specified values
-	unixNow := time.Now().Unix()
-	auctionDur := uint8(10)
-	orderParams := drift.OrderParams{
-		OrderType:         drift.OrderTypeLimit,
-		MarketType:        drift.MarketTypeSpot,
-		Direction:         drift.PositionDirectionLong,
-		UserOrderId:       1,
-		BaseAssetAmount:   1000000,
-		Price:             65_000_000_000,
-		MarketIndex:       1,
-		ReduceOnly:        false,
-		PostOnly:          drift.PostOnlyParamNone,
-		ImmediateOrCancel: false,
-		MaxTs:             &unixNow,
-		TriggerPrice:      proto.Uint64(0),
-		TriggerCondition:  drift.OrderTriggerConditionAbove,
-		OraclePriceOffset: proto.Int32(0),
-		AuctionDuration:   &auctionDur,
-		AuctionStartPrice: proto.Int64(64_000_000_000),
-		AuctionEndPrice:   proto.Int64(66_000_000_000),
-	}
-
-	// Create the PlaceOrder instruction
-	fmt.Println("placing order...")
-	placeOrderIx := drift.NewPlaceSpotOrderInstruction(
-		orderParams,
-		state,
-		user,
-		svmPubkey,
-	)
-
-	// append all oracles
-	placeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
-		PublicKey:  oracleBtc,
-		IsWritable: false,
-		IsSigner:   false,
-	})
-
-	// append all spot market
-	placeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
-		PublicKey:  spotMarketUsdt,
-		IsWritable: false,
-		IsSigner:   false,
-	})
-	placeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
-		PublicKey:  spotMarketBtc,
-		IsWritable: false,
-		IsSigner:   false,
-	})
-
-	placeOrderTx, err := solana.NewTransactionBuilder().
-		AddInstruction(depositIx).
-		AddInstruction(placeOrderIx.Build()).Build()
-	if err != nil {
-		panic(err)
-	}
-
-	svmMsg := svm.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, placeOrderTx)
-	res, err := chainClient.SyncBroadcastMsg(svmMsg)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("create order:", res)
 }
