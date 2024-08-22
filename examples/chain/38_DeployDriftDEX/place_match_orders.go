@@ -65,6 +65,9 @@ func deposit(
 	state, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("drift_state"),
 	}, driftProgramId)
+	if err != nil {
+		panic(err)
+	}
 
 	spotMarketVault, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market_vault"),
@@ -289,6 +292,119 @@ func placeOrder(
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 }
 
+// this is called by keeper bot
+func fillSpotOrder(
+	chainClient chainclient.ChainClient,
+	fillerPubkey solana.PublicKey,
+	takerPubkey solana.PublicKey,
+	takerOrderId uint32,
+	makerPubkey solana.PublicKey,
+	makerOrderId uint32,
+	marketIndex uint16,
+) {
+	senderAddress := chainClient.FromAddress()
+	state, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("drift_state"),
+	}, driftProgramId)
+	if err != nil {
+		panic(err)
+	}
+	fillerUser, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("user"), fillerPubkey[:], []byte{0, 0},
+	}, driftProgramId)
+	if err != nil {
+		panic(err)
+	}
+
+	fillerUserStats, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("user_stats"), fillerPubkey[:],
+	}, driftProgramId)
+	if err != nil {
+		panic(err)
+	}
+
+	takerUser, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("user"), takerPubkey[:], []byte{0, 0},
+	}, driftProgramId)
+	if err != nil {
+		panic(err)
+	}
+
+	takerUserStats, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("user"), takerPubkey[:], []byte{0, 0},
+	}, driftProgramId)
+	if err != nil {
+		panic(err)
+	}
+
+	makerUser, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("user"), makerPubkey[:], []byte{0, 0},
+	}, driftProgramId)
+	if err != nil {
+		panic(err)
+	}
+
+	makerUserStats, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("user"), makerPubkey[:], []byte{0, 0},
+	}, driftProgramId)
+	if err != nil {
+		panic(err)
+	}
+
+	spotMarket, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("spot_market"),
+		uint16ToLeBytes(marketIndex),
+	}, driftProgramId)
+	if err != nil {
+		panic(err)
+	}
+
+	fillIx := drift.NewFillSpotOrderInstruction(
+		takerOrderId, drift.SpotFulfillmentTypeMatch,
+		makerOrderId,
+		state, fillerPubkey, fillerUser, fillerUserStats, takerUser, takerUserStats,
+	)
+
+	// append all oracles
+	fillIx.AccountMetaSlice.Append(&solana.AccountMeta{
+		PublicKey:  oracleBtc,
+		IsWritable: false,
+		IsSigner:   false,
+	})
+
+	fillIx.AccountMetaSlice.Append(&solana.AccountMeta{
+		PublicKey:  spotMarket,
+		IsWritable: true,
+		IsSigner:   false,
+	})
+
+	fillIx.AccountMetaSlice.Append(&solana.AccountMeta{
+		PublicKey:  makerUser,
+		IsWritable: true,
+		IsSigner:   false,
+	})
+
+	fillIx.AccountMetaSlice.Append(&solana.AccountMeta{
+		PublicKey:  makerUserStats,
+		IsWritable: true,
+		IsSigner:   false,
+	})
+
+	fillTx, err := solana.NewTransactionBuilder().AddInstruction(fillIx.Build()).Build()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("== fill (match) orders ==")
+	svmMsg := svm.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, fillTx)
+	res, err := chainClient.SyncBroadcastMsg(svmMsg)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("tx hash:", res.TxResponse.TxHash)
+	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
+}
+
 func main() {
 	network := common.LoadNetwork("local", "")
 	kr, err := keyring.New(
@@ -424,10 +540,20 @@ func main() {
 	)
 
 	placeOrder(
-		chainClient,
-		svmPubkey,
+		partnerClient,
+		partnerSvmPubkey,
 		65000_000_000,
 		10_000_000,
 		drift.PositionDirectionShort,
+	)
+
+	fillSpotOrder(
+		chainClient,
+		svmPubkey,
+		partnerSvmPubkey,
+		0,
+		svmPubkey,
+		0,
+		1,
 	)
 }
