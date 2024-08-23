@@ -12,6 +12,8 @@ import (
 
 	_ "embed"
 
+	"cosmossdk.io/math"
+	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
@@ -20,6 +22,7 @@ import (
 	"github.com/FluxNFTLabs/sdk-go/examples/chain/38_DeployDriftDEX/drift"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/gagliardetto/solana-go"
 	"github.com/golang/protobuf/proto"
 	"github.com/mr-tron/base58"
@@ -30,9 +33,6 @@ import (
 var (
 	//go:embed artifacts/drift-keypair.json
 	driftKeypair []byte
-
-	//go:embed artifacts/pyth-keypair.json
-	pythKeypair []byte
 
 	driftProgramId solana.PublicKey
 
@@ -46,13 +46,6 @@ func uint16ToLeBytes(x uint16) []byte {
 	b := make([]byte, 2)
 	binary.LittleEndian.PutUint16(b, x)
 	return b
-}
-
-func newName(s string) [32]uint8 {
-	name := [32]uint8{}
-	bz := []byte(s)
-	copy(name[:], bz)
-	return name
 }
 
 func deposit(
@@ -71,7 +64,7 @@ func deposit(
 
 	spotMarketVault, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market_vault"),
-		uint16ToLeBytes(0),
+		uint16ToLeBytes(marketIndex),
 	}, driftProgramId)
 	if err != nil {
 		panic(err)
@@ -116,8 +109,16 @@ func deposit(
 	).Build()
 
 	depositIxBuilder := drift.NewDepositInstruction(
-		0, uint64(depositAmount), false, state, user, userStats, svmPubkey, spotMarketVault, userTokenAccount, svmtypes.SplToken2022ProgramId,
+		marketIndex, uint64(depositAmount), false, state, user, userStats, svmPubkey, spotMarketVault, userTokenAccount, svmtypes.SplToken2022ProgramId,
 	)
+
+	if marketIndex > 0 {
+		depositIxBuilder.Append(&solana.AccountMeta{
+			PublicKey:  oracleBtc,
+			IsWritable: false,
+			IsSigner:   false,
+		})
+	}
 
 	depositIxBuilder.Append(&solana.AccountMeta{
 		PublicKey:  spotMarket,
@@ -126,10 +127,23 @@ func deposit(
 	})
 	depositIx := depositIxBuilder.Build()
 
-	depositTx, err := solana.NewTransactionBuilder().
-		AddInstruction(initializeUserStatsIx).
-		AddInstruction(initializeUserIx).
-		AddInstruction(depositIx).Build()
+	accountExist := true
+	_, err = chainClient.GetSvmAccount(context.Background(), userStats.String())
+	if err != nil && !strings.Contains(err.Error(), "not existed") {
+		panic(err)
+	}
+
+	if err != nil {
+		accountExist = false
+	}
+
+	depositTxBuilder := solana.NewTransactionBuilder()
+	if !accountExist {
+		depositTxBuilder = depositTxBuilder.AddInstruction(initializeUserStatsIx).AddInstruction(initializeUserIx)
+	}
+
+	depositTxBuilder = depositTxBuilder.AddInstruction(depositIx)
+	depositTx, err := depositTxBuilder.Build()
 	if err != nil {
 		panic(err)
 	}
@@ -233,7 +247,7 @@ func placeOrder(
 	orderParams := drift.OrderParams{
 		OrderType:         drift.OrderTypeLimit,
 		MarketType:        drift.MarketTypeSpot,
-		Direction:         drift.PositionDirectionLong,
+		Direction:         direction,
 		UserOrderId:       1,
 		BaseAssetAmount:   baseAssetAmount,
 		Price:             price,
@@ -331,7 +345,7 @@ func fillSpotOrder(
 	}
 
 	takerUserStats, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("user"), takerPubkey[:], []byte{0, 0},
+		[]byte("user_stats"), takerPubkey[:],
 	}, driftProgramId)
 	if err != nil {
 		panic(err)
@@ -345,7 +359,7 @@ func fillSpotOrder(
 	}
 
 	makerUserStats, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("user"), makerPubkey[:], []byte{0, 0},
+		[]byte("user_stats"), makerPubkey[:],
 	}, driftProgramId)
 	if err != nil {
 		panic(err)
@@ -359,6 +373,31 @@ func fillSpotOrder(
 		panic(err)
 	}
 
+	spotQuoteMarket, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("spot_market"),
+		uint16ToLeBytes(0),
+	}, driftProgramId)
+	if err != nil {
+		panic(err)
+	}
+
+	spotMarketUsdtVault, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("spot_market_vault"),
+		uint16ToLeBytes(0),
+	}, driftProgramId)
+	if err != nil {
+		panic(err)
+	}
+
+	spotMarketBaseVault, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("spot_market_vault"),
+		uint16ToLeBytes(marketIndex),
+	}, driftProgramId)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("taker user stats:", takerUserStats.String())
 	fillIx := drift.NewFillSpotOrderInstruction(
 		takerOrderId, drift.SpotFulfillmentTypeMatch,
 		makerOrderId,
@@ -372,8 +411,15 @@ func fillSpotOrder(
 		IsSigner:   false,
 	})
 
+	// append all markets
 	fillIx.AccountMetaSlice.Append(&solana.AccountMeta{
 		PublicKey:  spotMarket,
+		IsWritable: true,
+		IsSigner:   false,
+	})
+
+	fillIx.AccountMetaSlice.Append(&solana.AccountMeta{
+		PublicKey:  spotQuoteMarket,
 		IsWritable: true,
 		IsSigner:   false,
 	})
@@ -386,6 +432,18 @@ func fillSpotOrder(
 
 	fillIx.AccountMetaSlice.Append(&solana.AccountMeta{
 		PublicKey:  makerUserStats,
+		IsWritable: true,
+		IsSigner:   false,
+	})
+
+	fillIx.AccountMetaSlice.Append(&solana.AccountMeta{
+		PublicKey:  spotMarketBaseVault,
+		IsWritable: true,
+		IsSigner:   false,
+	})
+
+	fillIx.AccountMetaSlice.Append(&solana.AccountMeta{
+		PublicKey:  spotMarketUsdtVault,
 		IsWritable: true,
 		IsSigner:   false,
 	})
@@ -403,6 +461,40 @@ func fillSpotOrder(
 	}
 	fmt.Println("tx hash:", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
+}
+
+func transferFunds(
+	chainClient chainclient.ChainClient,
+) {
+	senderAddress := chainClient.FromAddress()
+	msg1 := &astromeshtypes.MsgAstroTransfer{
+		Sender:   senderAddress.String(),
+		Receiver: senderAddress.String(),
+		SrcPlane: astromeshtypes.Plane_COSMOS,
+		DstPlane: astromeshtypes.Plane_SVM,
+		Coin: sdk.Coin{
+			Denom:  "btc",
+			Amount: math.NewIntFromUint64(10000000000),
+		},
+	}
+	msg2 := &astromeshtypes.MsgAstroTransfer{
+		Sender:   senderAddress.String(),
+		Receiver: senderAddress.String(),
+		SrcPlane: astromeshtypes.Plane_COSMOS,
+		DstPlane: astromeshtypes.Plane_SVM,
+		Coin: sdk.Coin{
+			Denom:  "usdt",
+			Amount: math.NewIntFromUint64(100000000000),
+		},
+	}
+
+	txResp, err := chainClient.SyncBroadcastMsg(msg1, msg2)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("=== astro transfer to prepare svm funds ===")
+	fmt.Println("resp:", txResp.TxResponse.TxHash)
+	fmt.Println("gas used/want:", txResp.TxResponse.GasUsed, "/", txResp.TxResponse.GasWanted)
 }
 
 func main() {
@@ -455,7 +547,7 @@ func main() {
 	}
 
 	partnerClient, err := chainclient.NewChainClient(
-		clientCtx,
+		clientCtx2,
 		common.OptionGasPrices("500000000lux"),
 	)
 	if err != nil {
@@ -476,15 +568,17 @@ func main() {
 		fmt.Println("linked sender to svm address:", base58.Encode(svmKey.PubKey().Bytes()), "txHash:", res.TxResponse.TxHash)
 		svmPubkey = solana.PublicKey(svmKey.PubKey().Bytes())
 	} else {
-		fmt.Println("sender is already linked to svm address:", svmPubkey.String())
+		fmt.Println("sender", senderAddress.String(), "is already linked to svm address:", svmPubkey.String())
 	}
 
 	isSvmLinked, partnerSvmPubkey, err := chainClient.GetSVMAccountLink(context.Background(), partnerAddress)
 	if err != nil {
 		panic(err)
 	}
+
 	if !isSvmLinked {
 		svmKey := ed25519.GenPrivKey() // Good practice: Backup this private key
+		fmt.Println("priv key:", []byte(svmKey.Key))
 		res, err := partnerClient.LinkSVMAccount(svmKey)
 		if err != nil {
 			panic(err)
@@ -492,14 +586,10 @@ func main() {
 		fmt.Println("linked", partnerAddress, "to svm address:", base58.Encode(svmKey.PubKey().Bytes()), "txHash:", res.TxResponse.TxHash)
 		partnerSvmPubkey = solana.PublicKey(svmKey.PubKey().Bytes())
 	} else {
-		fmt.Println("sender is already linked to svm address:", svmPubkey.String())
+		fmt.Println("sender", partnerAddress.String(), "is already linked to svm address:", partnerSvmPubkey.String())
 	}
 
-	// load program, coins id
-	var programPythPrivKeBz []byte
-	if err := json.Unmarshal(pythKeypair, &programPythPrivKeBz); err != nil {
-		panic(err)
-	}
+	transferFunds(partnerClient)
 
 	var programSvmPrivKeyBz []byte
 	if err := json.Unmarshal(driftKeypair, &programSvmPrivKeyBz); err != nil {
@@ -517,43 +607,44 @@ func main() {
 	btcMintHex := "0811ed5c81d01548aa6cb5177bdeccc835465be58d4fa6b26574f5f7fd258bcd"
 	btcMintBz, _ := hex.DecodeString(btcMintHex)
 	btcMint = solana.PublicKeyFromBytes(btcMintBz)
-	deposit(
-		chainClient,
-		svmPubkey,
-		650_000_000,
-		usdtMint, 0,
-	)
+	// deposit(
+	// 	chainClient,
+	// 	svmPubkey,
+	// 	650_000_000,
+	// 	usdtMint, 0,
+	// )
 
-	deposit(
-		partnerClient,
-		partnerSvmPubkey,
-		10_000_000,
-		btcMint, 1,
-	)
+	// placeOrder(
+	// 	chainClient,
+	// 	svmPubkey,
+	// 	65000_000_000,
+	// 	1_000_000,
+	// 	drift.PositionDirectionLong,
+	// )
 
-	placeOrder(
-		chainClient,
-		svmPubkey,
-		65000_000_000,
-		10_000_000,
-		drift.PositionDirectionLong,
-	)
+	// deposit(
+	// 	partnerClient,
+	// 	partnerSvmPubkey,
+	// 	1_000_000,
+	// 	btcMint,
+	// 	1,
+	// )
 
-	placeOrder(
-		partnerClient,
-		partnerSvmPubkey,
-		65000_000_000,
-		10_000_000,
-		drift.PositionDirectionShort,
-	)
+	// placeOrder(
+	// 	partnerClient,
+	// 	partnerSvmPubkey,
+	// 	65000_000_000,
+	// 	1_000_000,
+	// 	drift.PositionDirectionShort,
+	// )
 
 	fillSpotOrder(
 		chainClient,
 		svmPubkey,
 		partnerSvmPubkey,
-		0,
+		5,
 		svmPubkey,
-		0,
+		5,
 		1,
 	)
 }

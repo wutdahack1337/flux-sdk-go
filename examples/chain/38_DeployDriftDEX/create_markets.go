@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/binary"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -31,6 +32,19 @@ var (
 	//go:embed artifacts/pyth-keypair.json
 	pythKeypair []byte
 )
+
+func uint16ToLeBytes(x uint16) []byte {
+	b := make([]byte, 2)
+	binary.LittleEndian.PutUint16(b, x)
+	return b
+}
+
+func newName(s string) [32]uint8 {
+	name := [32]uint8{}
+	bz := []byte(s)
+	copy(name[:], bz)
+	return name
+}
 
 func main() {
 	network := common.LoadNetwork("local", "")
