@@ -44,7 +44,7 @@ func main() {
 	// init client ctx
 	clientCtx, senderAddress, err := chaintypes.NewClientContext(
 		network.ChainId,
-		"signer4",
+		"user1",
 		kr,
 	)
 	if err != nil {
@@ -89,5 +89,5 @@ func main() {
 	}
 
 	bz, _ := json.Marshal(userStruct)
-	fmt.Println("drift user data:", string(bz))
+	fmt.Println(string(bz))
 }

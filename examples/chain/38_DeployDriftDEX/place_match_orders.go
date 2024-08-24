@@ -115,11 +115,12 @@ func deposit(
 	if marketIndex > 0 {
 		depositIxBuilder.Append(&solana.AccountMeta{
 			PublicKey:  oracleBtc,
-			IsWritable: false,
+			IsWritable: true,
 			IsSigner:   false,
 		})
 	}
 
+	fmt.Println("deposit spot market:", spotMarket.String())
 	depositIxBuilder.Append(&solana.AccountMeta{
 		PublicKey:  spotMarket,
 		IsWritable: true,
@@ -239,7 +240,7 @@ func placeOrder(
 	// optimalBorrowRate := uint32(500)
 	// maxBorrowRate := uint32(1000)
 	// oracleSourceQuote := drift.OracleSourceQuoteAsset
-	// oracleSourcePyth := drift.OracleSourcePyth // TODO: Use pyth later
+	// oracleSourcePyth := drift.OracleSourcePyth
 	// place spot market order
 	// Define the OrderParams with default or specified values
 	unixNow := time.Now().Unix()
@@ -282,12 +283,12 @@ func placeOrder(
 	// append all spot market
 	placeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
 		PublicKey:  spotMarketUsdt,
-		IsWritable: false,
+		IsWritable: true,
 		IsSigner:   false,
 	})
 	placeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
 		PublicKey:  spotMarketBtc,
-		IsWritable: false,
+		IsWritable: true,
 		IsSigner:   false,
 	})
 
@@ -454,7 +455,7 @@ func fillSpotOrder(
 	}
 
 	fmt.Println("== fill (match) orders ==")
-	svmMsg := svm.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, fillTx)
+	svmMsg := svm.ToCosmosMsg([]string{senderAddress.String()}, 10_000_000, fillTx)
 	res, err := chainClient.SyncBroadcastMsg(svmMsg)
 	if err != nil {
 		panic(err)
@@ -607,44 +608,44 @@ func main() {
 	btcMintHex := "0811ed5c81d01548aa6cb5177bdeccc835465be58d4fa6b26574f5f7fd258bcd"
 	btcMintBz, _ := hex.DecodeString(btcMintHex)
 	btcMint = solana.PublicKeyFromBytes(btcMintBz)
-	// deposit(
-	// 	chainClient,
-	// 	svmPubkey,
-	// 	650_000_000,
-	// 	usdtMint, 0,
-	// )
+	deposit(
+		chainClient,
+		svmPubkey,
+		650_000_000,
+		usdtMint, 0,
+	)
 
-	// placeOrder(
-	// 	chainClient,
-	// 	svmPubkey,
-	// 	65000_000_000,
-	// 	1_000_000,
-	// 	drift.PositionDirectionLong,
-	// )
+	placeOrder(
+		chainClient,
+		svmPubkey,
+		65000_000_000,
+		1_000_000,
+		drift.PositionDirectionLong,
+	)
 
-	// deposit(
-	// 	partnerClient,
-	// 	partnerSvmPubkey,
-	// 	1_000_000,
-	// 	btcMint,
-	// 	1,
-	// )
+	deposit(
+		partnerClient,
+		partnerSvmPubkey,
+		1_000_000,
+		btcMint,
+		1,
+	)
 
-	// placeOrder(
-	// 	partnerClient,
-	// 	partnerSvmPubkey,
-	// 	65000_000_000,
-	// 	1_000_000,
-	// 	drift.PositionDirectionShort,
-	// )
+	placeOrder(
+		partnerClient,
+		partnerSvmPubkey,
+		65000_000_000,
+		1_000_000,
+		drift.PositionDirectionShort,
+	)
 
 	fillSpotOrder(
 		chainClient,
 		svmPubkey,
 		partnerSvmPubkey,
-		5,
+		1,
 		svmPubkey,
-		5,
+		1,
 		1,
 	)
 }
