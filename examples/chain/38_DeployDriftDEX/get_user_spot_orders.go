@@ -44,7 +44,7 @@ func main() {
 	// init client ctx
 	clientCtx, senderAddress, err := chaintypes.NewClientContext(
 		network.ChainId,
-		"user1",
+		"signer4",
 		kr,
 	)
 	if err != nil {
@@ -88,6 +88,11 @@ func main() {
 		panic(err)
 	}
 
-	bz, _ := json.Marshal(userStruct)
-	fmt.Println(string(bz))
+	fmt.Println("user pda:", user.String())
+	for _, o := range userStruct.Orders {
+		if o.OrderId > 0 {
+			bz, _ := json.MarshalIndent(o, "", "  ")
+			fmt.Println(string(bz))
+		}
+	}
 }
