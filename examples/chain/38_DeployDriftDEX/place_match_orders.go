@@ -48,6 +48,10 @@ func uint16ToLeBytes(x uint16) []byte {
 	return b
 }
 
+func Uint8Ptr(b uint8) *uint8 {
+	return &b
+}
+
 func deposit(
 	chainClient chainclient.ChainClient,
 	svmPubkey solana.PublicKey,
@@ -162,9 +166,15 @@ func deposit(
 func placeOrder(
 	chainClient chainclient.ChainClient,
 	svmPubkey solana.PublicKey,
+	orderId uint8,
 	price uint64, auctionStartPrice, auctionEndPrice *int64,
 	baseAssetAmount uint64,
+	orderType drift.OrderType,
+	immediateOrCancel bool,
 	direction drift.PositionDirection,
+	expireDuration time.Duration,
+	marketIndex uint16,
+	auctionDur *uint8,
 ) {
 	senderAddress := chainClient.FromAddress()
 	state, _, err := solana.FindProgramAddress([][]byte{
@@ -185,24 +195,6 @@ func placeOrder(
 		panic(err)
 	}
 
-	// // Generate PDA for spot_market_vault
-	// spotMarketUsdtVault, _, err := solana.FindProgramAddress([][]byte{
-	// 	[]byte("spot_market_vault"),
-	// 	uint16ToLeBytes(0),
-	// }, driftProgramId)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// // Generate PDA for insurance_fund_vault
-	// insuranceFundUsdtVault, _, err := solana.FindProgramAddress([][]byte{
-	// 	[]byte("insurance_fund_vault"),
-	// 	uint16ToLeBytes(0),
-	// }, driftProgramId)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
 	spotMarketBtc, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market"),
 		uint16ToLeBytes(1),
@@ -211,56 +203,24 @@ func placeOrder(
 		panic(err)
 	}
 
-	// // // Generate PDA for spot_market_vault
-	// spotMarketBtcVault, _, err := solana.FindProgramAddress([][]byte{
-	// 	[]byte("spot_market_vault"),
-	// 	uint16ToLeBytes(1),
-	// }, driftProgramId)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// // Generate PDA for insurance_fund_vault
-	// insuranceFundBtcVault, _, err := solana.FindProgramAddress([][]byte{
-	// 	[]byte("insurance_fund_vault"),
-	// 	uint16ToLeBytes(1),
-	// }, driftProgramId)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// oracleUsdt := svmtypes.SystemProgramId // default pubkey
-	// Define other necessary public keys
-	// admin := svmPubkey
-	// rent := solana.SysVarRentPubkey
-	// systemProgram := solana.SystemProgramID
-	// tokenProgram := svmtypes.SplToken2022ProgramId
-
-	// optimalUtilization := uint32(8000)
-	// optimalBorrowRate := uint32(500)
-	// maxBorrowRate := uint32(1000)
-	// oracleSourceQuote := drift.OracleSourceQuoteAsset
-	// oracleSourcePyth := drift.OracleSourcePyth
-	// place spot market order
 	// Define the OrderParams with default or specified values
-	unixExpireTime := time.Now().Add(100000 * time.Second).Unix()
-	auctionDur := uint8(100)
+	unixExpireTime := time.Now().Add(expireDuration).Unix()
 	orderParams := drift.OrderParams{
 		OrderType:         drift.OrderTypeLimit,
 		MarketType:        drift.MarketTypeSpot,
 		Direction:         direction,
-		UserOrderId:       2,
+		UserOrderId:       orderId,
 		BaseAssetAmount:   baseAssetAmount,
 		Price:             price,
-		MarketIndex:       1,
+		MarketIndex:       marketIndex,
 		ReduceOnly:        false,
 		PostOnly:          drift.PostOnlyParamNone,
-		ImmediateOrCancel: false,
+		ImmediateOrCancel: immediateOrCancel,
 		MaxTs:             &unixExpireTime,
 		TriggerPrice:      proto.Uint64(0),
 		TriggerCondition:  drift.OrderTriggerConditionAbove,
 		OraclePriceOffset: proto.Int32(0),
-		AuctionDuration:   &auctionDur,
+		AuctionDuration:   auctionDur,
 		AuctionStartPrice: auctionStartPrice,
 		AuctionEndPrice:   auctionEndPrice,
 	}
@@ -298,6 +258,155 @@ func placeOrder(
 	}
 
 	fmt.Println("== place order ==")
+	svmMsg := svm.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, placeOrderTx)
+	res, err := chainClient.SyncBroadcastMsg(svmMsg)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("tx hash:", res.TxResponse.TxHash)
+	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
+}
+
+func placeAndMakeOrder(
+	chainClient chainclient.ChainClient,
+	svmPubkey solana.PublicKey,
+	orderId uint8,
+	price uint64,
+	baseAssetAmount uint64,
+	direction drift.PositionDirection,
+	takerPubkey solana.PublicKey,
+	takerOrderId uint8,
+	marketIndex uint16,
+) {
+	senderAddress := chainClient.FromAddress()
+	state, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("drift_state"),
+	}, driftProgramId)
+
+	user, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("user"), svmPubkey[:], []byte{0, 0},
+	}, driftProgramId)
+
+	userStats, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("user_stats"), svmPubkey[:],
+	}, driftProgramId)
+	if err != nil {
+		panic(err)
+	}
+
+	spotMarketUsdt, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("spot_market"),
+		uint16ToLeBytes(0),
+	}, driftProgramId)
+	if err != nil {
+		panic(err)
+	}
+
+	spotMarketBtc, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("spot_market"),
+		uint16ToLeBytes(1),
+	}, driftProgramId)
+	if err != nil {
+		panic(err)
+	}
+
+	takerUser, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("user"), takerPubkey[:], []byte{0, 0},
+	}, driftProgramId)
+	if err != nil {
+		panic(err)
+	}
+
+	takerUserStats, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("user_stats"), takerPubkey[:],
+	}, driftProgramId)
+	if err != nil {
+		panic(err)
+	}
+
+	spotMarketUsdtVault, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("spot_market_vault"),
+		uint16ToLeBytes(0),
+	}, driftProgramId)
+	if err != nil {
+		panic(err)
+	}
+
+	spotMarketBaseVault, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("spot_market_vault"),
+		uint16ToLeBytes(marketIndex),
+	}, driftProgramId)
+	if err != nil {
+		panic(err)
+	}
+
+	unixExpireTime := time.Now().Add(100 * time.Second).Unix()
+	orderParams := drift.OrderParams{
+		OrderType:         drift.OrderTypeLimit,
+		MarketType:        drift.MarketTypeSpot,
+		Direction:         direction,
+		UserOrderId:       orderId,
+		BaseAssetAmount:   baseAssetAmount,
+		Price:             price,
+		MarketIndex:       marketIndex,
+		ReduceOnly:        false,
+		PostOnly:          drift.PostOnlyParamMustPostOnly,
+		ImmediateOrCancel: true,
+		MaxTs:             &unixExpireTime,
+		TriggerPrice:      proto.Uint64(0),
+		TriggerCondition:  drift.OrderTriggerConditionAbove,
+		OraclePriceOffset: proto.Int32(0),
+		AuctionDuration:   nil,
+		AuctionStartPrice: nil,
+		AuctionEndPrice:   nil,
+	}
+
+	// Create the PlaceOrder instruction
+	placeAndMakeOrderIx := drift.NewPlaceAndMakeSpotOrderInstruction(
+		orderParams,
+		uint32(takerOrderId),
+		drift.SpotFulfillmentTypeMatch,
+		state, user, userStats,
+		takerUser, takerUserStats, svmPubkey,
+	)
+
+	// append all oracles
+	placeAndMakeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
+		PublicKey:  oracleBtc,
+		IsWritable: false,
+		IsSigner:   false,
+	})
+
+	// append all spot market
+	placeAndMakeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
+		PublicKey:  spotMarketBtc,
+		IsWritable: true,
+		IsSigner:   false,
+	})
+	placeAndMakeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
+		PublicKey:  spotMarketUsdt,
+		IsWritable: true,
+		IsSigner:   false,
+	})
+
+	placeAndMakeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
+		PublicKey:  spotMarketBaseVault,
+		IsWritable: true,
+		IsSigner:   false,
+	})
+
+	placeAndMakeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
+		PublicKey:  spotMarketUsdtVault,
+		IsWritable: true,
+		IsSigner:   false,
+	})
+
+	placeOrderTx, err := solana.NewTransactionBuilder().AddInstruction(placeAndMakeOrderIx.Build()).Build()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("== place and make order ==")
 	svmMsg := svm.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, placeOrderTx)
 	res, err := chainClient.SyncBroadcastMsg(svmMsg)
 	if err != nil {
@@ -579,7 +688,6 @@ func main() {
 
 	if !isSvmLinked {
 		svmKey := ed25519.GenPrivKey() // Good practice: Backup this private key
-		fmt.Println("priv key:", []byte(svmKey.Key))
 		res, err := partnerClient.LinkSVMAccount(svmKey)
 		if err != nil {
 			panic(err)
@@ -608,20 +716,25 @@ func main() {
 	btcMintHex := "0811ed5c81d01548aa6cb5177bdeccc835465be58d4fa6b26574f5f7fd258bcd"
 	btcMintBz, _ := hex.DecodeString(btcMintHex)
 	btcMint = solana.PublicKeyFromBytes(btcMintBz)
-	deposit(
-		chainClient,
-		svmPubkey,
-		650_000_000,
-		usdtMint, 0,
-	)
+	// deposit(
+	// 	chainClient,
+	// 	svmPubkey,
+	// 	650_000_000,
+	// 	usdtMint, 0,
+	// )
 
-	placeOrder(
-		chainClient,
-		svmPubkey,
-		65000_000_000, nil, nil, // proto.Int64(64000_000_000), proto.Int64(65000_000_000),
-		1_000_000,
-		drift.PositionDirectionLong,
-	)
+	// placeOrder(
+	// 	chainClient,
+	// 	svmPubkey,
+	// 	2,
+	// 	65000_000_000, proto.Int64(64000_000_000), proto.Int64(65000_000_000),
+	// 	1_000_000,
+	// 	drift.OrderTypeMarket,
+	// 	false,
+	// 	drift.PositionDirectionLong,
+	// 	200*time.Second,
+	// 	1, Uint8Ptr(200),
+	// )
 
 	deposit(
 		partnerClient,
@@ -631,21 +744,23 @@ func main() {
 		1,
 	)
 
-	placeOrder(
+	placeAndMakeOrder(
 		partnerClient,
 		partnerSvmPubkey,
-		65000_000_000, nil, nil, //s proto.Int64(66000_000_000), proto.Int64(65000_000_000),
+		2,
+		65000_000_000,
 		1_000_000,
 		drift.PositionDirectionShort,
+		svmPubkey, 1, 1,
 	)
 
-	fillSpotOrder(
-		chainClient,
-		svmPubkey,
-		partnerSvmPubkey,
-		1,
-		svmPubkey,
-		1,
-		1,
-	)
+	// fillSpotOrder(
+	// 	chainClient,
+	// 	svmPubkey,
+	// 	partnerSvmPubkey,
+	// 	1,
+	// 	svmPubkey,
+	// 	1,
+	// 	1,
+	// )
 }
