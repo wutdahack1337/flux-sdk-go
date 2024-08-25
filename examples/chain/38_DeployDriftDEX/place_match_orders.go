@@ -716,25 +716,25 @@ func main() {
 	btcMintHex := "0811ed5c81d01548aa6cb5177bdeccc835465be58d4fa6b26574f5f7fd258bcd"
 	btcMintBz, _ := hex.DecodeString(btcMintHex)
 	btcMint = solana.PublicKeyFromBytes(btcMintBz)
-	// deposit(
-	// 	chainClient,
-	// 	svmPubkey,
-	// 	650_000_000,
-	// 	usdtMint, 0,
-	// )
+	deposit(
+		chainClient,
+		svmPubkey,
+		650_000_000,
+		usdtMint, 0,
+	)
 
-	// placeOrder(
-	// 	chainClient,
-	// 	svmPubkey,
-	// 	2,
-	// 	65000_000_000, proto.Int64(64000_000_000), proto.Int64(65000_000_000),
-	// 	1_000_000,
-	// 	drift.OrderTypeMarket,
-	// 	false,
-	// 	drift.PositionDirectionLong,
-	// 	200*time.Second,
-	// 	1, Uint8Ptr(200),
-	// )
+	placeOrder(
+		chainClient,
+		svmPubkey,
+		1,
+		65000_000_000, proto.Int64(64000_000_000), proto.Int64(65000_000_000),
+		1_000_000,
+		drift.OrderTypeMarket,
+		false,
+		drift.PositionDirectionLong,
+		200*time.Second,
+		1, Uint8Ptr(200),
+	)
 
 	deposit(
 		partnerClient,
@@ -747,20 +747,10 @@ func main() {
 	placeAndMakeOrder(
 		partnerClient,
 		partnerSvmPubkey,
-		2,
-		65000_000_000,
+		1,
+		64000_000_000,
 		1_000_000,
 		drift.PositionDirectionShort,
-		svmPubkey, 1, 1,
+		svmPubkey, 2, 1,
 	)
-
-	// fillSpotOrder(
-	// 	chainClient,
-	// 	svmPubkey,
-	// 	partnerSvmPubkey,
-	// 	1,
-	// 	svmPubkey,
-	// 	1,
-	// 	1,
-	// )
 }
