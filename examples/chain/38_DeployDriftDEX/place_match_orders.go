@@ -162,7 +162,7 @@ func deposit(
 func placeOrder(
 	chainClient chainclient.ChainClient,
 	svmPubkey solana.PublicKey,
-	price uint64,
+	price uint64, auctionStartPrice, auctionEndPrice *int64,
 	baseAssetAmount uint64,
 	direction drift.PositionDirection,
 ) {
@@ -243,26 +243,26 @@ func placeOrder(
 	// oracleSourcePyth := drift.OracleSourcePyth
 	// place spot market order
 	// Define the OrderParams with default or specified values
-	unixNow := time.Now().Unix()
+	unixExpireTime := time.Now().Add(100000 * time.Second).Unix()
 	auctionDur := uint8(100)
 	orderParams := drift.OrderParams{
 		OrderType:         drift.OrderTypeLimit,
 		MarketType:        drift.MarketTypeSpot,
 		Direction:         direction,
-		UserOrderId:       1,
+		UserOrderId:       2,
 		BaseAssetAmount:   baseAssetAmount,
 		Price:             price,
 		MarketIndex:       1,
 		ReduceOnly:        false,
 		PostOnly:          drift.PostOnlyParamNone,
 		ImmediateOrCancel: false,
-		MaxTs:             &unixNow,
+		MaxTs:             &unixExpireTime,
 		TriggerPrice:      proto.Uint64(0),
 		TriggerCondition:  drift.OrderTriggerConditionAbove,
 		OraclePriceOffset: proto.Int32(0),
 		AuctionDuration:   &auctionDur,
-		AuctionStartPrice: proto.Int64(64_000_000_000),
-		AuctionEndPrice:   proto.Int64(66_000_000_000),
+		AuctionStartPrice: auctionStartPrice,
+		AuctionEndPrice:   auctionEndPrice,
 	}
 
 	// Create the PlaceOrder instruction
@@ -618,7 +618,7 @@ func main() {
 	placeOrder(
 		chainClient,
 		svmPubkey,
-		65000_000_000,
+		65000_000_000, nil, nil, // proto.Int64(64000_000_000), proto.Int64(65000_000_000),
 		1_000_000,
 		drift.PositionDirectionLong,
 	)
@@ -634,7 +634,7 @@ func main() {
 	placeOrder(
 		partnerClient,
 		partnerSvmPubkey,
-		65000_000_000,
+		65000_000_000, nil, nil, //s proto.Int64(66000_000_000), proto.Int64(65000_000_000),
 		1_000_000,
 		drift.PositionDirectionShort,
 	)

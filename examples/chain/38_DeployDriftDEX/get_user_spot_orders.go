@@ -23,6 +23,7 @@ var (
 )
 
 func main() {
+	userAlias := os.Args[1]
 	network := common.LoadNetwork("local", "")
 	kr, err := keyring.New(
 		"fluxd",
@@ -44,7 +45,7 @@ func main() {
 	// init client ctx
 	clientCtx, senderAddress, err := chaintypes.NewClientContext(
 		network.ChainId,
-		"signer4",
+		userAlias,
 		kr,
 	)
 	if err != nil {
@@ -89,6 +90,7 @@ func main() {
 	}
 
 	fmt.Println("user pda:", user.String())
+	fmt.Println("open orders:", userStruct.OpenOrders)
 	for _, o := range userStruct.Orders {
 		if o.OrderId > 0 {
 			bz, _ := json.MarshalIndent(o, "", "  ")
