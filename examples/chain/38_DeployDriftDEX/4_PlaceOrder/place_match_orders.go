@@ -35,6 +35,8 @@ var (
 	driftPrivKey      []byte
 	oracleBtc         = solana.MustPublicKeyFromBase58("3HRnxmtHQrHkooPdFZn5ZQbPTKGvBSyoTi4VVkkoT6u6")
 	usdtMint, btcMint solana.PublicKey
+	usdtMarketIndex   = uint16(0)
+	btcMarketIndex    = uint16(1)
 )
 
 func uint16ToLeBytes(x uint16) []byte {
@@ -759,12 +761,12 @@ func main() {
 		userClient,
 		userSvmPubkey,
 		650_000_000,
-		usdtMint, 0,
+		usdtMint,
+		usdtMarketIndex,
 	)
 
 	driftUser := getDriftUserInfo(userClient, userSvmPubkey)
 	orderId := driftUser.NextOrderId
-
 	placeOrder(
 		userClient,
 		userSvmPubkey,
@@ -775,7 +777,8 @@ func main() {
 		false,
 		drift.PositionDirectionLong,
 		200*time.Second,
-		1, Uint8Ptr(200),
+		btcMarketIndex,
+		Uint8Ptr(200),
 	)
 
 	deposit(
@@ -783,23 +786,24 @@ func main() {
 		marketMakerSvmPubkey,
 		1_000_000,
 		btcMint,
-		1,
+		btcMarketIndex,
 	)
 
+	// partially fill the taker order at "orderId" at taker's best price
 	placeAndMakeOrder(
 		marketMakerClient,
 		marketMakerSvmPubkey,
 		1,
 		64000_000_000,
-		200_000,
+		600_000,
 		drift.PositionDirectionShort,
 		userSvmPubkey,
 		orderId,
-		1,
+		btcMarketIndex,
 	)
 
 	driftUser = getDriftUserInfo(userClient, userSvmPubkey)
-	fmt.Println("number of open orders:", driftUser.OpenOrders)
+	fmt.Println("user open orders count:", driftUser.OpenOrders)
 	for _, o := range driftUser.Orders {
 		if o.OrderId > 0 {
 			bz, _ := json.MarshalIndent(o, "", "  ")
