@@ -79,7 +79,7 @@ func deposit(
 	}
 
 	user, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("user"), svmPubkey[:], []byte{0, 0},
+		[]byte("user"), svmPubkey[:], {0, 0},
 	}, drift.ProgramID)
 
 	userStats, _, err := solana.FindProgramAddress([][]byte{
@@ -177,7 +177,7 @@ func placeOrder(
 	}, drift.ProgramID)
 
 	user, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("user"), svmPubkey[:], []byte{0, 0},
+		[]byte("user"), svmPubkey[:], {0, 0},
 	}, drift.ProgramID)
 
 	// create market
@@ -279,7 +279,7 @@ func placeAndMakeOrder(
 	}, drift.ProgramID)
 
 	user, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("user"), svmPubkey[:], []byte{0, 0},
+		[]byte("user"), svmPubkey[:], {0, 0},
 	}, drift.ProgramID)
 
 	userStats, _, err := solana.FindProgramAddress([][]byte{
@@ -306,7 +306,7 @@ func placeAndMakeOrder(
 	}
 
 	takerUser, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("user"), takerPubkey[:], []byte{0, 0},
+		[]byte("user"), takerPubkey[:], {0, 0},
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -429,7 +429,7 @@ func fillSpotOrder(
 		panic(err)
 	}
 	fillerUser, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("user"), fillerPubkey[:], []byte{0, 0},
+		[]byte("user"), fillerPubkey[:], {0, 0},
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -443,7 +443,7 @@ func fillSpotOrder(
 	}
 
 	takerUser, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("user"), takerPubkey[:], []byte{0, 0},
+		[]byte("user"), takerPubkey[:], {0, 0},
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -457,7 +457,7 @@ func fillSpotOrder(
 	}
 
 	makerUser, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("user"), makerPubkey[:], []byte{0, 0},
+		[]byte("user"), makerPubkey[:], {0, 0},
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -604,7 +604,7 @@ func transferFunds(
 
 func getDriftUserInfo(chainClient chainclient.ChainClient, accPubkey solana.PublicKey) drift.User {
 	userAccount, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("user"), accPubkey[:], []byte{0, 0},
+		[]byte("user"), accPubkey[:], {0, 0},
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
