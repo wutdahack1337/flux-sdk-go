@@ -126,7 +126,7 @@ func main() {
 	}
 
 	// upload programs
-	initAccountMsg := svm.BuildInitAccountsMsg(
+	initAccountMsg := svm.CreateInitAccountsMsg(
 		cosmosAddrs,
 		len(pythBinary),
 		ownerPubkey,
@@ -134,7 +134,7 @@ func main() {
 		programBufferPubkey,
 	)
 
-	uploadMsgs, err := svm.BuildUploadProgramMultiParts(
+	uploadMsgs, err := svm.CreateProgramUploadMsgs(
 		cosmosAddrs,
 		ownerPubkey,
 		programPubkey,

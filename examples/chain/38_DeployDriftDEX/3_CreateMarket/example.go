@@ -347,7 +347,6 @@ func main() {
 	optimalUtilization := uint32(8000)
 	optimalBorrowRate := uint32(500)
 	maxBorrowRate := uint32(1000)
-
 	initialAssetWeight := uint32(10000)
 	maintenanceAssetWeight := uint32(10000)
 	initialLiabilityWeight := uint32(10000)

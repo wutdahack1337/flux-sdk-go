@@ -157,7 +157,7 @@ func MustFindAta(
 	return ata
 }
 
-func BuildInitAccountsMsg(
+func CreateInitAccountsMsg(
 	signerAddrs []sdk.AccAddress,
 	programSize int,
 	ownerPubkey solana.PublicKey,
@@ -212,7 +212,7 @@ func BuildInitAccountsMsg(
 	return ToCosmosMsg(signers, MaxComputeBudget, initTx)
 }
 
-func BuildUploadProgramMultiParts(
+func CreateProgramUploadMsgs(
 	signerAddrs []sdk.AccAddress,
 	ownerPubkey solana.PublicKey,
 	programPubkey solana.PublicKey,

@@ -123,7 +123,7 @@ func main() {
 		panic(err)
 	}
 
-	initAccountMsg := svm.BuildInitAccountsMsg(
+	initAccountMsg := svm.CreateInitAccountsMsg(
 		cosmosAddrs,
 		len(driftBinary),
 		ownerPubkey,
@@ -131,7 +131,7 @@ func main() {
 		programBufferPubkey,
 	)
 
-	uploadMsgs, err := svm.BuildUploadProgramMultiParts(
+	uploadMsgs, err := svm.CreateProgramUploadMsgs(
 		cosmosAddrs,
 		ownerPubkey,
 		programPubkey,
