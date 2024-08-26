@@ -749,8 +749,8 @@ func main() {
 		partnerSvmPubkey,
 		1,
 		64000_000_000,
-		1_000_000,
+		200_000,
 		drift.PositionDirectionShort,
-		svmPubkey, 2, 1,
+		svmPubkey, 1, 1,
 	)
 }

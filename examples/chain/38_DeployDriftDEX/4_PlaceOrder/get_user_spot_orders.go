@@ -71,27 +71,27 @@ func main() {
 		panic(fmt.Errorf("no svm account found"))
 	}
 
-	user, _, err := solana.FindProgramAddress([][]byte{
+	userAccount, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("user"), svmPubkey[:], []byte{0, 0},
 	}, driftProgramId)
 	if err != nil {
 		panic(err)
 	}
 
-	acc, err := chainClient.GetSvmAccount(context.Background(), user.String())
+	acc, err := chainClient.GetSvmAccount(context.Background(), userAccount.String())
 	if err != nil {
 		panic(err)
 	}
 
-	var userStruct drift.User
-	err = userStruct.UnmarshalWithDecoder(bin.NewBinDecoder(acc.Account.Data))
+	var user drift.User
+	err = user.UnmarshalWithDecoder(bin.NewBinDecoder(acc.Account.Data))
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Println("user pda:", user.String())
-	fmt.Println("open orders:", userStruct.OpenOrders)
-	for _, o := range userStruct.Orders {
+	fmt.Println("open orders:", user.OpenOrders)
+	for _, o := range user.Orders {
 		if o.OrderId > 0 {
 			bz, _ := json.MarshalIndent(o, "", "  ")
 			fmt.Println(string(bz))
