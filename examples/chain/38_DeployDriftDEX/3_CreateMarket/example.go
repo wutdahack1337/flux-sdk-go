@@ -12,6 +12,7 @@ import (
 	_ "embed"
 
 	"cosmossdk.io/math"
+	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
@@ -20,6 +21,7 @@ import (
 	"github.com/FluxNFTLabs/sdk-go/client/svm/drift"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/gagliardetto/solana-go"
 	"github.com/mr-tron/base58"
 	"google.golang.org/grpc"
@@ -102,6 +104,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
 	if !isSvmLinked {
 		svmKey := ed25519.GenPrivKey() // Good practice: Backup this private key
 		res, err := chainClient.LinkSVMAccount(svmKey, math.NewIntFromUint64(1_000_000_000_000_000))
@@ -112,6 +115,40 @@ func main() {
 		svmPubkey = solana.PublicKey(svmKey.PubKey().Bytes())
 	} else {
 		fmt.Println("sender is already linked to svm address:", svmPubkey.String())
+	}
+
+	fmt.Println("transfer coins to create svm denom")
+	coins := sdk.NewCoins(
+		sdk.NewInt64Coin("btc", 10000000000),
+		sdk.NewInt64Coin("usdt", 10000000000),
+	)
+	for _, c := range coins {
+		txResp, err := chainClient.SyncBroadcastMsg(&astromeshtypes.MsgAstroTransfer{
+			Sender:   senderAddress.String(),
+			Receiver: senderAddress.String(),
+			SrcPlane: astromeshtypes.Plane_COSMOS,
+			DstPlane: astromeshtypes.Plane_SVM,
+			Coin: sdk.Coin{
+				Denom:  c.Denom,
+				Amount: math.NewIntFromUint64(100000000000),
+			},
+		})
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("=== transfer %s %s to svm ===\n", c.Amount.String(), c.Denom)
+		fmt.Println("resp:", txResp.TxResponse.TxHash)
+		fmt.Println("gas used/want:", txResp.TxResponse.GasUsed, "/", txResp.TxResponse.GasWanted)
+	}
+
+	denomHexMap := map[string]string{}
+	for _, c := range coins {
+		denomLink, err := chainClient.GetDenomLink(context.Background(), astromeshtypes.Plane_COSMOS, c.Denom, astromeshtypes.Plane_SVM)
+		if err != nil {
+			panic(err)
+		}
+
+		denomHexMap[c.Denom] = denomLink.DstAddr
 	}
 
 	// load program, coins id
@@ -129,15 +166,15 @@ func main() {
 	drift.SetProgramID(driftProgramId)
 
 	fmt.Println("drift programId:", driftProgramId.String())
-	usdtMintHex := "1c46743a65e0fe89a65a9fe498d8cfa813480358fc1dd4658c6cf842d0560c92"
+	usdtMintHex := denomHexMap["usdt"]
 	usdtMintBz, _ := hex.DecodeString(usdtMintHex)
 	usdtMint := solana.PublicKeyFromBytes(usdtMintBz)
 
-	btcMintHex := "0811ed5c81d01548aa6cb5177bdeccc835465be58d4fa6b26574f5f7fd258bcd"
+	btcMintHex := denomHexMap["btc"]
 	btcMintBz, _ := hex.DecodeString(btcMintHex)
 	btcMint := solana.PublicKeyFromBytes(btcMintBz)
 
-	fmt.Println("initialize state and markets")
+	fmt.Println("=== initialize state and markets ===")
 	state, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("drift_state"),
 	}, driftProgramId)
@@ -219,7 +256,7 @@ func main() {
 	optimalBorrowRate := uint32(500)
 	maxBorrowRate := uint32(1000)
 	oracleSourceQuote := drift.OracleSourceQuoteAsset
-	oracleSourcePyth := drift.OracleSourcePyth // TODO: Use pyth later
+	oracleSourcePyth := drift.OracleSourcePyth
 
 	initialAssetWeight := uint32(10000)
 	maintenanceAssetWeight := uint32(10000)
@@ -238,7 +275,6 @@ func main() {
 	nameUsdt := newName("market_usdt")
 	nameBtc := newName("market_btc")
 
-	// Create the InitializeSpotMarket instruction
 	initializeQuoteSpotMarketIx := drift.NewInitializeSpotMarketInstruction(
 		/* Parameters */
 		optimalUtilization, optimalBorrowRate, maxBorrowRate,

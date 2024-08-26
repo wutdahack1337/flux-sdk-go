@@ -27,6 +27,13 @@ var (
 	driftPrivKey []byte
 )
 
+func deployDrift(
+	driftBinary,
+	driftPrivKey []byte,
+) {
+
+}
+
 func main() {
 	network := common.LoadNetwork("local", "")
 	kr, err := keyring.New(
@@ -162,7 +169,7 @@ func main() {
 
 	fmt.Println("total txs required for uploading program:", len(uploadMsgs), ". Uploading...")
 	for i, uploadMsg := range uploadMsgs {
-		fmt.Printf("=== uploading program part %dth ===\n", i+1)
+		fmt.Printf("uploading program part %dth\n", i+1)
 		signedTx, err = svm.BuildSignedTx(chainClient, []sdk.Msg{uploadMsg}, cosmosPrivateKeys)
 		if err != nil {
 			panic(err)
