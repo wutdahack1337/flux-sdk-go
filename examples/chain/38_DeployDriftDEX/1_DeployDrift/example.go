@@ -27,13 +27,6 @@ var (
 	driftPrivKey []byte
 )
 
-func deployDrift(
-	driftBinary,
-	driftPrivKey []byte,
-) {
-
-}
-
 func main() {
 	network := common.LoadNetwork("local", "")
 	kr, err := keyring.New(

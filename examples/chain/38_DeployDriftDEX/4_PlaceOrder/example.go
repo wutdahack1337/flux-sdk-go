@@ -121,7 +121,6 @@ func deposit(
 		})
 	}
 
-	fmt.Println("deposit spot market:", spotMarket.String())
 	depositIxBuilder.Append(&solana.AccountMeta{
 		PublicKey:  spotMarket,
 		IsWritable: true,
@@ -155,7 +154,6 @@ func deposit(
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("=== deposit ===")
 	fmt.Println("tx hash:", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 }
@@ -757,6 +755,7 @@ func main() {
 	driftProgramId := solana.PublicKeyFromBytes(programSvmPrivKey.PubKey().Bytes())
 	drift.SetProgramID(driftProgramId)
 
+	fmt.Println("=== user deposits ===")
 	deposit(
 		userClient,
 		userSvmPubkey,
@@ -765,8 +764,18 @@ func main() {
 		usdtMarketIndex,
 	)
 
+	fmt.Println("=== market maker deposits ===")
+	deposit(
+		marketMakerClient,
+		marketMakerSvmPubkey,
+		1_000_000,
+		btcMint,
+		btcMarketIndex,
+	)
+
 	driftUser := getDriftUserInfo(userClient, userSvmPubkey)
 	orderId := driftUser.NextOrderId
+	fmt.Println("=== user places order ===")
 	placeOrder(
 		userClient,
 		userSvmPubkey,
@@ -780,16 +789,10 @@ func main() {
 		btcMarketIndex,
 		Uint8Ptr(200),
 	)
-
-	deposit(
-		marketMakerClient,
-		marketMakerSvmPubkey,
-		1_000_000,
-		btcMint,
-		btcMarketIndex,
-	)
+	fmt.Println("user order_id:", orderId)
 
 	// partially fill the taker order at "orderId" at taker's best price
+	fmt.Printf("=== market maker fill orders %d ===\n", orderId)
 	placeAndMakeOrder(
 		marketMakerClient,
 		marketMakerSvmPubkey,
@@ -804,6 +807,7 @@ func main() {
 
 	driftUser = getDriftUserInfo(userClient, userSvmPubkey)
 	fmt.Println("user open orders count:", driftUser.OpenOrders)
+	fmt.Println("user open orders:")
 	for _, o := range driftUser.Orders {
 		if o.OrderId > 0 {
 			bz, _ := json.MarshalIndent(o, "", "  ")

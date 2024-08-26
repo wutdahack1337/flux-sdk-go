@@ -8,19 +8,16 @@ import (
 
 	_ "embed"
 
-	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
 	"github.com/FluxNFTLabs/sdk-go/client/svm"
-	pyth "github.com/FluxNFTLabs/sdk-go/client/svm/drift_pyth"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ethsecp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	ethcommon "github.com/ethereum/go-ethereum/common"
 	"github.com/gagliardetto/solana-go"
-	"github.com/gagliardetto/solana-go/programs/system"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -113,8 +110,6 @@ func main() {
 	programBufferSvmPrivKey := ed25519.GenPrivKeyFromSecret([]byte("pyth_programBuffer"))
 	programBufferPubkey := solana.PublicKeyFromBytes(programBufferSvmPrivKey.PubKey().Bytes())
 
-	btcOraclePrivKey := ed25519.GenPrivKeyFromSecret([]byte("btc_oracle"))
-	btcOraclePubkey := solana.PublicKeyFromBytes(btcOraclePrivKey.PubKey().Bytes())
 	res, err := svm.LinkAccount(chainClient, clientCtx, cosmosPrivateKeys[0], ownerSvmPrivKey, 1000000000000000000)
 	if err != nil {
 		panic(err)
@@ -207,63 +202,4 @@ func main() {
 	}
 
 	fmt.Println("✅ pyth program deployed. tx hash:", res.TxResponse.TxHash)
-
-	/// initialize btc oracle
-	oracleCosmosPrivKey := &ethsecp256k1.PrivKey{Key: ethcommon.Hex2Bytes("6bf7877e9bf7590d94b57d409b0fcf4cc80f9cd427bc212b1a2dd7ff6b6802e1")}
-	oracleCosmosAddr := sdk.AccAddress(oracleCosmosPrivKey.PubKey().Address().Bytes())
-
-	fmt.Println("initialzing pyth BTC oracle account:", btcOraclePubkey.String())
-	_, err = svm.LinkAccount(chainClient, clientCtx, oracleCosmosPrivKey, btcOraclePrivKey, 0)
-	if err != nil {
-		panic(err)
-	}
-
-	oracleSize := uint64(3840) // deduce from Price struct
-	createOracleAccountIx := system.NewCreateAccountInstruction(
-		svmtypes.GetRentExemptLamportAmount(oracleSize),
-		oracleSize,
-		programPubkey,
-		ownerPubkey,
-		btcOraclePubkey,
-	).Build()
-
-	pyth.SetProgramID(programPubkey)
-	initializeOracleIx := pyth.NewInitializeInstruction(
-		65000_000000, 6, 1, btcOraclePubkey,
-	).Build()
-
-	initOracleTx, err := solana.NewTransactionBuilder().
-		AddInstruction(createOracleAccountIx).
-		AddInstruction(initializeOracleIx).
-		Build()
-	if err != nil {
-		panic(err)
-	}
-
-	initOracleMsg := svm.ToCosmosMsg([]string{
-		cosmosAddrs[0].String(),
-		oracleCosmosAddr.String(),
-	}, MaxComputeBudget, initOracleTx)
-
-	oracleSignedTx, err := svm.BuildSignedTx(
-		chainClient, []sdk.Msg{initOracleMsg},
-		[]*ethsecp256k1.PrivKey{
-			cosmosPrivateKeys[0], oracleCosmosPrivKey,
-		},
-	)
-	if err != nil {
-		panic(err)
-	}
-
-	oracleTxBytes, err := chainClient.ClientContext().TxConfig.TxEncoder()(oracleSignedTx)
-	if err != nil {
-		panic(err)
-	}
-
-	res, err = chainClient.SyncBroadcastSignedTx(oracleTxBytes)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("tx hash:", res.TxResponse.TxHash, "err:", res.TxResponse.RawLog)
-	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 }
