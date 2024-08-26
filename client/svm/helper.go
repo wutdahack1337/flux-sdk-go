@@ -270,8 +270,6 @@ func BuildUploadProgramMultiParts(
 			}
 
 			res = append(res, ToCosmosMsg(signers, MaxComputeBudget, tx))
-			sz, _ := res[len(res)-1].Marshal()
-			fmt.Println("upload msg size:", len(sz))
 			txBuilder = solana.NewTransactionBuilder()
 		}
 	}

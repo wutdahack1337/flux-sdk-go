@@ -11,12 +11,13 @@ import (
 
 	_ "embed"
 
+	"cosmossdk.io/math"
 	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
 	"github.com/FluxNFTLabs/sdk-go/client/svm"
-	"github.com/FluxNFTLabs/sdk-go/examples/chain/38_DeployDriftDEX/drift"
+	"github.com/FluxNFTLabs/sdk-go/client/svm/drift"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	"github.com/gagliardetto/solana-go"
@@ -26,11 +27,8 @@ import (
 )
 
 var (
-	//go:embed artifacts/drift-keypair.json
-	driftKeypair []byte
-
-	//go:embed artifacts/pyth-keypair.json
-	pythKeypair []byte
+	driftPrivKey []byte
+	pythPrivKey  []byte
 )
 
 func uint16ToLeBytes(x uint16) []byte {
@@ -75,6 +73,21 @@ func main() {
 		panic(err)
 	}
 	clientCtx = clientCtx.WithGRPCClient(cc)
+	// load artifacts
+	dir, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+
+	driftPrivKey, err = os.ReadFile(dir + "/examples/chain/38_DeployDriftDEX/artifacts/drift-keypair.json")
+	if err != nil {
+		panic(err)
+	}
+
+	pythPrivKey, err = os.ReadFile(dir + "/examples/chain/38_DeployDriftDEX/artifacts/pyth-keypair.json")
+	if err != nil {
+		panic(err)
+	}
 
 	// init chain client
 	chainClient, err := chainclient.NewChainClient(
@@ -91,7 +104,7 @@ func main() {
 	}
 	if !isSvmLinked {
 		svmKey := ed25519.GenPrivKey() // Good practice: Backup this private key
-		res, err := chainClient.LinkSVMAccount(svmKey)
+		res, err := chainClient.LinkSVMAccount(svmKey, math.NewIntFromUint64(1_000_000_000_000_000))
 		if err != nil {
 			panic(err)
 		}
@@ -103,12 +116,12 @@ func main() {
 
 	// load program, coins id
 	var programPythPrivKeBz []byte
-	if err := json.Unmarshal(pythKeypair, &programPythPrivKeBz); err != nil {
+	if err := json.Unmarshal(pythPrivKey, &programPythPrivKeBz); err != nil {
 		panic(err)
 	}
 
 	var programSvmPrivKeyBz []byte
-	if err := json.Unmarshal(driftKeypair, &programSvmPrivKeyBz); err != nil {
+	if err := json.Unmarshal(driftPrivKey, &programSvmPrivKeyBz); err != nil {
 		panic(err)
 	}
 	programSvmPrivKey := &ed25519.PrivKey{Key: programSvmPrivKeyBz}
@@ -116,7 +129,6 @@ func main() {
 	drift.SetProgramID(driftProgramId)
 
 	fmt.Println("drift programId:", driftProgramId.String())
-
 	usdtMintHex := "1c46743a65e0fe89a65a9fe498d8cfa813480358fc1dd4658c6cf842d0560c92"
 	usdtMintBz, _ := hex.DecodeString(usdtMintHex)
 	usdtMint := solana.PublicKeyFromBytes(usdtMintBz)

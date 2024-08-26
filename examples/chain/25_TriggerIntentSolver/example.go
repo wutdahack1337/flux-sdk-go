@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	"cosmossdk.io/math"
 	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	strategytypes "github.com/FluxNFTLabs/sdk-go/chain/modules/strategy/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
@@ -70,7 +71,7 @@ func main() {
 	}
 	if !isSvmLinked {
 		svmKey := ed25519.GenPrivKey() // Good practice: Backup this private key
-		res, err := chainClient.LinkSVMAccount(svmKey)
+		res, err := chainClient.LinkSVMAccount(svmKey, math.NewIntFromUint64(1000_000_000_000))
 		if err != nil {
 			panic(err)
 		}
