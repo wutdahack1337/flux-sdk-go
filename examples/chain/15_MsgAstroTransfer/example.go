@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -67,8 +68,8 @@ func main() {
 		SrcPlane: astromeshtypes.Plane_COSMOS,
 		DstPlane: astromeshtypes.Plane_EVM,
 		Coin: sdk.Coin{
-			Denom:  "btc",
-			Amount: math.NewIntFromUint64(10000000000),
+			Denom:  "lux",
+			Amount: math.NewIntFromUint64(100),
 		},
 	}
 	txResp, err := chainClient.SyncBroadcastMsg(msg1)
@@ -78,14 +79,20 @@ func main() {
 	fmt.Println("resp:", txResp.TxResponse.TxHash)
 	fmt.Println("gas used/want:", txResp.TxResponse.GasUsed, "/", txResp.TxResponse.GasWanted)
 
+	denomLink, err := astromeshClient.DenomLink(context.Background(), &astromeshtypes.QueryDenomLinkRequest{
+		SrcPlane: astromeshtypes.Plane_COSMOS,
+		DstPlane: astromeshtypes.Plane_EVM,
+		SrcAddr:  "lux",
+	})
+
 	msg2 := &astromeshtypes.MsgAstroTransfer{
 		Sender:   senderAddress.String(),
 		Receiver: senderAddress.String(),
-		SrcPlane: astromeshtypes.Plane_COSMOS,
-		DstPlane: astromeshtypes.Plane_EVM,
+		SrcPlane: astromeshtypes.Plane_EVM,
+		DstPlane: astromeshtypes.Plane_COSMOS,
 		Coin: sdk.Coin{
-			Denom:  "usdt",
-			Amount: math.NewIntFromUint64(10000000000),
+			Denom:  "astro/" + denomLink.DstAddr,
+			Amount: math.NewIntFromUint64(99),
 		},
 	}
 	txResp, err = chainClient.SyncBroadcastMsg(msg2)
@@ -94,4 +101,8 @@ func main() {
 	}
 	fmt.Println("resp:", txResp.TxResponse.TxHash)
 	fmt.Println("gas used/want:", txResp.TxResponse.GasUsed, "/", txResp.TxResponse.GasWanted)
+
+	// to double check locally:
+	// http://localhost:10337/flux/evm/v1beta1/query/{address}/{calldata}
+	// http://localhost:10337/flux/evm/v1beta1/query/a7f16731951d943768cf2053485b69ef61fef8be/aT7IXgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVvd25lcgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
 }
