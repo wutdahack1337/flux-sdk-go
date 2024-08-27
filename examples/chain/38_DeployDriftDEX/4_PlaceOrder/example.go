@@ -401,7 +401,6 @@ func placeAndMakeOrder(
 		panic(err)
 	}
 
-	fmt.Println("== place and make order ==")
 	svmMsg := svm.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, placeOrderTx)
 	res, err := userClient.SyncBroadcastMsg(svmMsg)
 	if err != nil {

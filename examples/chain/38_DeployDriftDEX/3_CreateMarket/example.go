@@ -347,11 +347,6 @@ func main() {
 	optimalUtilization := uint32(8000)
 	optimalBorrowRate := uint32(500)
 	maxBorrowRate := uint32(1000)
-	initialAssetWeight := uint32(10000)
-	maintenanceAssetWeight := uint32(10000)
-	initialLiabilityWeight := uint32(10000)
-	maintenanceLiabilityWeight := uint32(10000)
-	imfFactor := uint32(0)
 	liquidatorFee := uint32(50)
 	ifLiquidationFee := uint32(25)
 	activeStatus := true
@@ -361,18 +356,20 @@ func main() {
 	orderTickSize := uint64(1000)
 	orderStepSize := uint64(100)
 	ifTotalFactor := uint32(10)
-	nameUsdt := newName("market_usdt")
-	nameBtc := newName("market_btc")
 
 	initializeQuoteSpotMarketIx := drift.NewInitializeSpotMarketInstruction(
 		/* Parameters */
 		optimalUtilization, optimalBorrowRate, maxBorrowRate,
 		drift.OracleSourceQuoteAsset,
-		initialAssetWeight, maintenanceAssetWeight,
-		initialLiabilityWeight, maintenanceLiabilityWeight, imfFactor,
-		liquidatorFee, ifLiquidationFee, activeStatus, assetTier,
-		scaleInitialAssetWeightStart, withdrawGuardThreshold,
-		orderTickSize, orderStepSize, ifTotalFactor, nameUsdt,
+		10000, 10000,
+		10000, 10000, 0,
+		liquidatorFee,
+		ifLiquidationFee, activeStatus,
+		assetTier, scaleInitialAssetWeightStart,
+		withdrawGuardThreshold,
+		orderTickSize, orderStepSize,
+		ifTotalFactor,
+		newName("market_usdt"),
 		/* Accounts */
 		spotMarketUsdt, usdtMint, spotMarketUsdtVault,
 		insuranceFundUsdtVault, driftSigner, state,
@@ -387,7 +384,7 @@ func main() {
 		12000, 11000, 105000,
 		liquidatorFee, ifLiquidationFee, activeStatus, assetTier,
 		scaleInitialAssetWeightStart, withdrawGuardThreshold,
-		orderTickSize, orderStepSize, ifTotalFactor, nameBtc,
+		orderTickSize, orderStepSize, ifTotalFactor, newName("market_btc"),
 		/* Accounts */
 		spotMarketBtc, btcMint, spotMarketBtcVault,
 		insuranceFundBtcVault, driftSigner, state,
