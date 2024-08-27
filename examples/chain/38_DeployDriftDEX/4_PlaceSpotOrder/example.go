@@ -201,7 +201,7 @@ func placeOrder(
 	// Define the OrderParams with default or specified values
 	unixExpireTime := time.Now().Add(expireDuration).Unix()
 	orderParams := drift.OrderParams{
-		OrderType:         drift.OrderTypeLimit,
+		OrderType:         orderType,
 		MarketType:        drift.MarketTypeSpot,
 		Direction:         direction,
 		UserOrderId:       orderId,
