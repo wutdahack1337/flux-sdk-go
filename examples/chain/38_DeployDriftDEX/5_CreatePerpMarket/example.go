@@ -317,25 +317,6 @@ func main() {
 		panic(err)
 	}
 
-	// // Generate PDA for spot_market_vault
-	// spotMarketBtcVault, _, err := solana.FindProgramAddress([][]byte{
-	// 	[]byte("spot_market_vault"),
-	// 	uint16ToLeBytes(1),
-	// }, driftProgramId)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// // Generate PDA for insurance_fund_vault
-	// insuranceFundBtcVault, _, err := solana.FindProgramAddress([][]byte{
-	// 	[]byte("insurance_fund_vault"),
-	// 	uint16ToLeBytes(1),
-	// }, driftProgramId)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// oracleUsdt := svmtypes.SystemProgramId // default pubkey
 	oracleBtc := solana.MustPublicKeyFromBase58("3HRnxmtHQrHkooPdFZn5ZQbPTKGvBSyoTi4VVkkoT6u6")
 
 	// Define other necessary public keys
@@ -366,7 +347,7 @@ func main() {
 	curveUpdateIntensity := uint8(1)
 	ammJitIntensity := uint8(1)
 	name := [32]byte{}
-	copy(name[:], []byte("btc-perp"))
+	copy(name[:], []byte("btc_perp"))
 
 	// Build the instruction
 	initializePerpMarketIx := drift.NewInitializePerpMarketInstruction(
