@@ -126,6 +126,7 @@ func deposit(
 		IsSigner:   false,
 	})
 	depositIx := depositIxBuilder.Build()
+	_ = depositIx
 
 	accountExist := true
 	_, err = userClient.GetSvmAccount(context.Background(), userStats.String())
@@ -179,8 +180,6 @@ func placeOrder(
 		[]byte("user"), svmPubkey[:], {0, 0},
 	}, drift.ProgramID)
 
-	// create market
-	// Generate PDA for spot_market
 	spotMarketUsdt, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market"),
 		uint16ToLeBytes(0),
@@ -189,9 +188,9 @@ func placeOrder(
 		panic(err)
 	}
 
-	spotMarketBtc, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("spot_market"),
-		uint16ToLeBytes(1),
+	perpMarket, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("perp_market"),
+		uint16ToLeBytes(marketIndex),
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -220,7 +219,7 @@ func placeOrder(
 	}
 
 	// Create the PlaceOrder instruction
-	placeOrderIx := drift.NewPlaceSpotOrderInstruction(
+	placeOrderIx := drift.NewPlacePerpOrderInstruction(
 		orderParams,
 		state,
 		user,
@@ -234,14 +233,15 @@ func placeOrder(
 		IsSigner:   false,
 	})
 
-	// append all spot market
+	// append all spot markets
 	placeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
 		PublicKey:  spotMarketUsdt,
 		IsWritable: true,
 		IsSigner:   false,
 	})
+
 	placeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
-		PublicKey:  spotMarketBtc,
+		PublicKey:  perpMarket,
 		IsWritable: true,
 		IsSigner:   false,
 	})
@@ -261,7 +261,7 @@ func placeOrder(
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 }
 
-func placeAndMakeOrder(
+func matchVAMM(
 	userClient chainclient.ChainClient,
 	svmPubkey solana.PublicKey,
 	userOrderId uint8,
@@ -337,7 +337,7 @@ func placeAndMakeOrder(
 	unixExpireTime := time.Now().Add(100 * time.Second).Unix()
 	orderParams := drift.OrderParams{
 		OrderType:         drift.OrderTypeLimit,
-		MarketType:        drift.MarketTypeSpot,
+		MarketType:        drift.MarketTypePerp,
 		Direction:         direction,
 		UserOrderId:       userOrderId,
 		BaseAssetAmount:   baseAssetAmount,
@@ -356,10 +356,10 @@ func placeAndMakeOrder(
 	}
 
 	// Create the PlaceOrder instruction
-	placeAndMakeOrderIx := drift.NewPlaceAndMakeSpotOrderInstruction(
+	placeAndMakeOrderIx := drift.NewFillPerpOrderInstruction(
 		orderParams,
 		takerOrderId,
-		drift.SpotFulfillmentTypeMatch,
+		drift.PerpFulfillmentMethodAMM,
 		state, user, userStats,
 		takerUser, takerUserStats, svmPubkey,
 	)
@@ -753,23 +753,23 @@ func main() {
 	driftProgramId := solana.PublicKeyFromBytes(programSvmPrivKey.PubKey().Bytes())
 	drift.SetProgramID(driftProgramId)
 
-	fmt.Println("=== user deposits ===")
+	// fmt.Println("=== user deposits ===")
 	deposit(
 		userClient,
 		userSvmPubkey,
 		650_000_000,
 		usdtMint,
-		usdtMarketIndex,
+		0,
 	)
 
-	fmt.Println("=== market maker deposits ===")
-	deposit(
-		marketMakerClient,
-		marketMakerSvmPubkey,
-		1_000_000,
-		btcMint,
-		btcMarketIndex,
-	)
+	// fmt.Println("=== market maker deposits ===")
+	// deposit(
+	// 	marketMakerClient,
+	// 	marketMakerSvmPubkey,
+	// 	1_000_000,
+	// 	btcMint,
+	// 	btcMarketIndex,
+	// )
 
 	driftUser := getDriftUserInfo(userClient, userSvmPubkey)
 	orderId := driftUser.NextOrderId
@@ -789,7 +789,6 @@ func main() {
 	)
 	fmt.Println("user order_id:", orderId)
 
-	// partially fill the taker order at "orderId" at taker's best price
 	fmt.Printf("=== market maker fill orders %d ===\n", orderId)
 	placeAndMakeOrder(
 		marketMakerClient,

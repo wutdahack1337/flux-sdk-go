@@ -84,6 +84,19 @@ func initializeBtcOracle(
 	/// initialize btc oracle
 	btcOraclePrivKey := ed25519.GenPrivKeyFromSecret([]byte("btc_oracle"))
 	btcOraclePubkey := solana.PublicKeyFromBytes(btcOraclePrivKey.PubKey().Bytes())
+	accountExist := true
+	_, err := chainClient.GetSvmAccount(context.Background(), btcOraclePubkey.String())
+	if err != nil && !strings.Contains(err.Error(), "not existed") {
+		panic(err)
+	}
+	if err != nil {
+		accountExist = false
+	}
+
+	if accountExist {
+		return btcOraclePubkey
+	}
+
 	feePayerCosmosPrivKey := &ethsecp256k1.PrivKey{Key: ethcommon.Hex2Bytes(feePayerCosmosPrivHex)}
 	feePayerCosmosAddr := sdk.AccAddress(feePayerCosmosPrivKey.PubKey().Address().Bytes())
 	oracleCosmosPrivKey := &ethsecp256k1.PrivKey{Key: ethcommon.Hex2Bytes(oracleCosmosPrivHex)}
@@ -286,12 +299,12 @@ func main() {
 	// btcMint := solana.PublicKeyFromBytes(btcMintBz)
 
 	fmt.Println("=== initialize BTC oracle ===")
-	// initializeBtcOracle(
-	// 	chainClient, clientCtx,
-	// 	"88cbead91aee890d27bf06e003ade3d4e952427e88f88d31d61d3ef5e5d54305",
-	// 	"6bf7877e9bf7590d94b57d409b0fcf4cc80f9cd427bc212b1a2dd7ff6b6802e1",
-	// 	65_000_000_000, 6, 1,
-	// )
+	initializeBtcOracle(
+		chainClient, clientCtx,
+		"88cbead91aee890d27bf06e003ade3d4e952427e88f88d31d61d3ef5e5d54305",
+		"6bf7877e9bf7590d94b57d409b0fcf4cc80f9cd427bc212b1a2dd7ff6b6802e1",
+		65_000_000_000, 6, 1,
+	)
 
 	fmt.Println("=== initialize btc, usdt market states ===")
 	state, _, err := solana.FindProgramAddress([][]byte{
@@ -307,6 +320,7 @@ func main() {
 		svmtypes.SystemProgramId,
 		svmtypes.SplToken2022ProgramId,
 	).Build()
+	_ = initializeIx
 
 	marketIndex := uint16(0)
 	perpMarketBtc, _, err := solana.FindProgramAddress([][]byte{
@@ -364,7 +378,7 @@ func main() {
 	).Build()
 
 	initializeTx, err := solana.NewTransactionBuilder().
-		AddInstruction(initializeIx).
+		// AddInstruction(initializeIx).
 		AddInstruction(initializePerpMarketIx).Build()
 	if err != nil {
 		panic(err)
