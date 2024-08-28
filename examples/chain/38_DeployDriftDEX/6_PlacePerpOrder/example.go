@@ -574,7 +574,7 @@ func main() {
 		userClient,
 		userSvmPubkey,
 		uint8(orderId),
-		65000_000_000, nil, nil, // proto.Int64(64000_000_000), proto.Int64(65000_000_000),
+		65500_000_000, nil, nil, // proto.Int64(64000_000_000), proto.Int64(65000_000_000),
 		1_000_000,
 		drift.OrderTypeMarket,
 		false,
@@ -584,7 +584,7 @@ func main() {
 		Uint8Ptr(5),
 	)
 	fmt.Println("user order_id:", orderId)
-	fmt.Println("waiting for some second for auction to complete:")
+	fmt.Println("waiting for some seconds for auction to complete...")
 	time.Sleep(20 * time.Second)
 
 	fmt.Printf("=== fill orders %d against AMM ===\n", orderId)
@@ -592,7 +592,7 @@ func main() {
 		marketMakerClient,
 		marketMakerSvmPubkey,
 		1,
-		64000_000_000,
+		64500_000_000,
 		600_000,
 		drift.PositionDirectionShort,
 		userSvmPubkey,
