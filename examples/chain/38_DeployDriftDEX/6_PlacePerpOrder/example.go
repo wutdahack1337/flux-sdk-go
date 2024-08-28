@@ -32,10 +32,11 @@ import (
 )
 
 var (
-	driftPrivKey      []byte
-	oracleBtc         = solana.MustPublicKeyFromBase58("3HRnxmtHQrHkooPdFZn5ZQbPTKGvBSyoTi4VVkkoT6u6")
-	usdtMint, btcMint solana.PublicKey
-	btcMarketIndex    = uint16(0)
+	driftPrivKey        []byte
+	oracleBtc           = solana.MustPublicKeyFromBase58("3HRnxmtHQrHkooPdFZn5ZQbPTKGvBSyoTi4VVkkoT6u6")
+	usdtMint, btcMint   solana.PublicKey
+	usdtSpotMarketIndex = uint16(0)
+	btcMarketIndex      = uint16(0)
 )
 
 func uint16ToLeBytes(x uint16) []byte {
@@ -199,7 +200,7 @@ func placeOrder(
 	// Define the OrderParams with default or specified values
 	unixExpireTime := time.Now().Add(expireDuration).Unix()
 	orderParams := drift.OrderParams{
-		OrderType:         drift.OrderTypeLimit,
+		OrderType:         orderType,
 		MarketType:        drift.MarketTypePerp,
 		Direction:         direction,
 		UserOrderId:       orderId,
@@ -261,7 +262,7 @@ func placeOrder(
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 }
 
-func matchVAMM(
+func fillPerpOrder(
 	userClient chainclient.ChainClient,
 	svmPubkey solana.PublicKey,
 	userOrderId uint8,
@@ -277,12 +278,26 @@ func matchVAMM(
 		[]byte("drift_state"),
 	}, drift.ProgramID)
 
-	user, _, err := solana.FindProgramAddress([][]byte{
+	filler, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("user"), svmPubkey[:], {0, 0},
 	}, drift.ProgramID)
 
-	userStats, _, err := solana.FindProgramAddress([][]byte{
+	fillerStats, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("user_stats"), svmPubkey[:],
+	}, drift.ProgramID)
+	if err != nil {
+		panic(err)
+	}
+
+	takerUser, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("user"), takerPubkey[:], {0, 0},
+	}, drift.ProgramID)
+	if err != nil {
+		panic(err)
+	}
+
+	takerUserStats, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("user_stats"), takerPubkey[:],
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -296,268 +311,51 @@ func matchVAMM(
 		panic(err)
 	}
 
-	spotMarketBtc, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("spot_market"),
-		uint16ToLeBytes(1),
-	}, drift.ProgramID)
-	if err != nil {
-		panic(err)
-	}
-
-	takerUser, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("user"), takerPubkey[:], {0, 0},
-	}, drift.ProgramID)
-	if err != nil {
-		panic(err)
-	}
-
-	takerUserStats, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("user_stats"), takerPubkey[:],
-	}, drift.ProgramID)
-	if err != nil {
-		panic(err)
-	}
-
-	spotMarketUsdtVault, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("spot_market_vault"),
-		uint16ToLeBytes(0),
-	}, drift.ProgramID)
-	if err != nil {
-		panic(err)
-	}
-
-	spotMarketBaseVault, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("spot_market_vault"),
+	perpMarketBtc, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("perp_market"),
 		uint16ToLeBytes(marketIndex),
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
-	}
-
-	unixExpireTime := time.Now().Add(100 * time.Second).Unix()
-	orderParams := drift.OrderParams{
-		OrderType:         drift.OrderTypeLimit,
-		MarketType:        drift.MarketTypePerp,
-		Direction:         direction,
-		UserOrderId:       userOrderId,
-		BaseAssetAmount:   baseAssetAmount,
-		Price:             price,
-		MarketIndex:       marketIndex,
-		ReduceOnly:        false,
-		PostOnly:          drift.PostOnlyParamMustPostOnly,
-		ImmediateOrCancel: true,
-		MaxTs:             &unixExpireTime,
-		TriggerPrice:      proto.Uint64(0),
-		TriggerCondition:  drift.OrderTriggerConditionAbove,
-		OraclePriceOffset: proto.Int32(0),
-		AuctionDuration:   nil,
-		AuctionStartPrice: nil,
-		AuctionEndPrice:   nil,
 	}
 
 	// Create the PlaceOrder instruction
-	placeAndMakeOrderIx := drift.NewFillPerpOrderInstruction(
-		orderParams,
+	fillOrderIx := drift.NewFillPerpOrderInstruction(
 		takerOrderId,
-		drift.PerpFulfillmentMethodAMM,
-		state, user, userStats,
-		takerUser, takerUserStats, svmPubkey,
+		0,
+		state, svmPubkey, filler, fillerStats,
+		takerUser, takerUserStats,
 	)
 
-	// append all oracles
-	placeAndMakeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
-		PublicKey:  oracleBtc,
-		IsWritable: false,
-		IsSigner:   false,
-	})
-
-	// append all spot market
-	placeAndMakeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
-		PublicKey:  spotMarketBtc,
-		IsWritable: true,
-		IsSigner:   false,
-	})
-	placeAndMakeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
-		PublicKey:  spotMarketUsdt,
-		IsWritable: true,
-		IsSigner:   false,
-	})
-
-	placeAndMakeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
-		PublicKey:  spotMarketBaseVault,
-		IsWritable: true,
-		IsSigner:   false,
-	})
-
-	placeAndMakeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
-		PublicKey:  spotMarketUsdtVault,
-		IsWritable: true,
-		IsSigner:   false,
-	})
-
-	placeOrderTx, err := solana.NewTransactionBuilder().AddInstruction(placeAndMakeOrderIx.Build()).Build()
-	if err != nil {
-		panic(err)
-	}
-
-	svmMsg := svm.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, placeOrderTx)
-	res, err := userClient.SyncBroadcastMsg(svmMsg)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("tx hash:", res.TxResponse.TxHash)
-	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
-}
-
-// this is called by keeper bot
-func fillSpotOrder(
-	userClient chainclient.ChainClient,
-	fillerPubkey solana.PublicKey,
-	takerPubkey solana.PublicKey,
-	takerOrderId uint32,
-	makerPubkey solana.PublicKey,
-	makerOrderId uint32,
-	marketIndex uint16,
-) {
-	senderAddress := userClient.FromAddress()
-	state, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("drift_state"),
-	}, drift.ProgramID)
-	if err != nil {
-		panic(err)
-	}
-	fillerUser, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("user"), fillerPubkey[:], {0, 0},
-	}, drift.ProgramID)
-	if err != nil {
-		panic(err)
-	}
-
-	fillerUserStats, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("user_stats"), fillerPubkey[:],
-	}, drift.ProgramID)
-	if err != nil {
-		panic(err)
-	}
-
-	takerUser, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("user"), takerPubkey[:], {0, 0},
-	}, drift.ProgramID)
-	if err != nil {
-		panic(err)
-	}
-
-	takerUserStats, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("user_stats"), takerPubkey[:],
-	}, drift.ProgramID)
-	if err != nil {
-		panic(err)
-	}
-
-	makerUser, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("user"), makerPubkey[:], {0, 0},
-	}, drift.ProgramID)
-	if err != nil {
-		panic(err)
-	}
-
-	makerUserStats, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("user_stats"), makerPubkey[:],
-	}, drift.ProgramID)
-	if err != nil {
-		panic(err)
-	}
-
-	spotMarket, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("spot_market"),
-		uint16ToLeBytes(marketIndex),
-	}, drift.ProgramID)
-	if err != nil {
-		panic(err)
-	}
-
-	spotQuoteMarket, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("spot_market"),
-		uint16ToLeBytes(0),
-	}, drift.ProgramID)
-	if err != nil {
-		panic(err)
-	}
-
-	spotMarketUsdtVault, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("spot_market_vault"),
-		uint16ToLeBytes(0),
-	}, drift.ProgramID)
-	if err != nil {
-		panic(err)
-	}
-
-	spotMarketBaseVault, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("spot_market_vault"),
-		uint16ToLeBytes(marketIndex),
-	}, drift.ProgramID)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("taker user stats:", takerUserStats.String())
-	fillIx := drift.NewFillSpotOrderInstruction(
-		takerOrderId, drift.SpotFulfillmentTypeMatch,
-		makerOrderId,
-		state, fillerPubkey, fillerUser, fillerUserStats, takerUser, takerUserStats,
-	)
+	// fill against vAMM => no need maker order
+	fillOrderIx.MakerOrderId = nil
 
 	// append all oracles
-	fillIx.AccountMetaSlice.Append(&solana.AccountMeta{
+	fillOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
 		PublicKey:  oracleBtc,
 		IsWritable: false,
 		IsSigner:   false,
 	})
 
 	// append all markets
-	fillIx.AccountMetaSlice.Append(&solana.AccountMeta{
-		PublicKey:  spotMarket,
+	fillOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
+		PublicKey:  spotMarketUsdt,
 		IsWritable: true,
 		IsSigner:   false,
 	})
 
-	fillIx.AccountMetaSlice.Append(&solana.AccountMeta{
-		PublicKey:  spotQuoteMarket,
+	fillOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
+		PublicKey:  perpMarketBtc,
 		IsWritable: true,
 		IsSigner:   false,
 	})
 
-	fillIx.AccountMetaSlice.Append(&solana.AccountMeta{
-		PublicKey:  makerUser,
-		IsWritable: true,
-		IsSigner:   false,
-	})
-
-	fillIx.AccountMetaSlice.Append(&solana.AccountMeta{
-		PublicKey:  makerUserStats,
-		IsWritable: true,
-		IsSigner:   false,
-	})
-
-	fillIx.AccountMetaSlice.Append(&solana.AccountMeta{
-		PublicKey:  spotMarketBaseVault,
-		IsWritable: true,
-		IsSigner:   false,
-	})
-
-	fillIx.AccountMetaSlice.Append(&solana.AccountMeta{
-		PublicKey:  spotMarketUsdtVault,
-		IsWritable: true,
-		IsSigner:   false,
-	})
-
-	fillTx, err := solana.NewTransactionBuilder().AddInstruction(fillIx.Build()).Build()
+	fillOrderTx, err := solana.NewTransactionBuilder().AddInstruction(fillOrderIx.Build()).Build()
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println("== fill (match) orders ==")
-	svmMsg := svm.ToCosmosMsg([]string{senderAddress.String()}, 10_000_000, fillTx)
+	svmMsg := svm.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, fillOrderTx)
 	res, err := userClient.SyncBroadcastMsg(svmMsg)
 	if err != nil {
 		panic(err)
@@ -752,24 +550,22 @@ func main() {
 	programSvmPrivKey := &ed25519.PrivKey{Key: programSvmPrivKeyBz}
 	driftProgramId := solana.PublicKeyFromBytes(programSvmPrivKey.PubKey().Bytes())
 	drift.SetProgramID(driftProgramId)
-
-	// fmt.Println("=== user deposits ===")
 	deposit(
 		userClient,
 		userSvmPubkey,
-		650_000_000,
+		1000_000_000,
 		usdtMint,
-		0,
+		usdtSpotMarketIndex,
 	)
 
-	// fmt.Println("=== market maker deposits ===")
-	// deposit(
-	// 	marketMakerClient,
-	// 	marketMakerSvmPubkey,
-	// 	1_000_000,
-	// 	btcMint,
-	// 	btcMarketIndex,
-	// )
+	fmt.Println("=== market maker deposits ===")
+	deposit(
+		marketMakerClient,
+		marketMakerSvmPubkey,
+		1000_000_000,
+		usdtMint,
+		usdtSpotMarketIndex,
+	)
 
 	driftUser := getDriftUserInfo(userClient, userSvmPubkey)
 	orderId := driftUser.NextOrderId
@@ -778,19 +574,21 @@ func main() {
 		userClient,
 		userSvmPubkey,
 		uint8(orderId),
-		65000_000_000, proto.Int64(64000_000_000), proto.Int64(65000_000_000),
+		65000_000_000, nil, nil, // proto.Int64(64000_000_000), proto.Int64(65000_000_000),
 		1_000_000,
 		drift.OrderTypeMarket,
 		false,
 		drift.PositionDirectionLong,
 		200*time.Second,
 		btcMarketIndex,
-		Uint8Ptr(200),
+		Uint8Ptr(5),
 	)
 	fmt.Println("user order_id:", orderId)
+	fmt.Println("waiting for some second for auction to complete:")
+	time.Sleep(20 * time.Second)
 
-	fmt.Printf("=== market maker fill orders %d ===\n", orderId)
-	placeAndMakeOrder(
+	fmt.Printf("=== fill orders %d against AMM ===\n", orderId)
+	fillPerpOrder(
 		marketMakerClient,
 		marketMakerSvmPubkey,
 		1,
@@ -811,4 +609,13 @@ func main() {
 			fmt.Println(string(bz))
 		}
 	}
+
+	fmt.Println("user POSITIONs:")
+	for _, o := range driftUser.PerpPositions {
+		if o.BaseAssetAmount > 0 {
+			bz, _ := json.MarshalIndent(o, "", "  ")
+			fmt.Println(string(bz))
+		}
+	}
+
 }

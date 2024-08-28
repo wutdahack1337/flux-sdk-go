@@ -186,7 +186,7 @@ func main() {
 		fmt.Println("tx hash:", res.TxResponse.TxHash)
 		fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 		if res.TxResponse.Code != 0 {
-			fmt.Println("err code:", res.TxResponse.Code, ", log:", res.TxResponse.RawLog)
+			panic(fmt.Errorf("err code: %d, log: %s", res.TxResponse.Code, res.TxResponse.RawLog))
 		}
 	}
 
@@ -196,10 +196,5 @@ func main() {
 		panic(err)
 	}
 	fmt.Println("program executable data pubkey:", programExecutablePubkey.String())
-
-	if res.TxResponse.Code != 0 {
-		panic(fmt.Errorf("code: %d, err happen: %s", res.TxResponse.Code, res.TxResponse.RawLog))
-	}
-
 	fmt.Println("✅ pyth program deployed. tx hash:", res.TxResponse.TxHash)
 }

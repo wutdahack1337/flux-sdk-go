@@ -117,7 +117,7 @@ func initializeBtcOracle(
 		panic(err)
 	}
 
-	oracleSize := uint64(3840) // deduce from Price struct
+	oracleSize := uint64(3312) // deduce from Price struct
 	createOracleAccountIx := system.NewCreateAccountInstruction(
 		svmtypes.GetRentExemptLamportAmount(oracleSize),
 		oracleSize,

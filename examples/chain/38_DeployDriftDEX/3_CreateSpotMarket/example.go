@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	_ "embed"
 
@@ -61,6 +62,20 @@ func initializeBtcOracle(
 	/// initialize btc oracle
 	btcOraclePrivKey := ed25519.GenPrivKeyFromSecret([]byte("btc_oracle"))
 	btcOraclePubkey := solana.PublicKeyFromBytes(btcOraclePrivKey.PubKey().Bytes())
+	accountExist := true
+	_, err := chainClient.GetSvmAccount(context.Background(), btcOraclePubkey.String())
+	if err != nil && !strings.Contains(err.Error(), "not existed") {
+		panic(err)
+	}
+	if err != nil {
+		accountExist = false
+	}
+
+	if accountExist {
+		fmt.Println("btc oracle already initialized:", btcOraclePubkey.String())
+		return btcOraclePubkey
+	}
+
 	feePayerCosmosPrivKey := &ethsecp256k1.PrivKey{Key: ethcommon.Hex2Bytes(feePayerCosmosPrivHex)}
 	feePayerCosmosAddr := sdk.AccAddress(feePayerCosmosPrivKey.PubKey().Address().Bytes())
 	oracleCosmosPrivKey := &ethsecp256k1.PrivKey{Key: ethcommon.Hex2Bytes(oracleCosmosPrivHex)}
@@ -81,7 +96,7 @@ func initializeBtcOracle(
 		panic(err)
 	}
 
-	oracleSize := uint64(3840) // deduce from Price struct
+	oracleSize := uint64(3312) // deduce from Price struct
 	createOracleAccountIx := system.NewCreateAccountInstruction(
 		svmtypes.GetRentExemptLamportAmount(oracleSize),
 		oracleSize,
@@ -263,7 +278,7 @@ func main() {
 	btcMint := solana.PublicKeyFromBytes(btcMintBz)
 
 	fmt.Println("=== initialize BTC oracle ===")
-	initializeBtcOracle(
+	oracleBtc := initializeBtcOracle(
 		chainClient, clientCtx,
 		"88cbead91aee890d27bf06e003ade3d4e952427e88f88d31d61d3ef5e5d54305",
 		"6bf7877e9bf7590d94b57d409b0fcf4cc80f9cd427bc212b1a2dd7ff6b6802e1",
@@ -336,7 +351,7 @@ func main() {
 	}
 
 	oracleUsdt := svmtypes.SystemProgramId // default pubkey
-	oracleBtc := solana.MustPublicKeyFromBase58("3HRnxmtHQrHkooPdFZn5ZQbPTKGvBSyoTi4VVkkoT6u6")
+	// oracleBtc := solana.MustPublicKeyFromBase58("3HRnxmtHQrHkooPdFZn5ZQbPTKGvBSyoTi4VVkkoT6u6")
 
 	// Define other necessary public keys
 	admin := svmPubkey
@@ -399,6 +414,7 @@ func main() {
 		panic(err)
 	}
 
+	time.Sleep(2 * time.Second)
 	marketExist := true
 	_, err = chainClient.GetSvmAccount(context.Background(), spotMarketBtc.String())
 	if err != nil && !strings.Contains(err.Error(), "not existed") {
