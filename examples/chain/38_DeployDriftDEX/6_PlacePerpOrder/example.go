@@ -265,10 +265,6 @@ func placeOrder(
 func fillPerpOrder(
 	userClient chainclient.ChainClient,
 	svmPubkey solana.PublicKey,
-	userOrderId uint8,
-	price uint64,
-	baseAssetAmount uint64,
-	direction drift.PositionDirection,
 	takerPubkey solana.PublicKey,
 	takerOrderId uint32,
 	marketIndex uint16,
@@ -511,7 +507,7 @@ func main() {
 	}
 
 	if !isSvmLinked {
-		svmKey := ed25519.GenPrivKey() // Good practice: Backup this private key
+		svmKey := ed25519.GenPrivKey()
 		res, err := marketMakerClient.LinkSVMAccount(svmKey, math.NewIntFromUint64(1000_000_000_000))
 		if err != nil {
 			panic(err)
@@ -591,10 +587,6 @@ func main() {
 	fillPerpOrder(
 		marketMakerClient,
 		marketMakerSvmPubkey,
-		1,
-		64500_000_000,
-		600_000,
-		drift.PositionDirectionShort,
 		userSvmPubkey,
 		orderId,
 		btcMarketIndex,
@@ -617,5 +609,4 @@ func main() {
 			fmt.Println(string(bz))
 		}
 	}
-
 }
