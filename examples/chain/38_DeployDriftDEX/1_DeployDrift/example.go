@@ -107,18 +107,18 @@ func main() {
 	programBufferSvmPrivKey := ed25519.GenPrivKeyFromSecret([]byte("programBuffer"))
 	programBufferPubkey := solana.PublicKeyFromBytes(programBufferSvmPrivKey.PubKey().Bytes())
 
-	fmt.Println("=== start linking accounts ===")
-	res, err := svm.LinkAccount(chainClient, clientCtx, cosmosPrivateKeys[0], ownerSvmPrivKey, 1000000000000000000)
+	fmt.Println("=== linking accounts ===")
+	ownerPubkey, _, err = svm.GetOrLinkSvmAccount(chainClient, clientCtx, cosmosPrivateKeys[0], ownerSvmPrivKey, 1000000000000000000)
 	if err != nil {
 		panic(err)
 	}
 
-	_, err = svm.LinkAccount(chainClient, clientCtx, cosmosPrivateKeys[1], programSvmPrivKey, 0)
+	programPubkey, _, err = svm.GetOrLinkSvmAccount(chainClient, clientCtx, cosmosPrivateKeys[1], programSvmPrivKey, 0)
 	if err != nil {
 		panic(err)
 	}
 
-	_, err = svm.LinkAccount(chainClient, clientCtx, cosmosPrivateKeys[2], programBufferSvmPrivKey, 0)
+	programBufferPubkey, _, err = svm.GetOrLinkSvmAccount(chainClient, clientCtx, cosmosPrivateKeys[2], programBufferSvmPrivKey, 0)
 	if err != nil {
 		panic(err)
 	}
@@ -153,14 +153,15 @@ func main() {
 		panic(err)
 	}
 
-	res, err = chainClient.SyncBroadcastSignedTx(txBytes)
+	res, err := chainClient.SyncBroadcastSignedTx(txBytes)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("tx hash:", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 
-	fmt.Println("total txs required for uploading program:", len(uploadMsgs), ". Uploading...")
+	fmt.Println("=== start uploading program ===")
+	fmt.Println("total txs required:", len(uploadMsgs))
 	for i, uploadMsg := range uploadMsgs {
 		fmt.Printf("uploading program part %dth\n", i+1)
 		signedTx, err = svm.BuildSignedTx(chainClient, []sdk.Msg{uploadMsg}, cosmosPrivateKeys)
@@ -184,12 +185,5 @@ func main() {
 			fmt.Println("err code:", res.TxResponse.Code, ", log:", res.TxResponse.RawLog)
 		}
 	}
-
-	fmt.Println("program pubkey:", programPubkey.String())
-	programExecutablePubkey, _, err := solana.FindProgramAddress([][]byte{programPubkey[:]}, solana.BPFLoaderUpgradeableProgramID)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("program executable data pubkey:", programExecutablePubkey.String())
-	fmt.Println("✅ program deployed. tx hash:", res.TxResponse.TxHash)
+	fmt.Println("✅ drift program deployed. program pubkey:", programPubkey.String())
 }

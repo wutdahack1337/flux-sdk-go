@@ -72,6 +72,7 @@ type ChainClient interface {
 	BuildSignedTx(clientCtx client.Context, accNum, accSeq, initialGas uint64, msg ...sdk.Msg) (signing.Tx, error)
 	SyncBroadcastSignedTx(tyBytes []byte) (*txtypes.BroadcastTxResponse, error)
 	AsyncBroadcastSignedTx(txBytes []byte) (*txtypes.BroadcastTxResponse, error)
+	SimulateSignedTx(txBytes []byte) (*txtypes.SimulateResponse, error)
 	QueueBroadcastMsg(msgs ...sdk.Msg) error
 
 	SyncBroadcastSvmMsg(msg *svmtypes.MsgTransaction) (*txtypes.BroadcastTxResponse, error)
@@ -610,6 +611,18 @@ func (c *chainClient) AsyncBroadcastSignedTx(txBytes []byte) (*txtypes.Broadcast
 	}
 
 	return res, nil
+}
+
+func (c *chainClient) SimulateSignedTx(txBytes []byte) (*txtypes.SimulateResponse, error) {
+	req := txtypes.SimulateRequest{
+		TxBytes: txBytes,
+	}
+
+	ctx := context.Background()
+	var header metadata.MD
+	ctx = c.getCookie(ctx)
+
+	return c.txClient.Simulate(ctx, &req, grpc.Header(&header))
 }
 
 func (c *chainClient) broadcastTx(

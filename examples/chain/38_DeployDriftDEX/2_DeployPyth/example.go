@@ -110,22 +110,22 @@ func main() {
 	programBufferSvmPrivKey := ed25519.GenPrivKeyFromSecret([]byte("pyth_programBuffer"))
 	programBufferPubkey := solana.PublicKeyFromBytes(programBufferSvmPrivKey.PubKey().Bytes())
 
-	res, err := svm.LinkAccount(chainClient, clientCtx, cosmosPrivateKeys[0], ownerSvmPrivKey, 1000000000000000000)
+	ownerPubkey, _, err = svm.GetOrLinkSvmAccount(chainClient, clientCtx, cosmosPrivateKeys[0], ownerSvmPrivKey, 1000000000000000000)
 	if err != nil {
 		panic(err)
 	}
 
-	_, err = svm.LinkAccount(chainClient, clientCtx, cosmosPrivateKeys[1], programSvmPrivKey, 0)
+	programPubkey, _, err = svm.GetOrLinkSvmAccount(chainClient, clientCtx, cosmosPrivateKeys[1], programSvmPrivKey, 0)
 	if err != nil {
 		panic(err)
 	}
 
-	_, err = svm.LinkAccount(chainClient, clientCtx, cosmosPrivateKeys[2], programBufferSvmPrivKey, 0)
+	programBufferPubkey, _, err = svm.GetOrLinkSvmAccount(chainClient, clientCtx, cosmosPrivateKeys[2], programBufferSvmPrivKey, 0)
 	if err != nil {
 		panic(err)
 	}
 
-	// upload programs
+	// deploy program
 	initAccountMsg := svm.CreateInitAccountsMsg(
 		cosmosAddrs,
 		len(pythBinary),
@@ -156,7 +156,7 @@ func main() {
 		panic(err)
 	}
 
-	res, err = chainClient.SyncBroadcastSignedTx(txBytes)
+	res, err := chainClient.SyncBroadcastSignedTx(txBytes)
 	if err != nil {
 		panic(err)
 	}
@@ -164,10 +164,10 @@ func main() {
 	fmt.Println("tx hash:", res.TxResponse.TxHash, res.TxResponse.RawLog)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 
-	// deploy program
-	fmt.Println("total txs required for uploading program:", len(uploadMsgs), ". Uploading...")
+	fmt.Println("=== start uploading program ===")
+	fmt.Println("total txs required:", len(uploadMsgs))
 	for i, uploadMsg := range uploadMsgs {
-		fmt.Printf("=== uploading program part %dth ===\n", i+1)
+		fmt.Printf("uploading program part %dth\n", i+1)
 		signedTx, err = svm.BuildSignedTx(chainClient, []sdk.Msg{uploadMsg}, cosmosPrivateKeys)
 		if err != nil {
 			panic(err)
@@ -190,16 +190,5 @@ func main() {
 		}
 	}
 
-	fmt.Println("pyth program pubkey:", programPubkey.String())
-	programExecutablePubkey, _, err := solana.FindProgramAddress([][]byte{programPubkey[:]}, solana.BPFLoaderUpgradeableProgramID)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("program executable data pubkey:", programExecutablePubkey.String())
-
-	if res.TxResponse.Code != 0 {
-		panic(fmt.Errorf("code: %d, err happen: %s", res.TxResponse.Code, res.TxResponse.RawLog))
-	}
-
-	fmt.Println("✅ pyth program deployed. tx hash:", res.TxResponse.TxHash)
+	fmt.Println("✅ pyth program deployed. program pubkey:", programPubkey.String())
 }
