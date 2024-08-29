@@ -10,6 +10,7 @@ import (
 	"github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
 	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
+	pyth "github.com/FluxNFTLabs/sdk-go/client/svm/drift_pyth"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
@@ -19,6 +20,7 @@ import (
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	signingtypes "github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
+	ethcommon "github.com/ethereum/go-ethereum/common"
 	bin "github.com/gagliardetto/binary"
 	"github.com/gagliardetto/solana-go"
 	"github.com/gagliardetto/solana-go/programs/system"
@@ -369,9 +371,6 @@ func BuildSignedTx(
 
 	txBuilder := clientCtx.TxConfig.NewTxBuilder()
 	timeoutHeight := uint64(19000000)
-	gasLimit := uint64(300000000)
-	gasPrice := sdkmath.NewIntFromUint64(500000000)
-	fee := sdk.NewCoins(sdk.NewCoin("lux", sdkmath.NewIntFromUint64(gasLimit).Mul(gasPrice)))
 	signatures := make([]signingtypes.SignatureV2, len(cosmosSignerKeys))
 
 	for i := range cosmosPubkeys {
@@ -388,10 +387,25 @@ func BuildSignedTx(
 
 	// build tx
 	txBuilder.SetMsgs(msgs...)
-	txBuilder.SetGasLimit(gasLimit)
 	txBuilder.SetTimeoutHeight(timeoutHeight)
-	txBuilder.SetFeeAmount(fee)
 	txBuilder.SetSignatures(signatures...)
+
+	// simulate to estimate gas
+	bz, err := chainClient.ClientContext().TxConfig.TxEncoder()(txBuilder.GetTx())
+	if err != nil {
+		return nil, fmt.Errorf("encode tx err: %w", err)
+	}
+
+	simulateRes, err := chainClient.SimulateSignedTx(bz)
+	if err != nil {
+		return nil, fmt.Errorf("encode tx err: %w", err)
+	}
+
+	gasPrice := sdkmath.NewIntFromUint64(500000000)
+	estimateGas := simulateRes.GasInfo.GasUsed * 2
+	fee := sdkmath.NewIntFromUint64(estimateGas).Mul(gasPrice)
+	txBuilder.SetGasLimit(estimateGas)
+	txBuilder.SetFeeAmount(sdk.NewCoins(sdk.NewCoin("lux", fee)))
 
 	// build and sign tx
 	for i, pk := range cosmosSignerKeys {
@@ -420,40 +434,139 @@ func BuildSignedTx(
 	return txBuilder.GetTx(), nil
 }
 
-func LinkAccount(
+func GetOrLinkSvmAccount(
 	chainClient chainclient.ChainClient,
 	clientCtx client.Context,
 	cosmosPrivKey *ethsecp256k1.PrivKey,
 	svmPrivKey *ed25519.PrivKey,
 	luxAmount int64,
-) (*txtypes.BroadcastTxResponse, error) {
-	// prepare users
+) (linkedAccount solana.PublicKey, linkTxRes *txtypes.BroadcastTxResponse, err error) {
 	userPubKey := cosmosPrivKey.PubKey()
 	userAddr := sdk.AccAddress(userPubKey.Address().Bytes())
+	isSvmLinked, svmPubkey, err := chainClient.GetSVMAccountLink(context.Background(), userAddr)
+	if err != nil {
+		return solana.PublicKey{}, nil, err
+	}
+
+	if isSvmLinked {
+		return svmPubkey, nil, nil
+	}
 
 	// init link msg
-	svmPubkey := svmPrivKey.PubKey()
 	svmSig, err := svmPrivKey.Sign(userAddr.Bytes())
 	if err != nil {
-		return nil, fmt.Errorf("svm private key sign err: %w", err)
+		return solana.PublicKey{}, nil, fmt.Errorf("svm private key sign err: %w", err)
 	}
 
 	msg := &svmtypes.MsgLinkSVMAccount{
 		Sender:       userAddr.String(),
-		SvmPubkey:    svmPubkey.Bytes(),
+		SvmPubkey:    svmPrivKey.PubKey().Bytes(),
 		SvmSignature: svmSig[:],
 		Amount:       sdk.NewInt64Coin("lux", luxAmount),
 	}
 
 	signedTx, err := BuildSignedTx(chainClient, []sdk.Msg{msg}, []*ethsecp256k1.PrivKey{cosmosPrivKey})
 	if err != nil {
-		return nil, err
+		return solana.PublicKey{}, nil, err
 	}
 
 	txBytes, err := chainClient.ClientContext().TxConfig.TxEncoder()(signedTx)
 	if err != nil {
-		return nil, err
+		return solana.PublicKey{}, nil, err
 	}
 
-	return chainClient.SyncBroadcastSignedTx(txBytes)
+	linkTxRes, err = chainClient.SyncBroadcastSignedTx(txBytes)
+	return solana.PublicKeyFromBytes(svmPrivKey.PubKey().Bytes()), linkTxRes, err
+}
+
+func InitializePythOracle(
+	chainClient chainclient.ChainClient,
+	clientCtx client.Context,
+	feePayerCosmosPrivHex string,
+	oracleCosmosPrivHex string,
+	oracleSvmPrivKey *ed25519.PrivKey,
+	price int64, expo int32, conf uint64,
+) (oracleSvmPubkey solana.PublicKey, err error) {
+	/// initialize btc oracle
+	oracleSvmPubkey = solana.PublicKeyFromBytes(oracleSvmPrivKey.PubKey().Bytes())
+	feePayerCosmosPrivKey := &ethsecp256k1.PrivKey{Key: ethcommon.Hex2Bytes(feePayerCosmosPrivHex)}
+	feePayerCosmosAddr := sdk.AccAddress(feePayerCosmosPrivKey.PubKey().Address().Bytes())
+	oracleCosmosPrivKey := &ethsecp256k1.PrivKey{Key: ethcommon.Hex2Bytes(oracleCosmosPrivHex)}
+	oracleCosmosAddr := sdk.AccAddress(oracleCosmosPrivKey.PubKey().Address().Bytes())
+
+	isLinked, feePayerSvmPubkey, err := chainClient.GetSVMAccountLink(context.Background(), feePayerCosmosAddr)
+	if err != nil {
+		return solana.PublicKey{}, err
+	}
+
+	if !isLinked {
+		return solana.PublicKey{}, fmt.Errorf("feePayer %s is not linked to any svm account", feePayerCosmosAddr.String())
+	}
+
+	oracleSvmPubkey, _, err = GetOrLinkSvmAccount(chainClient, clientCtx, oracleCosmosPrivKey, oracleSvmPrivKey, 0)
+	if err != nil {
+		panic(err)
+	}
+
+	oracleSize := uint64(3312) // deduce from Price struct
+	createOracleAccountIx := system.NewCreateAccountInstruction(
+		svmtypes.GetRentExemptLamportAmount(oracleSize),
+		oracleSize,
+		pyth.ProgramID,
+		feePayerSvmPubkey,
+		oracleSvmPubkey,
+	).Build()
+
+	initializeOracleIx := pyth.NewInitializeInstruction(
+		price, expo, conf, oracleSvmPubkey,
+	).Build()
+
+	initOracleTx, err := solana.NewTransactionBuilder().
+		AddInstruction(createOracleAccountIx).
+		AddInstruction(initializeOracleIx).
+		Build()
+	if err != nil {
+		panic(err)
+	}
+
+	initOracleMsg := ToCosmosMsg([]string{
+		chainClient.FromAddress().String(),
+		oracleCosmosAddr.String(),
+	}, 1000_000, initOracleTx)
+
+	oracleSignedTx, err := BuildSignedTx(
+		chainClient, []sdk.Msg{initOracleMsg},
+		[]*ethsecp256k1.PrivKey{
+			feePayerCosmosPrivKey,
+			oracleCosmosPrivKey,
+		},
+	)
+	if err != nil {
+		return solana.PublicKey{}, err
+	}
+
+	oracleTxBytes, err := chainClient.ClientContext().TxConfig.TxEncoder()(oracleSignedTx)
+	if err != nil {
+		return solana.PublicKey{}, err
+	}
+
+	res, err := chainClient.SyncBroadcastSignedTx(oracleTxBytes)
+	if err != nil || res.TxResponse.Code != 0 {
+		fmt.Println("res.response err:", res.TxResponse.RawLog)
+		return solana.PublicKey{}, err
+	}
+
+	fmt.Println("tx hash:", res.TxResponse.TxHash, "err:", res.TxResponse.RawLog)
+	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
+	return oracleSvmPubkey, nil
+}
+
+func Uint16ToLeBytes(x uint16) []byte {
+	b := make([]byte, 2)
+	binary.LittleEndian.PutUint16(b, x)
+	return b
+}
+
+func Uint8Ptr(b uint8) *uint8 {
+	return &b
 }

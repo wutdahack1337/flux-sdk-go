@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/binary"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -39,16 +38,6 @@ var (
 	btcMarketIndex    = uint16(1)
 )
 
-func uint16ToLeBytes(x uint16) []byte {
-	b := make([]byte, 2)
-	binary.LittleEndian.PutUint16(b, x)
-	return b
-}
-
-func Uint8Ptr(b uint8) *uint8 {
-	return &b
-}
-
 func deposit(
 	userClient chainclient.ChainClient,
 	svmPubkey solana.PublicKey,
@@ -65,7 +54,7 @@ func deposit(
 
 	spotMarketVault, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market_vault"),
-		uint16ToLeBytes(marketIndex),
+		svm.Uint16ToLeBytes(marketIndex),
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -88,7 +77,7 @@ func deposit(
 
 	spotMarket, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market"),
-		uint16ToLeBytes(marketIndex),
+		svm.Uint16ToLeBytes(marketIndex),
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -184,7 +173,7 @@ func placeOrder(
 	// Generate PDA for spot_market
 	spotMarketUsdt, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market"),
-		uint16ToLeBytes(0),
+		svm.Uint16ToLeBytes(0),
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -192,7 +181,7 @@ func placeOrder(
 
 	spotMarketBtc, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market"),
-		uint16ToLeBytes(1),
+		svm.Uint16ToLeBytes(1),
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -252,7 +241,6 @@ func placeOrder(
 		panic(err)
 	}
 
-	fmt.Println("== place order ==")
 	svmMsg := svm.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, placeOrderTx)
 	res, err := userClient.SyncBroadcastMsg(svmMsg)
 	if err != nil {
@@ -291,7 +279,7 @@ func placeAndMakeOrder(
 
 	spotMarketUsdt, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market"),
-		uint16ToLeBytes(0),
+		svm.Uint16ToLeBytes(0),
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -299,7 +287,7 @@ func placeAndMakeOrder(
 
 	spotMarketBtc, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market"),
-		uint16ToLeBytes(1),
+		svm.Uint16ToLeBytes(1),
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -321,7 +309,7 @@ func placeAndMakeOrder(
 
 	spotMarketUsdtVault, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market_vault"),
-		uint16ToLeBytes(0),
+		svm.Uint16ToLeBytes(0),
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -329,7 +317,7 @@ func placeAndMakeOrder(
 
 	spotMarketBaseVault, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market_vault"),
-		uint16ToLeBytes(marketIndex),
+		svm.Uint16ToLeBytes(marketIndex),
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -471,7 +459,7 @@ func fillSpotOrder(
 
 	spotMarket, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market"),
-		uint16ToLeBytes(marketIndex),
+		svm.Uint16ToLeBytes(marketIndex),
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -479,7 +467,7 @@ func fillSpotOrder(
 
 	spotQuoteMarket, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market"),
-		uint16ToLeBytes(0),
+		svm.Uint16ToLeBytes(0),
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -487,7 +475,7 @@ func fillSpotOrder(
 
 	spotMarketUsdtVault, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market_vault"),
-		uint16ToLeBytes(0),
+		svm.Uint16ToLeBytes(0),
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -495,7 +483,7 @@ func fillSpotOrder(
 
 	spotMarketBaseVault, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market_vault"),
-		uint16ToLeBytes(marketIndex),
+		svm.Uint16ToLeBytes(marketIndex),
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -567,36 +555,26 @@ func fillSpotOrder(
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 }
 
-func transferFunds(
+func nexusTransfer(
 	chainClient chainclient.ChainClient,
+	coins sdk.Coins,
 ) {
 	senderAddress := chainClient.FromAddress()
-	msg1 := &astromeshtypes.MsgAstroTransfer{
-		Sender:   senderAddress.String(),
-		Receiver: senderAddress.String(),
-		SrcPlane: astromeshtypes.Plane_COSMOS,
-		DstPlane: astromeshtypes.Plane_SVM,
-		Coin: sdk.Coin{
-			Denom:  "btc",
-			Amount: math.NewIntFromUint64(10000000000),
-		},
-	}
-	msg2 := &astromeshtypes.MsgAstroTransfer{
-		Sender:   senderAddress.String(),
-		Receiver: senderAddress.String(),
-		SrcPlane: astromeshtypes.Plane_COSMOS,
-		DstPlane: astromeshtypes.Plane_SVM,
-		Coin: sdk.Coin{
-			Denom:  "usdt",
-			Amount: math.NewIntFromUint64(100000000000),
-		},
+	msgs := []sdk.Msg{}
+	for _, coin := range coins {
+		msgs = append(msgs, &astromeshtypes.MsgAstroTransfer{
+			Sender:   senderAddress.String(),
+			Receiver: senderAddress.String(),
+			SrcPlane: astromeshtypes.Plane_COSMOS,
+			DstPlane: astromeshtypes.Plane_SVM,
+			Coin:     coin,
+		})
 	}
 
-	txResp, err := chainClient.SyncBroadcastMsg(msg1, msg2)
+	txResp, err := chainClient.SyncBroadcastMsg(msgs...)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("=== astro transfer to prepare svm funds ===")
 	fmt.Println("resp:", txResp.TxResponse.TxHash)
 	fmt.Println("gas used/want:", txResp.TxResponse.GasUsed, "/", txResp.TxResponse.GasWanted)
 }
@@ -725,8 +703,14 @@ func main() {
 		fmt.Println("sender", marketMakerAddress.String(), "is already linked to svm address:", marketMakerSvmPubkey.String())
 	}
 
-	transferFunds(userClient)
-	transferFunds(marketMakerClient)
+	funds := sdk.NewCoins(
+		sdk.NewCoin("btc", math.NewIntFromUint64(10000000000)),
+		sdk.NewCoin("usdt", math.NewIntFromUint64(100000000000)),
+	)
+
+	fmt.Println("=== transfer funds from cosmos to svm ===")
+	nexusTransfer(userClient, funds)
+	nexusTransfer(marketMakerClient, funds)
 
 	denomHexMap := map[string]string{}
 	for _, denom := range []string{"btc", "usdt"} {
@@ -786,12 +770,12 @@ func main() {
 		drift.PositionDirectionLong,
 		200*time.Second,
 		btcMarketIndex,
-		Uint8Ptr(200),
+		svm.Uint8Ptr(200),
 	)
 	fmt.Println("user order_id:", orderId)
 
 	// partially fill the taker order at "orderId" at taker's best price
-	fmt.Printf("=== market maker fill orders %d ===\n", orderId)
+	fmt.Printf("=== market maker fills order %d (JIT) ===\n", orderId)
 	placeAndMakeOrder(
 		marketMakerClient,
 		marketMakerSvmPubkey,

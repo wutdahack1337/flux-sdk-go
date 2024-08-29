@@ -21,15 +21,11 @@ import (
 	"github.com/FluxNFTLabs/sdk-go/client/svm"
 	"github.com/FluxNFTLabs/sdk-go/client/svm/drift"
 	pyth "github.com/FluxNFTLabs/sdk-go/client/svm/drift_pyth"
-	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/ethsecp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ethcommon "github.com/ethereum/go-ethereum/common"
 	bin "github.com/gagliardetto/binary"
 	"github.com/gagliardetto/solana-go"
-	"github.com/gagliardetto/solana-go/programs/system"
 	"github.com/mr-tron/base58"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -38,13 +34,10 @@ import (
 var (
 	driftPrivKey []byte
 	pythPrivKey  []byte
-)
 
-func uint16ToLeBytes(x uint16) []byte {
-	b := make([]byte, 2)
-	binary.LittleEndian.PutUint16(b, x)
-	return b
-}
+	btcOraclePrivKey = ed25519.GenPrivKeyFromSecret([]byte("btc_oracle"))
+	btcOraclePubkey  = solana.PublicKeyFromBytes(btcOraclePrivKey.PubKey().Bytes())
+)
 
 func newName(s string) [32]uint8 {
 	name := [32]uint8{}
@@ -72,100 +65,6 @@ func newUint128(s string) bin.Uint128 {
 		Endianness: binary.BigEndian,
 	}
 
-}
-
-func initializeBtcOracle(
-	chainClient chainclient.ChainClient,
-	clientCtx client.Context,
-	feePayerCosmosPrivHex string,
-	oracleCosmosPrivHex string,
-	price int64, expo int32, conf uint64,
-) (oraclePubkey solana.PublicKey) {
-	/// initialize btc oracle
-	btcOraclePrivKey := ed25519.GenPrivKeyFromSecret([]byte("btc_oracle"))
-	btcOraclePubkey := solana.PublicKeyFromBytes(btcOraclePrivKey.PubKey().Bytes())
-	accountExist := true
-	_, err := chainClient.GetSvmAccount(context.Background(), btcOraclePubkey.String())
-	if err != nil && !strings.Contains(err.Error(), "not existed") {
-		panic(err)
-	}
-	if err != nil {
-		accountExist = false
-	}
-
-	if accountExist {
-		return btcOraclePubkey
-	}
-
-	feePayerCosmosPrivKey := &ethsecp256k1.PrivKey{Key: ethcommon.Hex2Bytes(feePayerCosmosPrivHex)}
-	feePayerCosmosAddr := sdk.AccAddress(feePayerCosmosPrivKey.PubKey().Address().Bytes())
-	oracleCosmosPrivKey := &ethsecp256k1.PrivKey{Key: ethcommon.Hex2Bytes(oracleCosmosPrivHex)}
-	oracleCosmosAddr := sdk.AccAddress(oracleCosmosPrivKey.PubKey().Address().Bytes())
-
-	isLinked, feePayerSvmPubkey, err := chainClient.GetSVMAccountLink(context.Background(), feePayerCosmosAddr)
-	if err != nil {
-		panic(err)
-	}
-
-	if !isLinked {
-		panic(fmt.Errorf("feePayer %s is not linked to any svm account", feePayerCosmosAddr.String()))
-	}
-
-	fmt.Println("initialzing pyth BTC oracle account:", btcOraclePubkey.String())
-	_, err = svm.LinkAccount(chainClient, clientCtx, oracleCosmosPrivKey, btcOraclePrivKey, 0)
-	if err != nil {
-		panic(err)
-	}
-
-	oracleSize := uint64(3312) // deduce from Price struct
-	createOracleAccountIx := system.NewCreateAccountInstruction(
-		svmtypes.GetRentExemptLamportAmount(oracleSize),
-		oracleSize,
-		pyth.ProgramID,
-		feePayerSvmPubkey,
-		btcOraclePubkey,
-	).Build()
-
-	initializeOracleIx := pyth.NewInitializeInstruction(
-		price, expo, conf, btcOraclePubkey,
-	).Build()
-
-	initOracleTx, err := solana.NewTransactionBuilder().
-		AddInstruction(createOracleAccountIx).
-		AddInstruction(initializeOracleIx).
-		Build()
-	if err != nil {
-		panic(err)
-	}
-
-	initOracleMsg := svm.ToCosmosMsg([]string{
-		chainClient.FromAddress().String(),
-		oracleCosmosAddr.String(),
-	}, 1000_000, initOracleTx)
-
-	oracleSignedTx, err := svm.BuildSignedTx(
-		chainClient, []sdk.Msg{initOracleMsg},
-		[]*ethsecp256k1.PrivKey{
-			feePayerCosmosPrivKey,
-			oracleCosmosPrivKey,
-		},
-	)
-	if err != nil {
-		panic(err)
-	}
-
-	oracleTxBytes, err := chainClient.ClientContext().TxConfig.TxEncoder()(oracleSignedTx)
-	if err != nil {
-		panic(err)
-	}
-
-	res, err := chainClient.SyncBroadcastSignedTx(oracleTxBytes)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("tx hash:", res.TxResponse.TxHash, "err:", res.TxResponse.RawLog)
-	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
-	return btcOraclePubkey
 }
 
 func main() {
@@ -213,6 +112,22 @@ func main() {
 		panic(err)
 	}
 
+	var pythPrivKeyBz []byte
+	if err := json.Unmarshal(pythPrivKey, &pythPrivKeyBz); err != nil {
+		panic(err)
+	}
+	pythPrivKey := &ed25519.PrivKey{Key: pythPrivKeyBz}
+	pythProgramId := solana.PublicKeyFromBytes(pythPrivKey.PubKey().Bytes())
+	pyth.SetProgramID(pythProgramId)
+
+	var driftPrivKeyBz []byte
+	if err := json.Unmarshal(driftPrivKey, &driftPrivKeyBz); err != nil {
+		panic(err)
+	}
+	driftPrivKey := &ed25519.PrivKey{Key: driftPrivKeyBz}
+	driftProgramId := solana.PublicKeyFromBytes(driftPrivKey.PubKey().Bytes())
+	drift.SetProgramID(driftProgramId)
+
 	// init chain client
 	chainClient, err := chainclient.NewChainClient(
 		clientCtx,
@@ -239,7 +154,7 @@ func main() {
 		fmt.Println("sender is already linked to svm address:", svmPubkey.String())
 	}
 
-	fmt.Println("transfer coins to create svm denom")
+	fmt.Println("=== transfer coins to svm ===")
 	coins := sdk.NewCoins(
 		sdk.NewInt64Coin("btc", 10000000000),
 		sdk.NewInt64Coin("usdt", 10000000000),
@@ -258,7 +173,6 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Printf("=== transfer %s %s to svm ===\n", c.Amount.String(), c.Denom)
 		fmt.Println("resp:", txResp.TxResponse.TxHash)
 		fmt.Println("gas used/want:", txResp.TxResponse.GasUsed, "/", txResp.TxResponse.GasWanted)
 	}
@@ -272,60 +186,134 @@ func main() {
 
 		denomHexMap[c.Denom] = denomLink.DstAddr
 	}
-
-	// load program, coins id
-	var pythPrivKeyBz []byte
-	if err := json.Unmarshal(pythPrivKey, &pythPrivKeyBz); err != nil {
-		panic(err)
-	}
-	pythPrivKey := &ed25519.PrivKey{Key: pythPrivKeyBz}
-	pythProgramId := solana.PublicKeyFromBytes(pythPrivKey.PubKey().Bytes())
-	pyth.SetProgramID(pythProgramId)
-
-	var driftPrivKeyBz []byte
-	if err := json.Unmarshal(driftPrivKey, &driftPrivKeyBz); err != nil {
-		panic(err)
-	}
-	driftPrivKey := &ed25519.PrivKey{Key: driftPrivKeyBz}
-	driftProgramId := solana.PublicKeyFromBytes(driftPrivKey.PubKey().Bytes())
-	drift.SetProgramID(driftProgramId)
-
 	usdtMintHex := denomHexMap["usdt"]
 	usdtMintBz, _ := hex.DecodeString(usdtMintHex)
 	usdtMint := solana.PublicKeyFromBytes(usdtMintBz)
 
-	// btcMintHex := denomHexMap["btc"]
-	// btcMintBz, _ := hex.DecodeString(btcMintHex)
-	// btcMint := solana.PublicKeyFromBytes(btcMintBz)
-
 	fmt.Println("=== initialize BTC oracle ===")
-	initializeBtcOracle(
+	svm.InitializePythOracle(
 		chainClient, clientCtx,
 		"88cbead91aee890d27bf06e003ade3d4e952427e88f88d31d61d3ef5e5d54305",
 		"6bf7877e9bf7590d94b57d409b0fcf4cc80f9cd427bc212b1a2dd7ff6b6802e1",
+		btcOraclePrivKey,
 		65_000_000_000, 6, 1,
 	)
 
-	fmt.Println("=== initialize btc, usdt market states ===")
+	fmt.Println("=== initialize btc perp market states ===")
+	initializeMarketTxBuilder := solana.NewTransactionBuilder()
+
 	state, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("drift_state"),
 	}, driftProgramId)
+
+	driftStateExist := true
+	_, err = chainClient.GetSvmAccount(context.Background(), state.String())
+	if err != nil && !strings.Contains(err.Error(), "not existed") {
+		panic(err)
+	}
+	if err != nil {
+		driftStateExist = false
+	}
+
+	if !driftStateExist {
+		driftSigner, _, err := solana.FindProgramAddress([][]byte{
+			[]byte("drift_signer"),
+		}, driftProgramId)
+		if err != nil {
+			panic(err)
+		}
+
+		initializeStateIx := drift.NewInitializeInstruction(
+			svmPubkey, state, usdtMint, driftSigner,
+			solana.PublicKey(svmtypes.SysVarRent),
+			svmtypes.SystemProgramId,
+			svmtypes.SplToken2022ProgramId,
+		).Build()
+
+		initializeMarketTxBuilder = initializeMarketTxBuilder.AddInstruction(initializeStateIx)
+	}
+
+	// initialize spot quote market
 	driftSigner, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("drift_signer"),
 	}, driftProgramId)
 
-	initializeIx := drift.NewInitializeInstruction(
-		svmPubkey, state, usdtMint, driftSigner,
-		solana.PublicKey(svmtypes.SysVarRent),
-		svmtypes.SystemProgramId,
-		svmtypes.SplToken2022ProgramId,
-	).Build()
-	_ = initializeIx
+	spotMarketUsdt, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("spot_market"),
+		svm.Uint16ToLeBytes(0),
+	}, driftProgramId)
+	if err != nil {
+		panic(err)
+	}
 
+	quoteMarketExists := true
+	_, err = chainClient.GetSvmAccount(context.Background(), spotMarketUsdt.String())
+	if err != nil && !strings.Contains(err.Error(), "not existed") {
+		panic(err)
+	}
+	if err != nil {
+		quoteMarketExists = false
+	}
+
+	if !quoteMarketExists {
+		spotMarketUsdtVault, _, err := solana.FindProgramAddress([][]byte{
+			[]byte("spot_market_vault"),
+			svm.Uint16ToLeBytes(0),
+		}, driftProgramId)
+		if err != nil {
+			panic(err)
+		}
+
+		insuranceFundUsdtVault, _, err := solana.FindProgramAddress([][]byte{
+			[]byte("insurance_fund_vault"),
+			svm.Uint16ToLeBytes(0),
+		}, driftProgramId)
+		if err != nil {
+			panic(err)
+		}
+
+		oracleUsdt := solana.PublicKey{} // empty for quote asset
+		admin := svmPubkey
+		rent := solana.SysVarRentPubkey
+		systemProgram := solana.SystemProgramID
+		tokenProgram := svmtypes.SplToken2022ProgramId
+		optimalUtilization := uint32(8000)
+		optimalBorrowRate := uint32(500)
+		maxBorrowRate := uint32(1000)
+		liquidatorFee := uint32(50)
+		ifLiquidationFee := uint32(25)
+		activeStatus := true
+		assetTier := drift.AssetTierIsolated
+		scaleInitialAssetWeightStart := uint64(1000000000)
+		withdrawGuardThreshold := uint64(500000000)
+		orderTickSize := uint64(1000)
+		orderStepSize := uint64(100)
+		ifTotalFactor := uint32(10)
+
+		initializeQuoteSpotMarketIx := drift.NewInitializeSpotMarketInstruction(
+			optimalUtilization, optimalBorrowRate, maxBorrowRate,
+			drift.OracleSourceQuoteAsset,
+			10000, 10000,
+			10000, 10000, 0,
+			liquidatorFee,
+			ifLiquidationFee, activeStatus,
+			assetTier, scaleInitialAssetWeightStart,
+			withdrawGuardThreshold,
+			orderTickSize, orderStepSize,
+			ifTotalFactor,
+			newName("usdt"),
+			spotMarketUsdt, usdtMint, spotMarketUsdtVault,
+			insuranceFundUsdtVault, driftSigner, state,
+			oracleUsdt, admin, rent, systemProgram, tokenProgram,
+		).Build()
+		initializeMarketTxBuilder = initializeMarketTxBuilder.AddInstruction(initializeQuoteSpotMarketIx)
+	}
+
+	// initialize btc perp market
 	marketIndex := uint16(0)
 	perpMarketBtc, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("perp_market"),
-		uint16ToLeBytes(marketIndex),
+		svm.Uint16ToLeBytes(marketIndex),
 	}, driftProgramId)
 	if err != nil {
 		panic(err)
@@ -377,9 +365,7 @@ func main() {
 		admin, state, perpMarketBtc, oracleBtc, rent, systemProgram,
 	).Build()
 
-	initializeTx, err := solana.NewTransactionBuilder().
-		// AddInstruction(initializeIx).
-		AddInstruction(initializePerpMarketIx).Build()
+	initializeMarketTx, err := initializeMarketTxBuilder.AddInstruction(initializePerpMarketIx).Build()
 	if err != nil {
 		panic(err)
 	}
@@ -395,7 +381,7 @@ func main() {
 	}
 
 	if !marketExist {
-		svmMsg := svm.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, initializeTx)
+		svmMsg := svm.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, initializeMarketTx)
 		res, err := chainClient.SyncBroadcastMsg(svmMsg)
 		if err != nil {
 			panic(err)

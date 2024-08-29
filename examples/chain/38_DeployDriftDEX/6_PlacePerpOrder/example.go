@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/binary"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -39,16 +38,6 @@ var (
 	btcMarketIndex      = uint16(0)
 )
 
-func uint16ToLeBytes(x uint16) []byte {
-	b := make([]byte, 2)
-	binary.LittleEndian.PutUint16(b, x)
-	return b
-}
-
-func Uint8Ptr(b uint8) *uint8 {
-	return &b
-}
-
 func deposit(
 	userClient chainclient.ChainClient,
 	svmPubkey solana.PublicKey,
@@ -65,7 +54,7 @@ func deposit(
 
 	spotMarketVault, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market_vault"),
-		uint16ToLeBytes(marketIndex),
+		svm.Uint16ToLeBytes(marketIndex),
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -88,7 +77,7 @@ func deposit(
 
 	spotMarket, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market"),
-		uint16ToLeBytes(marketIndex),
+		svm.Uint16ToLeBytes(marketIndex),
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -127,7 +116,6 @@ func deposit(
 		IsSigner:   false,
 	})
 	depositIx := depositIxBuilder.Build()
-	_ = depositIx
 
 	accountExist := true
 	_, err = userClient.GetSvmAccount(context.Background(), userStats.String())
@@ -183,7 +171,7 @@ func placeOrder(
 
 	spotMarketUsdt, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market"),
-		uint16ToLeBytes(0),
+		svm.Uint16ToLeBytes(0),
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -191,7 +179,7 @@ func placeOrder(
 
 	perpMarket, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("perp_market"),
-		uint16ToLeBytes(marketIndex),
+		svm.Uint16ToLeBytes(marketIndex),
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -234,7 +222,7 @@ func placeOrder(
 		IsSigner:   false,
 	})
 
-	// append all spot markets
+	// append all  markets
 	placeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
 		PublicKey:  spotMarketUsdt,
 		IsWritable: true,
@@ -252,7 +240,6 @@ func placeOrder(
 		panic(err)
 	}
 
-	fmt.Println("== place order ==")
 	svmMsg := svm.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, placeOrderTx)
 	res, err := userClient.SyncBroadcastMsg(svmMsg)
 	if err != nil {
@@ -301,7 +288,7 @@ func fillPerpOrder(
 
 	spotMarketUsdt, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market"),
-		uint16ToLeBytes(0),
+		svm.Uint16ToLeBytes(0),
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -309,7 +296,7 @@ func fillPerpOrder(
 
 	perpMarketBtc, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("perp_market"),
-		uint16ToLeBytes(marketIndex),
+		svm.Uint16ToLeBytes(marketIndex),
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -446,16 +433,6 @@ func main() {
 	}
 	clientCtx = clientCtx.WithGRPCClient(cc)
 
-	marketMakerCtx, marketMakerAddress, err := chaintypes.NewClientContext(
-		network.ChainId,
-		"signer4",
-		kr,
-	)
-	if err != nil {
-		panic(err)
-	}
-	marketMakerCtx = marketMakerCtx.WithGRPCClient(cc)
-
 	// load artifacts
 	dir, err := os.Getwd()
 	if err != nil {
@@ -470,14 +447,6 @@ func main() {
 	// init chain client
 	userClient, err := chainclient.NewChainClient(
 		clientCtx,
-		common.OptionGasPrices("500000000lux"),
-	)
-	if err != nil {
-		panic(err)
-	}
-
-	marketMakerClient, err := chainclient.NewChainClient(
-		marketMakerCtx,
 		common.OptionGasPrices("500000000lux"),
 	)
 	if err != nil {
@@ -501,25 +470,7 @@ func main() {
 		fmt.Println("sender", senderAddress.String(), "is already linked to svm address:", userSvmPubkey.String())
 	}
 
-	isSvmLinked, marketMakerSvmPubkey, err := userClient.GetSVMAccountLink(context.Background(), marketMakerAddress)
-	if err != nil {
-		panic(err)
-	}
-
-	if !isSvmLinked {
-		svmKey := ed25519.GenPrivKey()
-		res, err := marketMakerClient.LinkSVMAccount(svmKey, math.NewIntFromUint64(1000_000_000_000))
-		if err != nil {
-			panic(err)
-		}
-		fmt.Println("linked", marketMakerAddress, "to svm address:", base58.Encode(svmKey.PubKey().Bytes()), "txHash:", res.TxResponse.TxHash)
-		marketMakerSvmPubkey = solana.PublicKey(svmKey.PubKey().Bytes())
-	} else {
-		fmt.Println("sender", marketMakerAddress.String(), "is already linked to svm address:", marketMakerSvmPubkey.String())
-	}
-
 	transferFunds(userClient)
-	transferFunds(marketMakerClient)
 
 	denomHexMap := map[string]string{}
 	for _, denom := range []string{"btc", "usdt"} {
@@ -554,15 +505,6 @@ func main() {
 		usdtSpotMarketIndex,
 	)
 
-	fmt.Println("=== market maker deposits ===")
-	deposit(
-		marketMakerClient,
-		marketMakerSvmPubkey,
-		1000_000_000,
-		usdtMint,
-		usdtSpotMarketIndex,
-	)
-
 	driftUser := getDriftUserInfo(userClient, userSvmPubkey)
 	orderId := driftUser.NextOrderId
 	fmt.Println("=== user places order ===")
@@ -570,23 +512,25 @@ func main() {
 		userClient,
 		userSvmPubkey,
 		uint8(orderId),
-		65500_000_000, nil, nil, // proto.Int64(64000_000_000), proto.Int64(65000_000_000),
-		1_000_000,
+		65500_000_000, proto.Int64(65000_000_000), proto.Int64(65300_000_000),
+		500_000,
 		drift.OrderTypeMarket,
 		false,
 		drift.PositionDirectionLong,
-		200*time.Second,
+		30*time.Second,
 		btcMarketIndex,
-		Uint8Ptr(5),
+		svm.Uint8Ptr(0),
 	)
 	fmt.Println("user order_id:", orderId)
 	fmt.Println("waiting for some seconds for auction to complete...")
-	time.Sleep(20 * time.Second)
+	time.Sleep(11 * time.Second)
 
-	fmt.Printf("=== fill orders %d against AMM ===\n", orderId)
+	fmt.Printf("=== fill orders %d against vAMM ===\n", orderId)
+	// actually anyone can call this fill_perp_order instruction to fill the order
+	// to make the code simpler, it uses userClient
 	fillPerpOrder(
-		marketMakerClient,
-		marketMakerSvmPubkey,
+		userClient,
+		userSvmPubkey,
 		userSvmPubkey,
 		orderId,
 		btcMarketIndex,
@@ -594,15 +538,17 @@ func main() {
 
 	driftUser = getDriftUserInfo(userClient, userSvmPubkey)
 	fmt.Println("user open orders count:", driftUser.OpenOrders)
-	fmt.Println("user open orders:")
-	for _, o := range driftUser.Orders {
-		if o.OrderId > 0 {
-			bz, _ := json.MarshalIndent(o, "", "  ")
-			fmt.Println(string(bz))
+	if driftUser.OpenOrders > 0 {
+		fmt.Println("user open orders:")
+		for _, o := range driftUser.Orders {
+			if o.OrderId > 0 {
+				bz, _ := json.MarshalIndent(o, "", "  ")
+				fmt.Println(string(bz))
+			}
 		}
 	}
 
-	fmt.Println("user POSITIONs:")
+	fmt.Println("user positions:")
 	for _, o := range driftUser.PerpPositions {
 		if o.BaseAssetAmount > 0 {
 			bz, _ := json.MarshalIndent(o, "", "  ")
