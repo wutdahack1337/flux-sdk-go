@@ -23,8 +23,18 @@ git clone https://github.com/drift-labs/protocol-v2
 
 3. Build locally
 
+Source files need correct program ID to be functional. Steps to build and align program IDs:
+
+Generate and sync keys to source files:
+
 ```
-cd path/to/protocol-v2 && anchor build
+cd path/to/protocol-v2 && anchor keys sync 
+```
+
+Use `anchor keys list` to get `pyth" programID, and copy the ID to pyth_program `declare_id!()` in `programs/drift/src/ids.rs`. Then build the whole repo:
+
+```
+anchor build
 ```
 
 4. Copy artifacts
