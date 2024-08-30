@@ -21,7 +21,7 @@ To install anchor CLI, see https://www.anchor-lang.com/docs/installation
 git clone https://github.com/drift-labs/protocol-v2
 ```
 
-3. Compile
+3. Build locally
 
 ```
 cd path/to/protocol-v2 && anchor build
