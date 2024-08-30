@@ -29,10 +29,9 @@ cd path/to/protocol-v2 && anchor build
 
 4. Copy artifacts
 
-Copy files in `protocol-v2/target/deploy` to `artifacts/`
-Copy files in `protocol-v2/target/idl` to `idl/`
+Copy files in `protocol-v2/target/deploy` to `artifacts/` and `protocol-v2/target/idl` to `idl/`
 
-5. Generate go client (optional)
+5. Generate go instructions (optional)
 
 Install anchor-go
 
@@ -43,6 +42,7 @@ go install https://github.com/gagliardetto/anchor-go
 Generate
 ```
 anchor-go -src=./idl/drift.json -dst=<destination_folder>
+anchor-go -src=./idl/drift_pyth.json -dst=<destination_folder>
 ```
 
-There is pre-generated drift client at `sdk-go/client/svm/drift`, which contains some necessary instructions being used in examples
+There is pre-generated drift instruction implementation at `sdk-go/client/svm/drift` and `sdk-go/client/svm/drift_pyth`, which contains some necessary instructions being used in examples
