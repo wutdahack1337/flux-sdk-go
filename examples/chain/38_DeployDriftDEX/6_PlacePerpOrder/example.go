@@ -540,34 +540,22 @@ func main() {
 		userClient,
 		userSvmPubkey,
 		uint8(orderId),
-		64880_000_000, proto.Int64(64990_000_000), proto.Int64(64980_000_000),
+		65050_000_000, proto.Int64(65020_000_000), proto.Int64(65035_000_000),
 		500_000,
 		drift.OrderTypeMarket,
 		false,
-		drift.PositionDirectionShort,
+		drift.PositionDirectionLong,
 		30*time.Second,
 		btcMarketIndex,
 		svm.Uint8Ptr(0),
 	)
 	fmt.Println("user order_id:", orderId)
 	fmt.Println("waiting for some seconds for auction to complete...")
+	time.Sleep(11 * time.Second)
 
 	fmt.Printf("=== fill orders %d against vAMM ===\n", orderId)
 	// actually anyone can call this fill_perp_order instruction to fill the order
 	// to make the code simpler, it uses userClient
-	driftUser = getDriftUserInfo(userClient, userSvmPubkey)
-	fmt.Println("user open orders count:", driftUser.OpenOrders)
-	if driftUser.OpenOrders > 0 {
-		fmt.Println("user open orders:")
-		for _, o := range driftUser.Orders {
-			if o.OrderId > 0 {
-				bz, _ := json.MarshalIndent(o, "", "  ")
-				fmt.Println(string(bz))
-			}
-		}
-	}
-	time.Sleep(11 * time.Second)
-
 	fillPerpOrder(
 		userClient,
 		userSvmPubkey,
