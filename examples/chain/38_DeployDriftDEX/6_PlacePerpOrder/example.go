@@ -528,14 +528,9 @@ func main() {
 		usdtSpotMarketIndex,
 	)
 
+	fmt.Println("=== user places order ===")
 	driftUser := getDriftUserInfo(userClient, userSvmPubkey)
 	orderId := driftUser.NextOrderId
-
-	perp := getDriftPerpMarket(userClient, 0)
-	bz, _ := json.Marshal(perp)
-	fmt.Println("perp:", string(bz))
-
-	fmt.Println("=== user places order ===")
 	placeOrder(
 		userClient,
 		userSvmPubkey,
