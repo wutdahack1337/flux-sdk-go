@@ -403,6 +403,29 @@ func getDriftUserInfo(chainClient chainclient.ChainClient, accPubkey solana.Publ
 	return user
 }
 
+func getDriftPerpMarket(chainClient chainclient.ChainClient, idx uint16) drift.PerpMarket {
+	perpMarket, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("perp_market"),
+		svm.Uint16ToLeBytes(idx),
+	}, drift.ProgramID)
+	if err != nil {
+		panic(err)
+	}
+
+	acc, err := chainClient.GetSvmAccount(context.Background(), perpMarket.String())
+	if err != nil {
+		panic(err)
+	}
+
+	var pm drift.PerpMarket
+	err = pm.UnmarshalWithDecoder(bin.NewBinDecoder(acc.Account.Data))
+	if err != nil {
+		panic(err)
+	}
+
+	return pm
+}
+
 func main() {
 	network := common.LoadNetwork("local", "")
 	kr, err := keyring.New(
@@ -507,35 +530,31 @@ func main() {
 
 	driftUser := getDriftUserInfo(userClient, userSvmPubkey)
 	orderId := driftUser.NextOrderId
+
+	perp := getDriftPerpMarket(userClient, 0)
+	bz, _ := json.Marshal(perp)
+	fmt.Println("perp:", string(bz))
+
 	fmt.Println("=== user places order ===")
 	placeOrder(
 		userClient,
 		userSvmPubkey,
 		uint8(orderId),
-		65500_000_000, proto.Int64(65000_000_000), proto.Int64(65300_000_000),
+		64880_000_000, proto.Int64(64990_000_000), proto.Int64(64980_000_000),
 		500_000,
 		drift.OrderTypeMarket,
 		false,
-		drift.PositionDirectionLong,
+		drift.PositionDirectionShort,
 		30*time.Second,
 		btcMarketIndex,
 		svm.Uint8Ptr(0),
 	)
 	fmt.Println("user order_id:", orderId)
 	fmt.Println("waiting for some seconds for auction to complete...")
-	time.Sleep(11 * time.Second)
 
 	fmt.Printf("=== fill orders %d against vAMM ===\n", orderId)
 	// actually anyone can call this fill_perp_order instruction to fill the order
 	// to make the code simpler, it uses userClient
-	fillPerpOrder(
-		userClient,
-		userSvmPubkey,
-		userSvmPubkey,
-		orderId,
-		btcMarketIndex,
-	)
-
 	driftUser = getDriftUserInfo(userClient, userSvmPubkey)
 	fmt.Println("user open orders count:", driftUser.OpenOrders)
 	if driftUser.OpenOrders > 0 {
@@ -547,10 +566,19 @@ func main() {
 			}
 		}
 	}
+	time.Sleep(11 * time.Second)
+
+	fillPerpOrder(
+		userClient,
+		userSvmPubkey,
+		userSvmPubkey,
+		orderId,
+		btcMarketIndex,
+	)
 
 	fmt.Println("user positions:")
 	for _, o := range driftUser.PerpPositions {
-		if o.BaseAssetAmount > 0 {
+		if o.BaseAssetAmount != 0 {
 			bz, _ := json.MarshalIndent(o, "", "  ")
 			fmt.Println(string(bz))
 		}

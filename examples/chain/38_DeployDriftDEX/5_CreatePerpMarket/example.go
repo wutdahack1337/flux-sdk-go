@@ -328,9 +328,9 @@ func main() {
 	ammBaseAssetReserve := newUint128("1000000000")
 	ammQuoteAssetReserve := newUint128("1000000000")
 	ammPeriodicity := int64(3600)
-	ammPegMultiplier := newUint128("1000000")
+	ammPegMultiplier := newUint128("65000000000")
 	oracleSource := drift.OracleSourcePyth
-	contractTier := drift.ContractTierIsolated
+	contractTier := drift.ContractTierA
 	marginRatioInitial := uint32(10000)
 	marginRatioMaintenance := uint32(5000)
 	liquidatorFee := uint32(50)
@@ -387,7 +387,6 @@ func main() {
 			panic(err)
 		}
 
-		fmt.Println("== init account and create market ==")
 		fmt.Println("tx hash:", res.TxResponse.TxHash)
 		fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 	} else {
