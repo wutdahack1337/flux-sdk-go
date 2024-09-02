@@ -227,7 +227,7 @@ func main() {
 			OracleCosmosPrivKey: mustGenerateCosmosKey(),
 		},
 		{
-			Name:                "btc",
+			Name:                "sol",
 			InitialOraclePrice:  150_000_000,
 			OracleSvmPrivKey:    solOraclePrivKey,
 			OracleCosmosPrivKey: mustGenerateCosmosKey(),
