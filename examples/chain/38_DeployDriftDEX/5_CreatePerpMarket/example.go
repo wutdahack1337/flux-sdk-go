@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math/big"
 	"os"
+	"strconv"
 	"strings"
 
 	_ "embed"
@@ -23,7 +24,9 @@ import (
 	pyth "github.com/FluxNFTLabs/sdk-go/client/svm/drift_pyth"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/ethsecp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	bin "github.com/gagliardetto/binary"
 	"github.com/gagliardetto/solana-go"
 	"github.com/mr-tron/base58"
@@ -37,13 +40,33 @@ var (
 
 	btcOraclePrivKey = ed25519.GenPrivKeyFromSecret([]byte("btc_oracle"))
 	btcOraclePubkey  = solana.PublicKeyFromBytes(btcOraclePrivKey.PubKey().Bytes())
+	ethOraclePrivKey = ed25519.GenPrivKeyFromSecret([]byte("eth_oracle"))
+	ethOraclePubkey  = solana.PublicKeyFromBytes(btcOraclePrivKey.PubKey().Bytes())
+	solOraclePrivKey = ed25519.GenPrivKeyFromSecret([]byte("sol_oracle"))
+	solOraclePubkey  = solana.PublicKeyFromBytes(btcOraclePrivKey.PubKey().Bytes())
 )
+
+type Market struct {
+	Name                string
+	InitialOraclePrice  uint64
+	OracleSvmPrivKey    *ed25519.PrivKey
+	OracleCosmosPrivKey *ethsecp256k1.PrivKey
+}
 
 func newName(s string) [32]uint8 {
 	name := [32]uint8{}
 	bz := []byte(s)
 	copy(name[:], bz)
 	return name
+}
+
+func mustGenerateCosmosKey() *ethsecp256k1.PrivKey {
+	key, err := ethsecp256k1.GenerateKey()
+	if err != nil {
+		panic(err)
+	}
+
+	return key
 }
 
 func newUint128(s string) bin.Uint128 {
@@ -156,7 +179,6 @@ func main() {
 
 	fmt.Println("=== transfer coins to svm ===")
 	coins := sdk.NewCoins(
-		sdk.NewInt64Coin("btc", 10000000000),
 		sdk.NewInt64Coin("usdt", 10000000000),
 	)
 	for _, c := range coins {
@@ -186,21 +208,76 @@ func main() {
 
 		denomHexMap[c.Denom] = denomLink.DstAddr
 	}
+
 	usdtMintHex := denomHexMap["usdt"]
 	usdtMintBz, _ := hex.DecodeString(usdtMintHex)
 	usdtMint := solana.PublicKeyFromBytes(usdtMintBz)
 
-	fmt.Println("=== initialize BTC oracle ===")
-	svm.InitializePythOracle(
-		chainClient, clientCtx,
-		"88cbead91aee890d27bf06e003ade3d4e952427e88f88d31d61d3ef5e5d54305",
-		"6bf7877e9bf7590d94b57d409b0fcf4cc80f9cd427bc212b1a2dd7ff6b6802e1",
-		btcOraclePrivKey,
-		65_000_000_000, 6, 1,
-	)
+	markets := []Market{
+		{
+			Name:                "btc",
+			InitialOraclePrice:  65000_000_000,
+			OracleSvmPrivKey:    btcOraclePrivKey,
+			OracleCosmosPrivKey: mustGenerateCosmosKey(),
+		},
+		{
+			Name:                "eth",
+			InitialOraclePrice:  3000_000_000,
+			OracleSvmPrivKey:    ethOraclePrivKey,
+			OracleCosmosPrivKey: mustGenerateCosmosKey(),
+		},
+		{
+			Name:                "btc",
+			InitialOraclePrice:  150_000_000,
+			OracleSvmPrivKey:    solOraclePrivKey,
+			OracleCosmosPrivKey: mustGenerateCosmosKey(),
+		},
+	}
 
-	fmt.Println("=== initialize btc perp market states ===")
+	fmt.Println("=== initialize oracles ===")
+	msgSends := []sdk.Msg{}
+	for _, m := range markets {
+		oracleCosmosAddr := sdk.AccAddress(m.OracleCosmosPrivKey.PubKey().Address().Bytes())
+		msgSends = append(msgSends, &banktypes.MsgSend{
+			FromAddress: senderAddress.String(),
+			ToAddress:   oracleCosmosAddr.String(),
+			Amount:      sdk.NewCoins(sdk.NewInt64Coin("lux", 1_000_000_000_000_000_000)),
+		})
+	}
+	res, err := chainClient.SyncBroadcastMsg(msgSends...)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("create oracle cosmos accounts")
+	fmt.Println("tx hash:", res.TxResponse.TxHash)
+	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
+
+	for _, m := range markets {
+		fmt.Println("init oracle of perp market", m.Name)
+		svm.InitializePythOracle(
+			chainClient, clientCtx,
+			"88cbead91aee890d27bf06e003ade3d4e952427e88f88d31d61d3ef5e5d54305",
+			hex.EncodeToString(m.OracleCosmosPrivKey.Key),
+			m.OracleSvmPrivKey,
+			int64(m.InitialOraclePrice), 6, 1,
+		)
+	}
+
+	fmt.Println("=== initialize perp market states ===")
 	initializeMarketTxBuilder := solana.NewTransactionBuilder()
+
+	// initialize spot quote market
+	driftSigner, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("drift_signer"),
+	}, driftProgramId)
+
+	spotMarketUsdt, _, err := solana.FindProgramAddress([][]byte{
+		[]byte("spot_market"),
+		svm.Uint16ToLeBytes(0),
+	}, driftProgramId)
+	if err != nil {
+		panic(err)
+	}
 
 	state, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("drift_state"),
@@ -231,19 +308,6 @@ func main() {
 		).Build()
 
 		initializeMarketTxBuilder = initializeMarketTxBuilder.AddInstruction(initializeStateIx)
-	}
-
-	// initialize spot quote market
-	driftSigner, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("drift_signer"),
-	}, driftProgramId)
-
-	spotMarketUsdt, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("spot_market"),
-		svm.Uint16ToLeBytes(0),
-	}, driftProgramId)
-	if err != nil {
-		panic(err)
 	}
 
 	quoteMarketExists := true
@@ -309,87 +373,76 @@ func main() {
 		initializeMarketTxBuilder = initializeMarketTxBuilder.AddInstruction(initializeQuoteSpotMarketIx)
 	}
 
-	// initialize btc perp market
-	marketIndex := uint16(0)
-	perpMarketBtc, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("perp_market"),
-		svm.Uint16ToLeBytes(marketIndex),
-	}, driftProgramId)
-	if err != nil {
-		panic(err)
-	}
-
-	oracleBtc := solana.MustPublicKeyFromBase58("3HRnxmtHQrHkooPdFZn5ZQbPTKGvBSyoTi4VVkkoT6u6")
-
-	// Define other necessary public keys
-	admin := svmPubkey
-	rent := solana.SysVarRentPubkey
-	systemProgram := solana.SystemProgramID
-	ammBaseAssetReserve := newUint128("1000000000")
-	ammQuoteAssetReserve := newUint128("1000000000")
-	ammPeriodicity := int64(3600)
-	ammPegMultiplier := newUint128("65000000000")
-	oracleSource := drift.OracleSourcePyth
-	contractTier := drift.ContractTierA
-	marginRatioInitial := uint32(10000)
-	marginRatioMaintenance := uint32(5000)
-	liquidatorFee := uint32(50)
-	ifLiquidationFee := uint32(25)
-	imfFactor := uint32(100)
-	activeStatus := true
-	baseSpread := uint32(10)
-	maxSpread := uint32(100)
-	maxOpenInterest := newUint128("1000000000")
-	maxRevenueWithdrawPerPeriod := uint64(500000000)
-	quoteMaxInsurance := uint64(100000000)
-	orderStepSize := uint64(100)
-	orderTickSize := uint64(10)
-	minOrderSize := uint64(1)
-	concentrationCoefScale := newUint128("10")
-	curveUpdateIntensity := uint8(1)
-	ammJitIntensity := uint8(1)
-	name := [32]byte{}
-	copy(name[:], []byte("btc_perp"))
-
-	// Build the instruction
-	initializePerpMarketIx := drift.NewInitializePerpMarketInstruction(
-		// Parameters
-		marketIndex, ammBaseAssetReserve, ammQuoteAssetReserve,
-		ammPeriodicity, ammPegMultiplier, oracleSource, contractTier,
-		marginRatioInitial, marginRatioMaintenance, liquidatorFee,
-		ifLiquidationFee, imfFactor, activeStatus, baseSpread, maxSpread,
-		maxOpenInterest, maxRevenueWithdrawPerPeriod, quoteMaxInsurance,
-		orderStepSize, orderTickSize, minOrderSize, concentrationCoefScale,
-		curveUpdateIntensity, ammJitIntensity, name,
-		// Accounts
-		admin, state, perpMarketBtc, oracleBtc, rent, systemProgram,
-	).Build()
-
-	initializeMarketTx, err := initializeMarketTxBuilder.AddInstruction(initializePerpMarketIx).Build()
-	if err != nil {
-		panic(err)
-	}
-
-	marketExist := true
-	_, err = chainClient.GetSvmAccount(context.Background(), perpMarketBtc.String())
-	if err != nil && !strings.Contains(err.Error(), "not existed") {
-		panic(err)
-	}
-
-	if err != nil {
-		marketExist = false
-	}
-
-	if !marketExist {
-		svmMsg := svm.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, initializeMarketTx)
-		res, err := chainClient.SyncBroadcastMsg(svmMsg)
+	for idx, m := range markets {
+		marketIndex := uint16(idx)
+		perpMarket, _, err := solana.FindProgramAddress([][]byte{
+			[]byte("perp_market"),
+			svm.Uint16ToLeBytes(marketIndex),
+		}, driftProgramId)
 		if err != nil {
 			panic(err)
 		}
 
-		fmt.Println("tx hash:", res.TxResponse.TxHash)
-		fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
-	} else {
-		fmt.Println("account and market already initialized")
+		oracle := solana.PublicKeyFromBytes(m.OracleSvmPrivKey.PubKey().Bytes())
+
+		// Define other necessary public keys
+		admin := svmPubkey
+		rent := solana.SysVarRentPubkey
+		systemProgram := solana.SystemProgramID
+		ammBaseAssetReserve := newUint128("1000000000")
+		ammQuoteAssetReserve := newUint128("1000000000")
+		ammPeriodicity := int64(3600)
+		ammPegMultiplier := newUint128(strconv.FormatUint(m.InitialOraclePrice, 10))
+		oracleSource := drift.OracleSourcePyth
+		contractTier := drift.ContractTierA
+		marginRatioInitial := uint32(10000)
+		marginRatioMaintenance := uint32(5000)
+		liquidatorFee := uint32(50)
+		ifLiquidationFee := uint32(25)
+		imfFactor := uint32(100)
+		activeStatus := true
+		baseSpread := uint32(10)
+		maxSpread := uint32(100)
+		maxOpenInterest := newUint128("1000000000")
+		maxRevenueWithdrawPerPeriod := uint64(500000000)
+		quoteMaxInsurance := uint64(100000000)
+		orderStepSize := uint64(100)
+		orderTickSize := uint64(10)
+		minOrderSize := uint64(1)
+		concentrationCoefScale := newUint128("10")
+		curveUpdateIntensity := uint8(1)
+		ammJitIntensity := uint8(1)
+		name := newName(m.Name)
+
+		// Build the instruction
+		initializePerpMarketIx := drift.NewInitializePerpMarketInstruction(
+			// Parameters
+			marketIndex, ammBaseAssetReserve, ammQuoteAssetReserve,
+			ammPeriodicity, ammPegMultiplier, oracleSource, contractTier,
+			marginRatioInitial, marginRatioMaintenance, liquidatorFee,
+			ifLiquidationFee, imfFactor, activeStatus, baseSpread, maxSpread,
+			maxOpenInterest, maxRevenueWithdrawPerPeriod, quoteMaxInsurance,
+			orderStepSize, orderTickSize, minOrderSize, concentrationCoefScale,
+			curveUpdateIntensity, ammJitIntensity, name,
+			// Accounts
+			admin, state, perpMarket, oracle, rent, systemProgram,
+		).Build()
+
+		initializeMarketTxBuilder = initializeMarketTxBuilder.AddInstruction(initializePerpMarketIx)
+		fmt.Printf("perp market %s account: %s\n", m.Name, perpMarket.String())
 	}
+
+	initializeMarketTx, err := initializeMarketTxBuilder.Build()
+	if err != nil {
+		panic(err)
+	}
+
+	svmMsg := svm.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, initializeMarketTx)
+	res, err = chainClient.SyncBroadcastMsg(svmMsg)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("tx hash:", res.TxResponse.TxHash)
+	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 }
