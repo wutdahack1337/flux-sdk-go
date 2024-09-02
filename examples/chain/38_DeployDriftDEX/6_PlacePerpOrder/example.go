@@ -32,18 +32,23 @@ import (
 
 var (
 	driftPrivKey        []byte
-	oracleBtc           = solana.MustPublicKeyFromBase58("3HRnxmtHQrHkooPdFZn5ZQbPTKGvBSyoTi4VVkkoT6u6")
-	usdtMint, btcMint   solana.PublicKey
+	usdtMint            solana.PublicKey
 	usdtSpotMarketIndex = uint16(0)
-	btcMarketIndex      = uint16(0)
 )
+
+type Order struct {
+	MarketIndex                        uint16
+	AuctionStartPrice, AuctionEndPrice int64
+	Quantity                           uint64
+	Direction                          drift.PositionDirection
+	Oracle                             solana.PublicKey
+}
 
 func deposit(
 	userClient chainclient.ChainClient,
 	svmPubkey solana.PublicKey,
 	depositAmount uint64,
 	mint solana.PublicKey,
-	marketIndex uint16,
 ) {
 	state, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("drift_state"),
@@ -54,7 +59,7 @@ func deposit(
 
 	spotMarketVault, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market_vault"),
-		svm.Uint16ToLeBytes(marketIndex),
+		svm.Uint16ToLeBytes(0),
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -75,6 +80,7 @@ func deposit(
 		[]byte("user_stats"), svmPubkey[:],
 	}, drift.ProgramID)
 
+	marketIndex := uint16(0)
 	spotMarket, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market"),
 		svm.Uint16ToLeBytes(marketIndex),
@@ -101,14 +107,6 @@ func deposit(
 	depositIxBuilder := drift.NewDepositInstruction(
 		marketIndex, uint64(depositAmount), false, state, user, userStats, svmPubkey, spotMarketVault, userTokenAccount, svmtypes.SplToken2022ProgramId,
 	)
-
-	if marketIndex > 0 {
-		depositIxBuilder.Append(&solana.AccountMeta{
-			PublicKey:  oracleBtc,
-			IsWritable: true,
-			IsSigner:   false,
-		})
-	}
 
 	depositIxBuilder.Append(&solana.AccountMeta{
 		PublicKey:  spotMarket,
@@ -159,6 +157,8 @@ func placeOrder(
 	expireDuration time.Duration,
 	marketIndex uint16,
 	auctionDur *uint8,
+	markets []solana.PublicKey,
+	oracles []solana.PublicKey,
 ) {
 	senderAddress := userClient.FromAddress()
 	state, _, err := solana.FindProgramAddress([][]byte{
@@ -172,14 +172,6 @@ func placeOrder(
 	spotMarketUsdt, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market"),
 		svm.Uint16ToLeBytes(0),
-	}, drift.ProgramID)
-	if err != nil {
-		panic(err)
-	}
-
-	perpMarket, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("perp_market"),
-		svm.Uint16ToLeBytes(marketIndex),
 	}, drift.ProgramID)
 	if err != nil {
 		panic(err)
@@ -216,24 +208,28 @@ func placeOrder(
 	)
 
 	// append all oracles
-	placeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
-		PublicKey:  oracleBtc,
-		IsWritable: false,
-		IsSigner:   false,
-	})
+	for _, o := range oracles {
+		placeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
+			PublicKey:  o,
+			IsWritable: false,
+			IsSigner:   false,
+		})
+	}
 
-	// append all  markets
+	// append all markets
 	placeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
 		PublicKey:  spotMarketUsdt,
 		IsWritable: true,
 		IsSigner:   false,
 	})
 
-	placeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
-		PublicKey:  perpMarket,
-		IsWritable: true,
-		IsSigner:   false,
-	})
+	for _, m := range markets {
+		placeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
+			PublicKey:  m,
+			IsWritable: true,
+			IsSigner:   false,
+		})
+	}
 
 	placeOrderTx, err := solana.NewTransactionBuilder().AddInstruction(placeOrderIx.Build()).Build()
 	if err != nil {
@@ -255,6 +251,8 @@ func fillPerpOrder(
 	takerPubkey solana.PublicKey,
 	takerOrderId uint32,
 	marketIndex uint16,
+	markets []solana.PublicKey,
+	oracles []solana.PublicKey,
 ) {
 	senderAddress := userClient.FromAddress()
 	state, _, err := solana.FindProgramAddress([][]byte{
@@ -294,14 +292,6 @@ func fillPerpOrder(
 		panic(err)
 	}
 
-	perpMarketBtc, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("perp_market"),
-		svm.Uint16ToLeBytes(marketIndex),
-	}, drift.ProgramID)
-	if err != nil {
-		panic(err)
-	}
-
 	// Create the PlaceOrder instruction
 	fillOrderIx := drift.NewFillPerpOrderInstruction(
 		takerOrderId,
@@ -314,11 +304,13 @@ func fillPerpOrder(
 	fillOrderIx.MakerOrderId = nil
 
 	// append all oracles
-	fillOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
-		PublicKey:  oracleBtc,
-		IsWritable: false,
-		IsSigner:   false,
-	})
+	for _, o := range oracles {
+		fillOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
+			PublicKey:  o,
+			IsWritable: false,
+			IsSigner:   false,
+		})
+	}
 
 	// append all markets
 	fillOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
@@ -327,11 +319,13 @@ func fillPerpOrder(
 		IsSigner:   false,
 	})
 
-	fillOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
-		PublicKey:  perpMarketBtc,
-		IsWritable: true,
-		IsSigner:   false,
-	})
+	for _, m := range markets {
+		fillOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
+			PublicKey:  m,
+			IsWritable: true,
+			IsSigner:   false,
+		})
+	}
 
 	fillOrderTx, err := solana.NewTransactionBuilder().AddInstruction(fillOrderIx.Build()).Build()
 	if err != nil {
@@ -467,6 +461,14 @@ func main() {
 		panic(err)
 	}
 
+	var programSvmPrivKeyBz []byte
+	if err := json.Unmarshal(driftPrivKey, &programSvmPrivKeyBz); err != nil {
+		panic(err)
+	}
+	programSvmPrivKey := &ed25519.PrivKey{Key: programSvmPrivKeyBz}
+	driftProgramId := solana.PublicKeyFromBytes(programSvmPrivKey.PubKey().Bytes())
+	drift.SetProgramID(driftProgramId)
+
 	// init chain client
 	userClient, err := chainclient.NewChainClient(
 		clientCtx,
@@ -493,71 +495,100 @@ func main() {
 		fmt.Println("sender", senderAddress.String(), "is already linked to svm address:", userSvmPubkey.String())
 	}
 
+	// get denom link + deposit
 	transferFunds(userClient)
-
-	denomHexMap := map[string]string{}
-	for _, denom := range []string{"btc", "usdt"} {
-		denomLink, err := userClient.GetDenomLink(context.Background(), astromeshtypes.Plane_COSMOS, denom, astromeshtypes.Plane_SVM)
-		if err != nil {
-			panic(err)
-		}
-
-		denomHexMap[denom] = denomLink.DstAddr
-	}
-
-	usdtMintHex := denomHexMap["usdt"]
-	usdtMintBz, _ := hex.DecodeString(usdtMintHex)
-	usdtMint = solana.PublicKeyFromBytes(usdtMintBz)
-
-	btcMintHex := denomHexMap["btc"]
-	btcMintBz, _ := hex.DecodeString(btcMintHex)
-	btcMint = solana.PublicKeyFromBytes(btcMintBz)
-
-	var programSvmPrivKeyBz []byte
-	if err := json.Unmarshal(driftPrivKey, &programSvmPrivKeyBz); err != nil {
+	denomLink, err := userClient.GetDenomLink(context.Background(), astromeshtypes.Plane_COSMOS, "usdt", astromeshtypes.Plane_SVM)
+	if err != nil {
 		panic(err)
 	}
-	programSvmPrivKey := &ed25519.PrivKey{Key: programSvmPrivKeyBz}
-	driftProgramId := solana.PublicKeyFromBytes(programSvmPrivKey.PubKey().Bytes())
-	drift.SetProgramID(driftProgramId)
+
+	usdtMintHex := denomLink.DstAddr
+	usdtMintBz, _ := hex.DecodeString(usdtMintHex)
+	usdtMint = solana.PublicKeyFromBytes(usdtMintBz)
 	deposit(
 		userClient,
 		userSvmPubkey,
 		1000_000_000,
 		usdtMint,
-		usdtSpotMarketIndex,
 	)
 
 	fmt.Println("=== user places order ===")
+	// get perp markets info
+	marketMap := map[uint16]*drift.PerpMarket{}
+	marketAddrs := []solana.PublicKey{}
+	oracleAddrs := []solana.PublicKey{}
+	for _, marketIndex := range []uint16{0, 1, 2} {
+		perpMarketInfo := getDriftPerpMarket(userClient, marketIndex)
+		marketMap[marketIndex] = &perpMarketInfo
+		marketAddrs = append(marketAddrs, perpMarketInfo.Pubkey)
+		oracleAddrs = append(oracleAddrs, perpMarketInfo.Amm.Oracle)
+		fmt.Println("oracle addrs:", perpMarketInfo.Amm.Oracle)
+	}
+
 	driftUser := getDriftUserInfo(userClient, userSvmPubkey)
 	orderId := driftUser.NextOrderId
-	placeOrder(
-		userClient,
-		userSvmPubkey,
-		uint8(orderId),
-		65050_000_000, proto.Int64(65020_000_000), proto.Int64(65035_000_000),
-		500_000,
-		drift.OrderTypeMarket,
-		false,
-		drift.PositionDirectionLong,
-		30*time.Second,
-		btcMarketIndex,
-		svm.Uint8Ptr(0),
-	)
-	fmt.Println("user order_id:", orderId)
-	fmt.Println("waiting for some seconds for auction to complete...")
+	marketOrders := []Order{
+		{
+			MarketIndex:       0,
+			AuctionStartPrice: 65020_000_000,
+			AuctionEndPrice:   65035_000_000,
+			Direction:         drift.PositionDirectionLong,
+			Quantity:          500_000,
+		},
+		{
+			MarketIndex:       1,
+			AuctionStartPrice: 3001_000_000,
+			AuctionEndPrice:   3010_000_000,
+			Direction:         drift.PositionDirectionLong,
+			Quantity:          500_000,
+		},
+		{
+			MarketIndex:       2,
+			AuctionStartPrice: 150_000_000,
+			AuctionEndPrice:   152_000_000,
+			Direction:         drift.PositionDirectionLong,
+			Quantity:          500_000,
+		},
+	}
+
+	for _, o := range marketOrders {
+		placeOrder(
+			userClient,
+			userSvmPubkey,
+			uint8(orderId),
+			uint64(o.AuctionEndPrice), proto.Int64(o.AuctionStartPrice), proto.Int64(o.AuctionEndPrice),
+			o.Quantity,
+			drift.OrderTypeMarket,
+			false,
+			drift.PositionDirectionLong,
+			1*time.Minute,
+			o.MarketIndex,
+			svm.Uint8Ptr(0),
+			marketAddrs,
+			oracleAddrs,
+		)
+		orderId++
+	}
+	fmt.Println("waiting for some seconds for auctions to complete...")
 	time.Sleep(11 * time.Second)
 
-	fmt.Printf("=== fill orders %d against vAMM ===\n", orderId)
+	fmt.Println("=== fill all orders against vAMM ===")
 	// actually anyone can call this fill_perp_order instruction to fill the order
-	// to make the code simpler, it uses userClient
-	fillPerpOrder(
-		userClient,
-		userSvmPubkey,
-		userSvmPubkey,
-		orderId,
-		btcMarketIndex,
-	)
+	// to make the code simpler, it uses userClient instead of keeper (filler) client
+	driftUser = getDriftUserInfo(userClient, userSvmPubkey)
+	for _, o := range driftUser.Orders {
+		if o.Status == drift.OrderStatusOpen {
+			fillPerpOrder(
+				userClient,
+				userSvmPubkey,
+				userSvmPubkey,
+				o.OrderId,
+				o.MarketIndex,
+				marketAddrs,
+				oracleAddrs,
+			)
+		}
+	}
 
 	fmt.Println("user positions:")
 	for _, o := range driftUser.PerpPositions {

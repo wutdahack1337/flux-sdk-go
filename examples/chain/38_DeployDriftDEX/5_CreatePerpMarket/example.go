@@ -253,7 +253,7 @@ func main() {
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 
 	for _, m := range markets {
-		fmt.Println("init oracle of perp market", m.Name)
+		fmt.Println("init oracle of perp market", m.Name, "oracle account:", solana.PublicKeyFromBytes(m.OracleSvmPrivKey.PubKey().Bytes()).String())
 		svm.InitializePythOracle(
 			chainClient, clientCtx,
 			"88cbead91aee890d27bf06e003ade3d4e952427e88f88d31d61d3ef5e5d54305",
