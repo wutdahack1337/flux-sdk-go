@@ -522,7 +522,6 @@ func main() {
 		marketMap[marketIndex] = &perpMarketInfo
 		marketAddrs = append(marketAddrs, perpMarketInfo.Pubkey)
 		oracleAddrs = append(oracleAddrs, perpMarketInfo.Amm.Oracle)
-		fmt.Println("oracle addrs:", perpMarketInfo.Amm.Oracle)
 	}
 
 	driftUser := getDriftUserInfo(userClient, userSvmPubkey)
@@ -531,21 +530,21 @@ func main() {
 		{
 			MarketIndex:       0,
 			AuctionStartPrice: 65020_000_000,
-			AuctionEndPrice:   65035_000_000,
+			AuctionEndPrice:   65033_000_000,
 			Direction:         drift.PositionDirectionLong,
 			Quantity:          500_000,
 		},
 		{
 			MarketIndex:       1,
 			AuctionStartPrice: 3001_000_000,
-			AuctionEndPrice:   3010_000_000,
+			AuctionEndPrice:   3004_000_000,
 			Direction:         drift.PositionDirectionLong,
 			Quantity:          500_000,
 		},
 		{
 			MarketIndex:       2,
-			AuctionStartPrice: 150_000_000,
-			AuctionEndPrice:   152_000_000,
+			AuctionStartPrice: 151_000_000,
+			AuctionEndPrice:   151_100_000,
 			Direction:         drift.PositionDirectionLong,
 			Quantity:          500_000,
 		},
@@ -569,6 +568,15 @@ func main() {
 		)
 		orderId++
 	}
+
+	driftUser = getDriftUserInfo(userClient, userSvmPubkey)
+	for _, o := range driftUser.Orders {
+		if o.Status == drift.OrderStatusOpen {
+			bz, _ := json.MarshalIndent(o, "", "  ")
+			fmt.Println("bz:", string(bz))
+		}
+	}
+
 	fmt.Println("waiting for some seconds for auctions to complete...")
 	time.Sleep(11 * time.Second)
 
@@ -591,6 +599,7 @@ func main() {
 	}
 
 	fmt.Println("user positions:")
+	driftUser = getDriftUserInfo(userClient, userSvmPubkey)
 	for _, o := range driftUser.PerpPositions {
 		if o.BaseAssetAmount != 0 {
 			bz, _ := json.MarshalIndent(o, "", "  ")
