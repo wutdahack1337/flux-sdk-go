@@ -266,7 +266,6 @@ func main() {
 	fmt.Println("=== initialize perp market states ===")
 	initializeMarketTxBuilder := solana.NewTransactionBuilder()
 
-	// initialize spot quote market
 	driftSigner, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("drift_signer"),
 	}, driftProgramId)
