@@ -60,13 +60,13 @@ func newName(s string) [32]uint8 {
 	return name
 }
 
-func mustGenerateCosmosKey() *ethsecp256k1.PrivKey {
-	key, err := ethsecp256k1.GenerateKey()
+func mustParseHex(hexString string) []byte {
+	bz, err := hex.DecodeString(hexString)
 	if err != nil {
 		panic(err)
 	}
 
-	return key
+	return bz
 }
 
 func newUint128(s string) bin.Uint128 {
@@ -215,22 +215,28 @@ func main() {
 
 	markets := []Market{
 		{
-			Name:                "btc",
-			InitialOraclePrice:  65000_000_000,
-			OracleSvmPrivKey:    btcOraclePrivKey,
-			OracleCosmosPrivKey: mustGenerateCosmosKey(),
+			Name:               "btc",
+			InitialOraclePrice: 65000_000_000,
+			OracleSvmPrivKey:   btcOraclePrivKey,
+			OracleCosmosPrivKey: &ethsecp256k1.PrivKey{
+				Key: mustParseHex("6bf7877e9bf7590d94b57d409b0fcf4cc80f9cd427bc212b1a2dd7ff6b6802e1"), // note: do not use this key on mainnet
+			},
 		},
 		{
-			Name:                "eth",
-			InitialOraclePrice:  3000_000_000,
-			OracleSvmPrivKey:    ethOraclePrivKey,
-			OracleCosmosPrivKey: mustGenerateCosmosKey(),
+			Name:               "eth",
+			InitialOraclePrice: 3000_000_000,
+			OracleSvmPrivKey:   ethOraclePrivKey,
+			OracleCosmosPrivKey: &ethsecp256k1.PrivKey{
+				Key: mustParseHex("6bf7877e9bf7590d94b57d409b0fcf4cc80f9cd427bc212b1a2dd7ff6b6802e2"), // note: do not use this key on mainnet
+			},
 		},
 		{
-			Name:                "sol",
-			InitialOraclePrice:  150_000_000,
-			OracleSvmPrivKey:    solOraclePrivKey,
-			OracleCosmosPrivKey: mustGenerateCosmosKey(),
+			Name:               "sol",
+			InitialOraclePrice: 150_000_000,
+			OracleSvmPrivKey:   solOraclePrivKey,
+			OracleCosmosPrivKey: &ethsecp256k1.PrivKey{
+				Key: mustParseHex("6bf7877e9bf7590d94b57d409b0fcf4cc80f9cd427bc212b1a2dd7ff6b6802e3"), // note: do not use this key on mainnet
+			},
 		},
 	}
 

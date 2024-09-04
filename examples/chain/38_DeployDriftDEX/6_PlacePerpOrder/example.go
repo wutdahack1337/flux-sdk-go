@@ -31,9 +31,8 @@ import (
 )
 
 var (
-	driftPrivKey        []byte
-	usdtMint            solana.PublicKey
-	usdtSpotMarketIndex = uint16(0)
+	driftPrivKey []byte
+	usdtMint     solana.PublicKey
 )
 
 type Order struct {
@@ -157,7 +156,7 @@ func placeOrder(
 	expireDuration time.Duration,
 	marketIndex uint16,
 	auctionDur *uint8,
-	markets []solana.PublicKey,
+	markets []solana.PublicKey, // Note: This injects all markets, which is not optimized => should only inject user's relevant market
 	oracles []solana.PublicKey,
 ) {
 	senderAddress := userClient.FromAddress()
@@ -168,14 +167,6 @@ func placeOrder(
 	user, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("user"), svmPubkey[:], {0, 0},
 	}, drift.ProgramID)
-
-	spotMarketUsdt, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("spot_market"),
-		svm.Uint16ToLeBytes(0),
-	}, drift.ProgramID)
-	if err != nil {
-		panic(err)
-	}
 
 	// Define the OrderParams with default or specified values
 	unixExpireTime := time.Now().Add(expireDuration).Unix()
@@ -217,12 +208,6 @@ func placeOrder(
 	}
 
 	// append all markets
-	placeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
-		PublicKey:  spotMarketUsdt,
-		IsWritable: true,
-		IsSigner:   false,
-	})
-
 	for _, m := range markets {
 		placeOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
 			PublicKey:  m,
@@ -284,14 +269,6 @@ func fillPerpOrder(
 		panic(err)
 	}
 
-	spotMarketUsdt, _, err := solana.FindProgramAddress([][]byte{
-		[]byte("spot_market"),
-		svm.Uint16ToLeBytes(0),
-	}, drift.ProgramID)
-	if err != nil {
-		panic(err)
-	}
-
 	// Create the PlaceOrder instruction
 	fillOrderIx := drift.NewFillPerpOrderInstruction(
 		takerOrderId,
@@ -313,12 +290,6 @@ func fillPerpOrder(
 	}
 
 	// append all markets
-	fillOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
-		PublicKey:  spotMarketUsdt,
-		IsWritable: true,
-		IsSigner:   false,
-	})
-
 	for _, m := range markets {
 		fillOrderIx.AccountMetaSlice.Append(&solana.AccountMeta{
 			PublicKey:  m,
@@ -502,6 +473,30 @@ func main() {
 		panic(err)
 	}
 
+	// pre-compute all market addresses
+	allMarkets := []solana.PublicKey{}
+	for _, spotMarketIndex := range []uint16{0, 1} {
+		market, _, err := solana.FindProgramAddress([][]byte{
+			[]byte("spot_market"),
+			svm.Uint16ToLeBytes(spotMarketIndex),
+		}, drift.ProgramID)
+		if err != nil {
+			panic(err)
+		}
+		allMarkets = append(allMarkets, market)
+	}
+
+	for _, perpMarketIndex := range []uint16{0, 1, 2, 3} {
+		market, _, err := solana.FindProgramAddress([][]byte{
+			[]byte("perp_market"),
+			svm.Uint16ToLeBytes(perpMarketIndex),
+		}, drift.ProgramID)
+		if err != nil {
+			panic(err)
+		}
+		allMarkets = append(allMarkets, market)
+	}
+
 	usdtMintHex := denomLink.DstAddr
 	usdtMintBz, _ := hex.DecodeString(usdtMintHex)
 	usdtMint = solana.PublicKeyFromBytes(usdtMintBz)
@@ -515,13 +510,11 @@ func main() {
 	fmt.Println("=== user places order ===")
 	// get perp markets info
 	marketMap := map[uint16]*drift.PerpMarket{}
-	marketAddrs := []solana.PublicKey{}
-	oracleAddrs := []solana.PublicKey{}
+	allOracles := []solana.PublicKey{}
 	for _, marketIndex := range []uint16{0, 1, 2} {
 		perpMarketInfo := getDriftPerpMarket(userClient, marketIndex)
 		marketMap[marketIndex] = &perpMarketInfo
-		marketAddrs = append(marketAddrs, perpMarketInfo.Pubkey)
-		oracleAddrs = append(oracleAddrs, perpMarketInfo.Amm.Oracle)
+		allOracles = append(allOracles, perpMarketInfo.Amm.Oracle)
 	}
 
 	driftUser := getDriftUserInfo(userClient, userSvmPubkey)
@@ -562,9 +555,9 @@ func main() {
 			drift.PositionDirectionLong,
 			1*time.Minute,
 			o.MarketIndex,
-			svm.Uint8Ptr(0),
-			marketAddrs,
-			oracleAddrs,
+			svm.Uint8Ptr(10),
+			allMarkets,
+			allOracles,
 		)
 		orderId++
 	}
@@ -592,8 +585,8 @@ func main() {
 				userSvmPubkey,
 				o.OrderId,
 				o.MarketIndex,
-				marketAddrs,
-				oracleAddrs,
+				allMarkets,
+				allOracles,
 			)
 		}
 	}
