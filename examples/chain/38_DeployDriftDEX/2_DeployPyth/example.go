@@ -186,7 +186,7 @@ func main() {
 		fmt.Println("tx hash:", res.TxResponse.TxHash)
 		fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 		if res.TxResponse.Code != 0 {
-			fmt.Println("err code:", res.TxResponse.Code, ", log:", res.TxResponse.RawLog)
+			panic(fmt.Errorf("err code: %d, log: %s", res.TxResponse.Code, res.TxResponse.RawLog))
 		}
 	}
 

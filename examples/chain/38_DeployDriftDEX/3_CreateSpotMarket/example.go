@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/binary"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -36,12 +35,6 @@ var (
 	btcOraclePrivKey = ed25519.GenPrivKeyFromSecret([]byte("btc_oracle"))
 	btcOraclePubkey  = solana.PublicKeyFromBytes(btcOraclePrivKey.PubKey().Bytes())
 )
-
-func uint16ToLeBytes(x uint16) []byte {
-	b := make([]byte, 2)
-	binary.LittleEndian.PutUint16(b, x)
-	return b
-}
 
 func newName(s string) [32]uint8 {
 	name := [32]uint8{}
@@ -205,7 +198,7 @@ func main() {
 
 	spotMarketUsdt, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market"),
-		uint16ToLeBytes(0),
+		svm.Uint16ToLeBytes(0),
 	}, driftProgramId)
 	if err != nil {
 		panic(err)
@@ -213,7 +206,7 @@ func main() {
 
 	spotMarketUsdtVault, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market_vault"),
-		uint16ToLeBytes(0),
+		svm.Uint16ToLeBytes(0),
 	}, driftProgramId)
 	if err != nil {
 		panic(err)
@@ -221,7 +214,7 @@ func main() {
 
 	insuranceFundUsdtVault, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("insurance_fund_vault"),
-		uint16ToLeBytes(0),
+		svm.Uint16ToLeBytes(0),
 	}, driftProgramId)
 	if err != nil {
 		panic(err)
@@ -229,16 +222,15 @@ func main() {
 
 	spotMarketBtc, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market"),
-		uint16ToLeBytes(1),
+		svm.Uint16ToLeBytes(1),
 	}, driftProgramId)
 	if err != nil {
 		panic(err)
 	}
 
-	// Generate PDA for spot_market_vault
 	spotMarketBtcVault, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market_vault"),
-		uint16ToLeBytes(1),
+		svm.Uint16ToLeBytes(1),
 	}, driftProgramId)
 	if err != nil {
 		panic(err)
@@ -246,7 +238,7 @@ func main() {
 
 	insuranceFundBtcVault, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("insurance_fund_vault"),
-		uint16ToLeBytes(1),
+		svm.Uint16ToLeBytes(1),
 	}, driftProgramId)
 	if err != nil {
 		panic(err)
