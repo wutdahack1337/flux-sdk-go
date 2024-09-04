@@ -441,7 +441,7 @@ func main() {
 	drift.SetProgramID(driftProgramId)
 
 	// init chain client
-	userClient, err := chainclient.NewChainClient(
+	chainClient, err := chainclient.NewChainClient(
 		clientCtx,
 		common.OptionGasPrices("500000000lux"),
 	)
@@ -450,13 +450,13 @@ func main() {
 	}
 
 	// check and link accounts
-	isSvmLinked, userSvmPubkey, err := userClient.GetSVMAccountLink(context.Background(), senderAddress)
+	isSvmLinked, userSvmPubkey, err := chainClient.GetSVMAccountLink(context.Background(), senderAddress)
 	if err != nil {
 		panic(err)
 	}
 	if !isSvmLinked {
 		svmKey := ed25519.GenPrivKey() // Good practice: Backup this private key
-		res, err := userClient.LinkSVMAccount(svmKey, math.NewIntFromUint64(1000_000_000_000))
+		res, err := chainClient.LinkSVMAccount(svmKey, math.NewIntFromUint64(1000_000_000_000))
 		if err != nil {
 			panic(err)
 		}
@@ -467,8 +467,8 @@ func main() {
 	}
 
 	// get denom link + deposit
-	transferFunds(userClient)
-	denomLink, err := userClient.GetDenomLink(context.Background(), astromeshtypes.Plane_COSMOS, "usdt", astromeshtypes.Plane_SVM)
+	transferFunds(chainClient)
+	denomLink, err := chainClient.GetDenomLink(context.Background(), astromeshtypes.Plane_COSMOS, "usdt", astromeshtypes.Plane_SVM)
 	if err != nil {
 		panic(err)
 	}
@@ -501,7 +501,7 @@ func main() {
 	usdtMintBz, _ := hex.DecodeString(usdtMintHex)
 	usdtMint = solana.PublicKeyFromBytes(usdtMintBz)
 	deposit(
-		userClient,
+		chainClient,
 		userSvmPubkey,
 		1000_000_000,
 		usdtMint,
@@ -512,12 +512,12 @@ func main() {
 	marketMap := map[uint16]*drift.PerpMarket{}
 	allOracles := []solana.PublicKey{}
 	for _, marketIndex := range []uint16{0, 1, 2} {
-		perpMarketInfo := getDriftPerpMarket(userClient, marketIndex)
+		perpMarketInfo := getDriftPerpMarket(chainClient, marketIndex)
 		marketMap[marketIndex] = &perpMarketInfo
 		allOracles = append(allOracles, perpMarketInfo.Amm.Oracle)
 	}
 
-	driftUser := getDriftUserInfo(userClient, userSvmPubkey)
+	driftUser := getDriftUserInfo(chainClient, userSvmPubkey)
 	orderId := driftUser.NextOrderId
 	marketOrders := []Order{
 		{
@@ -545,7 +545,7 @@ func main() {
 
 	for _, o := range marketOrders {
 		placeOrder(
-			userClient,
+			chainClient,
 			userSvmPubkey,
 			uint8(orderId),
 			uint64(o.AuctionEndPrice), proto.Int64(o.AuctionStartPrice), proto.Int64(o.AuctionEndPrice),
@@ -562,7 +562,7 @@ func main() {
 		orderId++
 	}
 
-	driftUser = getDriftUserInfo(userClient, userSvmPubkey)
+	driftUser = getDriftUserInfo(chainClient, userSvmPubkey)
 	for _, o := range driftUser.Orders {
 		if o.Status == drift.OrderStatusOpen {
 			bz, _ := json.MarshalIndent(o, "", "  ")
@@ -574,13 +574,12 @@ func main() {
 	time.Sleep(11 * time.Second)
 
 	fmt.Println("=== fill all orders against vAMM ===")
-	// actually anyone can call this fill_perp_order instruction to fill the order
-	// to make the code simpler, it uses userClient instead of keeper (filler) client
-	driftUser = getDriftUserInfo(userClient, userSvmPubkey)
+	// actually anyone can call this fill_perp_order instruction to fill the order with vAMM
+	driftUser = getDriftUserInfo(chainClient, userSvmPubkey)
 	for _, o := range driftUser.Orders {
 		if o.Status == drift.OrderStatusOpen {
 			fillPerpOrder(
-				userClient,
+				chainClient,
 				userSvmPubkey,
 				userSvmPubkey,
 				o.OrderId,
@@ -592,7 +591,7 @@ func main() {
 	}
 
 	fmt.Println("user positions:")
-	driftUser = getDriftUserInfo(userClient, userSvmPubkey)
+	driftUser = getDriftUserInfo(chainClient, userSvmPubkey)
 	for _, o := range driftUser.PerpPositions {
 		if o.BaseAssetAmount != 0 {
 			bz, _ := json.MarshalIndent(o, "", "  ")
