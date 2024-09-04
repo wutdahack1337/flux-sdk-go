@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"fmt"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"os"
 	"strings"
+
+	"cosmossdk.io/math"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"

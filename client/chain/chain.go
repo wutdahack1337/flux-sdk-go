@@ -13,6 +13,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	sdkmath "cosmossdk.io/math"
 	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/signing"
@@ -71,12 +72,13 @@ type ChainClient interface {
 	BuildSignedTx(clientCtx client.Context, accNum, accSeq, initialGas uint64, msg ...sdk.Msg) (signing.Tx, error)
 	SyncBroadcastSignedTx(tyBytes []byte) (*txtypes.BroadcastTxResponse, error)
 	AsyncBroadcastSignedTx(txBytes []byte) (*txtypes.BroadcastTxResponse, error)
+	SimulateSignedTx(txBytes []byte) (*txtypes.SimulateResponse, error)
 	QueueBroadcastMsg(msgs ...sdk.Msg) error
 
 	SyncBroadcastSvmMsg(msg *svmtypes.MsgTransaction) (*txtypes.BroadcastTxResponse, error)
 
 	GetSVMAccountLink(ctx context.Context, cosmosAddress sdk.AccAddress) (isLinked bool, pubkey solana.PublicKey, err error)
-	LinkSVMAccount(svmPrivKey *ed25519.PrivKey) (*txtypes.BroadcastTxResponse, error)
+	LinkSVMAccount(svmPrivKey *ed25519.PrivKey, luxAmount sdkmath.Int) (*txtypes.BroadcastTxResponse, error)
 
 	GetBankBalances(ctx context.Context, address string) (*banktypes.QueryAllBalancesResponse, error)
 	GetBankBalance(ctx context.Context, address string, denom string) (*banktypes.QueryBalanceResponse, error)
@@ -611,6 +613,18 @@ func (c *chainClient) AsyncBroadcastSignedTx(txBytes []byte) (*txtypes.Broadcast
 	return res, nil
 }
 
+func (c *chainClient) SimulateSignedTx(txBytes []byte) (*txtypes.SimulateResponse, error) {
+	req := txtypes.SimulateRequest{
+		TxBytes: txBytes,
+	}
+
+	ctx := context.Background()
+	var header metadata.MD
+	ctx = c.getCookie(ctx)
+
+	return c.txClient.Simulate(ctx, &req, grpc.Header(&header))
+}
+
 func (c *chainClient) broadcastTx(
 	clientCtx client.Context,
 	txf tx.Factory,
@@ -911,7 +925,7 @@ func (c *chainClient) SyncBroadcastSvmMsg(msg *svmtypes.MsgTransaction) (*txtype
 
 func (c *chainClient) GetSVMAccountLink(ctx context.Context, cosmosAddress sdk.AccAddress) (isLinked bool, pubkey solana.PublicKey, err error) {
 	resp, err := c.svmQueryClient.AccountLink(context.Background(), &svmtypes.AccountLinkRequest{
-		Address: c.FromAddress().String(),
+		Address: cosmosAddress.String(),
 	})
 
 	if err != nil {
@@ -929,7 +943,7 @@ func (c *chainClient) GetSVMAccountLink(ctx context.Context, cosmosAddress sdk.A
 	return true, pubkey, nil
 }
 
-func (c *chainClient) LinkSVMAccount(svmPrivKey *ed25519.PrivKey) (*txtypes.BroadcastTxResponse, error) {
+func (c *chainClient) LinkSVMAccount(svmPrivKey *ed25519.PrivKey, luxAmount sdkmath.Int) (*txtypes.BroadcastTxResponse, error) {
 	svmAccountLinkSig, err := svmPrivKey.Sign(c.FromAddress().Bytes())
 	if err != nil {
 		return nil, fmt.Errorf("svm privkey sign err: %w", err)
@@ -939,6 +953,6 @@ func (c *chainClient) LinkSVMAccount(svmPrivKey *ed25519.PrivKey) (*txtypes.Broa
 		Sender:       c.FromAddress().String(),
 		SvmPubkey:    svmPrivKey.PubKey().Bytes(),
 		SvmSignature: svmAccountLinkSig,
-		Amount:       sdk.NewInt64Coin("lux", 1000000000),
+		Amount:       sdk.NewCoin("lux", luxAmount),
 	})
 }
