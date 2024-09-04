@@ -315,6 +315,7 @@ func main() {
 		initializeMarketTxBuilder = initializeMarketTxBuilder.AddInstruction(initializeStateIx)
 	}
 
+	// create quote (usdt) market if it doesn't exist
 	quoteMarketExists := true
 	_, err = chainClient.GetSvmAccount(context.Background(), spotMarketUsdt.String())
 	if err != nil && !strings.Contains(err.Error(), "not existed") {
@@ -378,6 +379,7 @@ func main() {
 		initializeMarketTxBuilder = initializeMarketTxBuilder.AddInstruction(initializeQuoteSpotMarketIx)
 	}
 
+	// create three perps markets
 	for idx, m := range markets {
 		marketIndex := uint16(idx)
 		perpMarket, _, err := solana.FindProgramAddress([][]byte{
