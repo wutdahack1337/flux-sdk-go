@@ -1,5 +1,0 @@
-yes 12345678 | go run examples/chain/38_DeployDriftDEX/1_DeployDrift/example.go 
-yes 12345678 | go run examples/chain/38_DeployDriftDEX/2_DeployPyth/example.go 
-yes 12345678 | go run examples/chain/38_DeployDriftDEX/3_CreateSpotMarket/example.go
-yes 12345678 | go run examples/chain/38_DeployDriftDEX/4_PlaceSpotOrder/example.go
-yes 12345678 | go run examples/chain/38_DeployDriftDEX/5_CreatePerpMarket/example.go

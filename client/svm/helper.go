@@ -551,8 +551,7 @@ func InitializePythOracle(
 	}
 
 	res, err := chainClient.SyncBroadcastSignedTx(oracleTxBytes)
-	if err != nil || res.TxResponse.Code != 0 {
-		fmt.Println("res.response err:", res.TxResponse.RawLog)
+	if err != nil {
 		return solana.PublicKey{}, err
 	}
 
