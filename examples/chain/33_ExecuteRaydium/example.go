@@ -157,7 +157,7 @@ func createSvmAccount(chainClient chainclient.ChainClient, ctx context.Context, 
 				// never reach this but added to be safe
 				panic(err)
 			}
-			msgs = append(msgs, svm.ToCosmosMsg(senderAddress.String(), MaxComputeBudget, svmTx))
+			msgs = append(msgs, svmtypes.ToCosmosMsg([]string{senderAddress.String()}, MaxComputeBudget, svmTx))
 		} else {
 			panic(err)
 		}
@@ -255,7 +255,7 @@ func createAmmConfig(
 		panic(err)
 	}
 
-	res, err := chainClient.SyncBroadcastMsg(svm.ToCosmosMsg(senderAddress.String(), MaxComputeBudget, createAmmConfigTx))
+	res, err := chainClient.SyncBroadcastMsg(svmtypes.ToCosmosMsg([]string{senderAddress.String()}, MaxComputeBudget, createAmmConfigTx))
 	if err != nil {
 		panic(err)
 	}
@@ -379,7 +379,7 @@ func initializeAmmPool(
 		panic(err)
 	}
 
-	res, err := chainClient.SyncBroadcastMsg(svm.ToCosmosMsg(senderAddress.String(), MaxComputeBudget, tx))
+	res, err := chainClient.SyncBroadcastMsg(svmtypes.ToCosmosMsg([]string{senderAddress.String()}, MaxComputeBudget, tx))
 	if err != nil {
 		panic(err)
 	}
@@ -461,7 +461,7 @@ func swapBaseInput(
 		panic(err)
 	}
 
-	res, err := chainClient.SyncBroadcastMsg(svm.ToCosmosMsg(senderAddress.String(), MaxComputeBudget, tx))
+	res, err := chainClient.SyncBroadcastMsg(svmtypes.ToCosmosMsg([]string{senderAddress.String()}, MaxComputeBudget, tx))
 	if err != nil {
 		panic(err)
 	}
@@ -491,7 +491,7 @@ func createNativeMint(
 		panic(err)
 	}
 
-	res, err := chainClient.SyncBroadcastMsg(svm.ToCosmosMsg(senderAddress.String(), 1000000, tx))
+	res, err := chainClient.SyncBroadcastMsg(svmtypes.ToCosmosMsg([]string{senderAddress.String()}, 1000000, tx))
 	if err != nil {
 		panic(err)
 	}
@@ -536,7 +536,7 @@ func createFeeReceiverAccount(
 		panic(err)
 	}
 
-	res, err := chainClient.SyncBroadcastMsg(svm.ToCosmosMsg(senderAddress.String(), MaxComputeBudget, tx))
+	res, err := chainClient.SyncBroadcastMsg(svmtypes.ToCosmosMsg([]string{senderAddress.String()}, MaxComputeBudget, tx))
 	if err != nil {
 		panic(err)
 	}
@@ -601,7 +601,7 @@ func deposit(
 		panic(err)
 	}
 
-	res, err := chainClient.SyncBroadcastMsg(svm.ToCosmosMsg(senderAddress.String(), MaxComputeBudget, tx))
+	res, err := chainClient.SyncBroadcastMsg(svmtypes.ToCosmosMsg([]string{senderAddress.String()}, MaxComputeBudget, tx))
 	if err != nil {
 		panic(err)
 	}

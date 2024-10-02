@@ -66,9 +66,9 @@ func main() {
 		Sender:   senderAddress.String(),
 		Receiver: senderAddress.String(),
 		SrcPlane: astromeshtypes.Plane_COSMOS,
-		DstPlane: astromeshtypes.Plane_EVM,
+		DstPlane: astromeshtypes.Plane_WASM,
 		Coin: sdk.Coin{
-			Denom:  "lux",
+			Denom:  "usdt",
 			Amount: math.NewIntFromUint64(100),
 		},
 	}
@@ -79,6 +79,7 @@ func main() {
 	fmt.Println("resp:", txResp.TxResponse.TxHash)
 	fmt.Println("gas used/want:", txResp.TxResponse.GasUsed, "/", txResp.TxResponse.GasWanted)
 
+	return
 	denomLink, err := astromeshClient.DenomLink(context.Background(), &astromeshtypes.QueryDenomLinkRequest{
 		SrcPlane: astromeshtypes.Plane_COSMOS,
 		DstPlane: astromeshtypes.Plane_EVM,

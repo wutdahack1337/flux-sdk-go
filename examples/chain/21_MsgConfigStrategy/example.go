@@ -3,9 +3,10 @@ package main
 import (
 	"encoding/hex"
 	"fmt"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"os"
 	"strings"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	_ "embed"
 
@@ -96,6 +97,14 @@ func main() {
 			Type:        strategytypes.StrategyType_STRATEGY,
 			Logo:        "https://img.icons8.com/?size=100&id=GRjuzy9lKwQD&format=png&color=000000",
 			Website:     "https://www.astromesh.xyz/",
+			SupportedApps: []*strategytypes.SupportedApp{
+				{
+					Name:            "Random App",
+					ContractAddress: "ab6b4d064c968eca87f775d2493a222987052bc0",
+					Plane:           types.Plane_EVM,
+					Verified:        false,
+				},
+			},
 		},
 	}
 

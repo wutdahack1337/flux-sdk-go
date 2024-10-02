@@ -7,7 +7,7 @@ import (
 	signingv1beta1 "cosmossdk.io/api/cosmos/tx/signing/v1beta1"
 	sdkmath "cosmossdk.io/math"
 	"cosmossdk.io/x/tx/signing"
-	"github.com/FluxNFTLabs/sdk-go/chain/modules/svm/golana"
+	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
@@ -71,7 +71,7 @@ func main() {
 
 	svmTxBuilder.AddInstruction(ix)
 	tx, err := svmTxBuilder.Build()
-	msg := golana.ToCosmosMsg([]string{
+	msg := svmtypes.ToCosmosMsg([]string{
 		senderAddr.String(),
 		programBufferAddr.String(),
 	}, 1000000, tx)

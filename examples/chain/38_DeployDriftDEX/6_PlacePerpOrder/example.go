@@ -135,7 +135,7 @@ func deposit(
 		panic(err)
 	}
 
-	svmMsg := svm.ToCosmosMsg([]string{userClient.FromAddress().String()}, 1_000_000, depositTx)
+	svmMsg := svmtypes.ToCosmosMsg([]string{userClient.FromAddress().String()}, 1_000_000, depositTx)
 	res, err := userClient.SyncBroadcastMsg(svmMsg)
 	if err != nil {
 		panic(err)
@@ -221,7 +221,7 @@ func placeOrder(
 		panic(err)
 	}
 
-	svmMsg := svm.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, placeOrderTx)
+	svmMsg := svmtypes.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, placeOrderTx)
 	res, err := userClient.SyncBroadcastMsg(svmMsg)
 	if err != nil {
 		panic(err)
@@ -303,7 +303,7 @@ func fillPerpOrder(
 		panic(err)
 	}
 
-	svmMsg := svm.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, fillOrderTx)
+	svmMsg := svmtypes.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, fillOrderTx)
 	res, err := userClient.SyncBroadcastMsg(svmMsg)
 	if err != nil {
 		panic(err)

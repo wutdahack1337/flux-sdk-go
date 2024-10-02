@@ -301,7 +301,7 @@ func main() {
 		panic(err)
 	}
 
-	svmMsg := svm.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, initializeTx)
+	svmMsg := svmtypes.ToCosmosMsg([]string{senderAddress.String()}, 1000_000, initializeTx)
 	res, err := chainClient.SyncBroadcastMsg(svmMsg)
 	if err != nil {
 		panic(err)

@@ -375,6 +375,218 @@ func (m *MsgTriggerStrategiesResponse) GetStrategyTriggerResponses() []*Strategy
 	return nil
 }
 
+type MsgVerifyStrategy struct {
+	// The address of the sender who is verifying the Nexus Bot
+	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	// The contract address of the dApp or entity being verified
+	ContractAddress string `protobuf:"bytes,2,opt,name=contract_address,json=contractAddress,proto3" json:"contract_address,omitempty"`
+	// Contract plane
+	Plane types.Plane `protobuf:"varint,3,opt,name=plane,proto3,enum=flux.astromesh.v1beta1.Plane" json:"plane,omitempty"`
+	// Strategy ID
+	StrategyId string `protobuf:"bytes,4,opt,name=strategy_id,json=strategyId,proto3" json:"strategy_id,omitempty"`
+}
+
+func (m *MsgVerifyStrategy) Reset()         { *m = MsgVerifyStrategy{} }
+func (m *MsgVerifyStrategy) String() string { return proto.CompactTextString(m) }
+func (*MsgVerifyStrategy) ProtoMessage()    {}
+func (*MsgVerifyStrategy) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cd40292536fdda88, []int{5}
+}
+func (m *MsgVerifyStrategy) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgVerifyStrategy) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgVerifyStrategy.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgVerifyStrategy) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgVerifyStrategy.Merge(m, src)
+}
+func (m *MsgVerifyStrategy) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgVerifyStrategy) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgVerifyStrategy.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgVerifyStrategy proto.InternalMessageInfo
+
+func (m *MsgVerifyStrategy) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgVerifyStrategy) GetContractAddress() string {
+	if m != nil {
+		return m.ContractAddress
+	}
+	return ""
+}
+
+func (m *MsgVerifyStrategy) GetPlane() types.Plane {
+	if m != nil {
+		return m.Plane
+	}
+	return types.Plane_COSMOS
+}
+
+func (m *MsgVerifyStrategy) GetStrategyId() string {
+	if m != nil {
+		return m.StrategyId
+	}
+	return ""
+}
+
+type MsgVerifyStrategyResponse struct {
+}
+
+func (m *MsgVerifyStrategyResponse) Reset()         { *m = MsgVerifyStrategyResponse{} }
+func (m *MsgVerifyStrategyResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgVerifyStrategyResponse) ProtoMessage()    {}
+func (*MsgVerifyStrategyResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cd40292536fdda88, []int{6}
+}
+func (m *MsgVerifyStrategyResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgVerifyStrategyResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgVerifyStrategyResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgVerifyStrategyResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgVerifyStrategyResponse.Merge(m, src)
+}
+func (m *MsgVerifyStrategyResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgVerifyStrategyResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgVerifyStrategyResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgVerifyStrategyResponse proto.InternalMessageInfo
+
+type MsgSetVerifier struct {
+	Sender      string      `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Contract    string      `protobuf:"bytes,2,opt,name=contract,proto3" json:"contract,omitempty"`
+	Plane       types.Plane `protobuf:"varint,3,opt,name=plane,proto3,enum=flux.astromesh.v1beta1.Plane" json:"plane,omitempty"`
+	NewVerifier string      `protobuf:"bytes,4,opt,name=new_verifier,json=newVerifier,proto3" json:"new_verifier,omitempty"`
+}
+
+func (m *MsgSetVerifier) Reset()         { *m = MsgSetVerifier{} }
+func (m *MsgSetVerifier) String() string { return proto.CompactTextString(m) }
+func (*MsgSetVerifier) ProtoMessage()    {}
+func (*MsgSetVerifier) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cd40292536fdda88, []int{7}
+}
+func (m *MsgSetVerifier) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSetVerifier) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSetVerifier.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSetVerifier) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetVerifier.Merge(m, src)
+}
+func (m *MsgSetVerifier) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSetVerifier) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetVerifier.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSetVerifier proto.InternalMessageInfo
+
+func (m *MsgSetVerifier) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgSetVerifier) GetContract() string {
+	if m != nil {
+		return m.Contract
+	}
+	return ""
+}
+
+func (m *MsgSetVerifier) GetPlane() types.Plane {
+	if m != nil {
+		return m.Plane
+	}
+	return types.Plane_COSMOS
+}
+
+func (m *MsgSetVerifier) GetNewVerifier() string {
+	if m != nil {
+		return m.NewVerifier
+	}
+	return ""
+}
+
+type MsgSetVerifierResponse struct {
+}
+
+func (m *MsgSetVerifierResponse) Reset()         { *m = MsgSetVerifierResponse{} }
+func (m *MsgSetVerifierResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgSetVerifierResponse) ProtoMessage()    {}
+func (*MsgSetVerifierResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cd40292536fdda88, []int{8}
+}
+func (m *MsgSetVerifierResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSetVerifierResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSetVerifierResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSetVerifierResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetVerifierResponse.Merge(m, src)
+}
+func (m *MsgSetVerifierResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSetVerifierResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetVerifierResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSetVerifierResponse proto.InternalMessageInfo
+
 func init() {
 	proto.RegisterEnum("flux.strategy.v1beta1.Config", Config_name, Config_value)
 	proto.RegisterType((*MsgConfigStrategy)(nil), "flux.strategy.v1beta1.MsgConfigStrategy")
@@ -382,59 +594,74 @@ func init() {
 	proto.RegisterType((*MsgTriggerStrategies)(nil), "flux.strategy.v1beta1.MsgTriggerStrategies")
 	proto.RegisterType((*StrategyResponse)(nil), "flux.strategy.v1beta1.StrategyResponse")
 	proto.RegisterType((*MsgTriggerStrategiesResponse)(nil), "flux.strategy.v1beta1.MsgTriggerStrategiesResponse")
+	proto.RegisterType((*MsgVerifyStrategy)(nil), "flux.strategy.v1beta1.MsgVerifyStrategy")
+	proto.RegisterType((*MsgVerifyStrategyResponse)(nil), "flux.strategy.v1beta1.MsgVerifyStrategyResponse")
+	proto.RegisterType((*MsgSetVerifier)(nil), "flux.strategy.v1beta1.MsgSetVerifier")
+	proto.RegisterType((*MsgSetVerifierResponse)(nil), "flux.strategy.v1beta1.MsgSetVerifierResponse")
 }
 
 func init() { proto.RegisterFile("flux/strategy/v1beta1/tx.proto", fileDescriptor_cd40292536fdda88) }
 
 var fileDescriptor_cd40292536fdda88 = []byte{
-	// 743 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x54, 0x41, 0x4f, 0xdb, 0x4a,
-	0x10, 0xce, 0xc6, 0x21, 0xc0, 0x06, 0xa1, 0x64, 0xc5, 0x7b, 0xcf, 0x58, 0x0f, 0x13, 0x45, 0x55,
-	0x1b, 0x05, 0x11, 0x43, 0x50, 0xa5, 0x16, 0xa9, 0x87, 0x82, 0x4a, 0x85, 0xd4, 0x54, 0xc5, 0x41,
-	0x3d, 0xf4, 0x12, 0x39, 0xf1, 0x62, 0x56, 0x8d, 0xbd, 0xc1, 0xb3, 0x46, 0xe1, 0x56, 0x55, 0xea,
-	0xa5, 0xa7, 0xfe, 0x93, 0xe6, 0xd0, 0x1f, 0xc1, 0x11, 0xf5, 0xd4, 0x53, 0x55, 0xc1, 0x01, 0xa9,
-	0xb7, 0xfe, 0x83, 0xca, 0xf1, 0xda, 0x20, 0x4c, 0x28, 0xf4, 0x92, 0xcc, 0x7a, 0xbe, 0x99, 0xef,
-	0x9b, 0x6f, 0x47, 0x8b, 0xf5, 0xbd, 0x5e, 0x30, 0x30, 0x40, 0xf8, 0x96, 0xa0, 0xce, 0x91, 0x71,
-	0xb8, 0xda, 0xa1, 0xc2, 0x5a, 0x35, 0xc4, 0xa0, 0xde, 0xf7, 0xb9, 0xe0, 0xe4, 0x9f, 0x30, 0x5f,
-	0x8f, 0xf3, 0x75, 0x99, 0xd7, 0xe6, 0xbb, 0x1c, 0x5c, 0x0e, 0xed, 0x11, 0xc8, 0x88, 0x0e, 0x51,
-	0x85, 0xf6, 0x5f, 0x74, 0x32, 0x5c, 0x70, 0x8c, 0xc3, 0xd5, 0xf0, 0x4f, 0x26, 0xe6, 0x1c, 0xee,
-	0xf0, 0xa8, 0x20, 0x8c, 0xe4, 0xd7, 0x92, 0xe5, 0x32, 0x8f, 0x1b, 0xa3, 0x5f, 0xf9, 0x49, 0x97,
-	0x1d, 0x3a, 0x16, 0xd0, 0x44, 0x51, 0x97, 0x33, 0x4f, 0xe6, 0xef, 0x5d, 0xaf, 0x39, 0x11, 0x19,
-	0xa1, 0x16, 0x47, 0x28, 0x0b, 0x84, 0xcf, 0x5d, 0x0a, 0xfb, 0xa9, 0xd1, 0xb4, 0xca, 0x18, 0xc0,
-	0x41, 0x40, 0x7d, 0xd9, 0xa4, 0x32, 0x54, 0x70, 0xa9, 0x09, 0xce, 0x26, 0xf7, 0xf6, 0x98, 0xd3,
-	0x92, 0x04, 0x64, 0x05, 0xe7, 0x81, 0x7a, 0x36, 0xf5, 0x55, 0x54, 0x46, 0xd5, 0xe9, 0x0d, 0xf5,
-	0xeb, 0x97, 0xe5, 0x39, 0x69, 0xc2, 0x53, 0xdb, 0xf6, 0x29, 0x40, 0x4b, 0xf8, 0xcc, 0x73, 0x4c,
-	0x89, 0x23, 0x0f, 0x71, 0xbe, 0x3b, 0xea, 0xa1, 0x66, 0xcb, 0xa8, 0x3a, 0xdb, 0x58, 0xa8, 0x5f,
-	0xeb, 0x6b, 0x3d, 0x22, 0x32, 0x25, 0x98, 0xcc, 0xe2, 0x2c, 0xb3, 0x55, 0x25, 0x24, 0x31, 0xb3,
-	0xcc, 0x26, 0x1a, 0x9e, 0x8a, 0x4b, 0xd4, 0x5c, 0x19, 0x55, 0x67, 0xcc, 0xe4, 0x4c, 0x9e, 0xe0,
-	0x89, 0x91, 0x72, 0x75, 0xa2, 0x8c, 0xaa, 0x85, 0xc6, 0x83, 0x88, 0x21, 0x19, 0x2f, 0xa1, 0xd8,
-	0xda, 0x6e, 0xed, 0x84, 0x38, 0x93, 0x1e, 0x04, 0x14, 0x84, 0x19, 0x55, 0x91, 0xd7, 0x98, 0x08,
-	0x9f, 0x39, 0x0e, 0xf5, 0xdb, 0x7d, 0xea, 0xbb, 0x0c, 0x80, 0x71, 0x4f, 0xcd, 0x5f, 0xee, 0x95,
-	0x52, 0xfb, 0x2a, 0x01, 0x4a, 0xdd, 0x25, 0xd9, 0xe2, 0x22, 0x41, 0x36, 0xf1, 0x94, 0x4b, 0x85,
-	0x65, 0x5b, 0xc2, 0x52, 0x27, 0x6f, 0xec, 0x16, 0xdb, 0xdb, 0x94, 0x70, 0x33, 0x29, 0x5c, 0xaf,
-	0xbd, 0x3f, 0x1f, 0xd6, 0xa4, 0x97, 0x1f, 0xcf, 0x87, 0x35, 0x2d, 0xb9, 0xfc, 0xd4, 0xe5, 0x54,
-	0x96, 0xf0, 0x7c, 0xea, 0xa3, 0x49, 0xa1, 0xcf, 0x3d, 0xa0, 0xd2, 0x50, 0x14, 0x1b, 0x5a, 0xf9,
-	0x89, 0xf0, 0x5c, 0x13, 0x9c, 0xdd, 0x48, 0xb6, 0x84, 0x33, 0x0a, 0x7f, 0x71, 0xc5, 0x45, 0xac,
-	0x30, 0x1b, 0xd4, 0x6c, 0x59, 0xa9, 0x4e, 0x9b, 0x61, 0x48, 0xfe, 0xc5, 0x79, 0xe6, 0xf5, 0x03,
-	0x01, 0xaa, 0x52, 0x56, 0xaa, 0x33, 0xa6, 0x3c, 0x91, 0xe7, 0x78, 0x32, 0xf4, 0x9c, 0x51, 0x50,
-	0x73, 0x65, 0xe5, 0x0e, 0x77, 0xb5, 0x91, 0x3b, 0xfe, 0xbe, 0x88, 0xcc, 0xb8, 0x7a, 0x7d, 0xf9,
-	0x8a, 0x2d, 0x0b, 0x97, 0x6d, 0x49, 0xcd, 0x54, 0xf9, 0x8c, 0x70, 0xf1, 0x4f, 0x8e, 0x90, 0x47,
-	0x58, 0x61, 0x83, 0x68, 0x8c, 0x42, 0xe3, 0xfe, 0x0d, 0xc2, 0xb6, 0x3d, 0x10, 0x7e, 0xd0, 0x15,
-	0x8c, 0x7b, 0x66, 0x58, 0x42, 0x76, 0xf0, 0x0c, 0x1b, 0xb4, 0x7d, 0xd9, 0x38, 0x1a, 0xba, 0xd0,
-	0xa8, 0xdf, 0xb2, 0x85, 0x2c, 0x33, 0x0b, 0x6c, 0x10, 0xc7, 0x50, 0xf9, 0x80, 0xf0, 0xff, 0xd7,
-	0x8d, 0x92, 0xa8, 0xa7, 0x38, 0x59, 0x85, 0x76, 0xbc, 0xbe, 0x17, 0x0a, 0xd0, 0x65, 0x77, 0xc7,
-	0xee, 0x5b, 0x42, 0xad, 0xc6, 0x10, 0xc9, 0x97, 0xe8, 0xa8, 0x3d, 0xc3, 0xf9, 0x68, 0xa1, 0x08,
-	0xc6, 0x79, 0x9b, 0xf6, 0x7b, 0xfc, 0xa8, 0x98, 0x09, 0xe3, 0xa0, 0x6f, 0x5b, 0x82, 0x16, 0x11,
-	0x29, 0xe0, 0x49, 0x9b, 0x81, 0xd5, 0xe9, 0xd1, 0x62, 0x36, 0x4c, 0x50, 0x6f, 0x14, 0x2b, 0x61,
-	0xec, 0xd3, 0x43, 0xfe, 0x96, 0x16, 0x73, 0x8d, 0x5f, 0x08, 0x2b, 0x4d, 0x70, 0x48, 0x0f, 0xcf,
-	0x5e, 0x79, 0x51, 0xaa, 0x63, 0x34, 0xa6, 0x36, 0x59, 0x5b, 0xb9, 0x2d, 0x32, 0xf1, 0x28, 0xc0,
-	0xa5, 0xf4, 0x7e, 0x2f, 0x8d, 0x6f, 0x93, 0x02, 0x6b, 0x6b, 0x77, 0x00, 0xc7, 0xb4, 0xda, 0xc4,
-	0xbb, 0xf3, 0x61, 0x0d, 0x6d, 0xb4, 0x8e, 0x4f, 0x75, 0x74, 0x72, 0xaa, 0xa3, 0x1f, 0xa7, 0x3a,
-	0xfa, 0x74, 0xa6, 0x67, 0x4e, 0xce, 0xf4, 0xcc, 0xb7, 0x33, 0x3d, 0xf3, 0xe6, 0xb1, 0xc3, 0xc4,
-	0x7e, 0xd0, 0xa9, 0x77, 0xb9, 0x6b, 0x6c, 0xf5, 0x82, 0xc1, 0xcb, 0xad, 0xdd, 0x17, 0x56, 0x07,
-	0x8c, 0x90, 0xcb, 0x36, 0xba, 0xfb, 0x16, 0xf3, 0x0c, 0x97, 0xdb, 0x41, 0x8f, 0xc2, 0xc5, 0x63,
-	0x2f, 0x8e, 0xfa, 0x14, 0x3a, 0xf9, 0xd1, 0xeb, 0xbc, 0xf6, 0x3b, 0x00, 0x00, 0xff, 0xff, 0xd2,
-	0x13, 0xf4, 0xac, 0xbe, 0x06, 0x00, 0x00,
+	// 928 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x56, 0x41, 0x6f, 0xe3, 0x44,
+	0x14, 0xee, 0xc4, 0x6d, 0xda, 0xbe, 0x54, 0x21, 0x1d, 0x95, 0xae, 0xd7, 0xb0, 0x69, 0xb0, 0x80,
+	0x0d, 0x59, 0x35, 0xde, 0xa6, 0x42, 0x82, 0x4a, 0x1c, 0xe8, 0x8a, 0xa2, 0x4a, 0x04, 0xed, 0x3a,
+	0xab, 0x3d, 0x70, 0x89, 0x1c, 0x7b, 0xea, 0x8e, 0x48, 0x3c, 0x5e, 0xcf, 0xb8, 0x9b, 0xde, 0x10,
+	0x12, 0x17, 0x4e, 0xfc, 0x13, 0x7a, 0xe0, 0x27, 0x80, 0xb4, 0xc7, 0x15, 0xa7, 0x3d, 0x21, 0xd4,
+	0x1e, 0x2a, 0xf1, 0x2b, 0x90, 0xed, 0xf1, 0x34, 0xa9, 0x9b, 0x6c, 0x77, 0x2f, 0xed, 0xcc, 0xbc,
+	0xef, 0xbd, 0xf7, 0x7d, 0x6f, 0xde, 0xbc, 0x18, 0xea, 0x47, 0xc3, 0x78, 0x6c, 0x71, 0x11, 0x39,
+	0x82, 0xf8, 0xa7, 0xd6, 0xc9, 0xce, 0x80, 0x08, 0x67, 0xc7, 0x12, 0xe3, 0x76, 0x18, 0x31, 0xc1,
+	0xf0, 0xfb, 0x89, 0xbd, 0x9d, 0xdb, 0xdb, 0xd2, 0x6e, 0xdc, 0x75, 0x19, 0x1f, 0x31, 0xde, 0x4f,
+	0x41, 0x56, 0xb6, 0xc9, 0x3c, 0x8c, 0x3b, 0xd9, 0xce, 0x1a, 0x71, 0xdf, 0x3a, 0xd9, 0x49, 0xfe,
+	0x49, 0xc3, 0x86, 0xcf, 0x7c, 0x96, 0x39, 0x24, 0x2b, 0x79, 0xba, 0xee, 0x8c, 0x68, 0xc0, 0xac,
+	0xf4, 0xaf, 0x3c, 0xaa, 0xcb, 0x08, 0x03, 0x87, 0x13, 0xc5, 0xc8, 0x65, 0x34, 0x90, 0xf6, 0x8f,
+	0x6f, 0xe6, 0xac, 0x48, 0x66, 0xa8, 0xad, 0x14, 0xe5, 0x70, 0x11, 0xb1, 0x11, 0xe1, 0xc7, 0x05,
+	0x69, 0x86, 0x39, 0x03, 0xf0, 0x3c, 0x26, 0x91, 0x0c, 0x62, 0x9e, 0x69, 0xb0, 0xde, 0xe5, 0xfe,
+	0x23, 0x16, 0x1c, 0x51, 0xbf, 0x27, 0x13, 0xe0, 0x87, 0x50, 0xe6, 0x24, 0xf0, 0x48, 0xa4, 0xa3,
+	0x06, 0x6a, 0xae, 0xee, 0xeb, 0x7f, 0xff, 0xb1, 0xbd, 0x21, 0x8b, 0xf0, 0xb5, 0xe7, 0x45, 0x84,
+	0xf3, 0x9e, 0x88, 0x68, 0xe0, 0xdb, 0x12, 0x87, 0x3f, 0x87, 0xb2, 0x9b, 0xc6, 0xd0, 0x4b, 0x0d,
+	0xd4, 0xac, 0x76, 0xee, 0xb5, 0x6f, 0xac, 0x6b, 0x3b, 0x4b, 0x64, 0x4b, 0x30, 0xae, 0x42, 0x89,
+	0x7a, 0xba, 0x96, 0x24, 0xb1, 0x4b, 0xd4, 0xc3, 0x06, 0xac, 0xe4, 0x2e, 0xfa, 0x62, 0x03, 0x35,
+	0xd7, 0x6c, 0xb5, 0xc7, 0x5f, 0xc1, 0x52, 0xca, 0x5c, 0x5f, 0x6a, 0xa0, 0x66, 0xa5, 0x73, 0x3f,
+	0xcb, 0xa0, 0xe4, 0xa9, 0x14, 0x07, 0x87, 0xbd, 0x27, 0x09, 0xce, 0x26, 0xcf, 0x63, 0xc2, 0x85,
+	0x9d, 0x79, 0xe1, 0x67, 0x80, 0x45, 0x44, 0x7d, 0x9f, 0x44, 0xfd, 0x90, 0x44, 0x23, 0xca, 0x39,
+	0x65, 0x81, 0x5e, 0x9e, 0x8c, 0x55, 0x60, 0xfb, 0x58, 0x01, 0x25, 0xef, 0x75, 0x19, 0xe2, 0xca,
+	0x80, 0x1f, 0xc1, 0xca, 0x88, 0x08, 0xc7, 0x73, 0x84, 0xa3, 0x2f, 0xcf, 0x8d, 0x96, 0x97, 0xb7,
+	0x2b, 0xe1, 0xb6, 0x72, 0xdc, 0x6b, 0xfd, 0x7c, 0x79, 0xd6, 0x92, 0xb5, 0xfc, 0xf5, 0xf2, 0xac,
+	0x65, 0xa8, 0xcb, 0x2f, 0x5c, 0x8e, 0xf9, 0x00, 0xee, 0x16, 0x0e, 0x6d, 0xc2, 0x43, 0x16, 0x70,
+	0x22, 0x0b, 0x8a, 0xf2, 0x82, 0x9a, 0xff, 0x21, 0xd8, 0xe8, 0x72, 0xff, 0x69, 0x46, 0x5b, 0xc2,
+	0x29, 0xe1, 0xef, 0x70, 0xc5, 0x35, 0xd0, 0xa8, 0xc7, 0xf5, 0x52, 0x43, 0x6b, 0xae, 0xda, 0xc9,
+	0x12, 0x6f, 0x42, 0x99, 0x06, 0x61, 0x2c, 0xb8, 0xae, 0x35, 0xb4, 0xe6, 0x9a, 0x2d, 0x77, 0xf8,
+	0x5b, 0x58, 0x4e, 0x6a, 0x4e, 0x09, 0xd7, 0x17, 0x1b, 0xda, 0x5b, 0xdc, 0xd5, 0xfe, 0xe2, 0xcb,
+	0x7f, 0xb6, 0x90, 0x9d, 0x7b, 0xef, 0x6d, 0x5f, 0x2b, 0xcb, 0xbd, 0xc9, 0xb2, 0x14, 0x34, 0x99,
+	0xbf, 0x23, 0xa8, 0xbd, 0xa9, 0x22, 0xf8, 0x0b, 0xd0, 0xe8, 0x38, 0x93, 0x51, 0xe9, 0x7c, 0x3a,
+	0x87, 0xd8, 0x61, 0xc0, 0x45, 0x14, 0xbb, 0x82, 0xb2, 0xc0, 0x4e, 0x5c, 0xf0, 0x13, 0x58, 0xa3,
+	0xe3, 0x7e, 0x24, 0x03, 0x67, 0xa2, 0x2b, 0x9d, 0xf6, 0x2d, 0x43, 0x48, 0x37, 0xbb, 0x42, 0xc7,
+	0xf9, 0x9a, 0x9b, 0xbf, 0x20, 0xf8, 0xf0, 0x26, 0x29, 0x8a, 0x3d, 0x01, 0xd5, 0x0a, 0xfd, 0xbc,
+	0x7d, 0xaf, 0x18, 0xa0, 0xc9, 0xea, 0xce, 0xec, 0x37, 0x95, 0x5a, 0xcf, 0x21, 0x32, 0xdf, 0x15,
+	0x8f, 0xd7, 0x28, 0x1d, 0x03, 0xcf, 0x48, 0x44, 0x8f, 0x4e, 0xd5, 0x18, 0xd8, 0x9c, 0xee, 0x11,
+	0xd5, 0x09, 0x9f, 0x41, 0xcd, 0x65, 0x81, 0x88, 0x1c, 0x57, 0xf4, 0x9d, 0xac, 0x57, 0xd2, 0x67,
+	0xbf, 0x6a, 0xbf, 0x97, 0x9f, 0xcb, 0x16, 0xc2, 0xbb, 0xb0, 0x14, 0x0e, 0x9d, 0x80, 0xa4, 0x6f,
+	0x5c, 0x8d, 0x85, 0x62, 0xb1, 0x1e, 0x27, 0x20, 0x3b, 0xc3, 0xe2, 0x2d, 0xa8, 0x28, 0xd1, 0xd4,
+	0x4b, 0x07, 0xc1, 0xaa, 0x0d, 0xf9, 0xd1, 0xa1, 0x37, 0xff, 0xb9, 0x4c, 0x8b, 0x30, 0x3f, 0x48,
+	0x9f, 0xcb, 0xf4, 0x61, 0x2e, 0xdc, 0xfc, 0x0b, 0x41, 0xb5, 0xcb, 0xfd, 0x1e, 0x11, 0x29, 0x80,
+	0x92, 0x68, 0xa6, 0x68, 0x03, 0x56, 0x72, 0x71, 0x52, 0xac, 0xda, 0xbf, 0x9b, 0xca, 0x8f, 0x60,
+	0x2d, 0x20, 0x2f, 0xfa, 0x27, 0x32, 0xb1, 0x94, 0x59, 0x09, 0xc8, 0x8b, 0x9c, 0xcb, 0xde, 0xfd,
+	0x6b, 0x3a, 0xef, 0x4c, 0xea, 0x9c, 0x20, 0x6d, 0xea, 0xb0, 0x39, 0x7d, 0x92, 0x2b, 0x6c, 0x7d,
+	0x03, 0xe5, 0x6c, 0x54, 0x60, 0x80, 0xb2, 0x47, 0xc2, 0x21, 0x3b, 0xad, 0x2d, 0x24, 0xeb, 0x38,
+	0xf4, 0x1c, 0x41, 0x6a, 0x08, 0x57, 0x60, 0xd9, 0xa3, 0xdc, 0x19, 0x0c, 0x49, 0xad, 0x94, 0x18,
+	0x48, 0x90, 0xae, 0xb5, 0x64, 0x1d, 0x91, 0x13, 0xf6, 0x23, 0xa9, 0x2d, 0x76, 0xfe, 0xd4, 0x40,
+	0xeb, 0x72, 0x1f, 0x0f, 0xa1, 0x7a, 0xed, 0xb7, 0xa2, 0x39, 0xa3, 0xfb, 0x0a, 0x33, 0xca, 0x78,
+	0x78, 0x5b, 0xa4, 0xea, 0xfe, 0x18, 0xd6, 0x8b, 0x93, 0xeb, 0xc1, 0xec, 0x30, 0x05, 0xb0, 0xb1,
+	0xfb, 0x16, 0x60, 0x95, 0x76, 0x08, 0xd5, 0x6b, 0x2f, 0x61, 0x8e, 0xc8, 0x69, 0xe4, 0x3c, 0x91,
+	0x37, 0xf7, 0x20, 0x76, 0xa1, 0x32, 0xd9, 0x7f, 0x9f, 0xcc, 0x0e, 0x30, 0x01, 0x33, 0xb6, 0x6f,
+	0x05, 0xcb, 0x93, 0x18, 0x4b, 0x3f, 0x5d, 0x9e, 0xb5, 0xd0, 0x7e, 0xef, 0xe5, 0x79, 0x1d, 0xbd,
+	0x3a, 0xaf, 0xa3, 0x7f, 0xcf, 0xeb, 0xe8, 0xb7, 0x8b, 0xfa, 0xc2, 0xab, 0x8b, 0xfa, 0xc2, 0xeb,
+	0x8b, 0xfa, 0xc2, 0x0f, 0x5f, 0xfa, 0x54, 0x1c, 0xc7, 0x83, 0xb6, 0xcb, 0x46, 0xd6, 0xc1, 0x30,
+	0x1e, 0x7f, 0x7f, 0xf0, 0xf4, 0x3b, 0x67, 0xc0, 0xad, 0x24, 0x8b, 0x67, 0xb9, 0xc7, 0x0e, 0x0d,
+	0xac, 0x11, 0xf3, 0xe2, 0x21, 0xe1, 0x57, 0x5f, 0x26, 0xe2, 0x34, 0x24, 0x7c, 0x50, 0x4e, 0x3f,
+	0x25, 0x76, 0xff, 0x0f, 0x00, 0x00, 0xff, 0xff, 0x9e, 0xc7, 0x27, 0x14, 0x6b, 0x09, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -451,6 +678,8 @@ const _ = grpc.SupportPackageIsVersion4
 type MsgClient interface {
 	ConfigStrategy(ctx context.Context, in *MsgConfigStrategy, opts ...grpc.CallOption) (*MsgConfigStrategyResponse, error)
 	TriggerStrategies(ctx context.Context, in *MsgTriggerStrategies, opts ...grpc.CallOption) (*MsgTriggerStrategiesResponse, error)
+	VerifyStrategy(ctx context.Context, in *MsgVerifyStrategy, opts ...grpc.CallOption) (*MsgVerifyStrategyResponse, error)
+	SetVerifier(ctx context.Context, in *MsgSetVerifier, opts ...grpc.CallOption) (*MsgSetVerifierResponse, error)
 }
 
 type msgClient struct {
@@ -479,10 +708,30 @@ func (c *msgClient) TriggerStrategies(ctx context.Context, in *MsgTriggerStrateg
 	return out, nil
 }
 
+func (c *msgClient) VerifyStrategy(ctx context.Context, in *MsgVerifyStrategy, opts ...grpc.CallOption) (*MsgVerifyStrategyResponse, error) {
+	out := new(MsgVerifyStrategyResponse)
+	err := c.cc.Invoke(ctx, "/flux.strategy.v1beta1.Msg/VerifyStrategy", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) SetVerifier(ctx context.Context, in *MsgSetVerifier, opts ...grpc.CallOption) (*MsgSetVerifierResponse, error) {
+	out := new(MsgSetVerifierResponse)
+	err := c.cc.Invoke(ctx, "/flux.strategy.v1beta1.Msg/SetVerifier", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	ConfigStrategy(context.Context, *MsgConfigStrategy) (*MsgConfigStrategyResponse, error)
 	TriggerStrategies(context.Context, *MsgTriggerStrategies) (*MsgTriggerStrategiesResponse, error)
+	VerifyStrategy(context.Context, *MsgVerifyStrategy) (*MsgVerifyStrategyResponse, error)
+	SetVerifier(context.Context, *MsgSetVerifier) (*MsgSetVerifierResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -494,6 +743,12 @@ func (*UnimplementedMsgServer) ConfigStrategy(ctx context.Context, req *MsgConfi
 }
 func (*UnimplementedMsgServer) TriggerStrategies(ctx context.Context, req *MsgTriggerStrategies) (*MsgTriggerStrategiesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TriggerStrategies not implemented")
+}
+func (*UnimplementedMsgServer) VerifyStrategy(ctx context.Context, req *MsgVerifyStrategy) (*MsgVerifyStrategyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyStrategy not implemented")
+}
+func (*UnimplementedMsgServer) SetVerifier(ctx context.Context, req *MsgSetVerifier) (*MsgSetVerifierResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetVerifier not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -536,6 +791,42 @@ func _Msg_TriggerStrategies_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_VerifyStrategy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgVerifyStrategy)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).VerifyStrategy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/flux.strategy.v1beta1.Msg/VerifyStrategy",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).VerifyStrategy(ctx, req.(*MsgVerifyStrategy))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_SetVerifier_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSetVerifier)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).SetVerifier(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/flux.strategy.v1beta1.Msg/SetVerifier",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).SetVerifier(ctx, req.(*MsgSetVerifier))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "flux.strategy.v1beta1.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -547,6 +838,14 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TriggerStrategies",
 			Handler:    _Msg_TriggerStrategies_Handler,
+		},
+		{
+			MethodName: "VerifyStrategy",
+			Handler:    _Msg_VerifyStrategy_Handler,
+		},
+		{
+			MethodName: "SetVerifier",
+			Handler:    _Msg_SetVerifier_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -825,6 +1124,150 @@ func (m *MsgTriggerStrategiesResponse) MarshalToSizedBuffer(dAtA []byte) (int, e
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgVerifyStrategy) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgVerifyStrategy) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgVerifyStrategy) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.StrategyId) > 0 {
+		i -= len(m.StrategyId)
+		copy(dAtA[i:], m.StrategyId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.StrategyId)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.Plane != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Plane))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.ContractAddress) > 0 {
+		i -= len(m.ContractAddress)
+		copy(dAtA[i:], m.ContractAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ContractAddress)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgVerifyStrategyResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgVerifyStrategyResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgVerifyStrategyResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgSetVerifier) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSetVerifier) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSetVerifier) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.NewVerifier) > 0 {
+		i -= len(m.NewVerifier)
+		copy(dAtA[i:], m.NewVerifier)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.NewVerifier)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.Plane != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Plane))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Contract) > 0 {
+		i -= len(m.Contract)
+		copy(dAtA[i:], m.Contract)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Contract)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgSetVerifierResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSetVerifierResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSetVerifierResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -953,6 +1396,72 @@ func (m *MsgTriggerStrategiesResponse) Size() (n int) {
 			n += 1 + l + sovTx(uint64(l))
 		}
 	}
+	return n
+}
+
+func (m *MsgVerifyStrategy) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.ContractAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Plane != 0 {
+		n += 1 + sovTx(uint64(m.Plane))
+	}
+	l = len(m.StrategyId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgVerifyStrategyResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgSetVerifier) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Contract)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Plane != 0 {
+		n += 1 + sovTx(uint64(m.Plane))
+	}
+	l = len(m.NewVerifier)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgSetVerifierResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
 	return n
 }
 
@@ -1712,6 +2221,436 @@ func (m *MsgTriggerStrategiesResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgVerifyStrategy) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgVerifyStrategy: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgVerifyStrategy: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContractAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContractAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Plane", wireType)
+			}
+			m.Plane = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Plane |= types.Plane(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StrategyId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StrategyId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgVerifyStrategyResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgVerifyStrategyResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgVerifyStrategyResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgSetVerifier) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSetVerifier: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSetVerifier: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Contract", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Contract = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Plane", wireType)
+			}
+			m.Plane = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Plane |= types.Plane(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NewVerifier", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NewVerifier = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgSetVerifierResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSetVerifierResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSetVerifierResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])

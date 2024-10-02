@@ -88,63 +88,6 @@ func (inst DeployWithMaxDataLen) MarshalWithEncoder(encoder *bin.Encoder) error 
 	return encoder.WriteUint64(inst.DataLen, binary.LittleEndian)
 }
 
-func ToCosmosMsg(signers []string, computeBudget uint64, tx *solana.Transaction) *types.MsgTransaction {
-	pubkeys := []string{}
-	for _, p := range tx.Message.AccountKeys {
-		pubkeys = append(pubkeys, p.String())
-	}
-
-	ixs := []*types.Instruction{}
-	for _, ix := range tx.Message.Instructions {
-		fluxInstr := &types.Instruction{
-			ProgramIndex: []uint32{uint32(ix.ProgramIDIndex)},
-			Data:         ix.Data,
-		}
-
-		accounts, err := ix.ResolveInstructionAccounts(&tx.Message)
-		if err != nil {
-			panic(err)
-		}
-
-		for _, a := range accounts {
-			fluxInstr.Accounts = append(fluxInstr.Accounts, &types.InstructionAccount{
-				IdIndex:     uint32(positionOf(a.PublicKey, tx.Message.AccountKeys)),
-				CallerIndex: uint32(positionOf(a.PublicKey, tx.Message.AccountKeys)),
-				CalleeIndex: uint32(positionOfPubkeyInAccountMetas(a.PublicKey, accounts)),
-				IsSigner:    a.IsSigner,
-				IsWritable:  a.IsWritable,
-			})
-		}
-		ixs = append(ixs, fluxInstr)
-	}
-
-	return &types.MsgTransaction{
-		Signers:       signers,
-		Accounts:      pubkeys,
-		Instructions:  ixs,
-		ComputeBudget: computeBudget,
-	}
-}
-
-func positionOf(a solana.PublicKey, s []solana.PublicKey) int {
-	for i, pk := range s {
-		if pk.Equals(a) {
-			return i
-		}
-	}
-	return -1
-}
-
-func positionOfPubkeyInAccountMetas(a solana.PublicKey, metas []*solana.AccountMeta) int {
-	for idx, meta := range metas {
-		if meta.PublicKey.Equals(a) {
-			return idx
-		}
-	}
-
-	return -1
-}
-
 // Find associated token account, panic when not found (not likely to happen)
 func MustFindAta(
 	wallet, tokenProgram, mint, ataProgram solana.PublicKey,

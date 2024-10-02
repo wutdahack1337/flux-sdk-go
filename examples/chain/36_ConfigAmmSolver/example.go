@@ -88,10 +88,29 @@ func main() {
 			Type:        strategytypes.StrategyType_INTENT_SOLVER,
 			Tags:        strings.Split("Solver, Uniswap, Astroport, Raydium, DeFi, Arbitrage", ", "),
 			Schema:      string(schema),
+			SupportedApps: []*strategytypes.SupportedApp{
+				{
+					Name:            "Uniswap",
+					ContractAddress: "e2f81b30e1d47dffdbb6ab41ec5f0572705b026d",
+					Plane:           types.Plane_EVM,
+					Verified:        false,
+				},
+				{
+					Name:            "Astroport",
+					ContractAddress: "lux14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sm3tpfk",
+					Plane:           types.Plane_WASM,
+					Verified:        false,
+				},
+				{
+					Name:            "Drift",
+					ContractAddress: "FLR3mfYrMZUnhqEadNJVwjUhjX8ky9vE9qTtDmkK4vwC",
+					Plane:           types.Plane_SVM,
+					Verified:        false,
+				},
+			},
 		},
 	}
 
-	//AsyncBroadcastMsg, SyncBroadcastMsg, QueueBroadcastMsg
 	res, err := chainClient.SyncBroadcastMsg(msg)
 	if err != nil {
 		panic(err)

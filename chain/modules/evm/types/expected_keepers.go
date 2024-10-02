@@ -23,3 +23,7 @@ type AccountKeeper interface {
 	GetModuleAddress(name string) sdk.AccAddress
 	GetAccount(ctx context.Context, addr sdk.AccAddress) sdk.AccountI
 }
+
+type StrategyKeeper interface {
+	SetEvmVerifier(ctx context.Context, contract []byte, verifier []byte)
+}

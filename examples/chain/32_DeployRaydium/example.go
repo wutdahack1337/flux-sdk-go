@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
+	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
@@ -68,7 +69,7 @@ func BuildInitAccountsMsg(
 		panic(initTx)
 	}
 
-	return svm.ToCosmosMsg(senderAddr.String(), MaxComputeBudget, initTx)
+	return svmtypes.ToCosmosMsg([]string{senderAddr.String()}, MaxComputeBudget, initTx)
 }
 
 func BuildDeployMsg(
@@ -173,7 +174,7 @@ func BuildDeployMsg(
 	if err != nil {
 		panic(err)
 	}
-	return svm.ToCosmosMsg(senderAddr.String(), MaxComputeBudget, tx)
+	return svmtypes.ToCosmosMsg([]string{senderAddr.String()}, MaxComputeBudget, tx)
 }
 
 func main() {

@@ -24,13 +24,18 @@ const (
 
 	// From solana: Maximum program instruction invocation stack height
 	// It's same as EVM call depth
-	DefaultMaxInvokeStackHeight uint64 = 5
+	DefaultMaxInvokeStackHeight   uint64  = 8
+	DefaultStackFrameSize                 = 8192
+	DefaultHeapSize                       = 32 * 1024
+	DefaultLamportsPerByteYear    uint64  = 1000000000 * 365 / 100 / (1024 * 1024)
+	DefaultExemptionThreshold     float64 = 2.0
+	DefaultBurnPercent            byte    = 50
+	DefaultAccountStorageOverhead uint64  = 128
 
-	DefaultLamportsPerByteYear uint64  = 1000000000 * 365 / 100 / (1024 * 1024)
-	DefaultExemptionThreshold  float64 = 2.0
-	DefaultBurnPercent         byte    = 50
-
-	DefaultAccountStorageOverhead uint64 = 128
+	DefaultTickPerDay               uint64 = 160 * (24 * 60 * 60) // tick per second * second per day
+	DefaultTickPerSlot              uint64 = 64
+	DefaultSlotsPerEpoch            uint64 = 2 * DefaultTickPerDay / DefaultTickPerSlot
+	DefaultLeaderScheduleSlotOffset uint64 = DefaultSlotsPerEpoch
 )
 
 // rent exempt amount  = lamports per byte per year * (DefaultAccountStorageOverhead+size in byte) * 2 years
@@ -50,5 +55,6 @@ var (
 	SplTokenProgramId         = solana.MustPublicKeyFromBase58("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")
 
 	// sysvars
-	SysVarRent = solana.MustHashFromBase58("SysvarRent111111111111111111111111111111111")
+	SysVarRent          = solana.MustHashFromBase58("SysvarRent111111111111111111111111111111111")
+	SysVarEpochSchedule = solana.MustHashFromBase58("SysvarEpochSchedu1e111111111111111111111111")
 )

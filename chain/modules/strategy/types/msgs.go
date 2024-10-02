@@ -4,9 +4,10 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	"regexp"
 	"strings"
+
+	"github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -32,7 +33,7 @@ func (m *MsgConfigStrategy) ValidateBasic() error {
 			return fmt.Errorf("strategy id should be empty for deploy, update options")
 		}
 
-		if err := m.Metadata.ValidateBasic(m.Query); err != nil {
+		if err := m.Metadata.ValidateBasic(m.Query, false); err != nil {
 			return fmt.Errorf("metadata validate error: %w", err)
 		}
 
@@ -51,7 +52,7 @@ func (m *MsgConfigStrategy) ValidateBasic() error {
 		}
 
 		if m.Metadata != nil {
-			if err := m.Metadata.ValidateBasic(m.Query); err != nil {
+			if err := m.Metadata.ValidateBasic(m.Query, true); err != nil {
 				return fmt.Errorf("metadata validate error: %w", err)
 			}
 		}
@@ -106,9 +107,33 @@ func (m MsgTriggerStrategies) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
-func (m *StrategyMetadata) ValidateBasic(query *types.FISQueryRequest) error {
+func (m *StrategyMetadata) ValidateBasic(query *types.FISQueryRequest, requireAppsUnverified bool) error {
 	if m == nil {
 		return fmt.Errorf("strategy metadata cannot be nil. Type must be defined")
+	}
+
+	// ensure supported apps are not duplicated
+	seenApps := map[string]struct{}{}
+	for _, v := range m.SupportedApps {
+		contractAddress, err := ParseContractAddr(v.ContractAddress, v.Plane)
+		if err != nil {
+			return fmt.Errorf("invalid contract address: %s (plane: %s), err: %w", v.ContractAddress, v.Plane.String(), err)
+		}
+
+		appId := v.Plane.String() + string(contractAddress)
+		if _, seen := seenApps[appId]; seen {
+			return fmt.Errorf("app contract duplicated: %s, plane: %s", v.ContractAddress, v.Plane)
+		}
+		seenApps[appId] = struct{}{}
+	}
+
+	// ensure all apps are not verified in config phase
+	if requireAppsUnverified {
+		for _, v := range m.SupportedApps {
+			if v.Verified {
+				return fmt.Errorf("app must not be verified: %s, plane: %s", v.Name, v.Plane)
+			}
+		}
 	}
 
 	switch m.Type {

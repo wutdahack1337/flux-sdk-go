@@ -24,14 +24,15 @@ typedef struct golana_pubkeys golana_pubkeys;
 
 typedef struct golana_result golana_result;
 
+typedef struct golana_sysvar_cache golana_sysvar_cache;
+
+typedef struct golana_sysvar_clock golana_sysvar_clock;
+
+typedef struct golana_sysvar_rent golana_sysvar_rent;
+
 typedef struct golana_transaction_account golana_transaction_account;
 
 typedef struct golana_tx_callback golana_tx_callback;
-
-typedef struct {
-  size_t len;
-  const uint8_t *data;
-} bytes;
 
 typedef golana_compute_budget *(*getComputeBudgetFn)(void *caller, uint64_t tx_id);
 
@@ -45,15 +46,14 @@ typedef golana_transaction_account *(*getAccountSharedDataFn)(void *caller, uint
 
 typedef bool (*setAccountSharedDataFn)(void *caller, golana_transaction_account *account);
 
+typedef struct {
+  size_t len;
+  const uint8_t *data;
+} bytes;
+
 #ifdef __cplusplus
 extern "C" {
 #endif // __cplusplus
-
-golana_result *golana_execute(golana_tx_callback *cb,
-                              uint64_t tx_id,
-                              uint64_t *total_unit_consumed);
-
-bytes golana_get_builtins_program_keys(void);
 
 golana_tx_callback *golana_tx_callback_create(getComputeBudgetFn get_compute_budget_fn,
                                               getPubkeysFn get_pubkeys_fn,
@@ -63,6 +63,13 @@ golana_tx_callback *golana_tx_callback_create(getComputeBudgetFn get_compute_bud
                                               setAccountSharedDataFn set_account_shared_data_fn);
 
 void golana_tx_callback_free(golana_tx_callback *c_tx_callback);
+
+golana_result *golana_execute(golana_tx_callback *cb,
+                              uint64_t tx_id,
+                              uint64_t *total_unit_consumed,
+                              golana_sysvar_cache *sysvar_cache);
+
+bytes golana_get_builtins_program_keys(void);
 
 void golana_bytes_free(bytes b);
 
@@ -90,7 +97,9 @@ uint64_t golana_transaction_account_rent_epoch(golana_transaction_account *a);
 
 golana_compute_budget *golana_compute_budget_create(uint64_t compute_unit_limit,
                                                     size_t max_instruction_trace_length,
-                                                    size_t max_invoke_stack_height);
+                                                    size_t max_invoke_stack_height,
+                                                    size_t stack_frame_size,
+                                                    uint32_t heap_size);
 
 golana_pubkeys *golana_pubkeys_create(const uint8_t *const *ptr, size_t len);
 
@@ -114,6 +123,28 @@ const char *golana_result_error(golana_result *result);
 const char *const *golana_result_log_ptr(golana_result *result);
 
 size_t golana_result_log_len(golana_result *result);
+
+golana_sysvar_clock *golana_sysvar_clock_new(uint64_t slot,
+                                             int64_t epoch_start_timestamp,
+                                             uint64_t epoch,
+                                             uint64_t leader_schedule_epoch,
+                                             int64_t unix_timestamp);
+
+void golana_sysvar_clock_free(golana_sysvar_clock *clock);
+
+golana_sysvar_rent *golana_sysvar_rent_new(uint64_t lamports_per_byte_year,
+                                           double exemption_threshold,
+                                           uint8_t burn_percent);
+
+void golana_sysvar_rent_free(golana_sysvar_rent *rent);
+
+golana_sysvar_cache *golana_sysvar_cache_new(void);
+
+void golana_sysvar_cache_free(golana_sysvar_cache *sysvar_cache);
+
+void golana_sysvar_cache_set_clock(golana_sysvar_cache *sysvar_cache, golana_sysvar_clock *clock);
+
+void golana_sysvar_cache_set_rent(golana_sysvar_cache *sysvar_cache, golana_sysvar_rent *rent);
 
 #ifdef __cplusplus
 } // extern "C"

@@ -5,7 +5,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/FluxNFTLabs/sdk-go/chain/modules/svm/golana"
 	"github.com/gagliardetto/solana-go"
 	"github.com/gagliardetto/solana-go/programs/system"
 
@@ -15,6 +14,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
+	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 )
 
@@ -85,7 +85,7 @@ func main() {
 		AddInstruction(initBufferAccountIx)
 
 	tx, err := initTxBuilder.Build()
-	msg := golana.ToCosmosMsg([]string{senderAddress.String()}, 1000000, tx)
+	msg := svmtypes.ToCosmosMsg([]string{senderAddress.String()}, 1000000, tx)
 
 	// broadcast msg
 	res, err := chainClient.SyncBroadcastSvmMsg(msg)
