@@ -108,7 +108,7 @@ func main() {
 		panic(err)
 	}
 
-	bz, err := os.ReadFile(dir + "/examples/chain/28_DeployUniswap/PoolManager.json")
+	bz, err := os.ReadFile(dir + "/examples/chain/30_DeployUniswap/PoolManager.json")
 	if err != nil {
 		panic(err)
 	}
@@ -124,7 +124,7 @@ func main() {
 	}
 
 	var compData map[string]interface{}
-	bz, err = os.ReadFile(dir + "/examples/chain/28_DeployUniswap/PoolActions.json")
+	bz, err = os.ReadFile(dir + "/examples/chain/30_DeployUniswap/PoolActions.json")
 	if err != nil {
 		panic(err)
 	}
@@ -138,7 +138,7 @@ func main() {
 		panic(err)
 	}
 
-	bz, err = os.ReadFile(dir + "/examples/chain/29_ExecuteUniswap/erc20.json")
+	bz, err = os.ReadFile(dir + "/examples/chain/30_ExecuteUniswap/erc20.json")
 	if err != nil {
 		panic(err)
 	}

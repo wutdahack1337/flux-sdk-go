@@ -245,6 +245,7 @@ func initializeAmmPool(
 	token0Mint solana.PublicKey,
 	token1Mint solana.PublicKey,
 	senderSvmAccount solana.PublicKey,
+	poolName string,
 ) (poolStateAccount solana.PublicKey, poolState *raydium_cp_swap.PoolState) {
 	tokens := []solana.PublicKey{token0Mint, token1Mint}
 	initialAmounts := []uint64{initialToken0Amount, initialToken1Amount}
@@ -353,7 +354,7 @@ func initializeAmmPool(
 	fmt.Println("----- action: Create pool ------")
 	fmt.Println("tx hash:", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
-	fmt.Println("pool created:", getPoolNameByPubkey(poolStateAccount))
+	fmt.Println("pool name:", poolName)
 	fmt.Println("authority account:", authorityAccount.String())
 	fmt.Println("amm config:", ammConfigAccount.String())
 	fmt.Println("pool state account:", poolStateAccount.String())
@@ -362,7 +363,6 @@ func initializeAmmPool(
 	fmt.Println("token0 vault:", tokens0Vault.String())
 	fmt.Println("token1 vault:", tokens1Vault.String())
 	fmt.Println("observer state:", oracleObserver.String())
-
 	fmt.Println("creator owner lp amount:", mustGetTokenAccount(chainClient, ctx, creatorLpAta).Amount)
 
 	poolStateResponse, err = chainClient.GetSvmAccount(ctx, poolStateAccount.String())
@@ -694,6 +694,7 @@ func main() {
 			config.Mint,
 			svmDenomMap["usdt"].Mint,
 			adminAccount,
+			denom+"-usdt",
 		)
 
 		svmDenomMap[denom].DenomUsdtPool = poolAccount

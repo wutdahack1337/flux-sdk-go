@@ -55,7 +55,7 @@ func main() {
 
 		// init link msg
 		svmPubkey := svmKeypair.PublicKey()
-		svmSig, err := svmKeypair.Sign(userAddr.Bytes())
+		svmSig, err := svmKeypair.Sign([]byte(userAddr.String()))
 		if err != nil {
 			panic(err)
 		}
