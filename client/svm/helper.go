@@ -154,7 +154,7 @@ func CreateInitAccountsMsg(
 		signers = append(signers, acc.String())
 	}
 
-	return ToCosmosMsg(signers, MaxComputeBudget, initTx)
+	return types.ToCosmosMsg(signers, MaxComputeBudget, initTx)
 }
 
 func CreateProgramUploadMsgs(
@@ -214,7 +214,7 @@ func CreateProgramUploadMsgs(
 				return nil, fmt.Errorf("solana tx build err: %w", err)
 			}
 
-			res = append(res, ToCosmosMsg(signers, MaxComputeBudget, tx))
+			res = append(res, types.ToCosmosMsg(signers, MaxComputeBudget, tx))
 			txBuilder = solana.NewTransactionBuilder()
 		}
 	}
@@ -282,7 +282,7 @@ func CreateProgramUploadMsgs(
 	if err != nil {
 		return nil, err
 	}
-	res = append(res, ToCosmosMsg(signers, MaxComputeBudget, tx))
+	res = append(res, types.ToCosmosMsg(signers, MaxComputeBudget, tx))
 	return res, nil
 }
 
@@ -472,7 +472,7 @@ func InitializePythOracle(
 		panic(err)
 	}
 
-	initOracleMsg := ToCosmosMsg([]string{
+	initOracleMsg := types.ToCosmosMsg([]string{
 		chainClient.FromAddress().String(),
 		oracleCosmosAddr.String(),
 	}, 1000_000, initOracleTx)
