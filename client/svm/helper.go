@@ -396,7 +396,7 @@ func GetOrLinkSvmAccount(
 	}
 
 	// init link msg
-	svmSig, err := svmPrivKey.Sign(userAddr.Bytes())
+	svmSig, err := svmPrivKey.Sign([]byte(userAddr.String()))
 	if err != nil {
 		return solana.PublicKey{}, nil, fmt.Errorf("svm private key sign err: %w", err)
 	}

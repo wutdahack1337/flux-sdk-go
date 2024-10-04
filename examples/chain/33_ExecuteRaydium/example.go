@@ -354,7 +354,15 @@ func initializeAmmPool(
 	fmt.Println("tx hash:", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 	fmt.Println("pool created:", getPoolNameByPubkey(poolStateAccount))
+	fmt.Println("authority account:", authorityAccount.String())
+	fmt.Println("amm config:", ammConfigAccount.String())
 	fmt.Println("pool state account:", poolStateAccount.String())
+	fmt.Println("token0 mint:", token0Mint.String())
+	fmt.Println("token1 mint:", token1Mint.String())
+	fmt.Println("token0 vault:", tokens0Vault.String())
+	fmt.Println("token1 vault:", tokens1Vault.String())
+	fmt.Println("observer state:", oracleObserver.String())
+
 	fmt.Println("creator owner lp amount:", mustGetTokenAccount(chainClient, ctx, creatorLpAta).Amount)
 
 	poolStateResponse, err = chainClient.GetSvmAccount(ctx, poolStateAccount.String())

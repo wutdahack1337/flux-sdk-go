@@ -944,7 +944,7 @@ func (c *chainClient) GetSVMAccountLink(ctx context.Context, cosmosAddress sdk.A
 }
 
 func (c *chainClient) LinkSVMAccount(svmPrivKey *ed25519.PrivKey, luxAmount sdkmath.Int) (*txtypes.BroadcastTxResponse, error) {
-	svmAccountLinkSig, err := svmPrivKey.Sign(c.FromAddress().Bytes())
+	svmAccountLinkSig, err := svmPrivKey.Sign([]byte(c.FromAddress().String()))
 	if err != nil {
 		return nil, fmt.Errorf("svm privkey sign err: %w", err)
 	}
