@@ -104,7 +104,7 @@ func main() {
 
 	programSvmPrivKey := &ed25519.PrivKey{Key: programSvmPrivKeyBz}
 	programPubkey := solana.PublicKeyFromBytes(programSvmPrivKey.PubKey().Bytes())
-	programBufferSvmPrivKey := ed25519.GenPrivKeyFromSecret([]byte("programBuffer"))
+	programBufferSvmPrivKey := ed25519.GenPrivKeyFromSecret([]byte("raydiumBuffer"))
 	programBufferPubkey := solana.PublicKeyFromBytes(programBufferSvmPrivKey.PubKey().Bytes())
 
 	fmt.Println("=== linking accounts ===")
@@ -185,5 +185,5 @@ func main() {
 			fmt.Println("err code:", res.TxResponse.Code, ", log:", res.TxResponse.RawLog)
 		}
 	}
-	fmt.Println("✅ drift program deployed. program pubkey:", programPubkey.String())
+	fmt.Println("✅ raydium program deployed. program pubkey:", programPubkey.String())
 }
