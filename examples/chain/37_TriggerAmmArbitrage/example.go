@@ -113,9 +113,9 @@ func main() {
 	fmt.Println("sender account:", senderAddress.String())
 	msg := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"455ac22d8acc3f414d74ec7a2c75aaa23d0a4c64a0d417ac377c73e98e31d7e4"},
+		Ids:    []string{"c034a7b709c7656b453e4638026b4c112a2674de88cfb8cad9a6874b931b0326"},
 		Inputs: [][]byte{
-			[]byte(`{"arbitrage":{"pair":"btc-usdt","amount":"10000000","min_profit":"100000"}}`),
+			[]byte(`{"arbitrage":{"pair":"btc-usdt","amount":"1000000","min_profit":"100"}}`),
 		},
 		Queries: []*astromeshtypes.FISQueryRequest{&fisQueryRequest},
 	}
