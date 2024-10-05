@@ -113,7 +113,7 @@ func main() {
 	fmt.Println("sender account:", senderAddress.String())
 	msg := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"9af1ff2288a33397fee77796c766081218afacf5dbec14a7c6e4fc8c5a45ec58"},
+		Ids:    []string{"455ac22d8acc3f414d74ec7a2c75aaa23d0a4c64a0d417ac377c73e98e31d7e4"},
 		Inputs: [][]byte{
 			[]byte(`{"arbitrage":{"pair":"btc-usdt","amount":"10000000","min_profit":"100000"}}`),
 		},
