@@ -12,7 +12,16 @@
             "dex_name"
           ],
           "query": {
-            "instructions": []
+            "instructions": [
+              {
+                "plane": "COSMOS",
+                "action": "COSMOS_QUERY",
+                "address": "",
+                "input": [
+                  "L2ZsdXgvc3ZtL3YxYmV0YTEvYWNjb3VudF9saW5rL2Nvc21vcy8ke3dhbGxldH0="
+                ]
+              }
+            ]
           }
         },
         "arbitrage": {
@@ -37,9 +46,9 @@
                 "action": "VM_QUERY",
                 "address": "",
                 "input": [
-                  "fc0WJJBsUlKti9rFTRj6x/PndoNXIsgEq1Vw3z0ReIE=",
-                  "BwmxkQQkwO0Q6U2oCIocteYc4mvP6U27JYayegTQzpo=",
-                  "9OAsSajoN2RZsZVZRfZYHvYEJrV6uoZRcFHe/MCn4vw="
+                  "4MZzLqY4PvNSihCwMfEUpjuOXd1VvOu/6ssMQ2G96ig=",
+                  "dOcgRFpl4um1CxkaM8N9c60auUCIWIV1sbv1ow7L6LM=",
+                  "+2OIrRwpeNYfh28e2FhJ1vz7w7QYv94KA7xqe9B/CkY="
                 ]
               },
               {
@@ -55,9 +64,9 @@
                 "action": "VM_QUERY",
                 "address": "",
                 "input": [
-                  "qR1u8j+qpSth090Eqe1Qq+4i13LI5qYJQvi+nlXE2oI=",
-                  "tTFSS7mCQ6JivsRxCdAb4Vi5Cf3NYThYFqIZLAo0dUc=",
-                  "4UoyuyrWHBMmB7i+NfWWuf/ELfvzFCg30ou1Ow5ehJY="
+                  "rlJehZaQdakPYzP3G+lf3nPt4oVCb0X3rwHc6ihjLRg=",
+                  "y1vhPgI/Sg4d6BBfyZda6wOMICVF0ZtMnSA035XIcFA=",
+                  "c9lxPCVFgLjH0Dl7zXMK75eutCovBdvUYshqHLE9mRA="
                 ]
               },
               {
@@ -73,9 +82,9 @@
                 "action": "VM_QUERY",
                 "address": "",
                 "input": [
-                  "8y7aVXdVNRQ1XAOOvqx+HWxk/0VU+Cy0IrWNAkl10zo=",
-                  "TYCEsJ4FX/cBaSbem3o2PnmRp6z+ud89FRJgCmVKVSw=",
-                  "0TdN2fSwe+IJX9KB0zIFNrkrfm67RZcEIc20o7eZfo4="
+                  "9qq3w5RCCC/VfeIHjucIhPx4cAt00TOxlnUMqVWNaB4=",
+                  "OIx0L1nAPy92BO+6nlgaSxgHpvIHh1crJF1bI4IV/rI=",
+                  "GVfbAHIrPMC3oQQbQbweZen6/rabtlkgsl7OEQhVPRc="
                 ]
               },
               {

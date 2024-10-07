@@ -45,7 +45,7 @@ func main() {
 	// init client ctx
 	clientCtx, senderAddress, err := chaintypes.NewClientContext(
 		network.ChainId,
-		"user2",
+		"user1",
 		kr,
 	)
 	if err != nil {
@@ -98,24 +98,24 @@ func main() {
 		panic(err)
 	}
 
-	arbitrageQuery := schemaStruct.Groups[0].Prompts["arbitrage"].Query
-	arbitrageQueryBz, _ := json.Marshal(arbitrageQuery)
+	swapQuery := schemaStruct.Groups[0].Prompts["swap"].Query
+	swapQueryBz, _ := json.Marshal(swapQuery)
 	var fisQueryRequest astromeshtypes.FISQueryRequest
-	if err := jsonpb.UnmarshalString(string(arbitrageQueryBz), &fisQueryRequest); err != nil {
+	if err := jsonpb.UnmarshalString(string(swapQueryBz), &fisQueryRequest); err != nil {
 		panic(err)
 	}
 
 	// replace wallet address in schema
-	fisQueryRequest.Instructions[6].Input[0] = []byte(
-		strings.Replace(string(fisQueryRequest.Instructions[6].Input[0]), "${wallet}", senderAddress.String(), 1),
+	fisQueryRequest.Instructions[0].Input[0] = []byte(
+		strings.Replace(string(fisQueryRequest.Instructions[0].Input[0]), "${wallet}", senderAddress.String(), 1),
 	)
 
 	fmt.Println("sender account:", senderAddress.String())
 	msg := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"9af1ff2288a33397fee77796c766081218afacf5dbec14a7c6e4fc8c5a45ec58"},
+		Ids:    []string{"c034a7b709c7656b453e4638026b4c112a2674de88cfb8cad9a6874b931b0326"},
 		Inputs: [][]byte{
-			[]byte(`{"arbitrage":{"pair":"btc-usdt","amount":"10000000","min_profit":"100000"}}`),
+			[]byte(`{"swap":{"dex_name":"evm uniswap","src_denom":"btc","dst_denom":"usdt","amount":"100"}}`),
 		},
 		Queries: []*astromeshtypes.FISQueryRequest{&fisQueryRequest},
 	}

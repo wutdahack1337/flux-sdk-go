@@ -1,181 +1,31 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
 
-	"github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
-	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
+	_ "embed"
+
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
 	"github.com/FluxNFTLabs/sdk-go/client/svm"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/ethsecp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	ethcrypto "github.com/ethereum/go-ethereum/crypto"
+	ethcommon "github.com/ethereum/go-ethereum/common"
 	"github.com/gagliardetto/solana-go"
-	"github.com/gagliardetto/solana-go/programs/system"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-const MaxComputeBudget = 10000000
-
-func BuildInitAccountsMsg(
-	senderAddr sdk.AccAddress,
-	programSize int,
-	programPubkey solana.PublicKey,
-	programBufferPubkey solana.PublicKey,
-) *types.MsgTransaction {
-	callerPubkey := solana.PublicKeyFromBytes(ethcrypto.Keccak256(senderAddr))
-	initTxBuilder := solana.NewTransactionBuilder()
-
-	createAccountIx := system.NewCreateAccountInstruction(
-		0, uint64(programSize)+48,
-		solana.BPFLoaderUpgradeableProgramID, callerPubkey,
-		programBufferPubkey,
-	).Build()
-	createProgramAccountIx := system.NewCreateAccountInstruction(
-		0, 36,
-		solana.BPFLoaderUpgradeableProgramID,
-		callerPubkey,
-		programPubkey,
-	).Build()
-	initBufferAccountIx := solana.NewInstruction(
-		solana.BPFLoaderUpgradeableProgramID,
-		solana.AccountMetaSlice{
-			&solana.AccountMeta{
-				PublicKey:  programBufferPubkey,
-				IsWritable: true,
-				IsSigner:   true,
-			},
-			&solana.AccountMeta{
-				PublicKey:  callerPubkey,
-				IsWritable: true,
-				IsSigner:   true,
-			},
-		},
-		[]byte{0, 0, 0, 0},
-	)
-
-	initTxBuilder.
-		AddInstruction(createAccountIx).
-		AddInstruction(createProgramAccountIx).
-		AddInstruction(initBufferAccountIx)
-
-	initTx, err := initTxBuilder.Build()
-	if err != nil {
-		panic(initTx)
-	}
-
-	return svmtypes.ToCosmosMsg([]string{senderAddr.String()}, MaxComputeBudget, initTx)
-}
-
-func BuildDeployMsg(
-	senderAddr sdk.AccAddress,
-	programPubkey solana.PublicKey,
-	programBufferPubkey solana.PublicKey,
-	programBz []byte,
-) *types.MsgTransaction {
-	callerPubkey := solana.PublicKeyFromBytes(ethcrypto.Keccak256(senderAddr))
-	windowSize := 1200 // chunk by chunk, 1223
-	programSize := len(programBz)
-	txBuilder := solana.NewTransactionBuilder()
-	for idx := 0; idx < programSize; {
-		end := idx + windowSize
-		if end > programSize {
-			end = programSize
-		}
-
-		codeSlice := programBz[idx:end]
-		data := svm.MustMarshalIxData(svm.WriteBuffer{
-			Offset: uint32(idx),
-			Data:   codeSlice,
-		})
-
-		writeBufferIx := solana.NewInstruction(
-			solana.BPFLoaderUpgradeableProgramID,
-			solana.AccountMetaSlice{
-				&solana.AccountMeta{
-					PublicKey:  programBufferPubkey,
-					IsWritable: true,
-					IsSigner:   false,
-				},
-				&solana.AccountMeta{
-					PublicKey:  callerPubkey,
-					IsWritable: true,
-					IsSigner:   true,
-				},
-			},
-			data,
-		)
-		txBuilder = txBuilder.AddInstruction(writeBufferIx)
-		idx = end
-	}
-
-	data := svm.MustMarshalIxData(svm.DeployWithMaxDataLen{
-		DataLen: uint64(len(programBz)) + 48,
-	})
-
-	programExecutablePubkey, _, err := solana.FindProgramAddress([][]byte{programPubkey[:]}, solana.BPFLoaderUpgradeableProgramID)
-	if err != nil {
-		panic(err)
-	}
-
-	deployIx := solana.NewInstruction(
-		solana.BPFLoaderUpgradeableProgramID,
-		solana.AccountMetaSlice{
-			&solana.AccountMeta{
-				PublicKey:  callerPubkey,
-				IsWritable: true,
-				IsSigner:   true,
-			},
-			&solana.AccountMeta{
-				PublicKey:  programExecutablePubkey,
-				IsWritable: true,
-				IsSigner:   false,
-			},
-			&solana.AccountMeta{
-				PublicKey:  programPubkey,
-				IsWritable: true,
-				IsSigner:   false,
-			},
-			&solana.AccountMeta{
-				PublicKey:  programBufferPubkey,
-				IsWritable: true,
-				IsSigner:   false,
-			},
-			&solana.AccountMeta{
-				PublicKey:  solana.SysVarRentPubkey,
-				IsWritable: false,
-				IsSigner:   false,
-			},
-			&solana.AccountMeta{
-				PublicKey:  solana.SysVarClockPubkey,
-				IsWritable: false,
-				IsSigner:   false,
-			},
-			&solana.AccountMeta{
-				PublicKey:  solana.SystemProgramID,
-				IsWritable: false,
-				IsSigner:   false,
-			},
-			&solana.AccountMeta{
-				PublicKey:  callerPubkey,
-				IsWritable: true,
-				IsSigner:   true,
-			},
-		},
-		data,
-	)
-
-	tx, err := txBuilder.AddInstruction(deployIx).Build()
-	if err != nil {
-		panic(err)
-	}
-	return svmtypes.ToCosmosMsg([]string{senderAddr.String()}, MaxComputeBudget, tx)
-}
+var (
+	raydiumSwapBinary  []byte
+	raydiumSwapPrivKey []byte
+)
 
 func main() {
 	network := common.LoadNetwork("local", "")
@@ -197,7 +47,7 @@ func main() {
 	}
 
 	// init client ctx
-	clientCtx, senderAddress, err := chaintypes.NewClientContext(
+	clientCtx, _, err := chaintypes.NewClientContext(
 		network.ChainId,
 		"user1",
 		kr,
@@ -216,32 +66,124 @@ func main() {
 		panic(err)
 	}
 
-	programBz, err := os.ReadFile("examples/chain/30_DeployRaydium/raydium_cp_swap.so")
+	// load artifacts
+	dir, err := os.Getwd()
 	if err != nil {
 		panic(err)
 	}
 
-	programPubkey := solana.MustPublicKeyFromBase58("CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C") // TODO: Replace expected pubkey here
-	programBufferPubkey := solana.NewWallet().PublicKey()
-	initAccountMsg := BuildInitAccountsMsg(senderAddress, len(programBz), programPubkey, programBufferPubkey)
-	deployMsg := BuildDeployMsg(senderAddress, programPubkey, programBufferPubkey, programBz)
-	fmt.Println("number of instruction to deploy:", len(deployMsg.Instructions))
-	//AsyncBroadcastMsg, SyncBroadcastMsg, QueueBroadcastMsg
-	res, err := chainClient.SyncBroadcastMsg(
-		initAccountMsg, deployMsg,
+	raydiumSwapBinary, err = os.ReadFile(dir + "/examples/chain/32_DeployRaydium/raydium_cp_swap.so")
+	if err != nil {
+		panic(err)
+	}
+
+	raydiumSwapPrivKey, err = os.ReadFile(dir + "/examples/chain/32_DeployRaydium/raydium_cp_swap-keypair.json")
+	if err != nil {
+		panic(err)
+	}
+
+	// link accounts
+	cosmosPrivateKeys := []*ethsecp256k1.PrivKey{
+		{Key: ethcommon.Hex2Bytes("88cbead91aee890d27bf06e003ade3d4e952427e88f88d31d61d3ef5e5d54305")},
+		{Key: ethcommon.Hex2Bytes("741de4f8988ea941d3ff0287911ca4074e62b7d45c991a51186455366f10b544")},
+		{Key: ethcommon.Hex2Bytes("39a4c898dda351d54875d5ebb3e1c451189116faa556c3c04adc860dd1000608")},
+	}
+	cosmosAddrs := make([]sdk.AccAddress, len(cosmosPrivateKeys))
+	for i, pk := range cosmosPrivateKeys {
+		cosmosAddrs[i] = sdk.AccAddress(pk.PubKey().Address().Bytes())
+	}
+
+	// prepare svm accounts
+	ownerSvmPrivKey := ed25519.GenPrivKeyFromSecret([]byte("owner"))
+	ownerPubkey := solana.PublicKeyFromBytes(ownerSvmPrivKey.PubKey().Bytes())
+
+	var programSvmPrivKeyBz []byte
+	if err := json.Unmarshal(raydiumSwapPrivKey, &programSvmPrivKeyBz); err != nil {
+		panic(err)
+	}
+
+	programSvmPrivKey := &ed25519.PrivKey{Key: programSvmPrivKeyBz}
+	programPubkey := solana.PublicKeyFromBytes(programSvmPrivKey.PubKey().Bytes())
+	programBufferSvmPrivKey := ed25519.GenPrivKeyFromSecret([]byte("raydiumBuffer"))
+	programBufferPubkey := solana.PublicKeyFromBytes(programBufferSvmPrivKey.PubKey().Bytes())
+
+	fmt.Println("=== linking accounts ===")
+	ownerPubkey, _, err = svm.GetOrLinkSvmAccount(chainClient, clientCtx, cosmosPrivateKeys[0], ownerSvmPrivKey, 1000000000000000000)
+	if err != nil {
+		panic(err)
+	}
+
+	programPubkey, _, err = svm.GetOrLinkSvmAccount(chainClient, clientCtx, cosmosPrivateKeys[1], programSvmPrivKey, 0)
+	if err != nil {
+		panic(err)
+	}
+
+	programBufferPubkey, _, err = svm.GetOrLinkSvmAccount(chainClient, clientCtx, cosmosPrivateKeys[2], programBufferSvmPrivKey, 0)
+	if err != nil {
+		panic(err)
+	}
+
+	initAccountMsg := svm.CreateInitAccountsMsg(
+		cosmosAddrs,
+		len(raydiumSwapBinary),
+		ownerPubkey,
+		programPubkey,
+		programBufferPubkey,
+	)
+
+	uploadMsgs, err := svm.CreateProgramUploadMsgs(
+		cosmosAddrs,
+		ownerPubkey,
+		programPubkey,
+		programBufferPubkey,
+		raydiumSwapBinary,
 	)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println("tx hash:", res.TxResponse.TxHash)
-	fmt.Println("tx code:", res.TxResponse.Code)
-	fmt.Println("gas used/want:", res.TxResponse.GasUsed, res.TxResponse.GasWanted)
-	fmt.Println("program pubkey:", programPubkey.String())
-
-	programExecutablePubkey, _, err := solana.FindProgramAddress([][]byte{programPubkey[:]}, solana.BPFLoaderUpgradeableProgramID)
+	fmt.Println("=== intialize accounts for uploading programs ===")
+	signedTx, err := svm.BuildSignedTx(chainClient, []sdk.Msg{initAccountMsg}, cosmosPrivateKeys)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("program executable data pubkey:", programExecutablePubkey.String())
+
+	txBytes, err := chainClient.ClientContext().TxConfig.TxEncoder()(signedTx)
+	if err != nil {
+		panic(err)
+	}
+
+	res, err := chainClient.SyncBroadcastSignedTx(txBytes)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("tx hash:", res.TxResponse.TxHash)
+	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
+
+	fmt.Println("=== start uploading program ===")
+	fmt.Println("total txs required:", len(uploadMsgs))
+	for i, uploadMsg := range uploadMsgs {
+		fmt.Printf("uploading program part %dth\n", i+1)
+		signedTx, err = svm.BuildSignedTx(chainClient, []sdk.Msg{uploadMsg}, cosmosPrivateKeys)
+		if err != nil {
+			panic(err)
+		}
+
+		txBytes, err = chainClient.ClientContext().TxConfig.TxEncoder()(signedTx)
+		if err != nil {
+			panic(err)
+		}
+
+		res, err = chainClient.SyncBroadcastSignedTx(txBytes)
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println("tx hash:", res.TxResponse.TxHash)
+		fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
+		if res.TxResponse.Code != 0 {
+			fmt.Println("err code:", res.TxResponse.Code, ", log:", res.TxResponse.RawLog)
+		}
+	}
+	fmt.Println("✅ raydium program deployed. program pubkey:", programPubkey.String())
 }

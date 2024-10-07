@@ -108,7 +108,7 @@ func main() {
 		panic(err)
 	}
 
-	bz, err := os.ReadFile(dir + "/examples/chain/28_DeployUniswap/PoolManager.json")
+	bz, err := os.ReadFile(dir + "/examples/chain/30_DeployUniswap/PoolManager.json")
 	if err != nil {
 		panic(err)
 	}
@@ -124,7 +124,7 @@ func main() {
 	}
 
 	var compData map[string]interface{}
-	bz, err = os.ReadFile(dir + "/examples/chain/28_DeployUniswap/PoolActions.json")
+	bz, err = os.ReadFile(dir + "/examples/chain/30_DeployUniswap/PoolActions.json")
 	if err != nil {
 		panic(err)
 	}
@@ -138,7 +138,7 @@ func main() {
 		panic(err)
 	}
 
-	bz, err = os.ReadFile(dir + "/examples/chain/29_ExecuteUniswap/erc20.json")
+	bz, err = os.ReadFile(dir + "/examples/chain/31_ExecuteUniswap/erc20.json")
 	if err != nil {
 		panic(err)
 	}
@@ -153,11 +153,11 @@ func main() {
 	}
 
 	// parse contract addr
-	PoolManagerContractAddr, err := hex.DecodeString("07aa076883658b7ed99d25b1e6685808372c8fe2")
+	PoolManagerContractAddr, err := hex.DecodeString("6ff00f6b2120157fca353fbe24d25536042197df")
 	if err != nil {
 		panic(err)
 	}
-	PoolActionsContractAddr, err := hex.DecodeString("e2f81b30e1d47dffdbb6ab41ec5f0572705b026d")
+	PoolActionsContractAddr, err := hex.DecodeString("366c9837f9a32cc11ac5cac1602e57b73e6bf784")
 	if err != nil {
 		panic(err)
 	}
