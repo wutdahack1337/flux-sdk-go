@@ -3,10 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"os"
 	"strings"
+
+	"cosmossdk.io/math"
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
@@ -74,6 +76,12 @@ func main() {
 	*/
 
 	// provide liquidity to pairs
+	prices := map[string]int64{
+		"btc": 65000000000,
+		"eth": 2500000000,
+		"sol": 145000000,
+	}
+
 	pairs := map[string]string{
 		"lux1nc5tatafv6eyq7llkr2gv50ff9e22mnf70qgjlv737ktmt4eswrqhywrts": "btc/usdt",
 		"lux1aakfpghcanxtc45gpqlx8j3rq0zcpyf49qmhm9mdjrfx036h4z5sdltq0m": "eth/usdt",
@@ -81,7 +89,8 @@ func main() {
 	}
 	for contractAddr, ticker := range pairs {
 		denoms := strings.Split(ticker, "/")
-		amount := int64(10000)
+		amountDenom0 := math.NewInt(1000000000)
+		amountDenom1 := amountDenom0.Mul(math.NewInt(prices[denoms[0]]))
 		res, err := chainClient.SyncBroadcastMsg(&wasmtypes.MsgExecuteContract{
 			Sender:   senderAddress.String(),
 			Contract: contractAddr,
@@ -94,7 +103,7 @@ func main() {
 						  "denom": "%s"
 						}
 					  },
-					  "amount": "%d"
+					  "amount": "%s"
 					},
 					{
 					  "info": {
@@ -102,16 +111,16 @@ func main() {
 						  "denom": "%s"
 						}
 					  },
-					  "amount": "%d"
+					  "amount": "%s"
 					}
 				  ],
 				  "auto_stake": false,
 				  "receiver": "%s"
 				}
-			  }`, denoms[0], amount, denoms[1], amount, senderAddress.String())),
+			  }`, denoms[0], amountDenom0.String(), denoms[1], amountDenom1.String(), senderAddress.String())),
 			Funds: sdk.Coins{
-				sdk.NewInt64Coin(denoms[0], amount),
-				sdk.NewInt64Coin(denoms[1], amount),
+				sdk.NewCoin(denoms[0], amountDenom0),
+				sdk.NewCoin(denoms[1], amountDenom1),
 			},
 		})
 		if err != nil {
