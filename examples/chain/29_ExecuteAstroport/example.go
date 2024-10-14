@@ -77,9 +77,15 @@ func main() {
 
 	// provide liquidity to pairs
 	prices := map[string]int64{
-		"btc": 65000000000,
-		"eth": 2500000000,
-		"sol": 145000000,
+		"btc": 65000,
+		"eth": 2500,
+		"sol": 145,
+	}
+
+	tenPowDecimals := map[string]int64{
+		"btc": 100_000_000,
+		"eth": 1000_000_000_000_000_000,
+		"sol": 1000_000_000,
 	}
 
 	pairs := map[string]string{
@@ -89,8 +95,8 @@ func main() {
 	}
 	for contractAddr, ticker := range pairs {
 		denoms := strings.Split(ticker, "/")
-		amountDenom0 := math.NewInt(1000000000)
-		amountDenom1 := amountDenom0.Mul(math.NewInt(prices[denoms[0]]))
+		amountDenom0 := math.NewInt(tenPowDecimals[denoms[0]])
+		amountDenom1 := amountDenom0.Quo(math.NewInt(tenPowDecimals[denoms[0]])).Mul(math.NewInt(prices[denoms[0]])).MulRaw(1000_000)
 		res, err := chainClient.SyncBroadcastMsg(&wasmtypes.MsgExecuteContract{
 			Sender:   senderAddress.String(),
 			Contract: contractAddr,
@@ -126,13 +132,13 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println(fmt.Sprintf("provided liquidity for pool %s: %s", ticker, res.TxResponse.TxHash))
+		fmt.Printf("provided liquidity for pool %s: %s\n", ticker, res.TxResponse.TxHash)
 	}
 
 	// swap token
 	for contractAddr, ticker := range pairs {
 		denoms := strings.Split(ticker, "/")
-		amount := int64(5)
+		amount := int64(10_000_000)
 		res, err := chainClient.SyncBroadcastMsg(&wasmtypes.MsgExecuteContract{
 			Sender:   senderAddress.String(),
 			Contract: contractAddr,
