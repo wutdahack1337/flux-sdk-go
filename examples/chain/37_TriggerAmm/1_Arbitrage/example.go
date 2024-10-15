@@ -45,7 +45,7 @@ func main() {
 	// init client ctx
 	clientCtx, senderAddress, err := chaintypes.NewClientContext(
 		network.ChainId,
-		"user2",
+		"user1",
 		kr,
 	)
 	if err != nil {
@@ -113,7 +113,7 @@ func main() {
 	fmt.Println("sender account:", senderAddress.String())
 	msg := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"c034a7b709c7656b453e4638026b4c112a2674de88cfb8cad9a6874b931b0326"},
+		Ids:    []string{"2734b489866333ddc3ee8dfb79230eda85ef6679332bf02d4dd19a84ae09786d"},
 		Inputs: [][]byte{
 			[]byte(`{"arbitrage":{"pair":"btc-usdt","amount":"1000000","min_profit":"100"}}`),
 		},

@@ -113,9 +113,9 @@ func main() {
 	fmt.Println("sender account:", senderAddress.String())
 	msg := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"c034a7b709c7656b453e4638026b4c112a2674de88cfb8cad9a6874b931b0326"},
+		Ids:    []string{"2734b489866333ddc3ee8dfb79230eda85ef6679332bf02d4dd19a84ae09786d"},
 		Inputs: [][]byte{
-			[]byte(`{"swap":{"dex_name":"evm uniswap","src_denom":"btc","dst_denom":"usdt","amount":"100"}}`),
+			[]byte(`{"swap":{"dex_name":"evm uniswap","src_denom":"usdt","dst_denom":"btc","amount":"1000000"}}`),
 		},
 		Queries: []*astromeshtypes.FISQueryRequest{&fisQueryRequest},
 	}

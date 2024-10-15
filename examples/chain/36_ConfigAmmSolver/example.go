@@ -102,8 +102,8 @@ func main() {
 					Verified:        false,
 				},
 				{
-					Name:            "Drift",
-					ContractAddress: "FLR3mfYrMZUnhqEadNJVwjUhjX8ky9vE9qTtDmkK4vwC",
+					Name:            "Raydium",
+					ContractAddress: "6W19gt519Ruyw3s4BiKtQXvxETzPbptjgfgB5gMgrfAf",
 					Plane:           types.Plane_SVM,
 					Verified:        false,
 				},

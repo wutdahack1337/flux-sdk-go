@@ -69,6 +69,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
 	if !isSvmLinked {
 		svmKey := ed25519.GenPrivKey() // Good practice: Backup this private key
 		res, err := chainClient.LinkSVMAccount(svmKey, math.NewIntFromUint64(1000_000_000_000))
