@@ -11,8 +11,7 @@ import (
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -61,10 +60,9 @@ func main() {
 	}
 
 	fmt.Println("sender address:", senderAddress.String())
-	msg := &stakingtypes.MsgDelegate{
+	msg := &distributiontypes.MsgWithdrawDelegatorReward{
 		DelegatorAddress: senderAddress.String(),
 		ValidatorAddress: "luxvaloper1qry5x2d383v9hkqc0fpez53yluyxvey2c957m4",
-		Amount:           sdk.NewInt64Coin("lux", 1000_000_000_000_000_000),
 	}
 	res, err := chainClient.SyncBroadcastMsg(msg)
 	if err != nil {
