@@ -16,6 +16,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ethsecp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	ethcommon "github.com/ethereum/go-ethereum/common"
 	"github.com/gagliardetto/solana-go"
 	"google.golang.org/grpc"
@@ -88,12 +89,26 @@ func main() {
 	// prepare cosmos accounts
 	cosmosPrivateKeys := []*ethsecp256k1.PrivKey{
 		{Key: ethcommon.Hex2Bytes("88cbead91aee890d27bf06e003ade3d4e952427e88f88d31d61d3ef5e5d54305")},
-		{Key: ethcommon.Hex2Bytes("c25e5cccd433d2c97971eaa6cfe92ea05771dc05b984c62464ab580f16a905e1")},
-		{Key: ethcommon.Hex2Bytes("26fc2228a05e83d443066f643754d5837a2b39b5783d804eb125b936d630204b")},
+		{Key: ethcommon.Hex2Bytes("88cbead91aee890d27bf06e003ade3d4e952427e88f88d31d61d3ef5e5d54308")},
+		{Key: ethcommon.Hex2Bytes("88cbead91aee890d27bf06e003ade3d4e952427e88f88d31d61d3ef5e5d54309")},
 	}
 	cosmosAddrs := make([]sdk.AccAddress, len(cosmosPrivateKeys))
 	for i, pk := range cosmosPrivateKeys {
 		cosmosAddrs[i] = sdk.AccAddress(pk.PubKey().Address().Bytes())
+	}
+
+	// create missing cosmos accounts to sign upload message
+	msgs := []sdk.Msg{}
+	for _, addr := range cosmosAddrs[1:] {
+		msgs = append(msgs, &banktypes.MsgSend{
+			FromAddress: chainClient.FromAddress().String(),
+			ToAddress:   addr.String(),
+			Amount:      sdk.NewCoins(sdk.NewInt64Coin("lux", 100000000000000000)),
+		})
+	}
+	_, err = chainClient.SyncBroadcastMsg(msgs...)
+	if err != nil {
+		panic(err)
 	}
 
 	// prepare svm accounts
