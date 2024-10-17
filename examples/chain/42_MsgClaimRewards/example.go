@@ -5,8 +5,6 @@ import (
 	"os"
 	"strings"
 
-	_ "embed"
-
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
