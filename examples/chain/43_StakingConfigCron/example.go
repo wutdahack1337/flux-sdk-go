@@ -20,7 +20,7 @@ import (
 )
 
 var (
-	//go:embed cron.wasm
+	//go:embed compound_staking_cron.wasm
 	cronBinary []byte
 )
 
@@ -50,9 +50,10 @@ func main() {
 	// init client ctx
 	clientCtx, senderAddress, err := chaintypes.NewClientContext(
 		network.ChainId,
-		"user1",
+		"user2",
 		kr,
 	)
+
 	if err != nil {
 		panic(err)
 	}
@@ -68,6 +69,12 @@ func main() {
 	}
 
 	fmt.Println("sender: ", senderAddress.String())
+
+	url := fmt.Sprintf(
+		"/cosmos/distribution/v1beta1/delegators/%s/rewards", 
+		senderAddress.String(),
+	)
+	
 	msg := &strategytypes.MsgConfigStrategy{
 		Sender:   senderAddress.String(),
 		Config:   strategytypes.Config_deploy,
@@ -75,7 +82,16 @@ func main() {
 		Strategy: cronBinary,
 		Query: &types.FISQueryRequest{
 			// track balances of accounts you want to make the amount even
-			Instructions: []*types.FISQueryInstruction{},
+			Instructions: []*types.FISQueryInstruction{
+				{
+					Plane: types.Plane_COSMOS,
+					Action: types.QueryAction_COSMOS_QUERY,
+					Address: []byte{},
+					Input: [][]byte{
+						[]byte(url),
+					},		
+				},
+			},
 		},
 		TriggerPermission: &strategytypes.PermissionConfig{
 			Type:      strategytypes.AccessType_only_addresses,
@@ -90,8 +106,8 @@ func main() {
 			Tags:         []string{"cron", "bank", "util"},
 			Schema:       "",
 			CronGasPrice: math.NewIntFromUint64(500000000),
-			CronInput:    `{"receiver":"lux158ucxjzr6ccrlpmz8z05wylu8tr5eueqcp2afu","amount":"1","denom":"lux"}`,
-			CronInterval: 2,
+			CronInput:    `{}`,
+			CronInterval: 5,
 		},
 	}
 
