@@ -1,20 +1,16 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"strings"
 
-	"cosmossdk.io/math"
 	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	strategytypes "github.com/FluxNFTLabs/sdk-go/chain/modules/strategy/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
-	"github.com/cosmos/btcutil/base58"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -64,28 +60,15 @@ func main() {
 	}
 
 	fmt.Println("sender address:", senderAddress.String())
-	
-	// check if account is linked, not then create
-	isSvmLinked, svmPubkey, err := chainClient.GetSVMAccountLink(context.Background(), senderAddress)
-	if err != nil {
-		panic(err)
-	}
 
-	if !isSvmLinked {
-		svmKey := ed25519.GenPrivKey() // Good practice: Backup this private key
-		res, err := chainClient.LinkSVMAccount(svmKey, math.NewIntFromUint64(1000_000_000_000))
-		if err != nil {
-			panic(err)
-		}
-		fmt.Println("linked sender to svm address:", base58.Encode(svmKey.PubKey().Bytes()), "txHash:", res.TxResponse.TxHash)
-	} else {
-		fmt.Println("sender is already linked to svm address:", svmPubkey.String())
-	}
-
+	url := fmt.Sprintf(
+		"/flux/svm/v1beta1/account_link/cosmos/%s", 
+		senderAddress.String(),
+	)
 
 	msgTriggerStategy := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"B9D706AC02506DD2369C82EA0BC81C197FDCB0B2B28E29EF88097B923863E68D"},
+		Ids:    []string{"815DC49EFB46F15759C9CEFBB6F58507C72FF960A7B492798842F9C713DED76A"},
 		Inputs: [][]byte{
 			[]byte(`{"place_perp_market_order":{"market":"btc","usdt_amount":"50","leverage":"3","auction_duration":"10"}}`),
 		},
@@ -94,10 +77,10 @@ func main() {
 				Instructions: []*astromeshtypes.FISQueryInstruction{
 					{
 						Plane:   astromeshtypes.Plane_COSMOS,
-						Action:  astromeshtypes.QueryAction_COSMOS_BANK_BALANCE,
+						Action:  astromeshtypes.QueryAction_COSMOS_QUERY,
 						Address: nil,
 						Input: [][]byte{
-							[]byte(svmPubkey.String()),
+							[]byte(url),
 						},
 					},
 				},
