@@ -37,7 +37,7 @@ func main() {
 	// init client ctx
 	clientCtx, senderAddress, err := chaintypes.NewClientContext(
 		network.ChainId,
-		"user2",
+		"user1",
 		kr,
 	)
 	if err != nil {
@@ -68,9 +68,9 @@ func main() {
 
 	msgTriggerStategy := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"815DC49EFB46F15759C9CEFBB6F58507C72FF960A7B492798842F9C713DED76A"},
+		Ids:    []string{"f2d3b2f8011d063254743b944925ad74f33bc2d3a2786625ab543ca48bec7a1e"},
 		Inputs: [][]byte{
-			[]byte(`{"place_perp_market_order":{"market":"btc","usdt_amount":"50","leverage":"3","auction_duration":"10"}}`),
+			[]byte(`{"place_perp_market_order":{"usdt_amount":"3000000","leverage":3,"market":"btc","auction_duration":10}}`),
 		},
 		Queries: []*astromeshtypes.FISQueryRequest{
 			{
