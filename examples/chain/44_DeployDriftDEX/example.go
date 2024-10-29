@@ -24,6 +24,7 @@ var (
 	intentSolverBinary []byte
 )
 
+
 func main() {
 	networkName := "local"
 	if len(os.Args) > 1 {
@@ -50,7 +51,7 @@ func main() {
 	// init client ctx
 	clientCtx, senderAddress, err := chaintypes.NewClientContext(
 		network.ChainId,
-		"user2",
+		"user1",
 		kr,
 	)
 	if err != nil {
@@ -89,10 +90,10 @@ func main() {
 						  "place_perp_market_order": {
 							"template": "open position ${usdt_amount:number} USDT, ${leverage:number} leverage on ${market:string} market, with ${auction_duration:number} blocks auction time",
 							"msg_fields": [
-							  "market",
-							  "usdt_amount",
-							  "leverage",
-							  "auction_duration"
+								"usdt_amount",
+								"leverage",
+								"market",
+							 	"auction_duration"
 							],
 							"query": {
 							  "instructions": [
@@ -100,12 +101,7 @@ func main() {
 								  "plane": "COSMOS",
 								  "action": "COSMOS_QUERY",
 								  "address": "",
-								  "input": [
-									"JHttYXJrZXR9",
-									"dXNkdF9hbW91bnQ=",
-									"JHttYXJrZXR9",
-									"JHthdWN0aW9uX2R1cmF0aW9ufQ=="
-								  ]
+								  "input": []
 								}
 							  ]
 							}
@@ -123,11 +119,7 @@ func main() {
 								  "plane": "COSMOS",
 								  "action": "COSMOS_QUERY",
 								  "address": "",
-								  "input": [
-									"JHt0YWtlcl9zdm1fYWRkcmVzc30=",
-									"JHt0YWtlcl9vcmRlcl9pZH0=",
-									"JHtwZXJjZW50fQ=="
-								  ]
+								  "input": []
 								}
 							  ]
 							}
