@@ -114,9 +114,9 @@ func main() {
 	fmt.Println("taker user:", takerUser.String())
 	msgTriggerStategy := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"be6dbf6b0c2f58bc4f249782c5b39e353a1e695778113891f221a40928bfb2c4"},
+		Ids:    []string{"57a41e617e566f916ac6a4fc537cb01a7d77fb2d94e4e1a17cf94347c51539cb"},
 		Inputs: [][]byte{
-			[]byte(`{"fill_perp_market_order":{"taker_svm_address":"` + takerPubkey.String() + `","taker_order_id":21,"percent":100}}`),
+			[]byte(`{"fill_perp_market_order":{"taker_svm_address":"` + takerPubkey.String() + `","taker_order_id":"25","percent":"100"}}`),
 		},
 		Queries: []*astromeshtypes.FISQueryRequest{
 			{

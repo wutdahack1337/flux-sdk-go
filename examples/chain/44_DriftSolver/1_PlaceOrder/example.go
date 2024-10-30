@@ -82,9 +82,9 @@ func main() {
 
 	msgTriggerStategy := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"5bee2166a4a3b6038219f47ba65b61bedb6eddd7185dd71a44e535417ecddb9f"},
+		Ids:    []string{"4fb962728799d9b3c386ba3841a8ed1bd152dd5c9ffa958d075ad9014972e8e0"},
 		Inputs: [][]byte{
-			[]byte(`{"place_perp_market_order":{"direction":"short","usdt_amount":"246000","leverage":5,"market":"eth-usdt","auction_duration":20}}`),
+			[]byte(`{"place_perp_market_order":{"direction":"long","usdt_amount":"24446000","leverage":"10","market":"eth-usdt","auction_duration":"30"}}`),
 		},
 		Queries: []*astromeshtypes.FISQueryRequest{
 			{
