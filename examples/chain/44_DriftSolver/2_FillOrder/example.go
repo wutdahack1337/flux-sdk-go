@@ -56,11 +56,6 @@ func main() {
 		common.OptionGasPrices("500000000lux"),
 	)
 	if err != nil {
-		fmt.Println(err)
-	}
-
-	// prepare tx msg
-	if err != nil {
 		panic(err)
 	}
 
@@ -119,9 +114,9 @@ func main() {
 	fmt.Println("taker user:", takerUser.String())
 	msgTriggerStategy := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"7b1ba16fb3eccb0654881bb25d8e0f7f8370657f5de9815d8a19aff49b542509"},
+		Ids:    []string{"be6dbf6b0c2f58bc4f249782c5b39e353a1e695778113891f221a40928bfb2c4"},
 		Inputs: [][]byte{
-			[]byte(`{"fill_perp_market_order":{"taker_svm_address":"` + takerPubkey.String() + `","taker_order_id":18,"percent":100}}`),
+			[]byte(`{"fill_perp_market_order":{"taker_svm_address":"` + takerPubkey.String() + `","taker_order_id":21,"percent":100}}`),
 		},
 		Queries: []*astromeshtypes.FISQueryRequest{
 			{

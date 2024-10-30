@@ -65,7 +65,7 @@ func main() {
 		common.OptionGasPrices("500000000lux"),
 	)
 	if err != nil {
-		fmt.Println(err)
+		panic(err)
 	}
 
 	msg := &strategytypes.MsgConfigStrategy{
@@ -75,8 +75,8 @@ func main() {
 		Strategy: intentSolverBinary,
 		Query:    &types.FISQueryRequest{},
 		Metadata: &strategytypes.StrategyMetadata{
-			Name:        "Nexus Transfer Solver",
-			Description: "Simplifies financial transfers by allowing retail users to batch multiple requests using easy, human-readable prompts.",
+			Name:        "Drift Solver",
+			Description: "Solver simplifies drift interactions. Available options:  leverage: 1..20, market: 'btc-usdt', 'eth-usdt', 'sol-usdt', auction_duration: 10..255, percent: 1..100, taker_svm_address: base58 pubkey of taker",
 			Logo:        "https://img.icons8.com/?size=100&id=Wnx66N0cnKa7&format=png&color=000000",
 			Website:     "https://www.astromesh.xyz",
 			Type:        strategytypes.StrategyType_INTENT_SOLVER,
@@ -88,8 +88,9 @@ func main() {
 						"name": "Nexus Transfer Solver",
 						"prompts": {
 						  "place_perp_market_order": {
-							"template": "open position ${usdt_amount:number} USDT, ${leverage:number} leverage on ${market:string} market, with ${auction_duration:number} blocks auction time",
+							"template": "open a ${direction:string} position ${usdt_amount:number} USDT, ${leverage:number} leverage on ${market:string} market, with ${auction_duration:number} blocks auction time",
 							"msg_fields": [
+								"direction",
 								"usdt_amount",
 								"leverage",
 								"market",
@@ -134,7 +135,7 @@ func main() {
 	//AsyncBroadcastMsg, SyncBroadcastMsg, QueueBroadcastMsg
 	res, err := chainClient.SyncBroadcastMsg(msg)
 	if err != nil {
-		fmt.Println(err)
+		panic(err)
 	}
 
 	fmt.Println("tx hash:", res.TxResponse.TxHash)

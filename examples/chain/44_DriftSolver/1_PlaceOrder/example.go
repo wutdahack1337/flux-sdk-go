@@ -53,11 +53,6 @@ func main() {
 		common.OptionGasPrices("500000000lux"),
 	)
 	if err != nil {
-		fmt.Println(err)
-	}
-
-	// prepare tx msg
-	if err != nil {
 		panic(err)
 	}
 
@@ -74,7 +69,7 @@ func main() {
 		panic(fmt.Errorf("taker is not linked: %s", senderAddress.String()))
 	}
 
-	User, _, err := solana.FindProgramAddress([][]byte{
+	user, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("user"), SvmPubkey[:], {0, 0},
 	}, driftProgramId)
 	if err != nil {
@@ -87,9 +82,9 @@ func main() {
 
 	msgTriggerStategy := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"7b1ba16fb3eccb0654881bb25d8e0f7f8370657f5de9815d8a19aff49b542509"},
+		Ids:    []string{"5bee2166a4a3b6038219f47ba65b61bedb6eddd7185dd71a44e535417ecddb9f"},
 		Inputs: [][]byte{
-			[]byte(`{"place_perp_market_order":{"usdt_amount":"24356000","leverage":5,"market":"eth-usdt","auction_duration":10}}`),
+			[]byte(`{"place_perp_market_order":{"direction":"short","usdt_amount":"246000","leverage":5,"market":"eth-usdt","auction_duration":20}}`),
 		},
 		Queries: []*astromeshtypes.FISQueryRequest{
 			{
@@ -107,7 +102,7 @@ func main() {
 						Action:  astromeshtypes.QueryAction_VM_QUERY,
 						Address: nil,
 						Input: [][]byte{
-							User[:],
+							user[:],
 							marketPubkey0[:],
 							marketPubkey1[:],
 							marketPubkey2[:],
