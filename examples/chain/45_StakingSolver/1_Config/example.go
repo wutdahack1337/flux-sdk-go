@@ -75,21 +75,21 @@ func main() {
 		Query:    &types.FISQueryRequest{},
 		Metadata: &strategytypes.StrategyMetadata{
 			Name:        "Staking Solver",
-			Description: "Simplifies financial transfers by allowing retail users to batch multiple requests using easy, human-readable prompts.",
+			Description: "The staking solver on Astromesh streamlines the staking process, helping users delegate tokens securely and optimize rewards",
 			Logo:        "https://img.icons8.com/?size=100&id=Wnx66N0cnKa7&format=png&color=000000",
 			Website:     "https://www.astromesh.xyz",
 			Type:        strategytypes.StrategyType_INTENT_SOLVER,
 			Tags:        strings.Split("Solver, Bank, Utility", ", "),
-			Schema:      `
-			{
+			Schema:      `{
 				"groups": [
 				  {
 					"name": "Staking Solver",
 					"prompts": {
-					  "stake_default": {
-						"template": "stake ${amount:number} lux",
+					  "delegate": {
+						"template": "delegate ${amount:number} lux to validator ${validator_name:string}",
 						"msg_fields": [
-						  "amount"
+						  "amount",
+						  "validator_name"
 						],
 						"query": {
 						  "instructions": [
@@ -97,16 +97,26 @@ func main() {
 							  "plane": "COSMOS",
 							  "action": "COSMOS_QUERY",
 							  "address": "",
-							  "input": []
+							  "input": [
+								"L2Nvc21vcy9kaXN0cmlidXRpb24vdjFiZXRhMS9kZWxlZ2F0b3JzLyR7d2FsbGV0fS9yZXdhcmRz"
+							  ]
+							},
+							{
+							  "plane": "COSMOS",
+							  "action": "COSMOS_QUERY",
+							  "address": "",
+							  "input": [
+								"L2Nvc21vcy9zdGFraW5nL3YxYmV0YTEvdmFsaWRhdG9ycw=="
+							  ]
 							}
 						  ]
 						}
 					  },
-					  "stake": {
-						"template": "stake ${amount:number} lux with validator at ${validator_address:string}",
+					  "undelegate": {
+						"template": "undelegate ${amount:number} lux from validator ${validator_name:string}",
 						"msg_fields": [
 						  "amount",
-						  "validator_address"
+						  "validator_name"
 						],
 						"query": {
 						  "instructions": [
@@ -114,64 +124,63 @@ func main() {
 							  "plane": "COSMOS",
 							  "action": "COSMOS_QUERY",
 							  "address": "",
-							  "input": []
-							}
-						  ]
-						}
-					  },
-					  "re_delegate": {
-						"template": "move ${amount:number} lux from validator ${src_validator_address:string} to ${new_validator_address:string}",
-						"msg_fields": [
-						  "amount",
-						  "src_validator_address",
-						  "new_validator_address"
-						],
-						"query": {
-						  "instructions": [
+							  "input": [
+								"L2Nvc21vcy9kaXN0cmlidXRpb24vdjFiZXRhMS9kZWxlZ2F0b3JzLyR7d2FsbGV0fS9yZXdhcmRz"
+							  ]
+							},
 							{
 							  "plane": "COSMOS",
 							  "action": "COSMOS_QUERY",
 							  "address": "",
-							  "input": []
+							  "input": [
+								"L2Nvc21vcy9zdGFraW5nL3YxYmV0YTEvdmFsaWRhdG9ycw=="
+							  ]
 							}
 						  ]
 						}
 					  },
 					  "claim_all_rewards": {
-						"template": "collect all accumulated staking rewards",
+						"template": "claim all rewards from all validators",
 						"query": {
 						  "instructions": [
 							{
 							  "plane": "COSMOS",
 							  "action": "COSMOS_QUERY",
 							  "address": "",
-							  "input": []
+							  "input": [
+								"L2Nvc21vcy9kaXN0cmlidXRpb24vdjFiZXRhMS9kZWxlZ2F0b3JzLyR7d2FsbGV0fS9yZXdhcmRz"
+							  ]
+							},
+							{
+							  "plane": "COSMOS",
+							  "action": "COSMOS_QUERY",
+							  "address": "",
+							  "input": [
+								"L2Nvc21vcy9zdGFraW5nL3YxYmV0YTEvdmFsaWRhdG9ycw=="
+							  ]
 							}
 						  ]
 						}
 					  },
-					  "unstake_all": {
-						"template": "withdraw all staked lux",
+					  "claim_rewards_and_redelegate": {
+						"template": "claim all rewards and delegate to same validators",
 						"query": {
 						  "instructions": [
 							{
 							  "plane": "COSMOS",
 							  "action": "COSMOS_QUERY",
 							  "address": "",
-							  "input": []
-							}
-						  ]
-						}
-					  },
-					  "claim_rewards_and_restake": {
-						"template": "claim rewards and restake",
-						"query": {
-						  "instructions": [
+							  "input": [
+								"L2Nvc21vcy9kaXN0cmlidXRpb24vdjFiZXRhMS9kZWxlZ2F0b3JzLyR7d2FsbGV0fS9yZXdhcmRz"
+							  ]
+							},
 							{
 							  "plane": "COSMOS",
 							  "action": "COSMOS_QUERY",
 							  "address": "",
-							  "input": []
+							  "input": [
+								"L2Nvc21vcy9zdGFraW5nL3YxYmV0YTEvdmFsaWRhdG9ycw=="
+							  ]
 							}
 						  ]
 						}
@@ -182,7 +191,6 @@ func main() {
 			  }`,
 		},
 	}
-
 	//AsyncBroadcastMsg, SyncBroadcastMsg, QueueBroadcastMsg
 	res, err := chainClient.SyncBroadcastMsg(msg)
 	if err != nil {
