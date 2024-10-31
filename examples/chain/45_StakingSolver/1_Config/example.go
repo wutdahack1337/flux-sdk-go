@@ -76,7 +76,7 @@ func main() {
 		Metadata: &strategytypes.StrategyMetadata{
 			Name:        "Staking Solver",
 			Description: "The staking solver on Astromesh streamlines the staking process, helping users delegate tokens securely and optimize rewards",
-			Logo:        "https://img.icons8.com/?size=100&id=Wnx66N0cnKa7&format=png&color=000000",
+			Logo:        "https://icons.veryicon.com/png/o/business/work-circle/proof-of-stake.png",
 			Website:     "https://www.astromesh.xyz",
 			Type:        strategytypes.StrategyType_INTENT_SOLVER,
 			Tags:        strings.Split("Solver, Bank, Utility", ", "),
