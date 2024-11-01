@@ -98,14 +98,6 @@ func main() {
 							  "action": "COSMOS_QUERY",
 							  "address": "",
 							  "input": [
-								"L2Nvc21vcy9kaXN0cmlidXRpb24vdjFiZXRhMS9kZWxlZ2F0b3JzLyR7d2FsbGV0fS9yZXdhcmRz"
-							  ]
-							},
-							{
-							  "plane": "COSMOS",
-							  "action": "COSMOS_QUERY",
-							  "address": "",
-							  "input": [
 								"L2Nvc21vcy9zdGFraW5nL3YxYmV0YTEvdmFsaWRhdG9ycw=="
 							  ]
 							}
@@ -150,14 +142,6 @@ func main() {
 							  "input": [
 								"L2Nvc21vcy9kaXN0cmlidXRpb24vdjFiZXRhMS9kZWxlZ2F0b3JzLyR7d2FsbGV0fS9yZXdhcmRz"
 							  ]
-							},
-							{
-							  "plane": "COSMOS",
-							  "action": "COSMOS_QUERY",
-							  "address": "",
-							  "input": [
-								"L2Nvc21vcy9zdGFraW5nL3YxYmV0YTEvdmFsaWRhdG9ycw=="
-							  ]
 							}
 						  ]
 						}
@@ -172,14 +156,6 @@ func main() {
 							  "address": "",
 							  "input": [
 								"L2Nvc21vcy9kaXN0cmlidXRpb24vdjFiZXRhMS9kZWxlZ2F0b3JzLyR7d2FsbGV0fS9yZXdhcmRz"
-							  ]
-							},
-							{
-							  "plane": "COSMOS",
-							  "action": "COSMOS_QUERY",
-							  "address": "",
-							  "input": [
-								"L2Nvc21vcy9zdGFraW5nL3YxYmV0YTEvdmFsaWRhdG9ycw=="
 							  ]
 							}
 						  ]

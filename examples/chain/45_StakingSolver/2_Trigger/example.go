@@ -59,7 +59,7 @@ func main() {
 
 	msgTriggerStategy := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"b724599f2bbedfb6d1b00ba35c0f14ebd6c4b1b2156f60d50b6e1d11b79e56e5"},
+		Ids:    []string{"b96c3f9abbb946026bbd7c1930e0a6fdbc213e30e3878e7ff4a07d3cf87d590e"},
 		Inputs: [][]byte{
 			[]byte(`{"undelegate":{"amount":"1000","validator_name":"flux"}}`),
 		},
