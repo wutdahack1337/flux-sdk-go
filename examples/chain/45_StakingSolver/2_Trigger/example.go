@@ -56,16 +56,12 @@ func main() {
 
 	fmt.Println("sender address:", senderAddress.String())
 
-	url := fmt.Sprintf(
-		"/cosmos/distribution/v1beta1/delegators/%s/rewards", 
-		senderAddress.String(),
-	)
 
 	msgTriggerStategy := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"f4b3bae9382fd771afa99c7bd9f0366ad3629eb92bd06271d94c9ddcd0c577b9"},
+		Ids:    []string{"b96c3f9abbb946026bbd7c1930e0a6fdbc213e30e3878e7ff4a07d3cf87d590e"},
 		Inputs: [][]byte{
-			[]byte(`{"unstake_all":{}}`),
+			[]byte(`{"undelegate":{"amount":"1000","validator_name":"flux"}}`),
 		},
 		Queries: []*astromeshtypes.FISQueryRequest{
 			{
@@ -75,7 +71,15 @@ func main() {
 						Action:  astromeshtypes.QueryAction_COSMOS_QUERY,
 						Address: nil,
 						Input: [][]byte{
-							[]byte(url),
+							[]byte("/cosmos/distribution/v1beta1/delegators/" + senderAddress.String() + "/rewards"),
+						},
+					},
+					{
+						Plane:   astromeshtypes.Plane_COSMOS,
+						Action:  astromeshtypes.QueryAction_COSMOS_QUERY,
+						Address: nil,
+						Input: [][]byte{
+							[]byte("/cosmos/staking/v1beta1/validators"),
 						},
 					},
 				},
