@@ -5,6 +5,7 @@ import (
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
+	pooltypes "github.com/FluxNFTLabs/sdk-go/chain/modules/interpool/types"
 	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -16,6 +17,7 @@ type AstromeshKeeper interface {
 
 type AccountKeeper interface {
 	GetAccount(ctx context.Context, addr sdk.AccAddress) sdk.AccountI
+	GetModuleAddress(name string) sdk.AccAddress
 }
 
 type WasmKeeper interface {
@@ -24,4 +26,9 @@ type WasmKeeper interface {
 
 type SvmKeeper interface {
 	GetAccountLinkBySvmAddr(ctx context.Context, svmAddr []byte) (*svmtypes.AccountLink, bool)
+}
+
+type InterpoolKeeper interface {
+	GetPool(ctx context.Context, pool []byte) (*pooltypes.InterPool, bool)
+	GetPoolIdByCronJobId(ctx context.Context, cronId []byte) ([]byte, bool)
 }
