@@ -9,7 +9,9 @@ chain-types:
 	chain/modules/astromesh chain/modules/astromesh/types \
 	chain/modules/oracle chain/modules/oracle/types \
 	chain/modules/strategy chain/modules/strategy/types \
-	chain/eventstream chain/eventstream/types
+	chain/modules/interpool chain/modules/interpool/types \
+	chain/eventstream chain/eventstream/types 
+	
 
 	cp -r ../fluxd/chain/types/ chain/types
 	cp -r ../fluxd/chain/app/ante/ chain/app/ante
@@ -30,6 +32,7 @@ chain-types:
 	cp -r ../fluxd/chain/modules/oracle/types/ chain/modules/oracle/types
 
 	cp -r ../fluxd/chain/modules/strategy/types/ chain/modules/strategy/types
+	cp -r ../fluxd/chain/modules/interpool/types/ chain/modules/interpool/types
 
 	./scripts/replace_path.sh
 
