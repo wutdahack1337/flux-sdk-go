@@ -4,6 +4,8 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/ethereum/go-ethereum/accounts/abi"
+	"math/big"
 	"os"
 	"strings"
 
@@ -76,11 +78,26 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	abiBz, err := json.Marshal(compData["abi"].([]interface{}))
+	if err != nil {
+		panic(err)
+	}
+
+	// deploy pool manager
+	poolManagerABI, err := abi.JSON(strings.NewReader(string(abiBz)))
+	if err != nil {
+		panic(err)
+	}
+	calldata, err := poolManagerABI.Pack("", big.NewInt(3), big.NewInt(4))
+	if err != nil {
+		panic(err)
+	}
 
 	// prepare tx msg
 	msg := &evmtypes.MsgDeployContract{
 		Sender:   senderAddress.String(),
 		Bytecode: bytecode,
+		Calldata: calldata,
 	}
 
 	txResp, err := chainClient.SyncBroadcastMsg(msg)
