@@ -5,6 +5,7 @@ import (
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	evmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/evm/types"
+	pooltypes "github.com/FluxNFTLabs/sdk-go/chain/modules/interpool/types"
 	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -51,4 +52,11 @@ type SvmKeeper interface {
 	KVSetAccount(ctx context.Context, account *svmtypes.Account)
 	SvmExecute(ctx sdk.Context, msg *svmtypes.MsgTransaction) (*svmtypes.MsgTransactionResponse, error)
 	GetAccountLink(ctx context.Context, cosmosAddr []byte) (*svmtypes.AccountLink, bool)
+}
+
+type InterpoolKeeper interface {
+	GetPool(ctx context.Context, pool []byte) (*pooltypes.InterPool, bool)
+	SetPool(ctx context.Context, pool *pooltypes.InterPool)
+	GetPoolIdByCronJobId(ctx context.Context, cronId []byte) ([]byte, bool)
+	CanAccessPool(ctx context.Context, cronId []byte, poolAccount string) bool
 }

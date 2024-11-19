@@ -12,6 +12,7 @@ import (
 
 type AstromeshKeeper interface {
 	FISTransaction(goCtx context.Context, msg *types.MsgFISTransaction) (*types.MsgFISTransactionResponse, error)
+	CronFISTransaction(goCtx context.Context, msg *types.MsgFISTransaction, cronId []byte) (*types.MsgFISTransactionResponse, error)
 	FISQuery(goCtx context.Context, msg *types.FISQueryRequest) (*types.FISQueryResponse, error)
 }
 
@@ -30,5 +31,6 @@ type SvmKeeper interface {
 
 type InterpoolKeeper interface {
 	GetPool(ctx context.Context, pool []byte) (*pooltypes.InterPool, bool)
+	SetPool(ctx context.Context, pool *pooltypes.InterPool)
 	GetPoolIdByCronJobId(ctx context.Context, cronId []byte) ([]byte, bool)
 }

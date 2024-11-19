@@ -61,9 +61,9 @@ func main() {
 	fmt.Println("sender address:", senderAddress.String())
 	msg := &interpooltypes.MsgDeposit{
 		Sender: senderAddress.String(),
-		PoolId: "F6CCD67762EA6140D455A2EE30BD3983F8522CC99B5D78C810F4E261C599C78D",
+		PoolId: "9573E7F6C10AA632A65689F63B414B77CB42CCBCA4DDE2943AD98CB7B7BC62FD",
 		DepositSnapshot: sdk.NewCoins(
-			sdk.NewInt64Coin("lux", 1000_000),
+			sdk.NewInt64Coin("usdt", 1_000_000),
 		),
 	}
 	res, err := chainClient.SyncBroadcastMsg(msg)

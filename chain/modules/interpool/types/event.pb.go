@@ -86,7 +86,8 @@ type LiquidityEvent struct {
 	Pool *InterPool `protobuf:"bytes,2,opt,name=pool,proto3" json:"pool,omitempty"`
 	// The specific pool shares that were updated as part of the liquidity event
 	PoolShare *PoolShare `protobuf:"bytes,3,opt,name=pool_share,json=poolShare,proto3" json:"pool_share,omitempty"`
-	// The capital that has changed as part of the event (amounts added or removed)
+	// The capital that has changed as part of the event (amounts added or
+	// removed)
 	ChangedCapital []types1.Coin `protobuf:"bytes,4,rep,name=changed_capital,json=changedCapital,proto3" json:"changed_capital"`
 }
 
