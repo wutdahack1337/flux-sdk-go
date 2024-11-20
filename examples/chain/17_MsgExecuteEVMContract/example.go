@@ -84,7 +84,7 @@ func main() {
 		panic(err)
 	}
 
-	contractAddress, _ := hex.DecodeString("0000000000000000000000000000000000000011")
+	contractAddress, _ := hex.DecodeString("ab6b4d064c968eca87f775d2493a222987052bc0")
 
 	// prepare tx msg
 	msg := &evmtypes.MsgExecuteContract{
