@@ -60,16 +60,15 @@ func main() {
 		panic(err)
 	}
 
-	// deploy flux processor contract
+	// deploy a + b = c contract
 	dir, err := os.Getwd()
 	if err != nil {
 		panic(err)
 	}
-	bz, err := os.ReadFile(dir + "/examples/chain/16_MsgDeployEVMContract/fluxProcessorData.json")
+	bz, err := os.ReadFile(dir + "/examples/chain/16_MsgDeployEVMContract/addData.json")
 	if err != nil {
 		panic(err)
 	}
-
 	var compData map[string]interface{}
 	err = json.Unmarshal(bz, &compData)
 	if err != nil {
@@ -79,11 +78,24 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	abiBz, err := json.Marshal(compData["abi"].([]interface{}))
+	if err != nil {
+		panic(err)
+	}
+	abi, err := abi.JSON(strings.NewReader(string(abiBz)))
+	if err != nil {
+		panic(err)
+	}
+	callData, err := abi.Pack("", ethcommon.Address(ethcommon.Hex2Bytes("0000000000000000000000000000000000000011")[:]), big.NewInt(3), big.NewInt(4))
+	if err != nil {
+		panic(err)
+	}
 
 	// prepare tx msg
 	msg := &evmtypes.MsgDeployContract{
 		Sender:   senderAddress.String(),
 		Bytecode: bytecode,
+		Calldata: callData,
 	}
 
 	txResp, err := chainClient.SyncBroadcastMsg(msg)
@@ -108,58 +120,4 @@ func main() {
 	}
 	fmt.Println("contract owner:", senderAddress.String())
 	fmt.Println("flux processor contract address:", hex.EncodeToString(dcr.ContractAddress))
-
-	// deploy a + b = c contract
-	bz, err = os.ReadFile(dir + "/examples/chain/16_MsgDeployEVMContract/addData.json")
-	if err != nil {
-		panic(err)
-	}
-	err = json.Unmarshal(bz, &compData)
-	if err != nil {
-		panic(err)
-	}
-	bytecode, err = hex.DecodeString(compData["bytecode"].(map[string]interface{})["object"].(string))
-	if err != nil {
-		panic(err)
-	}
-	abiBz, err := json.Marshal(compData["abi"].([]interface{}))
-	if err != nil {
-		panic(err)
-	}
-	abi, err := abi.JSON(strings.NewReader(string(abiBz)))
-	if err != nil {
-		panic(err)
-	}
-	callData, err := abi.Pack("", ethcommon.Address(dcr.ContractAddress[:]), big.NewInt(3), big.NewInt(4))
-	if err != nil {
-		panic(err)
-	}
-
-	// prepare tx msg
-	msg = &evmtypes.MsgDeployContract{
-		Sender:   senderAddress.String(),
-		Bytecode: bytecode,
-		Calldata: callData,
-	}
-	txResp, err = chainClient.SyncBroadcastMsg(msg)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("tx hash:", txResp.TxResponse.TxHash)
-	fmt.Println("gas used/want:", txResp.TxResponse.GasUsed, "/", txResp.TxResponse.GasWanted)
-	hexResp, err = hex.DecodeString(txResp.TxResponse.Data)
-	if err != nil {
-		panic(err)
-	}
-
-	// decode result to get contract address
-	var txData2 sdk.TxMsgData
-	if err = txData2.Unmarshal(hexResp); err != nil {
-		panic(err)
-	}
-	if err = dcr.Unmarshal(txData2.MsgResponses[0].Value); err != nil {
-		panic(err)
-	}
-	fmt.Println("contract owner:", senderAddress.String())
-	fmt.Println("add contract address:", hex.EncodeToString(dcr.ContractAddress))
 }
