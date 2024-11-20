@@ -75,7 +75,7 @@ func main() {
 		panic(err)
 	}
 
-	poolId := "9573E7F6C10AA632A65689F63B414B77CB42CCBCA4DDE2943AD98CB7B7BC62FD"
+	poolId := "600edb5c594e1f0fe0791f7f2f8501ff9dae917491ea3b683ef10814f4b87870"
 	msg := &strategytypes.MsgConfigStrategy{
 		Sender:   senderAddress.String(),
 		Config:   strategytypes.Config_deploy,
@@ -130,6 +130,7 @@ func main() {
 	if err := txData.Unmarshal(hexResp); err != nil {
 		panic(err)
 	}
+
 	var response strategytypes.MsgConfigStrategyResponse
 	if err := response.Unmarshal(txData.MsgResponses[0].Value); err != nil {
 		panic(err)
@@ -137,9 +138,9 @@ func main() {
 
 	fmt.Println("strategy id:", response.Id)
 	msgUpdatePool := &interpooltypes.MsgUpdatePool{
-		Sender:    senderAddress.String(),
-		PoolId:    poolId,
-		CronJobId: response.Id,
+		Sender: senderAddress.String(),
+		PoolId: poolId,
+		CronId: response.Id,
 	}
 
 	res, err = chainClient.SyncBroadcastMsg(msgUpdatePool)

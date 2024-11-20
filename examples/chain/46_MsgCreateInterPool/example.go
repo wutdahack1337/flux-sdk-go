@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
 	"os"
 	"strings"
@@ -10,6 +11,7 @@ import (
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -72,4 +74,21 @@ func main() {
 	}
 	fmt.Println("tx hash", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
+
+	hexResp, err := hex.DecodeString(res.TxResponse.Data)
+	if err != nil {
+		panic(err)
+	}
+
+	var txData sdk.TxMsgData
+	if err := txData.Unmarshal(hexResp); err != nil {
+		panic(err)
+	}
+
+	var response interpooltypes.MsgCreatePoolResponse
+	if err := response.Unmarshal(txData.MsgResponses[0].Value); err != nil {
+		panic(err)
+	}
+
+	fmt.Println("pool id:", response.PoolId)
 }
