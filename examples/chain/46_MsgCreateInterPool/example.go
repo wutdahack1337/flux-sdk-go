@@ -59,8 +59,12 @@ func main() {
 
 	fmt.Println("sender address:", senderAddress.String())
 	msg := &interpooltypes.MsgCreatePool{
-		Sender:             senderAddress.String(),
-		OperatorCommission: 100, // 10^6
+		Sender: senderAddress.String(),
+		OperatorCommissionConfig: &interpooltypes.CommissionConfig{
+			ManagementFeeRate:     100,
+			ManagementFeeInterval: 2,
+			TradingFeeRate:        100,
+		},
 	}
 	res, err := chainClient.SyncBroadcastMsg(msg)
 	if err != nil {
