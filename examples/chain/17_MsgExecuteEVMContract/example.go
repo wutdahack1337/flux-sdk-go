@@ -2,7 +2,9 @@ package main
 
 import (
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
+	"github.com/ethereum/go-ethereum/accounts/abi"
 	"os"
 	"strings"
 
@@ -56,8 +58,33 @@ func main() {
 	}
 
 	// client should know contract's ABI to build this payload
-	callData, _ := hex.DecodeString("e942b5160000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000056f776e657200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000075068756320546100000000000000000000000000000000000000000000000000")
-	contractAddress, _ := hex.DecodeString("07aa076883658b7ed99d25b1e6685808372c8fe2")
+	var compData map[string]interface{}
+	dir, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	bz, err := os.ReadFile(dir + "/examples/chain/16_MsgDeployEVMContract/addData.json")
+	if err != nil {
+		panic(err)
+	}
+	err = json.Unmarshal(bz, &compData)
+	if err != nil {
+		panic(err)
+	}
+	abiBz, err := json.Marshal(compData["abi"].([]interface{}))
+	if err != nil {
+		panic(err)
+	}
+	abi, err := abi.JSON(strings.NewReader(string(abiBz)))
+	if err != nil {
+		panic(err)
+	}
+	callData, err := abi.Pack("computeSum")
+	if err != nil {
+		panic(err)
+	}
+
+	contractAddress, _ := hex.DecodeString("67688891c168c1a59eb1059f9dee2963331ec1cf")
 
 	// prepare tx msg
 	msg := &evmtypes.MsgExecuteContract{
