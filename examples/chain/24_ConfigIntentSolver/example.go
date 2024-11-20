@@ -75,7 +75,7 @@ func main() {
 		Query:    &types.FISQueryRequest{},
 		Metadata: &strategytypes.StrategyMetadata{
 			Name:        "Nexus Transfer Solver",
-			Description: "Simplifies financial transfers by allowing retail users to batch multiple requests using easy, human-readable prompts.",
+			Description: "Simplifies financial transfers by allowing retail users to batch multiple requests using easy, human-readable prompts.\n\n**Available options:**\n\ndenom: `btc`, `eth`, `sol`, `usdt` or any other cosmos denoms",
 			Logo:        "https://img.icons8.com/?size=100&id=Wnx66N0cnKa7&format=png&color=000000",
 			Website:     "https://www.astromesh.xyz",
 			Type:        strategytypes.StrategyType_INTENT_SOLVER,

@@ -82,7 +82,7 @@ func main() {
 		},
 		Metadata: &strategytypes.StrategyMetadata{
 			Name:        "AMM Solver",
-			Description: "Versatile solver designed to simplify swap and arbitrage operations across all Automated Market Makers (AMMs) in all Planes including Uniswap on EVM, Astroport on WasmVM and Raydium on SVM.\n\ndex_name options: wasm astroport, evm uniswap, svm raydium\npair options: btc-usdt, eth-usdt, sol-usdt",
+			Description: "Versatile solver designed to simplify swap and arbitrage operations across all Automated Market Makers (AMMs) in all Planes including Uniswap on EVM, Astroport on WasmVM and Raydium on SVM.\n\n**Available options:**\n\ndex_name: `wasm astroport`, `evm uniswap`, `svm raydium`\n\npair: `btc-usdt`, `eth-usdt`, `sol-usdt`",
 			Logo:        "https://img.icons8.com/?size=100&id=DRqSfJR0cb56&format=png&color=000000",
 			Website:     "https://www.astromesh.xyz/",
 			Type:        strategytypes.StrategyType_INTENT_SOLVER,
@@ -91,7 +91,7 @@ func main() {
 			SupportedApps: []*strategytypes.SupportedApp{
 				{
 					Name:            "Uniswap",
-					ContractAddress: "e2f81b30e1d47dffdbb6ab41ec5f0572705b026d",
+					ContractAddress: "366c9837f9a32cc11ac5cac1602e57b73e6bf784",
 					Plane:           types.Plane_EVM,
 					Verified:        false,
 				},

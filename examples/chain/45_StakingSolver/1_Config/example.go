@@ -75,12 +75,12 @@ func main() {
 		Query:    &types.FISQueryRequest{},
 		Metadata: &strategytypes.StrategyMetadata{
 			Name:        "Staking Solver",
-			Description: "The staking solver on Astromesh streamlines the staking process, helping users delegate tokens securely and optimize rewards\n\n**Available options:**\n\nValidator_name: `flux`",
+			Description: "The staking solver on Astromesh streamlines the staking process, helping users delegate tokens securely and optimize rewards\n\n**Available options:**\n\nvalidator_name: `flux`",
 			Logo:        "https://icons.veryicon.com/png/o/business/work-circle/proof-of-stake.png",
 			Website:     "https://www.astromesh.xyz",
 			Type:        strategytypes.StrategyType_INTENT_SOLVER,
 			Tags:        strings.Split("Solver, Bank, Utility", ", "),
-			Schema:      `{
+			Schema: `{
 				"groups": [
 				  {
 					"name": "Staking Solver",

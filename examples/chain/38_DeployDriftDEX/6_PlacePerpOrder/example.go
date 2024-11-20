@@ -79,6 +79,8 @@ func deposit(
 		[]byte("user_stats"), svmPubkey[:],
 	}, drift.ProgramID)
 
+	fmt.Println("user:", user.String())
+
 	marketIndex := uint16(0)
 	spotMarket, _, err := solana.FindProgramAddress([][]byte{
 		[]byte("spot_market"),
