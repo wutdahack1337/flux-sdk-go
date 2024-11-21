@@ -33,7 +33,7 @@ func (m *MsgConfigStrategy) ValidateBasic() error {
 			return fmt.Errorf("strategy id should be empty for deploy, update options")
 		}
 
-		if err := m.Metadata.ValidateBasic(m.Query, false); err != nil {
+		if err := m.Metadata.ValidateBasic(m.Query, true); err != nil {
 			return fmt.Errorf("metadata validate error: %w", err)
 		}
 
@@ -52,7 +52,7 @@ func (m *MsgConfigStrategy) ValidateBasic() error {
 		}
 
 		if m.Metadata != nil {
-			if err := m.Metadata.ValidateBasic(m.Query, true); err != nil {
+			if err := m.Metadata.ValidateBasic(m.Query, false); err != nil {
 				return fmt.Errorf("metadata validate error: %w", err)
 			}
 		}
