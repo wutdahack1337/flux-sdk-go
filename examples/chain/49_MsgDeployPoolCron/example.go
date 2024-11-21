@@ -23,6 +23,7 @@ import (
 )
 
 var (
+	//go:embed dummy_pool_cron.wasm
 	cronBinary []byte
 )
 
@@ -68,11 +69,6 @@ func main() {
 	)
 	if err != nil {
 		fmt.Println(err)
-	}
-
-	cronBinary, err := os.ReadFile("/Users/phucta/flux/nexus-bots/examples/cron/pool-cron/target/wasm32-unknown-unknown/release/pool_cron.wasm")
-	if err != nil {
-		panic(err)
 	}
 
 	poolId := "600edb5c594e1f0fe0791f7f2f8501ff9dae917491ea3b683ef10814f4b87870"
