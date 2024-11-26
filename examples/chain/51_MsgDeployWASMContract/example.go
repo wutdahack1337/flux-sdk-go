@@ -91,7 +91,7 @@ func main() {
 	instantiateMsg := &wasmtypes.MsgInstantiateContract{
 		Sender: senderAddress.String(),
 		CodeID: codeID,
-		Label:  "wasm_deploy_watcher",
+		Label:  "wasm_contract",
 		Msg:    []byte("{}"),
 		Funds:  nil,
 	}
