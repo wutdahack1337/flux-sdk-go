@@ -82,7 +82,6 @@ func main() {
 					if err != nil {
 						panic(err)
 					}
-
 				}
 			}
 		}
@@ -100,6 +99,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
 	fmt.Println("tx hash:", txResp.TxResponse.TxHash)
 	fmt.Println("gas used/want:", txResp.TxResponse.GasUsed, "/", txResp.TxResponse.GasWanted)
 }
