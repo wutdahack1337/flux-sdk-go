@@ -5,18 +5,22 @@ import (
 	"os"
 	"strings"
 
-	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
-	strategytypes "github.com/FluxNFTLabs/sdk-go/chain/modules/strategy/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 func main() {
-	network := common.LoadNetwork("local", "")
+	networkName := "local"
+	if len(os.Args) > 1 {
+		networkName = os.Args[1]
+	}
+	network := common.LoadNetwork(networkName, "")
 	kr, err := keyring.New(
 		"fluxd",
 		"file",
@@ -55,41 +59,15 @@ func main() {
 	}
 
 	fmt.Println("sender address:", senderAddress.String())
-
-	msgTriggerStategy := &strategytypes.MsgTriggerStrategies{
-		Sender: senderAddress.String(),
-		Ids:    []string{"7afa535a8f5cf462e2c255d0a98262b04f2c4f34fc3cd3c5e105159c0ca55e30"},
-		Inputs: [][]byte{
-			[]byte(`{"undelegate":{"amount":"1000","validator_name":"flux"}}`),
-		},
-		Queries: []*astromeshtypes.FISQueryRequest{
-			{
-				Instructions: []*astromeshtypes.FISQueryInstruction{
-					{
-						Plane:   astromeshtypes.Plane_COSMOS,
-						Action:  astromeshtypes.QueryAction_COSMOS_QUERY,
-						Address: nil,
-						Input: [][]byte{
-							[]byte("/cosmos/staking/v1beta1/delegations/" + senderAddress.String()),
-						},
-					},
-					{
-						Plane:   astromeshtypes.Plane_COSMOS,
-						Action:  astromeshtypes.QueryAction_COSMOS_QUERY,
-						Address: nil,
-						Input: [][]byte{
-							[]byte("/cosmos/staking/v1beta1/validators"),
-						},
-					},
-				},
-			},
-		},
+	msg := &stakingtypes.MsgUndelegate{
+		DelegatorAddress: senderAddress.String(),
+		ValidatorAddress: "luxvaloper1qry5x2d383v9hkqc0fpez53yluyxvey2c957m4",
+		Amount:           sdk.NewInt64Coin("lux", 1000),
 	}
-	res, err := chainClient.SyncBroadcastMsg(msgTriggerStategy)
+	res, err := chainClient.SyncBroadcastMsg(msg)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
-
-	fmt.Println("tx hash:", res.TxResponse.TxHash)
+	fmt.Println("tx hash", res.TxResponse.TxHash)
 	fmt.Println("gas used/want:", res.TxResponse.GasUsed, "/", res.TxResponse.GasWanted)
 }

@@ -41,7 +41,7 @@ func main() {
 	// init client ctx
 	clientCtx, senderAddress, err := chaintypes.NewClientContext(
 		network.ChainId,
-		"user2",
+		"user1",
 		kr,
 	)
 	if err != nil {
@@ -62,7 +62,7 @@ func main() {
 	msg := &stakingtypes.MsgDelegate{
 		DelegatorAddress: senderAddress.String(),
 		ValidatorAddress: "luxvaloper1qry5x2d383v9hkqc0fpez53yluyxvey2c957m4",
-		Amount:           sdk.NewInt64Coin("lux", 1000_000_000_000_000_000),
+		Amount:           sdk.NewInt64Coin("lux", 1000),
 	}
 	res, err := chainClient.SyncBroadcastMsg(msg)
 	if err != nil {
