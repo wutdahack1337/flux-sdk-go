@@ -56,10 +56,9 @@ func main() {
 
 	fmt.Println("sender address:", senderAddress.String())
 
-
 	msgTriggerStategy := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"b96c3f9abbb946026bbd7c1930e0a6fdbc213e30e3878e7ff4a07d3cf87d590e"},
+		Ids:    []string{"7afa535a8f5cf462e2c255d0a98262b04f2c4f34fc3cd3c5e105159c0ca55e30"},
 		Inputs: [][]byte{
 			[]byte(`{"undelegate":{"amount":"1000","validator_name":"flux"}}`),
 		},
@@ -71,7 +70,7 @@ func main() {
 						Action:  astromeshtypes.QueryAction_COSMOS_QUERY,
 						Address: nil,
 						Input: [][]byte{
-							[]byte("/cosmos/distribution/v1beta1/delegators/" + senderAddress.String() + "/rewards"),
+							[]byte("/cosmos/staking/v1beta1/delegations/" + senderAddress.String()),
 						},
 					},
 					{

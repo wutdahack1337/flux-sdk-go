@@ -117,7 +117,7 @@ func main() {
 							  "action": "COSMOS_QUERY",
 							  "address": "",
 							  "input": [
-								"L2Nvc21vcy9kaXN0cmlidXRpb24vdjFiZXRhMS9kZWxlZ2F0b3JzLyR7d2FsbGV0fS9yZXdhcmRz"
+								"L2Nvc21vcy9zdGFraW5nL3YxYmV0YTEvZGVsZWdhdGlvbnMvJHt3YWxsZXR9"
 							  ]
 							},
 							{
