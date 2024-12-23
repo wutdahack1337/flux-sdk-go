@@ -61,7 +61,7 @@ func signedBigIntFromBytes(b []byte) *big.Int {
 }
 
 func main() {
-	network := common.LoadNetwork("local", "")
+	network := common.LoadNetwork("devnet", "")
 	kr, err := keyring.New(
 		"fluxd",
 		"file",

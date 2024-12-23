@@ -41,7 +41,7 @@ func main() {
 	// init client ctx
 	clientCtx, senderAddress, err := chaintypes.NewClientContext(
 		network.ChainId,
-		"user4",
+		"user2",
 		kr,
 	)
 	if err != nil {
@@ -54,11 +54,6 @@ func main() {
 		clientCtx,
 		common.OptionGasPrices("500000000lux"),
 	)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	// prepare tx msg
 	if err != nil {
 		panic(err)
 	}
@@ -81,22 +76,28 @@ func main() {
 		fmt.Println("sender is already linked to svm address:", svmPubkey.String())
 	}
 
+	id := "8a4bd4d7722ebebbf3e3b846574e98d4085ddbcdba95b0f97c1ad917e9ea146d"
+	cronId := "516958d1e374c04f431bf5521cad9115670952949b453210c263b406b18bb42d"
 	msgTriggerStategy := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"c966a46d17195423e9a8d6857e6663d6ce825844007c8e0abd890b439dbe5536"},
+		Ids:    []string{id},
 		Inputs: [][]byte{
-			[]byte(`{"deposit_equally":{"denom":"usdt","amount":"3000000"}}`),
+			[]byte(
+				fmt.Sprintf(
+					`{"create_token":{"name":"chill guy","symbol":"CHILLGUYC","description":"just a chill guy","uri":"https://example.com/token-uri","target_vm":"SVM","solver_id":"%s","cron_id":"%s"}}`,
+					id, cronId,
+				),
+			),
 		},
 		Queries: []*astromeshtypes.FISQueryRequest{
 			{
 				Instructions: []*astromeshtypes.FISQueryInstruction{
 					{
 						Plane:   astromeshtypes.Plane_COSMOS,
-						Action:  astromeshtypes.QueryAction_COSMOS_BANK_BALANCE,
+						Action:  astromeshtypes.QueryAction_COSMOS_QUERY,
 						Address: nil,
 						Input: [][]byte{
-							[]byte(senderAddress.String()),
-							[]byte("usdt"),
+							[]byte("/cosmos/auth/v1beta1/accounts/" + senderAddress.String()),
 						},
 					},
 				},

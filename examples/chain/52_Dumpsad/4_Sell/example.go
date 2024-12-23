@@ -1,20 +1,18 @@
 package main
 
 import (
-	"context"
+	"encoding/hex"
 	"fmt"
 	"os"
 	"strings"
 
-	"cosmossdk.io/math"
 	astromeshtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	strategytypes "github.com/FluxNFTLabs/sdk-go/chain/modules/strategy/types"
 	chaintypes "github.com/FluxNFTLabs/sdk-go/chain/types"
 	chainclient "github.com/FluxNFTLabs/sdk-go/client/chain"
 	"github.com/FluxNFTLabs/sdk-go/client/common"
-	"github.com/cosmos/btcutil/base58"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -41,7 +39,7 @@ func main() {
 	// init client ctx
 	clientCtx, senderAddress, err := chaintypes.NewClientContext(
 		network.ChainId,
-		"user4",
+		"user2",
 		kr,
 	)
 	if err != nil {
@@ -55,48 +53,29 @@ func main() {
 		common.OptionGasPrices("500000000lux"),
 	)
 	if err != nil {
-		fmt.Println(err)
-	}
-
-	// prepare tx msg
-	if err != nil {
 		panic(err)
 	}
 
 	fmt.Println("sender address:", senderAddress.String())
-	// check if account is linked, not then create
-	isSvmLinked, svmPubkey, err := chainClient.GetSVMAccountLink(context.Background(), senderAddress)
-	if err != nil {
-		panic(err)
-	}
-
-	if !isSvmLinked {
-		svmKey := ed25519.GenPrivKey() // Good practice: Backup this private key
-		res, err := chainClient.LinkSVMAccount(svmKey, math.NewIntFromUint64(1000_000_000_000))
-		if err != nil {
-			panic(err)
-		}
-		fmt.Println("linked sender to svm address:", base58.Encode(svmKey.PubKey().Bytes()), "txHash:", res.TxResponse.TxHash)
-	} else {
-		fmt.Println("sender is already linked to svm address:", svmPubkey.String())
-	}
-
+	id := "8a4bd4d7722ebebbf3e3b846574e98d4085ddbcdba95b0f97c1ad917e9ea146d"
+	poolAddress := "lux1z5mjdzgkqlpqs7rr97tk4xe83ds3wtvnw4advq"
 	msgTriggerStategy := &strategytypes.MsgTriggerStrategies{
 		Sender: senderAddress.String(),
-		Ids:    []string{"c966a46d17195423e9a8d6857e6663d6ce825844007c8e0abd890b439dbe5536"},
+		Ids:    []string{id},
 		Inputs: [][]byte{
-			[]byte(`{"deposit_equally":{"denom":"usdt","amount":"3000000"}}`),
+			[]byte(
+				`{"trade":{"action":"sell","denom":"astromesh/lux1jcltmuhplrdcwp7stlr4hlhlhgd4htqhu86cqx/CHILLGUYC","amount":"65962511937500000","slippage":"1000"}}`,
+			),
 		},
 		Queries: []*astromeshtypes.FISQueryRequest{
 			{
 				Instructions: []*astromeshtypes.FISQueryInstruction{
 					{
 						Plane:   astromeshtypes.Plane_COSMOS,
-						Action:  astromeshtypes.QueryAction_COSMOS_BANK_BALANCE,
+						Action:  astromeshtypes.QueryAction_COSMOS_QUERY,
 						Address: nil,
 						Input: [][]byte{
-							[]byte(senderAddress.String()),
-							[]byte("usdt"),
+							[]byte("/flux/interpool/v1beta1/pools/" + hex.EncodeToString(sdk.MustAccAddressFromBech32(poolAddress))),
 						},
 					},
 				},
