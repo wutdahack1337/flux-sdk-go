@@ -12,7 +12,7 @@ import (
 
 type AstromeshKeeper interface {
 	FISTransaction(goCtx context.Context, msg *types.MsgFISTransaction) (*types.MsgFISTransactionResponse, error)
-	CronFISTransaction(goCtx context.Context, msg *types.MsgFISTransaction, cronId []byte) (*types.MsgFISTransactionResponse, error)
+	StrategyFISTransaction(goCtx context.Context, msg *types.MsgFISTransaction, cronId []byte) (*types.MsgFISTransactionResponse, error)
 	FISQuery(goCtx context.Context, msg *types.FISQueryRequest) (*types.FISQueryResponse, error)
 }
 

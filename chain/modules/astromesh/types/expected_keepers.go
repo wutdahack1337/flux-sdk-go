@@ -58,5 +58,5 @@ type InterpoolKeeper interface {
 	GetPool(ctx context.Context, pool []byte) (*pooltypes.InterPool, bool)
 	SetPool(ctx context.Context, pool *pooltypes.InterPool)
 	GetPoolIdByCronJobId(ctx context.Context, cronId []byte) ([]byte, bool)
-	CanAccessPool(ctx context.Context, cronId []byte, poolAccount string) bool
+	StrategyCanAccessPool(ctx context.Context, strategyId []byte, poolAccount string) bool
 }

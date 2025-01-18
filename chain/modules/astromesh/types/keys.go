@@ -19,6 +19,7 @@ var (
 	// generate completely non key-pair account by using PDA where the program ID owner is also off-curve
 	// just to make sure it couldn't be signed by any external accounts/any PDA
 	SvmMintAuthority solana.PublicKey
+	SvmPoolAuthority solana.PublicKey
 )
 
 func init() {
@@ -31,4 +32,13 @@ func init() {
 	}
 
 	SvmMintAuthority = authority
+
+	poolAuthority, _, err := solana.FindProgramAddress(
+		[][]byte{[]byte("PoolAuthority")},
+		solana.MustPublicKeyFromBase58("Astromesh1111111111111111111111111111111111"),
+	)
+	if err != nil {
+		panic(err)
+	}
+	SvmPoolAuthority = poolAuthority
 }

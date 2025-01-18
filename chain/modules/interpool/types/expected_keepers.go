@@ -3,6 +3,8 @@ package types
 import (
 	context "context"
 
+	"cosmossdk.io/math"
+	svmtypes "github.com/FluxNFTLabs/sdk-go/chain/modules/svm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -23,4 +25,13 @@ type BankKeeper interface {
 	SendCoinsFromAccountToModule(ctx context.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
 	MintCoins(ctx context.Context, moduleName string, amt sdk.Coins) error
 	BurnCoins(ctx context.Context, moduleName string, amt sdk.Coins) error
+}
+
+type SvmKeeper interface {
+	CreateSvmAccAndLink(
+		ctx context.Context,
+		cosmosAddr sdk.AccAddress,
+		svmAcc *svmtypes.Account,
+		luxAmount math.Int,
+	) error
 }

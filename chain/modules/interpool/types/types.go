@@ -10,5 +10,8 @@ const (
 	// RouterKey is the message route for svm
 	RouterKey = ModuleName
 
-	FeeRatePrecision = 1_000_000
+	FeeRatePrecision    = 1_000_000
+	PercentagePrecision = 10_000
+
+	DefaultPoolSvmLamport = 1_000_000_000
 )

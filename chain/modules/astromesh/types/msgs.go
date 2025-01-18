@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -95,6 +96,31 @@ func (m *MsgFISTransaction) ValidateBasic() error {
 }
 
 func (m MsgFISTransaction) GetSigners() []sdk.AccAddress {
+	signer, _ := sdk.AccAddressFromBech32(m.Sender)
+	return []sdk.AccAddress{signer}
+}
+
+func (m *MsgCreateBankDenom) ValidateBasic() error {
+	if m.Sender == "" {
+		return fmt.Errorf("empty sender")
+	}
+
+	if m.Metadata == nil {
+		return fmt.Errorf("expected non-nil metadata")
+	}
+
+	coinPrefix := "astromesh/" + m.Sender + "/"
+	if !strings.HasPrefix(m.Metadata.Base, coinPrefix) {
+		return fmt.Errorf("coin name must start with " + coinPrefix)
+	}
+
+	if err := m.Metadata.Validate(); err != nil {
+		return fmt.Errorf("validate coin err: %w", err)
+	}
+	return nil
+}
+
+func (m MsgCreateBankDenom) GetSigners() []sdk.AccAddress {
 	signer, _ := sdk.AccAddressFromBech32(m.Sender)
 	return []sdk.AccAddress{signer}
 }

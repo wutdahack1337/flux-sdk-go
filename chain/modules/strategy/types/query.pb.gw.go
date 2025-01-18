@@ -13,7 +13,7 @@ import (
 	"io"
 	"net/http"
 
-	types_0 "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
+	types_1 "github.com/FluxNFTLabs/sdk-go/chain/modules/astromesh/types"
 	"github.com/golang/protobuf/descriptor"
 	"github.com/golang/protobuf/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -237,13 +237,13 @@ func request_Query_GetStrategyVerifier_0(ctx context.Context, marshaler runtime.
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "plane")
 	}
 
-	e, err = runtime.Enum(val, types_0.Plane_value)
+	e, err = runtime.Enum(val, types_1.Plane_value)
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "plane", err)
 	}
 
-	protoReq.Plane = types_0.Plane(e)
+	protoReq.Plane = types_1.Plane(e)
 
 	val, ok = pathParams["contract_address"]
 	if !ok {
@@ -278,13 +278,13 @@ func local_request_Query_GetStrategyVerifier_0(ctx context.Context, marshaler ru
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "plane")
 	}
 
-	e, err = runtime.Enum(val, types_0.Plane_value)
+	e, err = runtime.Enum(val, types_1.Plane_value)
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "plane", err)
 	}
 
-	protoReq.Plane = types_0.Plane(e)
+	protoReq.Plane = types_1.Plane(e)
 
 	val, ok = pathParams["contract_address"]
 	if !ok {
