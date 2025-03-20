@@ -29,9 +29,11 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type QueryRequest struct {
-	Symbol    string `protobuf:"bytes,1,opt,name=symbol,proto3" json:"symbol,omitempty"`
-	Timeframe string `protobuf:"bytes,2,opt,name=timeframe,proto3" json:"timeframe,omitempty"`
-	Limit     uint64 `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
+	Symbol     string `protobuf:"bytes,1,opt,name=symbol,proto3" json:"symbol,omitempty"`
+	Timeframe  string `protobuf:"bytes,2,opt,name=timeframe,proto3" json:"timeframe,omitempty"`
+	Limit      uint64 `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
+	StartEpoch int64  `protobuf:"varint,4,opt,name=start_epoch,json=startEpoch,proto3" json:"start_epoch,omitempty"`
+	EndEpoch   int64  `protobuf:"varint,5,opt,name=end_epoch,json=endEpoch,proto3" json:"end_epoch,omitempty"`
 }
 
 func (m *QueryRequest) Reset()         { *m = QueryRequest{} }
@@ -84,6 +86,20 @@ func (m *QueryRequest) GetTimeframe() string {
 func (m *QueryRequest) GetLimit() uint64 {
 	if m != nil {
 		return m.Limit
+	}
+	return 0
+}
+
+func (m *QueryRequest) GetStartEpoch() int64 {
+	if m != nil {
+		return m.StartEpoch
+	}
+	return 0
+}
+
+func (m *QueryRequest) GetEndEpoch() int64 {
+	if m != nil {
+		return m.EndEpoch
 	}
 	return 0
 }
@@ -212,41 +228,130 @@ func (m *ListSymbolsResponse) GetSymbols() []string {
 	return nil
 }
 
+type GetLatestHeightRequest struct {
+}
+
+func (m *GetLatestHeightRequest) Reset()         { *m = GetLatestHeightRequest{} }
+func (m *GetLatestHeightRequest) String() string { return proto.CompactTextString(m) }
+func (*GetLatestHeightRequest) ProtoMessage()    {}
+func (*GetLatestHeightRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_168a9dd0998514c9, []int{4}
+}
+func (m *GetLatestHeightRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetLatestHeightRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetLatestHeightRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetLatestHeightRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetLatestHeightRequest.Merge(m, src)
+}
+func (m *GetLatestHeightRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetLatestHeightRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetLatestHeightRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetLatestHeightRequest proto.InternalMessageInfo
+
+type GetLatestHeightResponse struct {
+	Height int64 `protobuf:"varint,1,opt,name=height,proto3" json:"height,omitempty"`
+}
+
+func (m *GetLatestHeightResponse) Reset()         { *m = GetLatestHeightResponse{} }
+func (m *GetLatestHeightResponse) String() string { return proto.CompactTextString(m) }
+func (*GetLatestHeightResponse) ProtoMessage()    {}
+func (*GetLatestHeightResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_168a9dd0998514c9, []int{5}
+}
+func (m *GetLatestHeightResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetLatestHeightResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetLatestHeightResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetLatestHeightResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetLatestHeightResponse.Merge(m, src)
+}
+func (m *GetLatestHeightResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetLatestHeightResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetLatestHeightResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetLatestHeightResponse proto.InternalMessageInfo
+
+func (m *GetLatestHeightResponse) GetHeight() int64 {
+	if m != nil {
+		return m.Height
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*QueryRequest)(nil), "flux.indexer.ohlcv.QueryRequest")
 	proto.RegisterType((*QueryResponse)(nil), "flux.indexer.ohlcv.QueryResponse")
 	proto.RegisterType((*ListSymbolsRequest)(nil), "flux.indexer.ohlcv.ListSymbolsRequest")
 	proto.RegisterType((*ListSymbolsResponse)(nil), "flux.indexer.ohlcv.ListSymbolsResponse")
+	proto.RegisterType((*GetLatestHeightRequest)(nil), "flux.indexer.ohlcv.GetLatestHeightRequest")
+	proto.RegisterType((*GetLatestHeightResponse)(nil), "flux.indexer.ohlcv.GetLatestHeightResponse")
 }
 
 func init() { proto.RegisterFile("flux/indexer/ohlcv/ohlcv.proto", fileDescriptor_168a9dd0998514c9) }
 
 var fileDescriptor_168a9dd0998514c9 = []byte{
-	// 384 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x4b, 0xcb, 0x29, 0xad,
-	0xd0, 0xcf, 0xcc, 0x4b, 0x49, 0xad, 0x48, 0x2d, 0xd2, 0xcf, 0xcf, 0xc8, 0x49, 0x2e, 0x83, 0x90,
-	0x7a, 0x05, 0x45, 0xf9, 0x25, 0xf9, 0x42, 0x42, 0x20, 0x79, 0x3d, 0xa8, 0xbc, 0x1e, 0x58, 0x46,
-	0x4a, 0x26, 0x3d, 0x3f, 0x3f, 0x3d, 0x27, 0x55, 0x3f, 0xb1, 0x20, 0x53, 0x3f, 0x31, 0x2f, 0x2f,
-	0xbf, 0x24, 0xb1, 0x24, 0x33, 0x3f, 0xaf, 0x18, 0xa2, 0x43, 0x29, 0x8a, 0x8b, 0x27, 0xb0, 0x34,
-	0xb5, 0xa8, 0x32, 0x28, 0xb5, 0xb0, 0x34, 0xb5, 0xb8, 0x44, 0x48, 0x8c, 0x8b, 0xad, 0xb8, 0x32,
-	0x37, 0x29, 0x3f, 0x47, 0x82, 0x51, 0x81, 0x51, 0x83, 0x33, 0x08, 0xca, 0x13, 0x92, 0xe1, 0xe2,
-	0x2c, 0xc9, 0xcc, 0x4d, 0x4d, 0x2b, 0x4a, 0xcc, 0x4d, 0x95, 0x60, 0x02, 0x4b, 0x21, 0x04, 0x84,
-	0x44, 0xb8, 0x58, 0x73, 0x32, 0x73, 0x33, 0x4b, 0x24, 0x98, 0x15, 0x18, 0x35, 0x58, 0x82, 0x20,
-	0x1c, 0x25, 0x65, 0x2e, 0x5e, 0xa8, 0xd9, 0xc5, 0x05, 0xf9, 0x79, 0xc5, 0xa9, 0x42, 0x42, 0x5c,
-	0x2c, 0x29, 0x89, 0x25, 0x89, 0x50, 0xa3, 0xc1, 0x6c, 0x25, 0x11, 0x2e, 0x21, 0x9f, 0xcc, 0xe2,
-	0x92, 0x60, 0xb0, 0x35, 0xc5, 0x50, 0x67, 0x28, 0xe9, 0x73, 0x09, 0xa3, 0x88, 0x42, 0x0d, 0x90,
-	0xe0, 0x62, 0x87, 0xb8, 0xa7, 0x58, 0x82, 0x51, 0x81, 0x59, 0x83, 0x33, 0x08, 0xc6, 0x35, 0x9a,
-	0xc5, 0xc4, 0xc5, 0xec, 0x18, 0xe0, 0x29, 0xd4, 0xc3, 0xc8, 0xc5, 0x0a, 0xb6, 0x54, 0x48, 0x41,
-	0x0f, 0x33, 0x30, 0xf4, 0x90, 0xfd, 0x2a, 0xa5, 0x88, 0x47, 0x05, 0xc4, 0x42, 0x25, 0xbb, 0xa6,
-	0xcb, 0x4f, 0x26, 0x33, 0x59, 0x08, 0x99, 0xe9, 0x63, 0x09, 0xf9, 0x42, 0x90, 0x52, 0xfd, 0x6a,
-	0x88, 0x13, 0x6a, 0xf5, 0xab, 0xe1, 0xe1, 0x51, 0xab, 0x5f, 0x0d, 0x0e, 0x81, 0x5a, 0xa1, 0x66,
-	0x46, 0x2e, 0x6e, 0x24, 0x8f, 0x08, 0xa9, 0x61, 0xb3, 0x12, 0xd3, 0xff, 0x52, 0xea, 0x04, 0xd5,
-	0x41, 0x1d, 0xa8, 0x0c, 0x76, 0xa0, 0xac, 0x90, 0x34, 0x36, 0x07, 0x42, 0x03, 0xc7, 0xc9, 0xeb,
-	0xc4, 0x23, 0x39, 0xc6, 0x0b, 0x8f, 0xe4, 0x18, 0x1f, 0x3c, 0x92, 0x63, 0x9c, 0xf0, 0x58, 0x8e,
-	0xe1, 0xc2, 0x63, 0x39, 0x86, 0x1b, 0x8f, 0xe5, 0x18, 0xa2, 0x0c, 0xd2, 0x33, 0x4b, 0x32, 0x4a,
-	0x93, 0xf4, 0x92, 0xf3, 0x73, 0xf5, 0xdd, 0x72, 0x4a, 0x2b, 0xfc, 0xdc, 0x42, 0x7c, 0x12, 0x93,
-	0x8a, 0xc1, 0x86, 0xa5, 0xe8, 0x27, 0x67, 0x24, 0x66, 0xe6, 0xa1, 0x9a, 0x99, 0xc4, 0x06, 0x4e,
-	0x37, 0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0xcd, 0xdb, 0xee, 0x35, 0x8b, 0x02, 0x00, 0x00,
+	// 496 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x93, 0x5d, 0x8b, 0xd3, 0x4c,
+	0x14, 0xc7, 0x3b, 0x9b, 0xb6, 0xcf, 0xd3, 0xb3, 0x8a, 0x70, 0x5c, 0x6a, 0xe8, 0xae, 0xb1, 0x9b,
+	0x82, 0x56, 0xc5, 0x8c, 0x2f, 0x20, 0x5e, 0x09, 0x0a, 0xae, 0x2f, 0x14, 0xd1, 0xe8, 0x95, 0x37,
+	0x32, 0x6d, 0x67, 0x9b, 0x81, 0x24, 0xd3, 0xcd, 0x4c, 0xa4, 0x4b, 0xe9, 0x8d, 0xde, 0x7a, 0x21,
+	0x88, 0xe0, 0xe7, 0xf0, 0x53, 0x78, 0xb9, 0xe0, 0x8d, 0x97, 0xd2, 0xfa, 0x41, 0xa4, 0x93, 0x59,
+	0xdd, 0xb5, 0x41, 0xbd, 0x09, 0x39, 0xe7, 0x7f, 0xe6, 0xcc, 0xef, 0x9c, 0x7f, 0x02, 0xde, 0x6e,
+	0x9c, 0x4f, 0xa8, 0x48, 0x87, 0x7c, 0xc2, 0x33, 0x2a, 0xa3, 0x78, 0xf0, 0xaa, 0x78, 0x06, 0xe3,
+	0x4c, 0x6a, 0x89, 0xb8, 0xd4, 0x03, 0xab, 0x07, 0x46, 0x69, 0x6d, 0x8d, 0xa4, 0x1c, 0xc5, 0x9c,
+	0xb2, 0xb1, 0xa0, 0x2c, 0x4d, 0xa5, 0x66, 0x5a, 0xc8, 0x54, 0x15, 0x27, 0xfc, 0x8f, 0x04, 0x4e,
+	0x3c, 0xcd, 0x79, 0xb6, 0x1f, 0xf2, 0xbd, 0x9c, 0x2b, 0x8d, 0x4d, 0xa8, 0xab, 0xfd, 0xa4, 0x2f,
+	0x63, 0x97, 0xb4, 0x49, 0xb7, 0x11, 0xda, 0x08, 0xb7, 0xa0, 0xa1, 0x45, 0xc2, 0x77, 0x33, 0x96,
+	0x70, 0x77, 0xcd, 0x48, 0xbf, 0x12, 0xb8, 0x01, 0xb5, 0x58, 0x24, 0x42, 0xbb, 0x4e, 0x9b, 0x74,
+	0xab, 0x61, 0x11, 0xe0, 0x39, 0x58, 0x57, 0x9a, 0x65, 0xfa, 0x25, 0x1f, 0xcb, 0x41, 0xe4, 0x56,
+	0xdb, 0xa4, 0xeb, 0x84, 0x60, 0x52, 0xf7, 0x96, 0x19, 0xdc, 0x84, 0x06, 0x4f, 0x87, 0x56, 0xae,
+	0x19, 0xf9, 0x7f, 0x9e, 0x0e, 0x8d, 0xe8, 0x77, 0xe0, 0xa4, 0x25, 0x53, 0x63, 0x99, 0x2a, 0x8e,
+	0x08, 0xd5, 0x21, 0xd3, 0xcc, 0x82, 0x99, 0x77, 0x7f, 0x03, 0xb0, 0x27, 0x94, 0x7e, 0x66, 0x20,
+	0x95, 0x1d, 0xc2, 0xa7, 0x70, 0xfa, 0x58, 0xd6, 0x36, 0x70, 0xe1, 0xbf, 0x62, 0x1a, 0xe5, 0x92,
+	0xb6, 0xd3, 0x6d, 0x84, 0x87, 0xa1, 0xef, 0x42, 0xf3, 0x3e, 0xd7, 0x3d, 0xa6, 0xb9, 0xd2, 0x0f,
+	0xb8, 0x18, 0x45, 0xfa, 0xb0, 0xd5, 0x35, 0x38, 0xb3, 0xa2, 0xd8, 0x76, 0x4d, 0xa8, 0x47, 0x26,
+	0x63, 0x88, 0x9c, 0xd0, 0x46, 0xd7, 0x3f, 0x39, 0xe0, 0xdc, 0x79, 0xf2, 0x10, 0xdf, 0x12, 0xa8,
+	0x99, 0x09, 0xb0, 0x1d, 0xac, 0x1a, 0x13, 0x1c, 0x5d, 0x7b, 0x6b, 0xfb, 0x0f, 0x15, 0xc5, 0x75,
+	0xfe, 0xed, 0xd7, 0x5f, 0xbe, 0xbf, 0x5f, 0xbb, 0x85, 0x37, 0x69, 0xc9, 0x57, 0xb0, 0xb7, 0x2c,
+	0xa5, 0xd3, 0x62, 0x9e, 0x19, 0x9d, 0xfe, 0xb4, 0x66, 0x46, 0xa7, 0xc6, 0x8c, 0x19, 0xbe, 0x21,
+	0xb0, 0x7e, 0x64, 0x2b, 0x78, 0xbe, 0xec, 0xca, 0xd5, 0x65, 0xb6, 0x2e, 0xfc, 0xb5, 0xce, 0x02,
+	0x76, 0x0c, 0xe0, 0x59, 0xdc, 0x2c, 0x03, 0xb4, 0x9b, 0xc6, 0x0f, 0x04, 0x4e, 0xfd, 0xb6, 0x50,
+	0xbc, 0x54, 0x76, 0x43, 0xb9, 0x1f, 0xad, 0xcb, 0xff, 0x54, 0x6b, 0x89, 0x2e, 0x1a, 0xa2, 0x0e,
+	0x6e, 0x97, 0x11, 0xc5, 0xe6, 0xc4, 0x95, 0xc2, 0xb4, 0xbb, 0x8f, 0x3e, 0xcf, 0x3d, 0x72, 0x30,
+	0xf7, 0xc8, 0xb7, 0xb9, 0x47, 0xde, 0x2d, 0xbc, 0xca, 0xc1, 0xc2, 0xab, 0x7c, 0x5d, 0x78, 0x95,
+	0x17, 0x57, 0x47, 0x42, 0x47, 0x79, 0x3f, 0x18, 0xc8, 0x84, 0xee, 0xc4, 0xf9, 0xe4, 0xf1, 0xce,
+	0xf3, 0x1e, 0xeb, 0x2b, 0xd3, 0x72, 0x48, 0x07, 0x11, 0x13, 0xe9, 0xf1, 0xce, 0xfd, 0xba, 0xf9,
+	0xb7, 0x6e, 0xfc, 0x08, 0x00, 0x00, 0xff, 0xff, 0x26, 0x14, 0x7a, 0x8e, 0xaf, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -263,6 +368,7 @@ const _ = grpc.SupportPackageIsVersion4
 type APIClient interface {
 	Query(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error)
 	ListSymbols(ctx context.Context, in *ListSymbolsRequest, opts ...grpc.CallOption) (*ListSymbolsResponse, error)
+	GetLatestHeight(ctx context.Context, in *GetLatestHeightRequest, opts ...grpc.CallOption) (*GetLatestHeightResponse, error)
 }
 
 type aPIClient struct {
@@ -291,10 +397,20 @@ func (c *aPIClient) ListSymbols(ctx context.Context, in *ListSymbolsRequest, opt
 	return out, nil
 }
 
+func (c *aPIClient) GetLatestHeight(ctx context.Context, in *GetLatestHeightRequest, opts ...grpc.CallOption) (*GetLatestHeightResponse, error) {
+	out := new(GetLatestHeightResponse)
+	err := c.cc.Invoke(ctx, "/flux.indexer.ohlcv.API/GetLatestHeight", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // APIServer is the server API for API service.
 type APIServer interface {
 	Query(context.Context, *QueryRequest) (*QueryResponse, error)
 	ListSymbols(context.Context, *ListSymbolsRequest) (*ListSymbolsResponse, error)
+	GetLatestHeight(context.Context, *GetLatestHeightRequest) (*GetLatestHeightResponse, error)
 }
 
 // UnimplementedAPIServer can be embedded to have forward compatible implementations.
@@ -306,6 +422,9 @@ func (*UnimplementedAPIServer) Query(ctx context.Context, req *QueryRequest) (*Q
 }
 func (*UnimplementedAPIServer) ListSymbols(ctx context.Context, req *ListSymbolsRequest) (*ListSymbolsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListSymbols not implemented")
+}
+func (*UnimplementedAPIServer) GetLatestHeight(ctx context.Context, req *GetLatestHeightRequest) (*GetLatestHeightResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLatestHeight not implemented")
 }
 
 func RegisterAPIServer(s grpc1.Server, srv APIServer) {
@@ -348,6 +467,24 @@ func _API_ListSymbols_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _API_GetLatestHeight_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetLatestHeightRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(APIServer).GetLatestHeight(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/flux.indexer.ohlcv.API/GetLatestHeight",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(APIServer).GetLatestHeight(ctx, req.(*GetLatestHeightRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _API_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "flux.indexer.ohlcv.API",
 	HandlerType: (*APIServer)(nil),
@@ -359,6 +496,10 @@ var _API_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListSymbols",
 			Handler:    _API_ListSymbols_Handler,
+		},
+		{
+			MethodName: "GetLatestHeight",
+			Handler:    _API_GetLatestHeight_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -385,6 +526,16 @@ func (m *QueryRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.EndEpoch != 0 {
+		i = encodeVarintOhlcv(dAtA, i, uint64(m.EndEpoch))
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.StartEpoch != 0 {
+		i = encodeVarintOhlcv(dAtA, i, uint64(m.StartEpoch))
+		i--
+		dAtA[i] = 0x20
+	}
 	if m.Limit != 0 {
 		i = encodeVarintOhlcv(dAtA, i, uint64(m.Limit))
 		i--
@@ -492,6 +643,57 @@ func (m *ListSymbolsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *GetLatestHeightRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetLatestHeightRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetLatestHeightRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *GetLatestHeightResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetLatestHeightResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetLatestHeightResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Height != 0 {
+		i = encodeVarintOhlcv(dAtA, i, uint64(m.Height))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintOhlcv(dAtA []byte, offset int, v uint64) int {
 	offset -= sovOhlcv(v)
 	base := offset
@@ -519,6 +721,12 @@ func (m *QueryRequest) Size() (n int) {
 	}
 	if m.Limit != 0 {
 		n += 1 + sovOhlcv(uint64(m.Limit))
+	}
+	if m.StartEpoch != 0 {
+		n += 1 + sovOhlcv(uint64(m.StartEpoch))
+	}
+	if m.EndEpoch != 0 {
+		n += 1 + sovOhlcv(uint64(m.EndEpoch))
 	}
 	return n
 }
@@ -556,6 +764,27 @@ func (m *ListSymbolsResponse) Size() (n int) {
 			l = len(s)
 			n += 1 + l + sovOhlcv(uint64(l))
 		}
+	}
+	return n
+}
+
+func (m *GetLatestHeightRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *GetLatestHeightResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Height != 0 {
+		n += 1 + sovOhlcv(uint64(m.Height))
 	}
 	return n
 }
@@ -674,6 +903,44 @@ func (m *QueryRequest) Unmarshal(dAtA []byte) error {
 				b := dAtA[iNdEx]
 				iNdEx++
 				m.Limit |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StartEpoch", wireType)
+			}
+			m.StartEpoch = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowOhlcv
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.StartEpoch |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EndEpoch", wireType)
+			}
+			m.EndEpoch = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowOhlcv
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.EndEpoch |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -892,6 +1159,125 @@ func (m *ListSymbolsResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.Symbols = append(m.Symbols, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipOhlcv(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthOhlcv
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetLatestHeightRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowOhlcv
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetLatestHeightRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetLatestHeightRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipOhlcv(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthOhlcv
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetLatestHeightResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowOhlcv
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetLatestHeightResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetLatestHeightResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Height", wireType)
+			}
+			m.Height = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowOhlcv
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Height |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipOhlcv(dAtA[iNdEx:])

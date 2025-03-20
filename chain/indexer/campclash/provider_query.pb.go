@@ -6,7 +6,8 @@ package campclash
 import (
 	context "context"
 	fmt "fmt"
-	types "github.com/FluxNFTLabs/sdk-go/chain/eventstream/types"
+	types1 "github.com/FluxNFTLabs/sdk-go/chain/eventstream/types"
+	types "github.com/cometbft/cometbft/abci/types"
 	_ "github.com/cosmos/cosmos-sdk/types/query"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
@@ -30,6 +31,66 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type ProviderEvents struct {
+	Height int64          `protobuf:"varint,1,opt,name=height,proto3" json:"height,omitempty"`
+	Time   int64          `protobuf:"varint,2,opt,name=time,proto3" json:"time,omitempty"`
+	Events []*types.Event `protobuf:"bytes,3,rep,name=events,proto3" json:"events,omitempty"`
+}
+
+func (m *ProviderEvents) Reset()         { *m = ProviderEvents{} }
+func (m *ProviderEvents) String() string { return proto.CompactTextString(m) }
+func (*ProviderEvents) ProtoMessage()    {}
+func (*ProviderEvents) Descriptor() ([]byte, []int) {
+	return fileDescriptor_853dc6f4c45df55d, []int{0}
+}
+func (m *ProviderEvents) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ProviderEvents) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ProviderEvents.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ProviderEvents) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ProviderEvents.Merge(m, src)
+}
+func (m *ProviderEvents) XXX_Size() int {
+	return m.Size()
+}
+func (m *ProviderEvents) XXX_DiscardUnknown() {
+	xxx_messageInfo_ProviderEvents.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ProviderEvents proto.InternalMessageInfo
+
+func (m *ProviderEvents) GetHeight() int64 {
+	if m != nil {
+		return m.Height
+	}
+	return 0
+}
+
+func (m *ProviderEvents) GetTime() int64 {
+	if m != nil {
+		return m.Time
+	}
+	return 0
+}
+
+func (m *ProviderEvents) GetEvents() []*types.Event {
+	if m != nil {
+		return m.Events
+	}
+	return nil
+}
+
 type QueryCampEventsRequest struct {
 	Height int64 `protobuf:"varint,1,opt,name=height,proto3" json:"height,omitempty"`
 }
@@ -38,7 +99,7 @@ func (m *QueryCampEventsRequest) Reset()         { *m = QueryCampEventsRequest{}
 func (m *QueryCampEventsRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryCampEventsRequest) ProtoMessage()    {}
 func (*QueryCampEventsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_853dc6f4c45df55d, []int{0}
+	return fileDescriptor_853dc6f4c45df55d, []int{1}
 }
 func (m *QueryCampEventsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -75,16 +136,16 @@ func (m *QueryCampEventsRequest) GetHeight() int64 {
 }
 
 type QueryCampEventsResponse struct {
-	Height uint64                `protobuf:"varint,1,opt,name=height,proto3" json:"height,omitempty"`
-	Time   uint64                `protobuf:"varint,2,opt,name=time,proto3" json:"time,omitempty"`
-	Events []*types.ModuleEvents `protobuf:"bytes,3,rep,name=events,proto3" json:"events,omitempty"`
+	Height uint64                 `protobuf:"varint,1,opt,name=height,proto3" json:"height,omitempty"`
+	Time   uint64                 `protobuf:"varint,2,opt,name=time,proto3" json:"time,omitempty"`
+	Events []*types1.ModuleEvents `protobuf:"bytes,3,rep,name=events,proto3" json:"events,omitempty"`
 }
 
 func (m *QueryCampEventsResponse) Reset()         { *m = QueryCampEventsResponse{} }
 func (m *QueryCampEventsResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryCampEventsResponse) ProtoMessage()    {}
 func (*QueryCampEventsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_853dc6f4c45df55d, []int{1}
+	return fileDescriptor_853dc6f4c45df55d, []int{2}
 }
 func (m *QueryCampEventsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -127,16 +188,99 @@ func (m *QueryCampEventsResponse) GetTime() uint64 {
 	return 0
 }
 
-func (m *QueryCampEventsResponse) GetEvents() []*types.ModuleEvents {
+func (m *QueryCampEventsResponse) GetEvents() []*types1.ModuleEvents {
 	if m != nil {
 		return m.Events
 	}
 	return nil
 }
 
+type GetProviderLatestHeightRequest struct {
+}
+
+func (m *GetProviderLatestHeightRequest) Reset()         { *m = GetProviderLatestHeightRequest{} }
+func (m *GetProviderLatestHeightRequest) String() string { return proto.CompactTextString(m) }
+func (*GetProviderLatestHeightRequest) ProtoMessage()    {}
+func (*GetProviderLatestHeightRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_853dc6f4c45df55d, []int{3}
+}
+func (m *GetProviderLatestHeightRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetProviderLatestHeightRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetProviderLatestHeightRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetProviderLatestHeightRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetProviderLatestHeightRequest.Merge(m, src)
+}
+func (m *GetProviderLatestHeightRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetProviderLatestHeightRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetProviderLatestHeightRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetProviderLatestHeightRequest proto.InternalMessageInfo
+
+type GetProviderLatestHeightResponse struct {
+	Height int64 `protobuf:"varint,1,opt,name=height,proto3" json:"height,omitempty"`
+}
+
+func (m *GetProviderLatestHeightResponse) Reset()         { *m = GetProviderLatestHeightResponse{} }
+func (m *GetProviderLatestHeightResponse) String() string { return proto.CompactTextString(m) }
+func (*GetProviderLatestHeightResponse) ProtoMessage()    {}
+func (*GetProviderLatestHeightResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_853dc6f4c45df55d, []int{4}
+}
+func (m *GetProviderLatestHeightResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetProviderLatestHeightResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetProviderLatestHeightResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetProviderLatestHeightResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetProviderLatestHeightResponse.Merge(m, src)
+}
+func (m *GetProviderLatestHeightResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetProviderLatestHeightResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetProviderLatestHeightResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetProviderLatestHeightResponse proto.InternalMessageInfo
+
+func (m *GetProviderLatestHeightResponse) GetHeight() int64 {
+	if m != nil {
+		return m.Height
+	}
+	return 0
+}
+
 func init() {
+	proto.RegisterType((*ProviderEvents)(nil), "flux.indexer.campclash.ProviderEvents")
 	proto.RegisterType((*QueryCampEventsRequest)(nil), "flux.indexer.campclash.QueryCampEventsRequest")
 	proto.RegisterType((*QueryCampEventsResponse)(nil), "flux.indexer.campclash.QueryCampEventsResponse")
+	proto.RegisterType((*GetProviderLatestHeightRequest)(nil), "flux.indexer.campclash.GetProviderLatestHeightRequest")
+	proto.RegisterType((*GetProviderLatestHeightResponse)(nil), "flux.indexer.campclash.GetProviderLatestHeightResponse")
 }
 
 func init() {
@@ -144,32 +288,38 @@ func init() {
 }
 
 var fileDescriptor_853dc6f4c45df55d = []byte{
-	// 386 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x91, 0x41, 0x4b, 0xe3, 0x40,
-	0x14, 0xc7, 0x3b, 0x6d, 0xe9, 0x61, 0x96, 0xbd, 0xcc, 0xa1, 0x5b, 0xca, 0x12, 0x4a, 0x59, 0x96,
-	0xb2, 0x0b, 0x33, 0xdb, 0xee, 0xc2, 0xde, 0xf6, 0xb0, 0x62, 0x4f, 0x5a, 0xb4, 0x78, 0xf2, 0x22,
-	0x93, 0xe4, 0x99, 0x0c, 0x24, 0x33, 0x69, 0x66, 0x52, 0x2a, 0xe2, 0x45, 0xf0, 0x2e, 0xf8, 0x1d,
-	0xfc, 0x0c, 0x7e, 0x04, 0x8f, 0x05, 0x2f, 0x1e, 0xa5, 0xf5, 0x83, 0x48, 0x27, 0x69, 0x2d, 0xb6,
-	0x82, 0xb7, 0x4c, 0xde, 0xff, 0xff, 0xde, 0xef, 0xfd, 0x1f, 0xfe, 0x79, 0x1a, 0x65, 0x13, 0x26,
-	0xa4, 0x0f, 0x13, 0x48, 0x99, 0xc7, 0xe3, 0xc4, 0x8b, 0xb8, 0x0e, 0x59, 0x92, 0xaa, 0xb1, 0xf0,
-	0x21, 0x3d, 0x19, 0x65, 0x90, 0x9e, 0xd1, 0x24, 0x55, 0x46, 0x91, 0xfa, 0x42, 0x4c, 0x0b, 0x31,
-	0x5d, 0x89, 0x9b, 0x3f, 0x3c, 0xa5, 0x63, 0xa5, 0x99, 0xcb, 0x35, 0x30, 0x6b, 0x60, 0xe3, 0xae,
-	0x0b, 0x86, 0x77, 0x59, 0xc2, 0x03, 0x21, 0xb9, 0x11, 0x4a, 0xe6, 0x3d, 0x9a, 0x5f, 0x03, 0xa5,
-	0x82, 0x08, 0x18, 0x4f, 0x04, 0xe3, 0x52, 0x2a, 0x63, 0x8b, 0xba, 0xa8, 0x7e, 0xb3, 0x38, 0x30,
-	0x06, 0x69, 0xb4, 0x49, 0x81, 0xc7, 0xab, 0x46, 0x6b, 0x1c, 0xed, 0x5f, 0xb8, 0x7e, 0xb8, 0x78,
-	0xee, 0xf0, 0x38, 0xd9, 0xb5, 0xda, 0x21, 0x8c, 0x32, 0xd0, 0x86, 0xd4, 0x71, 0x2d, 0x04, 0x11,
-	0x84, 0xa6, 0x81, 0x5a, 0xa8, 0x53, 0x19, 0x16, 0xaf, 0xf6, 0x15, 0xc2, 0x5f, 0x36, 0x2c, 0x3a,
-	0x51, 0x52, 0xc3, 0x1b, 0x4f, 0x75, 0xe9, 0x21, 0x04, 0x57, 0x8d, 0x88, 0xa1, 0x51, 0xb6, 0x7f,
-	0xed, 0x37, 0xf9, 0x87, 0x6b, 0x39, 0x5c, 0xa3, 0xd2, 0xaa, 0x74, 0x3e, 0xf5, 0xbe, 0x53, 0x1b,
-	0xc9, 0x1a, 0x30, 0x2d, 0x80, 0xe9, 0xbe, 0xf2, 0xb3, 0x08, 0x8a, 0x59, 0x85, 0xab, 0x77, 0x87,
-	0xf0, 0xe7, 0x83, 0x22, 0x5a, 0xcb, 0x43, 0x6e, 0x11, 0xc6, 0xaf, 0x50, 0x84, 0xd2, 0xed, 0x19,
-	0xd3, 0xed, 0x0b, 0x37, 0xd9, 0x87, 0xf5, 0xf9, 0xb6, 0xed, 0xbf, 0x97, 0x0f, 0xcf, 0x37, 0xe5,
-	0x2e, 0x61, 0xec, 0x9d, 0xcb, 0x2f, 0x03, 0xcf, 0x89, 0xd9, 0x79, 0x9e, 0xc6, 0xc5, 0xff, 0xc1,
-	0xfd, 0xcc, 0x41, 0xd3, 0x99, 0x83, 0x9e, 0x66, 0x0e, 0xba, 0x9e, 0x3b, 0xa5, 0xe9, 0xdc, 0x29,
-	0x3d, 0xce, 0x9d, 0xd2, 0xf1, 0x9f, 0x40, 0x98, 0x30, 0x73, 0xa9, 0xa7, 0x62, 0xd6, 0x8f, 0xb2,
-	0xc9, 0xa0, 0x7f, 0xb4, 0xc7, 0x5d, 0x6d, 0x07, 0xf8, 0xcc, 0x0b, 0xb9, 0x90, 0x9b, 0x73, 0xdc,
-	0x9a, 0xbd, 0xe5, 0xef, 0x97, 0x00, 0x00, 0x00, 0xff, 0xff, 0xf9, 0xe6, 0xbd, 0xe1, 0x82, 0x02,
-	0x00, 0x00,
+	// 493 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x93, 0x3f, 0x6f, 0xd3, 0x40,
+	0x18, 0xc6, 0xeb, 0x24, 0xca, 0x70, 0x08, 0x86, 0x1b, 0xd2, 0x28, 0x20, 0x13, 0x59, 0x08, 0x55,
+	0xa0, 0xde, 0x4b, 0xca, 0x9f, 0x8a, 0x85, 0x01, 0x44, 0x61, 0x28, 0x15, 0x44, 0x4c, 0x2c, 0xe8,
+	0x6c, 0xbf, 0xd8, 0x27, 0xd9, 0x77, 0xae, 0xef, 0x1c, 0xa5, 0x42, 0x2c, 0x48, 0xec, 0x48, 0x7c,
+	0x07, 0xbe, 0x07, 0x1b, 0x63, 0x25, 0x16, 0x46, 0x94, 0xf0, 0x31, 0x18, 0x50, 0xce, 0x97, 0xb4,
+	0x6a, 0x63, 0xfe, 0x6c, 0x89, 0xef, 0x7d, 0x9f, 0xe7, 0xf7, 0x3c, 0x3e, 0x93, 0x9b, 0x6f, 0xb2,
+	0x6a, 0x0a, 0x42, 0xc6, 0x38, 0xc5, 0x12, 0x22, 0x9e, 0x17, 0x51, 0xc6, 0x75, 0x0a, 0x45, 0xa9,
+	0x26, 0x22, 0xc6, 0xf2, 0xf5, 0x61, 0x85, 0xe5, 0x11, 0x2b, 0x4a, 0x65, 0x14, 0xed, 0x2d, 0x86,
+	0x99, 0x1b, 0x66, 0xab, 0xe1, 0xc1, 0x8d, 0x48, 0xe9, 0x5c, 0x69, 0x08, 0xb9, 0x46, 0xb0, 0x0b,
+	0x30, 0x19, 0x85, 0x68, 0xf8, 0x08, 0x0a, 0x9e, 0x08, 0xc9, 0x8d, 0x50, 0xb2, 0xd6, 0x18, 0x5c,
+	0x49, 0x94, 0x4a, 0x32, 0x04, 0x5e, 0x08, 0xe0, 0x52, 0x2a, 0x63, 0x0f, 0xb5, 0x3b, 0xbd, 0x66,
+	0x71, 0x70, 0x82, 0xd2, 0x68, 0x53, 0x22, 0xcf, 0x57, 0x42, 0xa7, 0x38, 0x06, 0x97, 0x0d, 0xca,
+	0x18, 0xcb, 0x5c, 0x48, 0x03, 0x3c, 0x8c, 0x04, 0x98, 0xa3, 0x02, 0x9d, 0x44, 0x90, 0x91, 0x4b,
+	0xcf, 0x1d, 0xfc, 0x63, 0xab, 0x43, 0x7b, 0xa4, 0x9b, 0xa2, 0x48, 0x52, 0xd3, 0xf7, 0x86, 0xde,
+	0x56, 0x7b, 0xec, 0xfe, 0x51, 0x4a, 0x3a, 0x46, 0xe4, 0xd8, 0x6f, 0xd9, 0xa7, 0xf6, 0x37, 0x65,
+	0xa4, 0x5b, 0xbb, 0xf7, 0xdb, 0xc3, 0xf6, 0xd6, 0x85, 0x9d, 0x1e, 0x3b, 0xf1, 0x62, 0x0b, 0x2f,
+	0x66, 0x45, 0xc7, 0x6e, 0x2a, 0xb8, 0x45, 0x7a, 0x2f, 0x16, 0x64, 0x8f, 0x78, 0x5e, 0xd4, 0x76,
+	0x63, 0x3c, 0xac, 0x50, 0x9b, 0x26, 0xd7, 0xe0, 0x83, 0x47, 0x36, 0xcf, 0xad, 0xe8, 0x42, 0x49,
+	0x8d, 0x67, 0x76, 0x3a, 0x6b, 0x49, 0x3b, 0x8e, 0xf4, 0xc1, 0x19, 0xd2, 0xeb, 0xcc, 0xbe, 0x9d,
+	0x53, 0xdd, 0x31, 0xd7, 0x1d, 0x7b, 0xa6, 0xe2, 0x2a, 0x43, 0xe7, 0xb5, 0x24, 0x1f, 0x12, 0xff,
+	0x09, 0x9a, 0x65, 0x55, 0xfb, 0xdc, 0xa0, 0x36, 0x4f, 0xad, 0x9d, 0x4b, 0x10, 0xdc, 0x27, 0x57,
+	0x1b, 0x27, 0xd6, 0x02, 0xaf, 0x42, 0xee, 0xfc, 0x6a, 0x91, 0x8b, 0xcb, 0x45, 0x1b, 0x96, 0x7e,
+	0xf6, 0x08, 0x39, 0x49, 0x4c, 0x19, 0x5b, 0x7f, 0x97, 0xd8, 0xfa, 0x36, 0x07, 0xf0, 0xcf, 0xf3,
+	0x35, 0x59, 0xb0, 0xfb, 0xfe, 0xdb, 0xcf, 0x4f, 0xad, 0x11, 0x05, 0x68, 0xb8, 0xe1, 0xcb, 0x8b,
+	0x55, 0xd7, 0x01, 0x6f, 0x6b, 0xf2, 0x77, 0xf4, 0x8b, 0x47, 0x36, 0x1b, 0x62, 0xd3, 0x7b, 0x4d,
+	0x14, 0x7f, 0x6e, 0x72, 0xb0, 0xfb, 0xdf, 0x7b, 0x2e, 0xc5, 0x5d, 0x9b, 0x02, 0xe8, 0xf6, 0xdf,
+	0x52, 0x64, 0x76, 0x7b, 0xbb, 0x0e, 0xf1, 0xf0, 0xe0, 0xeb, 0xcc, 0xf7, 0x8e, 0x67, 0xbe, 0xf7,
+	0x63, 0xe6, 0x7b, 0x1f, 0xe7, 0xfe, 0xc6, 0xf1, 0xdc, 0xdf, 0xf8, 0x3e, 0xf7, 0x37, 0x5e, 0xdd,
+	0x49, 0x84, 0x49, 0xab, 0x90, 0x45, 0x2a, 0x87, 0xbd, 0xac, 0x9a, 0x1e, 0xec, 0xbd, 0xdc, 0xe7,
+	0xa1, 0xb6, 0xf2, 0x31, 0x44, 0x29, 0x17, 0xf2, 0xbc, 0x4b, 0xd8, 0xb5, 0x9f, 0xd6, 0xed, 0xdf,
+	0x01, 0x00, 0x00, 0xff, 0xff, 0xad, 0xcb, 0x32, 0xd6, 0x2e, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -187,6 +337,7 @@ type ProviderQueryClient interface {
 	// Balance queries the number of NFTs of a given class owned by the owner,
 	// same as balanceOf in ERC721
 	CampEvents(ctx context.Context, in *QueryCampEventsRequest, opts ...grpc.CallOption) (*QueryCampEventsResponse, error)
+	GetProviderLatestHeight(ctx context.Context, in *GetProviderLatestHeightRequest, opts ...grpc.CallOption) (*GetProviderLatestHeightResponse, error)
 }
 
 type providerQueryClient struct {
@@ -206,11 +357,21 @@ func (c *providerQueryClient) CampEvents(ctx context.Context, in *QueryCampEvent
 	return out, nil
 }
 
+func (c *providerQueryClient) GetProviderLatestHeight(ctx context.Context, in *GetProviderLatestHeightRequest, opts ...grpc.CallOption) (*GetProviderLatestHeightResponse, error) {
+	out := new(GetProviderLatestHeightResponse)
+	err := c.cc.Invoke(ctx, "/flux.indexer.campclash.ProviderQuery/GetProviderLatestHeight", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProviderQueryServer is the server API for ProviderQuery service.
 type ProviderQueryServer interface {
 	// Balance queries the number of NFTs of a given class owned by the owner,
 	// same as balanceOf in ERC721
 	CampEvents(context.Context, *QueryCampEventsRequest) (*QueryCampEventsResponse, error)
+	GetProviderLatestHeight(context.Context, *GetProviderLatestHeightRequest) (*GetProviderLatestHeightResponse, error)
 }
 
 // UnimplementedProviderQueryServer can be embedded to have forward compatible implementations.
@@ -219,6 +380,9 @@ type UnimplementedProviderQueryServer struct {
 
 func (*UnimplementedProviderQueryServer) CampEvents(ctx context.Context, req *QueryCampEventsRequest) (*QueryCampEventsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CampEvents not implemented")
+}
+func (*UnimplementedProviderQueryServer) GetProviderLatestHeight(ctx context.Context, req *GetProviderLatestHeightRequest) (*GetProviderLatestHeightResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProviderLatestHeight not implemented")
 }
 
 func RegisterProviderQueryServer(s grpc1.Server, srv ProviderQueryServer) {
@@ -243,6 +407,24 @@ func _ProviderQuery_CampEvents_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProviderQuery_GetProviderLatestHeight_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProviderLatestHeightRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProviderQueryServer).GetProviderLatestHeight(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/flux.indexer.campclash.ProviderQuery/GetProviderLatestHeight",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProviderQueryServer).GetProviderLatestHeight(ctx, req.(*GetProviderLatestHeightRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _ProviderQuery_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "flux.indexer.campclash.ProviderQuery",
 	HandlerType: (*ProviderQueryServer)(nil),
@@ -251,9 +433,60 @@ var _ProviderQuery_serviceDesc = grpc.ServiceDesc{
 			MethodName: "CampEvents",
 			Handler:    _ProviderQuery_CampEvents_Handler,
 		},
+		{
+			MethodName: "GetProviderLatestHeight",
+			Handler:    _ProviderQuery_GetProviderLatestHeight_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "flux/indexer/campclash/provider_query.proto",
+}
+
+func (m *ProviderEvents) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ProviderEvents) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ProviderEvents) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Events) > 0 {
+		for iNdEx := len(m.Events) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Events[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintProviderQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if m.Time != 0 {
+		i = encodeVarintProviderQuery(dAtA, i, uint64(m.Time))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Height != 0 {
+		i = encodeVarintProviderQuery(dAtA, i, uint64(m.Height))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *QueryCampEventsRequest) Marshal() (dAtA []byte, err error) {
@@ -331,6 +564,57 @@ func (m *QueryCampEventsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
+func (m *GetProviderLatestHeightRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetProviderLatestHeightRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetProviderLatestHeightRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *GetProviderLatestHeightResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetProviderLatestHeightResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetProviderLatestHeightResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Height != 0 {
+		i = encodeVarintProviderQuery(dAtA, i, uint64(m.Height))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintProviderQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovProviderQuery(v)
 	base := offset
@@ -342,6 +626,27 @@ func encodeVarintProviderQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *ProviderEvents) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Height != 0 {
+		n += 1 + sovProviderQuery(uint64(m.Height))
+	}
+	if m.Time != 0 {
+		n += 1 + sovProviderQuery(uint64(m.Time))
+	}
+	if len(m.Events) > 0 {
+		for _, e := range m.Events {
+			l = e.Size()
+			n += 1 + l + sovProviderQuery(uint64(l))
+		}
+	}
+	return n
+}
+
 func (m *QueryCampEventsRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -375,11 +680,154 @@ func (m *QueryCampEventsResponse) Size() (n int) {
 	return n
 }
 
+func (m *GetProviderLatestHeightRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *GetProviderLatestHeightResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Height != 0 {
+		n += 1 + sovProviderQuery(uint64(m.Height))
+	}
+	return n
+}
+
 func sovProviderQuery(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
 func sozProviderQuery(x uint64) (n int) {
 	return sovProviderQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *ProviderEvents) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowProviderQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ProviderEvents: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ProviderEvents: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Height", wireType)
+			}
+			m.Height = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProviderQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Height |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Time", wireType)
+			}
+			m.Time = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProviderQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Time |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Events", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProviderQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthProviderQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthProviderQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Events = append(m.Events, &types.Event{})
+			if err := m.Events[len(m.Events)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipProviderQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthProviderQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *QueryCampEventsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -546,11 +994,130 @@ func (m *QueryCampEventsResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Events = append(m.Events, &types.ModuleEvents{})
+			m.Events = append(m.Events, &types1.ModuleEvents{})
 			if err := m.Events[len(m.Events)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipProviderQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthProviderQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetProviderLatestHeightRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowProviderQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetProviderLatestHeightRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetProviderLatestHeightRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipProviderQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthProviderQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetProviderLatestHeightResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowProviderQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetProviderLatestHeightResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetProviderLatestHeightResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Height", wireType)
+			}
+			m.Height = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProviderQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Height |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipProviderQuery(dAtA[iNdEx:])
