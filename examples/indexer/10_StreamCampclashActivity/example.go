@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	cc, err := grpc.Dial("localhost:4464", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	cc, err := grpc.Dial("localhost:4462", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	defer cc.Close()
 	if err != nil {
 		panic(err)
