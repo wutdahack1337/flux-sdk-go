@@ -18,7 +18,7 @@ func main() {
 	}
 	client := types.NewCampclashQueryClient(cc)
 
-	stream, err := client.SubscribeUserActivity(context.Background())
+	stream, err := client.SubscribeUserActivity(context.Background(), &types.SubscribeUserActivityRequest{})
 	if err != nil {
 		panic(err)
 	}

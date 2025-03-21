@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"google.golang.org/grpc"
@@ -18,22 +19,22 @@ func main() {
 	}
 	client := types.NewCampclashQueryClient(cc)
 
-	stream, err := client.PushUserActivity(context.Background())
+	stream, err := client.PushUserActivity(context.Background(), &types.PushUserActivityRequest{
+		Address: "abc",
+		Url:     "/home",
+		Action:  types.Action_OPEN_PAGE,
+	})
 	if err != nil {
 		panic(err)
 	}
 
-	for i := 0; i < 3; i++ {
-		err = stream.Send(&types.PushUserActivityRequest{
-			Address: "abc",
-			Url:     "/home",
-			Action:  types.Action_OPEN_PAGE,
-		})
+	time.Sleep(2 * time.Second)
+	for {
+		c, err := stream.Recv()
 		if err != nil {
 			panic(err)
 		}
-		time.Sleep(1 * time.Second)
-	}
 
-	stream.CloseSend()
+		fmt.Println("c:", c)
+	}
 }
