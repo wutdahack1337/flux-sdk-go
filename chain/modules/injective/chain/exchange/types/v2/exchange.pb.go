@@ -7,15 +7,15 @@
 package v2
 
 import (
-	_ "github.com/InjectiveLabs/injective-core/injective-chain/modules/oracle/types"
+	reflect "reflect"
+	sync "sync"
+	unsafe "unsafe"
+
 	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/cosmos-sdk/types/tx/amino"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
 )
 
 const (

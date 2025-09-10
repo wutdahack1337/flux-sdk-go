@@ -11,7 +11,7 @@ import (
 	sync "sync"
 	unsafe "unsafe"
 
-	types "github.com/InjectiveLabs/injective-core/injective-chain/modules/oracle/types"
+	types "github.com/FluxNFTLabs/sdk-go/chain/modules/injective/chain/oracle/types"
 	_ "github.com/cosmos/cosmos-proto"
 	_ "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/cosmos-sdk/types/msgservice"

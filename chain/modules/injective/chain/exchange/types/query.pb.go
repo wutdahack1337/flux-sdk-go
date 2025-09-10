@@ -2,19 +2,20 @@
 // versions:
 // 	protoc-gen-go v1.36.9
 // 	protoc        (unknown)
-// source: injective/exchange/v2/query.proto
+// source: injective/exchange/v1beta1/query.proto
 
-package v2
+package types
 
 import (
-	types "github.com/InjectiveLabs/injective-core/injective-chain/modules/oracle/types"
+	reflect "reflect"
+	sync "sync"
+	unsafe "unsafe"
+
+	types "github.com/FluxNFTLabs/sdk-go/chain/modules/injective/chain/oracle/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
 )
 
 const (
@@ -58,11 +59,11 @@ func (x OrderSide) String() string {
 }
 
 func (OrderSide) Descriptor() protoreflect.EnumDescriptor {
-	return file_injective_exchange_v2_query_proto_enumTypes[0].Descriptor()
+	return file_injective_exchange_v1beta1_query_proto_enumTypes[0].Descriptor()
 }
 
 func (OrderSide) Type() protoreflect.EnumType {
-	return &file_injective_exchange_v2_query_proto_enumTypes[0]
+	return &file_injective_exchange_v1beta1_query_proto_enumTypes[0]
 }
 
 func (x OrderSide) Number() protoreflect.EnumNumber {
@@ -71,7 +72,7 @@ func (x OrderSide) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use OrderSide.Descriptor instead.
 func (OrderSide) EnumDescriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{0}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{0}
 }
 
 // CancellationStrategy is the list of cancellation strategies.
@@ -111,11 +112,11 @@ func (x CancellationStrategy) String() string {
 }
 
 func (CancellationStrategy) Descriptor() protoreflect.EnumDescriptor {
-	return file_injective_exchange_v2_query_proto_enumTypes[1].Descriptor()
+	return file_injective_exchange_v1beta1_query_proto_enumTypes[1].Descriptor()
 }
 
 func (CancellationStrategy) Type() protoreflect.EnumType {
-	return &file_injective_exchange_v2_query_proto_enumTypes[1]
+	return &file_injective_exchange_v1beta1_query_proto_enumTypes[1]
 }
 
 func (x CancellationStrategy) Number() protoreflect.EnumNumber {
@@ -124,22 +125,20 @@ func (x CancellationStrategy) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use CancellationStrategy.Descriptor instead.
 func (CancellationStrategy) EnumDescriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{1}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{1}
 }
 
 type Subaccount struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// the subaccount's trader address
-	Trader string `protobuf:"bytes,1,opt,name=trader,proto3" json:"trader,omitempty"`
-	// the subaccount's nonce number
-	SubaccountNonce uint32 `protobuf:"varint,2,opt,name=subaccount_nonce,json=subaccountNonce,proto3" json:"subaccount_nonce,omitempty"`
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Trader          string                 `protobuf:"bytes,1,opt,name=trader,proto3" json:"trader,omitempty"`
+	SubaccountNonce uint32                 `protobuf:"varint,2,opt,name=subaccount_nonce,json=subaccountNonce,proto3" json:"subaccount_nonce,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
 
 func (x *Subaccount) Reset() {
 	*x = Subaccount{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[0]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -151,7 +150,7 @@ func (x *Subaccount) String() string {
 func (*Subaccount) ProtoMessage() {}
 
 func (x *Subaccount) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[0]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -164,7 +163,7 @@ func (x *Subaccount) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Subaccount.ProtoReflect.Descriptor instead.
 func (*Subaccount) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{0}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Subaccount) GetTrader() string {
@@ -193,7 +192,7 @@ type QuerySubaccountOrdersRequest struct {
 
 func (x *QuerySubaccountOrdersRequest) Reset() {
 	*x = QuerySubaccountOrdersRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[1]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -205,7 +204,7 @@ func (x *QuerySubaccountOrdersRequest) String() string {
 func (*QuerySubaccountOrdersRequest) ProtoMessage() {}
 
 func (x *QuerySubaccountOrdersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[1]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -218,7 +217,7 @@ func (x *QuerySubaccountOrdersRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuerySubaccountOrdersRequest.ProtoReflect.Descriptor instead.
 func (*QuerySubaccountOrdersRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{1}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *QuerySubaccountOrdersRequest) GetSubaccountId() string {
@@ -245,7 +244,7 @@ type QuerySubaccountOrdersResponse struct {
 
 func (x *QuerySubaccountOrdersResponse) Reset() {
 	*x = QuerySubaccountOrdersResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[2]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -257,7 +256,7 @@ func (x *QuerySubaccountOrdersResponse) String() string {
 func (*QuerySubaccountOrdersResponse) ProtoMessage() {}
 
 func (x *QuerySubaccountOrdersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[2]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -270,7 +269,7 @@ func (x *QuerySubaccountOrdersResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuerySubaccountOrdersResponse.ProtoReflect.Descriptor instead.
 func (*QuerySubaccountOrdersResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{2}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *QuerySubaccountOrdersResponse) GetBuyOrders() []*SubaccountOrderData {
@@ -289,11 +288,11 @@ func (x *QuerySubaccountOrdersResponse) GetSellOrders() []*SubaccountOrderData {
 
 type SubaccountOrderbookMetadataWithMarket struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// the subaccount orderbook details
+	// the subaccount orderbook metadata
 	Metadata *SubaccountOrderbookMetadata `protobuf:"bytes,1,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// the market ID
 	MarketId string `protobuf:"bytes,2,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty"`
-	// true if the orderbook is for a buy orders
+	// true if the order is for buy orders
 	IsBuy         bool `protobuf:"varint,3,opt,name=isBuy,proto3" json:"isBuy,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -301,7 +300,7 @@ type SubaccountOrderbookMetadataWithMarket struct {
 
 func (x *SubaccountOrderbookMetadataWithMarket) Reset() {
 	*x = SubaccountOrderbookMetadataWithMarket{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[3]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -313,7 +312,7 @@ func (x *SubaccountOrderbookMetadataWithMarket) String() string {
 func (*SubaccountOrderbookMetadataWithMarket) ProtoMessage() {}
 
 func (x *SubaccountOrderbookMetadataWithMarket) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[3]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -326,7 +325,7 @@ func (x *SubaccountOrderbookMetadataWithMarket) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use SubaccountOrderbookMetadataWithMarket.ProtoReflect.Descriptor instead.
 func (*SubaccountOrderbookMetadataWithMarket) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{3}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *SubaccountOrderbookMetadataWithMarket) GetMetadata() *SubaccountOrderbookMetadata {
@@ -360,7 +359,7 @@ type QueryExchangeParamsRequest struct {
 
 func (x *QueryExchangeParamsRequest) Reset() {
 	*x = QueryExchangeParamsRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[4]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -372,7 +371,7 @@ func (x *QueryExchangeParamsRequest) String() string {
 func (*QueryExchangeParamsRequest) ProtoMessage() {}
 
 func (x *QueryExchangeParamsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[4]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -385,7 +384,7 @@ func (x *QueryExchangeParamsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryExchangeParamsRequest.ProtoReflect.Descriptor instead.
 func (*QueryExchangeParamsRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{4}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{4}
 }
 
 // QueryExchangeParamsRequest is the response type for the Query/ExchangeParams
@@ -399,7 +398,7 @@ type QueryExchangeParamsResponse struct {
 
 func (x *QueryExchangeParamsResponse) Reset() {
 	*x = QueryExchangeParamsResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[5]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -411,7 +410,7 @@ func (x *QueryExchangeParamsResponse) String() string {
 func (*QueryExchangeParamsResponse) ProtoMessage() {}
 
 func (x *QueryExchangeParamsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[5]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -424,7 +423,7 @@ func (x *QueryExchangeParamsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryExchangeParamsResponse.ProtoReflect.Descriptor instead.
 func (*QueryExchangeParamsResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{5}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *QueryExchangeParamsResponse) GetParams() *Params {
@@ -440,7 +439,7 @@ type QuerySubaccountDepositsRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// the subaccount ID
 	SubaccountId string `protobuf:"bytes,1,opt,name=subaccount_id,json=subaccountId,proto3" json:"subaccount_id,omitempty"`
-	// the subaccount details
+	// subaccount details
 	Subaccount    *Subaccount `protobuf:"bytes,2,opt,name=subaccount,proto3" json:"subaccount,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -448,7 +447,7 @@ type QuerySubaccountDepositsRequest struct {
 
 func (x *QuerySubaccountDepositsRequest) Reset() {
 	*x = QuerySubaccountDepositsRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[6]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -460,7 +459,7 @@ func (x *QuerySubaccountDepositsRequest) String() string {
 func (*QuerySubaccountDepositsRequest) ProtoMessage() {}
 
 func (x *QuerySubaccountDepositsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[6]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -473,7 +472,7 @@ func (x *QuerySubaccountDepositsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuerySubaccountDepositsRequest.ProtoReflect.Descriptor instead.
 func (*QuerySubaccountDepositsRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{6}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *QuerySubaccountDepositsRequest) GetSubaccountId() string {
@@ -501,7 +500,7 @@ type QuerySubaccountDepositsResponse struct {
 
 func (x *QuerySubaccountDepositsResponse) Reset() {
 	*x = QuerySubaccountDepositsResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[7]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -513,7 +512,7 @@ func (x *QuerySubaccountDepositsResponse) String() string {
 func (*QuerySubaccountDepositsResponse) ProtoMessage() {}
 
 func (x *QuerySubaccountDepositsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[7]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -526,7 +525,7 @@ func (x *QuerySubaccountDepositsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuerySubaccountDepositsResponse.ProtoReflect.Descriptor instead.
 func (*QuerySubaccountDepositsResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{7}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *QuerySubaccountDepositsResponse) GetDeposits() map[string]*Deposit {
@@ -546,7 +545,7 @@ type QueryExchangeBalancesRequest struct {
 
 func (x *QueryExchangeBalancesRequest) Reset() {
 	*x = QueryExchangeBalancesRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[8]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -558,7 +557,7 @@ func (x *QueryExchangeBalancesRequest) String() string {
 func (*QueryExchangeBalancesRequest) ProtoMessage() {}
 
 func (x *QueryExchangeBalancesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[8]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -571,7 +570,7 @@ func (x *QueryExchangeBalancesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryExchangeBalancesRequest.ProtoReflect.Descriptor instead.
 func (*QueryExchangeBalancesRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{8}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{8}
 }
 
 // QuerySubaccountDepositsResponse is the response type for the
@@ -585,7 +584,7 @@ type QueryExchangeBalancesResponse struct {
 
 func (x *QueryExchangeBalancesResponse) Reset() {
 	*x = QueryExchangeBalancesResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[9]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -597,7 +596,7 @@ func (x *QueryExchangeBalancesResponse) String() string {
 func (*QueryExchangeBalancesResponse) ProtoMessage() {}
 
 func (x *QueryExchangeBalancesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[9]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -610,7 +609,7 @@ func (x *QueryExchangeBalancesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryExchangeBalancesResponse.ProtoReflect.Descriptor instead.
 func (*QueryExchangeBalancesResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{9}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *QueryExchangeBalancesResponse) GetBalances() []*Balance {
@@ -632,7 +631,7 @@ type QueryAggregateVolumeRequest struct {
 
 func (x *QueryAggregateVolumeRequest) Reset() {
 	*x = QueryAggregateVolumeRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[10]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -644,7 +643,7 @@ func (x *QueryAggregateVolumeRequest) String() string {
 func (*QueryAggregateVolumeRequest) ProtoMessage() {}
 
 func (x *QueryAggregateVolumeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[10]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -657,7 +656,7 @@ func (x *QueryAggregateVolumeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryAggregateVolumeRequest.ProtoReflect.Descriptor instead.
 func (*QueryAggregateVolumeRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{10}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *QueryAggregateVolumeRequest) GetAccount() string {
@@ -680,7 +679,7 @@ type QueryAggregateVolumeResponse struct {
 
 func (x *QueryAggregateVolumeResponse) Reset() {
 	*x = QueryAggregateVolumeResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[11]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -692,7 +691,7 @@ func (x *QueryAggregateVolumeResponse) String() string {
 func (*QueryAggregateVolumeResponse) ProtoMessage() {}
 
 func (x *QueryAggregateVolumeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[11]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -705,7 +704,7 @@ func (x *QueryAggregateVolumeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryAggregateVolumeResponse.ProtoReflect.Descriptor instead.
 func (*QueryAggregateVolumeResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{11}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *QueryAggregateVolumeResponse) GetAggregateVolumes() []*MarketVolume {
@@ -727,7 +726,7 @@ type QueryAggregateVolumesRequest struct {
 
 func (x *QueryAggregateVolumesRequest) Reset() {
 	*x = QueryAggregateVolumesRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[12]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -739,7 +738,7 @@ func (x *QueryAggregateVolumesRequest) String() string {
 func (*QueryAggregateVolumesRequest) ProtoMessage() {}
 
 func (x *QueryAggregateVolumesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[12]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -752,7 +751,7 @@ func (x *QueryAggregateVolumesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryAggregateVolumesRequest.ProtoReflect.Descriptor instead.
 func (*QueryAggregateVolumesRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{12}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *QueryAggregateVolumesRequest) GetAccounts() []string {
@@ -783,7 +782,7 @@ type QueryAggregateVolumesResponse struct {
 
 func (x *QueryAggregateVolumesResponse) Reset() {
 	*x = QueryAggregateVolumesResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[13]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -795,7 +794,7 @@ func (x *QueryAggregateVolumesResponse) String() string {
 func (*QueryAggregateVolumesResponse) ProtoMessage() {}
 
 func (x *QueryAggregateVolumesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[13]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -808,7 +807,7 @@ func (x *QueryAggregateVolumesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryAggregateVolumesResponse.ProtoReflect.Descriptor instead.
 func (*QueryAggregateVolumesResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{13}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *QueryAggregateVolumesResponse) GetAggregateAccountVolumes() []*AggregateAccountVolumeRecord {
@@ -836,7 +835,7 @@ type QueryAggregateMarketVolumeRequest struct {
 
 func (x *QueryAggregateMarketVolumeRequest) Reset() {
 	*x = QueryAggregateMarketVolumeRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[14]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -848,7 +847,7 @@ func (x *QueryAggregateMarketVolumeRequest) String() string {
 func (*QueryAggregateMarketVolumeRequest) ProtoMessage() {}
 
 func (x *QueryAggregateMarketVolumeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[14]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -861,7 +860,7 @@ func (x *QueryAggregateMarketVolumeRequest) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use QueryAggregateMarketVolumeRequest.ProtoReflect.Descriptor instead.
 func (*QueryAggregateMarketVolumeRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{14}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *QueryAggregateMarketVolumeRequest) GetMarketId() string {
@@ -882,7 +881,7 @@ type QueryAggregateMarketVolumeResponse struct {
 
 func (x *QueryAggregateMarketVolumeResponse) Reset() {
 	*x = QueryAggregateMarketVolumeResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[15]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -894,7 +893,7 @@ func (x *QueryAggregateMarketVolumeResponse) String() string {
 func (*QueryAggregateMarketVolumeResponse) ProtoMessage() {}
 
 func (x *QueryAggregateMarketVolumeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[15]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -907,7 +906,7 @@ func (x *QueryAggregateMarketVolumeResponse) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use QueryAggregateMarketVolumeResponse.ProtoReflect.Descriptor instead.
 func (*QueryAggregateMarketVolumeResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{15}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *QueryAggregateMarketVolumeResponse) GetVolume() *VolumeRecord {
@@ -928,7 +927,7 @@ type QueryDenomDecimalRequest struct {
 
 func (x *QueryDenomDecimalRequest) Reset() {
 	*x = QueryDenomDecimalRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[16]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -940,7 +939,7 @@ func (x *QueryDenomDecimalRequest) String() string {
 func (*QueryDenomDecimalRequest) ProtoMessage() {}
 
 func (x *QueryDenomDecimalRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[16]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -953,7 +952,7 @@ func (x *QueryDenomDecimalRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryDenomDecimalRequest.ProtoReflect.Descriptor instead.
 func (*QueryDenomDecimalRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{16}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *QueryDenomDecimalRequest) GetDenom() string {
@@ -974,7 +973,7 @@ type QueryDenomDecimalResponse struct {
 
 func (x *QueryDenomDecimalResponse) Reset() {
 	*x = QueryDenomDecimalResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[17]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -986,7 +985,7 @@ func (x *QueryDenomDecimalResponse) String() string {
 func (*QueryDenomDecimalResponse) ProtoMessage() {}
 
 func (x *QueryDenomDecimalResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[17]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -999,7 +998,7 @@ func (x *QueryDenomDecimalResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryDenomDecimalResponse.ProtoReflect.Descriptor instead.
 func (*QueryDenomDecimalResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{17}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *QueryDenomDecimalResponse) GetDecimal() uint64 {
@@ -1021,7 +1020,7 @@ type QueryDenomDecimalsRequest struct {
 
 func (x *QueryDenomDecimalsRequest) Reset() {
 	*x = QueryDenomDecimalsRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[18]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1033,7 +1032,7 @@ func (x *QueryDenomDecimalsRequest) String() string {
 func (*QueryDenomDecimalsRequest) ProtoMessage() {}
 
 func (x *QueryDenomDecimalsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[18]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1046,7 +1045,7 @@ func (x *QueryDenomDecimalsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryDenomDecimalsRequest.ProtoReflect.Descriptor instead.
 func (*QueryDenomDecimalsRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{18}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *QueryDenomDecimalsRequest) GetDenoms() []string {
@@ -1067,7 +1066,7 @@ type QueryDenomDecimalsResponse struct {
 
 func (x *QueryDenomDecimalsResponse) Reset() {
 	*x = QueryDenomDecimalsResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[19]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1079,7 +1078,7 @@ func (x *QueryDenomDecimalsResponse) String() string {
 func (*QueryDenomDecimalsResponse) ProtoMessage() {}
 
 func (x *QueryDenomDecimalsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[19]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1092,7 +1091,7 @@ func (x *QueryDenomDecimalsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryDenomDecimalsResponse.ProtoReflect.Descriptor instead.
 func (*QueryDenomDecimalsResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{19}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *QueryDenomDecimalsResponse) GetDenomDecimals() []*DenomDecimals {
@@ -1113,7 +1112,7 @@ type QueryAggregateMarketVolumesRequest struct {
 
 func (x *QueryAggregateMarketVolumesRequest) Reset() {
 	*x = QueryAggregateMarketVolumesRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[20]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1125,7 +1124,7 @@ func (x *QueryAggregateMarketVolumesRequest) String() string {
 func (*QueryAggregateMarketVolumesRequest) ProtoMessage() {}
 
 func (x *QueryAggregateMarketVolumesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[20]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1138,7 +1137,7 @@ func (x *QueryAggregateMarketVolumesRequest) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use QueryAggregateMarketVolumesRequest.ProtoReflect.Descriptor instead.
 func (*QueryAggregateMarketVolumesRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{20}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *QueryAggregateMarketVolumesRequest) GetMarketIds() []string {
@@ -1160,7 +1159,7 @@ type QueryAggregateMarketVolumesResponse struct {
 
 func (x *QueryAggregateMarketVolumesResponse) Reset() {
 	*x = QueryAggregateMarketVolumesResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[21]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1172,7 +1171,7 @@ func (x *QueryAggregateMarketVolumesResponse) String() string {
 func (*QueryAggregateMarketVolumesResponse) ProtoMessage() {}
 
 func (x *QueryAggregateMarketVolumesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[21]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1185,7 +1184,7 @@ func (x *QueryAggregateMarketVolumesResponse) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use QueryAggregateMarketVolumesResponse.ProtoReflect.Descriptor instead.
 func (*QueryAggregateMarketVolumesResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{21}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *QueryAggregateMarketVolumesResponse) GetVolumes() []*MarketVolume {
@@ -1201,7 +1200,7 @@ type QuerySubaccountDepositRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// the subaccount ID
 	SubaccountId string `protobuf:"bytes,1,opt,name=subaccount_id,json=subaccountId,proto3" json:"subaccount_id,omitempty"`
-	// the token denom
+	// the denom of the balance
 	Denom         string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -1209,7 +1208,7 @@ type QuerySubaccountDepositRequest struct {
 
 func (x *QuerySubaccountDepositRequest) Reset() {
 	*x = QuerySubaccountDepositRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[22]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1221,7 +1220,7 @@ func (x *QuerySubaccountDepositRequest) String() string {
 func (*QuerySubaccountDepositRequest) ProtoMessage() {}
 
 func (x *QuerySubaccountDepositRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[22]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1234,7 +1233,7 @@ func (x *QuerySubaccountDepositRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuerySubaccountDepositRequest.ProtoReflect.Descriptor instead.
 func (*QuerySubaccountDepositRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{22}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *QuerySubaccountDepositRequest) GetSubaccountId() string {
@@ -1262,7 +1261,7 @@ type QuerySubaccountDepositResponse struct {
 
 func (x *QuerySubaccountDepositResponse) Reset() {
 	*x = QuerySubaccountDepositResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[23]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1274,7 +1273,7 @@ func (x *QuerySubaccountDepositResponse) String() string {
 func (*QuerySubaccountDepositResponse) ProtoMessage() {}
 
 func (x *QuerySubaccountDepositResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[23]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1287,7 +1286,7 @@ func (x *QuerySubaccountDepositResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuerySubaccountDepositResponse.ProtoReflect.Descriptor instead.
 func (*QuerySubaccountDepositResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{23}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *QuerySubaccountDepositResponse) GetDeposits() *Deposit {
@@ -1311,7 +1310,7 @@ type QuerySpotMarketsRequest struct {
 
 func (x *QuerySpotMarketsRequest) Reset() {
 	*x = QuerySpotMarketsRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[24]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1323,7 +1322,7 @@ func (x *QuerySpotMarketsRequest) String() string {
 func (*QuerySpotMarketsRequest) ProtoMessage() {}
 
 func (x *QuerySpotMarketsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[24]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1336,7 +1335,7 @@ func (x *QuerySpotMarketsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuerySpotMarketsRequest.ProtoReflect.Descriptor instead.
 func (*QuerySpotMarketsRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{24}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *QuerySpotMarketsRequest) GetStatus() string {
@@ -1364,7 +1363,7 @@ type QuerySpotMarketsResponse struct {
 
 func (x *QuerySpotMarketsResponse) Reset() {
 	*x = QuerySpotMarketsResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[25]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1376,7 +1375,7 @@ func (x *QuerySpotMarketsResponse) String() string {
 func (*QuerySpotMarketsResponse) ProtoMessage() {}
 
 func (x *QuerySpotMarketsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[25]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1389,7 +1388,7 @@ func (x *QuerySpotMarketsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuerySpotMarketsResponse.ProtoReflect.Descriptor instead.
 func (*QuerySpotMarketsResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{25}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *QuerySpotMarketsResponse) GetMarkets() []*SpotMarket {
@@ -1411,7 +1410,7 @@ type QuerySpotMarketRequest struct {
 
 func (x *QuerySpotMarketRequest) Reset() {
 	*x = QuerySpotMarketRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[26]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1423,7 +1422,7 @@ func (x *QuerySpotMarketRequest) String() string {
 func (*QuerySpotMarketRequest) ProtoMessage() {}
 
 func (x *QuerySpotMarketRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[26]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1436,7 +1435,7 @@ func (x *QuerySpotMarketRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuerySpotMarketRequest.ProtoReflect.Descriptor instead.
 func (*QuerySpotMarketRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{26}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *QuerySpotMarketRequest) GetMarketId() string {
@@ -1457,7 +1456,7 @@ type QuerySpotMarketResponse struct {
 
 func (x *QuerySpotMarketResponse) Reset() {
 	*x = QuerySpotMarketResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[27]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1469,7 +1468,7 @@ func (x *QuerySpotMarketResponse) String() string {
 func (*QuerySpotMarketResponse) ProtoMessage() {}
 
 func (x *QuerySpotMarketResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[27]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1482,7 +1481,7 @@ func (x *QuerySpotMarketResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuerySpotMarketResponse.ProtoReflect.Descriptor instead.
 func (*QuerySpotMarketResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{27}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *QuerySpotMarketResponse) GetMarket() *SpotMarket {
@@ -1501,12 +1500,12 @@ type QuerySpotOrderbookRequest struct {
 	// the maximum number of orderbook entries to return per side (optional)
 	Limit uint64 `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`
 	// the order side to return the orderbook entries for (optional)
-	OrderSide OrderSide `protobuf:"varint,3,opt,name=order_side,json=orderSide,proto3,enum=injective.exchange.v2.OrderSide" json:"order_side,omitempty"`
+	OrderSide OrderSide `protobuf:"varint,3,opt,name=order_side,json=orderSide,proto3,enum=injective.exchange.v1beta1.OrderSide" json:"order_side,omitempty"`
 	// limits the number of entries to return per side based on the cumulative
-	// notional (in human readable format)
+	// notional (in chain format)
 	LimitCumulativeNotional string `protobuf:"bytes,4,opt,name=limit_cumulative_notional,json=limitCumulativeNotional,proto3" json:"limit_cumulative_notional,omitempty"`
 	// limits the number of entries to return per side based on the cumulative
-	// quantity (in human readable format)
+	// quantity (in chain format)
 	LimitCumulativeQuantity string `protobuf:"bytes,5,opt,name=limit_cumulative_quantity,json=limitCumulativeQuantity,proto3" json:"limit_cumulative_quantity,omitempty"`
 	unknownFields           protoimpl.UnknownFields
 	sizeCache               protoimpl.SizeCache
@@ -1514,7 +1513,7 @@ type QuerySpotOrderbookRequest struct {
 
 func (x *QuerySpotOrderbookRequest) Reset() {
 	*x = QuerySpotOrderbookRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[28]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1526,7 +1525,7 @@ func (x *QuerySpotOrderbookRequest) String() string {
 func (*QuerySpotOrderbookRequest) ProtoMessage() {}
 
 func (x *QuerySpotOrderbookRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[28]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1539,7 +1538,7 @@ func (x *QuerySpotOrderbookRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuerySpotOrderbookRequest.ProtoReflect.Descriptor instead.
 func (*QuerySpotOrderbookRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{28}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *QuerySpotOrderbookRequest) GetMarketId() string {
@@ -1589,7 +1588,7 @@ type QuerySpotOrderbookResponse struct {
 
 func (x *QuerySpotOrderbookResponse) Reset() {
 	*x = QuerySpotOrderbookResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[29]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1601,7 +1600,7 @@ func (x *QuerySpotOrderbookResponse) String() string {
 func (*QuerySpotOrderbookResponse) ProtoMessage() {}
 
 func (x *QuerySpotOrderbookResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[29]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1614,7 +1613,7 @@ func (x *QuerySpotOrderbookResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuerySpotOrderbookResponse.ProtoReflect.Descriptor instead.
 func (*QuerySpotOrderbookResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{29}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *QuerySpotOrderbookResponse) GetBuysPriceLevel() []*Level {
@@ -1632,9 +1631,8 @@ func (x *QuerySpotOrderbookResponse) GetSellsPriceLevel() []*Level {
 }
 
 type FullSpotMarket struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// spot market details
-	Market *SpotMarket `protobuf:"bytes,1,opt,name=market,proto3" json:"market,omitempty"`
+	state  protoimpl.MessageState `protogen:"open.v1"`
+	Market *SpotMarket            `protobuf:"bytes,1,opt,name=market,proto3" json:"market,omitempty"`
 	// mid_price_and_tob defines the mid price for this market and the best ask
 	// and bid orders
 	MidPriceAndTob *MidPriceAndTOB `protobuf:"bytes,2,opt,name=mid_price_and_tob,json=midPriceAndTob,proto3" json:"mid_price_and_tob,omitempty"`
@@ -1644,7 +1642,7 @@ type FullSpotMarket struct {
 
 func (x *FullSpotMarket) Reset() {
 	*x = FullSpotMarket{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[30]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1656,7 +1654,7 @@ func (x *FullSpotMarket) String() string {
 func (*FullSpotMarket) ProtoMessage() {}
 
 func (x *FullSpotMarket) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[30]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1669,7 +1667,7 @@ func (x *FullSpotMarket) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FullSpotMarket.ProtoReflect.Descriptor instead.
 func (*FullSpotMarket) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{30}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *FullSpotMarket) GetMarket() *SpotMarket {
@@ -1703,7 +1701,7 @@ type QueryFullSpotMarketsRequest struct {
 
 func (x *QueryFullSpotMarketsRequest) Reset() {
 	*x = QueryFullSpotMarketsRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[31]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1715,7 +1713,7 @@ func (x *QueryFullSpotMarketsRequest) String() string {
 func (*QueryFullSpotMarketsRequest) ProtoMessage() {}
 
 func (x *QueryFullSpotMarketsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[31]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1728,7 +1726,7 @@ func (x *QueryFullSpotMarketsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryFullSpotMarketsRequest.ProtoReflect.Descriptor instead.
 func (*QueryFullSpotMarketsRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{31}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *QueryFullSpotMarketsRequest) GetStatus() string {
@@ -1763,7 +1761,7 @@ type QueryFullSpotMarketsResponse struct {
 
 func (x *QueryFullSpotMarketsResponse) Reset() {
 	*x = QueryFullSpotMarketsResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[32]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1775,7 +1773,7 @@ func (x *QueryFullSpotMarketsResponse) String() string {
 func (*QueryFullSpotMarketsResponse) ProtoMessage() {}
 
 func (x *QueryFullSpotMarketsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[32]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1788,7 +1786,7 @@ func (x *QueryFullSpotMarketsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryFullSpotMarketsResponse.ProtoReflect.Descriptor instead.
 func (*QueryFullSpotMarketsResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{32}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *QueryFullSpotMarketsResponse) GetMarkets() []*FullSpotMarket {
@@ -1813,7 +1811,7 @@ type QueryFullSpotMarketRequest struct {
 
 func (x *QueryFullSpotMarketRequest) Reset() {
 	*x = QueryFullSpotMarketRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[33]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1825,7 +1823,7 @@ func (x *QueryFullSpotMarketRequest) String() string {
 func (*QueryFullSpotMarketRequest) ProtoMessage() {}
 
 func (x *QueryFullSpotMarketRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[33]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1838,7 +1836,7 @@ func (x *QueryFullSpotMarketRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryFullSpotMarketRequest.ProtoReflect.Descriptor instead.
 func (*QueryFullSpotMarketRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{33}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *QueryFullSpotMarketRequest) GetMarketId() string {
@@ -1866,7 +1864,7 @@ type QueryFullSpotMarketResponse struct {
 
 func (x *QueryFullSpotMarketResponse) Reset() {
 	*x = QueryFullSpotMarketResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[34]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1878,7 +1876,7 @@ func (x *QueryFullSpotMarketResponse) String() string {
 func (*QueryFullSpotMarketResponse) ProtoMessage() {}
 
 func (x *QueryFullSpotMarketResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[34]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1891,7 +1889,7 @@ func (x *QueryFullSpotMarketResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryFullSpotMarketResponse.ProtoReflect.Descriptor instead.
 func (*QueryFullSpotMarketResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{34}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *QueryFullSpotMarketResponse) GetMarket() *FullSpotMarket {
@@ -1917,7 +1915,7 @@ type QuerySpotOrdersByHashesRequest struct {
 
 func (x *QuerySpotOrdersByHashesRequest) Reset() {
 	*x = QuerySpotOrdersByHashesRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[35]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1929,7 +1927,7 @@ func (x *QuerySpotOrdersByHashesRequest) String() string {
 func (*QuerySpotOrdersByHashesRequest) ProtoMessage() {}
 
 func (x *QuerySpotOrdersByHashesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[35]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1942,7 +1940,7 @@ func (x *QuerySpotOrdersByHashesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuerySpotOrdersByHashesRequest.ProtoReflect.Descriptor instead.
 func (*QuerySpotOrdersByHashesRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{35}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *QuerySpotOrdersByHashesRequest) GetMarketId() string {
@@ -1977,7 +1975,7 @@ type QuerySpotOrdersByHashesResponse struct {
 
 func (x *QuerySpotOrdersByHashesResponse) Reset() {
 	*x = QuerySpotOrdersByHashesResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[36]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1989,7 +1987,7 @@ func (x *QuerySpotOrdersByHashesResponse) String() string {
 func (*QuerySpotOrdersByHashesResponse) ProtoMessage() {}
 
 func (x *QuerySpotOrdersByHashesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[36]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2002,7 +2000,7 @@ func (x *QuerySpotOrdersByHashesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuerySpotOrdersByHashesResponse.ProtoReflect.Descriptor instead.
 func (*QuerySpotOrdersByHashesResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{36}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{36}
 }
 
 func (x *QuerySpotOrdersByHashesResponse) GetOrders() []*TrimmedSpotLimitOrder {
@@ -2026,7 +2024,7 @@ type QueryTraderSpotOrdersRequest struct {
 
 func (x *QueryTraderSpotOrdersRequest) Reset() {
 	*x = QueryTraderSpotOrdersRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[37]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2038,7 +2036,7 @@ func (x *QueryTraderSpotOrdersRequest) String() string {
 func (*QueryTraderSpotOrdersRequest) ProtoMessage() {}
 
 func (x *QueryTraderSpotOrdersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[37]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2051,7 +2049,7 @@ func (x *QueryTraderSpotOrdersRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryTraderSpotOrdersRequest.ProtoReflect.Descriptor instead.
 func (*QueryTraderSpotOrdersRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{37}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{37}
 }
 
 func (x *QueryTraderSpotOrdersRequest) GetMarketId() string {
@@ -2082,7 +2080,7 @@ type QueryAccountAddressSpotOrdersRequest struct {
 
 func (x *QueryAccountAddressSpotOrdersRequest) Reset() {
 	*x = QueryAccountAddressSpotOrdersRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[38]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2094,7 +2092,7 @@ func (x *QueryAccountAddressSpotOrdersRequest) String() string {
 func (*QueryAccountAddressSpotOrdersRequest) ProtoMessage() {}
 
 func (x *QueryAccountAddressSpotOrdersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[38]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2107,7 +2105,7 @@ func (x *QueryAccountAddressSpotOrdersRequest) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use QueryAccountAddressSpotOrdersRequest.ProtoReflect.Descriptor instead.
 func (*QueryAccountAddressSpotOrdersRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{38}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{38}
 }
 
 func (x *QueryAccountAddressSpotOrdersRequest) GetMarketId() string {
@@ -2126,11 +2124,11 @@ func (x *QueryAccountAddressSpotOrdersRequest) GetAccountAddress() string {
 
 type TrimmedSpotLimitOrder struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// price of the order (in human readable format)
+	// price of the order (in chain format)
 	Price string `protobuf:"bytes,1,opt,name=price,proto3" json:"price,omitempty"`
-	// quantity of the order (in human readable format)
+	// quantity of the order (in chain format)
 	Quantity string `protobuf:"bytes,2,opt,name=quantity,proto3" json:"quantity,omitempty"`
-	// the amount of the quantity remaining fillable (in human readable format)
+	// the amount of the quantity remaining fillable (in chain format)
 	Fillable string `protobuf:"bytes,3,opt,name=fillable,proto3" json:"fillable,omitempty"`
 	// true if the order is a buy
 	IsBuy bool `protobuf:"varint,4,opt,name=isBuy,proto3" json:"isBuy,omitempty"`
@@ -2144,7 +2142,7 @@ type TrimmedSpotLimitOrder struct {
 
 func (x *TrimmedSpotLimitOrder) Reset() {
 	*x = TrimmedSpotLimitOrder{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[39]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2156,7 +2154,7 @@ func (x *TrimmedSpotLimitOrder) String() string {
 func (*TrimmedSpotLimitOrder) ProtoMessage() {}
 
 func (x *TrimmedSpotLimitOrder) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[39]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2169,7 +2167,7 @@ func (x *TrimmedSpotLimitOrder) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TrimmedSpotLimitOrder.ProtoReflect.Descriptor instead.
 func (*TrimmedSpotLimitOrder) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{39}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{39}
 }
 
 func (x *TrimmedSpotLimitOrder) GetPrice() string {
@@ -2225,7 +2223,7 @@ type QueryTraderSpotOrdersResponse struct {
 
 func (x *QueryTraderSpotOrdersResponse) Reset() {
 	*x = QueryTraderSpotOrdersResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[40]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2237,7 +2235,7 @@ func (x *QueryTraderSpotOrdersResponse) String() string {
 func (*QueryTraderSpotOrdersResponse) ProtoMessage() {}
 
 func (x *QueryTraderSpotOrdersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[40]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2250,7 +2248,7 @@ func (x *QueryTraderSpotOrdersResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryTraderSpotOrdersResponse.ProtoReflect.Descriptor instead.
 func (*QueryTraderSpotOrdersResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{40}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{40}
 }
 
 func (x *QueryTraderSpotOrdersResponse) GetOrders() []*TrimmedSpotLimitOrder {
@@ -2271,7 +2269,7 @@ type QueryAccountAddressSpotOrdersResponse struct {
 
 func (x *QueryAccountAddressSpotOrdersResponse) Reset() {
 	*x = QueryAccountAddressSpotOrdersResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[41]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2283,7 +2281,7 @@ func (x *QueryAccountAddressSpotOrdersResponse) String() string {
 func (*QueryAccountAddressSpotOrdersResponse) ProtoMessage() {}
 
 func (x *QueryAccountAddressSpotOrdersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[41]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2296,7 +2294,7 @@ func (x *QueryAccountAddressSpotOrdersResponse) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use QueryAccountAddressSpotOrdersResponse.ProtoReflect.Descriptor instead.
 func (*QueryAccountAddressSpotOrdersResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{41}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{41}
 }
 
 func (x *QueryAccountAddressSpotOrdersResponse) GetOrders() []*TrimmedSpotLimitOrder {
@@ -2318,7 +2316,7 @@ type QuerySpotMidPriceAndTOBRequest struct {
 
 func (x *QuerySpotMidPriceAndTOBRequest) Reset() {
 	*x = QuerySpotMidPriceAndTOBRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[42]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2330,7 +2328,7 @@ func (x *QuerySpotMidPriceAndTOBRequest) String() string {
 func (*QuerySpotMidPriceAndTOBRequest) ProtoMessage() {}
 
 func (x *QuerySpotMidPriceAndTOBRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[42]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2343,7 +2341,7 @@ func (x *QuerySpotMidPriceAndTOBRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuerySpotMidPriceAndTOBRequest.ProtoReflect.Descriptor instead.
 func (*QuerySpotMidPriceAndTOBRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{42}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{42}
 }
 
 func (x *QuerySpotMidPriceAndTOBRequest) GetMarketId() string {
@@ -2357,11 +2355,11 @@ func (x *QuerySpotMidPriceAndTOBRequest) GetMarketId() string {
 // Query/SpotMidPriceAndTOB RPC method.
 type QuerySpotMidPriceAndTOBResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// mid price of the market (in human readable format)
+	// mid price of the market (in chain format)
 	MidPrice string `protobuf:"bytes,1,opt,name=mid_price,json=midPrice,proto3" json:"mid_price,omitempty"`
-	// best buy price of the market (in human readable format)
+	// best buy price of the market (in chain format)
 	BestBuyPrice string `protobuf:"bytes,2,opt,name=best_buy_price,json=bestBuyPrice,proto3" json:"best_buy_price,omitempty"`
-	// best sell price of the market
+	// best sell price of the market (in chain format)
 	BestSellPrice string `protobuf:"bytes,3,opt,name=best_sell_price,json=bestSellPrice,proto3" json:"best_sell_price,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -2369,7 +2367,7 @@ type QuerySpotMidPriceAndTOBResponse struct {
 
 func (x *QuerySpotMidPriceAndTOBResponse) Reset() {
 	*x = QuerySpotMidPriceAndTOBResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[43]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2381,7 +2379,7 @@ func (x *QuerySpotMidPriceAndTOBResponse) String() string {
 func (*QuerySpotMidPriceAndTOBResponse) ProtoMessage() {}
 
 func (x *QuerySpotMidPriceAndTOBResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[43]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2394,7 +2392,7 @@ func (x *QuerySpotMidPriceAndTOBResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuerySpotMidPriceAndTOBResponse.ProtoReflect.Descriptor instead.
 func (*QuerySpotMidPriceAndTOBResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{43}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{43}
 }
 
 func (x *QuerySpotMidPriceAndTOBResponse) GetMidPrice() string {
@@ -2430,7 +2428,7 @@ type QueryDerivativeMidPriceAndTOBRequest struct {
 
 func (x *QueryDerivativeMidPriceAndTOBRequest) Reset() {
 	*x = QueryDerivativeMidPriceAndTOBRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[44]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2442,7 +2440,7 @@ func (x *QueryDerivativeMidPriceAndTOBRequest) String() string {
 func (*QueryDerivativeMidPriceAndTOBRequest) ProtoMessage() {}
 
 func (x *QueryDerivativeMidPriceAndTOBRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[44]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2455,7 +2453,7 @@ func (x *QueryDerivativeMidPriceAndTOBRequest) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use QueryDerivativeMidPriceAndTOBRequest.ProtoReflect.Descriptor instead.
 func (*QueryDerivativeMidPriceAndTOBRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{44}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{44}
 }
 
 func (x *QueryDerivativeMidPriceAndTOBRequest) GetMarketId() string {
@@ -2481,7 +2479,7 @@ type QueryDerivativeMidPriceAndTOBResponse struct {
 
 func (x *QueryDerivativeMidPriceAndTOBResponse) Reset() {
 	*x = QueryDerivativeMidPriceAndTOBResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[45]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2493,7 +2491,7 @@ func (x *QueryDerivativeMidPriceAndTOBResponse) String() string {
 func (*QueryDerivativeMidPriceAndTOBResponse) ProtoMessage() {}
 
 func (x *QueryDerivativeMidPriceAndTOBResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[45]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2506,7 +2504,7 @@ func (x *QueryDerivativeMidPriceAndTOBResponse) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use QueryDerivativeMidPriceAndTOBResponse.ProtoReflect.Descriptor instead.
 func (*QueryDerivativeMidPriceAndTOBResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{45}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{45}
 }
 
 func (x *QueryDerivativeMidPriceAndTOBResponse) GetMidPrice() string {
@@ -2544,7 +2542,7 @@ type QueryDerivativeOrderbookRequest struct {
 
 func (x *QueryDerivativeOrderbookRequest) Reset() {
 	*x = QueryDerivativeOrderbookRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[46]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2556,7 +2554,7 @@ func (x *QueryDerivativeOrderbookRequest) String() string {
 func (*QueryDerivativeOrderbookRequest) ProtoMessage() {}
 
 func (x *QueryDerivativeOrderbookRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[46]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2569,7 +2567,7 @@ func (x *QueryDerivativeOrderbookRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryDerivativeOrderbookRequest.ProtoReflect.Descriptor instead.
 func (*QueryDerivativeOrderbookRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{46}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{46}
 }
 
 func (x *QueryDerivativeOrderbookRequest) GetMarketId() string {
@@ -2605,7 +2603,7 @@ type QueryDerivativeOrderbookResponse struct {
 
 func (x *QueryDerivativeOrderbookResponse) Reset() {
 	*x = QueryDerivativeOrderbookResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[47]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[47]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2617,7 +2615,7 @@ func (x *QueryDerivativeOrderbookResponse) String() string {
 func (*QueryDerivativeOrderbookResponse) ProtoMessage() {}
 
 func (x *QueryDerivativeOrderbookResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[47]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[47]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2630,7 +2628,7 @@ func (x *QueryDerivativeOrderbookResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryDerivativeOrderbookResponse.ProtoReflect.Descriptor instead.
 func (*QueryDerivativeOrderbookResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{47}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{47}
 }
 
 func (x *QueryDerivativeOrderbookResponse) GetBuysPriceLevel() []*Level {
@@ -2660,7 +2658,7 @@ type QueryTraderSpotOrdersToCancelUpToAmountRequest struct {
 	// the quote amount to cancel (free up)
 	QuoteAmount string `protobuf:"bytes,4,opt,name=quote_amount,json=quoteAmount,proto3" json:"quote_amount,omitempty"`
 	// The cancellation strategy
-	Strategy CancellationStrategy `protobuf:"varint,5,opt,name=strategy,proto3,enum=injective.exchange.v2.CancellationStrategy" json:"strategy,omitempty"`
+	Strategy CancellationStrategy `protobuf:"varint,5,opt,name=strategy,proto3,enum=injective.exchange.v1beta1.CancellationStrategy" json:"strategy,omitempty"`
 	// The reference price for the cancellation strategy, e.g. mid price or mark
 	// price
 	ReferencePrice string `protobuf:"bytes,6,opt,name=reference_price,json=referencePrice,proto3" json:"reference_price,omitempty"`
@@ -2670,7 +2668,7 @@ type QueryTraderSpotOrdersToCancelUpToAmountRequest struct {
 
 func (x *QueryTraderSpotOrdersToCancelUpToAmountRequest) Reset() {
 	*x = QueryTraderSpotOrdersToCancelUpToAmountRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[48]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[48]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2682,7 +2680,7 @@ func (x *QueryTraderSpotOrdersToCancelUpToAmountRequest) String() string {
 func (*QueryTraderSpotOrdersToCancelUpToAmountRequest) ProtoMessage() {}
 
 func (x *QueryTraderSpotOrdersToCancelUpToAmountRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[48]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[48]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2695,7 +2693,7 @@ func (x *QueryTraderSpotOrdersToCancelUpToAmountRequest) ProtoReflect() protoref
 
 // Deprecated: Use QueryTraderSpotOrdersToCancelUpToAmountRequest.ProtoReflect.Descriptor instead.
 func (*QueryTraderSpotOrdersToCancelUpToAmountRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{48}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{48}
 }
 
 func (x *QueryTraderSpotOrdersToCancelUpToAmountRequest) GetMarketId() string {
@@ -2751,7 +2749,7 @@ type QueryTraderDerivativeOrdersToCancelUpToAmountRequest struct {
 	// the quote amount to cancel (free up)
 	QuoteAmount string `protobuf:"bytes,3,opt,name=quote_amount,json=quoteAmount,proto3" json:"quote_amount,omitempty"`
 	// The cancellation strategy
-	Strategy CancellationStrategy `protobuf:"varint,4,opt,name=strategy,proto3,enum=injective.exchange.v2.CancellationStrategy" json:"strategy,omitempty"`
+	Strategy CancellationStrategy `protobuf:"varint,4,opt,name=strategy,proto3,enum=injective.exchange.v1beta1.CancellationStrategy" json:"strategy,omitempty"`
 	// The reference price for the cancellation strategy, e.g. mid price or mark
 	// price
 	ReferencePrice string `protobuf:"bytes,5,opt,name=reference_price,json=referencePrice,proto3" json:"reference_price,omitempty"`
@@ -2761,7 +2759,7 @@ type QueryTraderDerivativeOrdersToCancelUpToAmountRequest struct {
 
 func (x *QueryTraderDerivativeOrdersToCancelUpToAmountRequest) Reset() {
 	*x = QueryTraderDerivativeOrdersToCancelUpToAmountRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[49]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[49]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2773,7 +2771,7 @@ func (x *QueryTraderDerivativeOrdersToCancelUpToAmountRequest) String() string {
 func (*QueryTraderDerivativeOrdersToCancelUpToAmountRequest) ProtoMessage() {}
 
 func (x *QueryTraderDerivativeOrdersToCancelUpToAmountRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[49]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[49]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2786,7 +2784,7 @@ func (x *QueryTraderDerivativeOrdersToCancelUpToAmountRequest) ProtoReflect() pr
 
 // Deprecated: Use QueryTraderDerivativeOrdersToCancelUpToAmountRequest.ProtoReflect.Descriptor instead.
 func (*QueryTraderDerivativeOrdersToCancelUpToAmountRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{49}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{49}
 }
 
 func (x *QueryTraderDerivativeOrdersToCancelUpToAmountRequest) GetMarketId() string {
@@ -2838,7 +2836,7 @@ type QueryTraderDerivativeOrdersRequest struct {
 
 func (x *QueryTraderDerivativeOrdersRequest) Reset() {
 	*x = QueryTraderDerivativeOrdersRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[50]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[50]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2850,7 +2848,7 @@ func (x *QueryTraderDerivativeOrdersRequest) String() string {
 func (*QueryTraderDerivativeOrdersRequest) ProtoMessage() {}
 
 func (x *QueryTraderDerivativeOrdersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[50]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[50]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2863,7 +2861,7 @@ func (x *QueryTraderDerivativeOrdersRequest) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use QueryTraderDerivativeOrdersRequest.ProtoReflect.Descriptor instead.
 func (*QueryTraderDerivativeOrdersRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{50}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{50}
 }
 
 func (x *QueryTraderDerivativeOrdersRequest) GetMarketId() string {
@@ -2894,7 +2892,7 @@ type QueryAccountAddressDerivativeOrdersRequest struct {
 
 func (x *QueryAccountAddressDerivativeOrdersRequest) Reset() {
 	*x = QueryAccountAddressDerivativeOrdersRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[51]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[51]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2906,7 +2904,7 @@ func (x *QueryAccountAddressDerivativeOrdersRequest) String() string {
 func (*QueryAccountAddressDerivativeOrdersRequest) ProtoMessage() {}
 
 func (x *QueryAccountAddressDerivativeOrdersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[51]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[51]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2919,7 +2917,7 @@ func (x *QueryAccountAddressDerivativeOrdersRequest) ProtoReflect() protoreflect
 
 // Deprecated: Use QueryAccountAddressDerivativeOrdersRequest.ProtoReflect.Descriptor instead.
 func (*QueryAccountAddressDerivativeOrdersRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{51}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{51}
 }
 
 func (x *QueryAccountAddressDerivativeOrdersRequest) GetMarketId() string {
@@ -2938,13 +2936,13 @@ func (x *QueryAccountAddressDerivativeOrdersRequest) GetAccountAddress() string 
 
 type TrimmedDerivativeLimitOrder struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// price of the order (in human readable format)
+	// price of the order (in chain format)
 	Price string `protobuf:"bytes,1,opt,name=price,proto3" json:"price,omitempty"`
-	// quantity of the order (in human readable format)
+	// quantity of the order (in chain format)
 	Quantity string `protobuf:"bytes,2,opt,name=quantity,proto3" json:"quantity,omitempty"`
-	// margin of the order (in human readable format)
+	// margin of the order (in chain format)
 	Margin string `protobuf:"bytes,3,opt,name=margin,proto3" json:"margin,omitempty"`
-	// the amount of the quantity remaining fillable (in human readable format)
+	// the amount of the quantity remaining fillable (in chain format)
 	Fillable string `protobuf:"bytes,4,opt,name=fillable,proto3" json:"fillable,omitempty"`
 	// true if the order is a buy
 	IsBuy bool `protobuf:"varint,5,opt,name=isBuy,proto3" json:"isBuy,omitempty"`
@@ -2958,7 +2956,7 @@ type TrimmedDerivativeLimitOrder struct {
 
 func (x *TrimmedDerivativeLimitOrder) Reset() {
 	*x = TrimmedDerivativeLimitOrder{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[52]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[52]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2970,7 +2968,7 @@ func (x *TrimmedDerivativeLimitOrder) String() string {
 func (*TrimmedDerivativeLimitOrder) ProtoMessage() {}
 
 func (x *TrimmedDerivativeLimitOrder) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[52]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[52]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2983,7 +2981,7 @@ func (x *TrimmedDerivativeLimitOrder) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TrimmedDerivativeLimitOrder.ProtoReflect.Descriptor instead.
 func (*TrimmedDerivativeLimitOrder) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{52}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{52}
 }
 
 func (x *TrimmedDerivativeLimitOrder) GetPrice() string {
@@ -3046,7 +3044,7 @@ type QueryTraderDerivativeOrdersResponse struct {
 
 func (x *QueryTraderDerivativeOrdersResponse) Reset() {
 	*x = QueryTraderDerivativeOrdersResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[53]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[53]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3058,7 +3056,7 @@ func (x *QueryTraderDerivativeOrdersResponse) String() string {
 func (*QueryTraderDerivativeOrdersResponse) ProtoMessage() {}
 
 func (x *QueryTraderDerivativeOrdersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[53]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[53]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3071,7 +3069,7 @@ func (x *QueryTraderDerivativeOrdersResponse) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use QueryTraderDerivativeOrdersResponse.ProtoReflect.Descriptor instead.
 func (*QueryTraderDerivativeOrdersResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{53}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{53}
 }
 
 func (x *QueryTraderDerivativeOrdersResponse) GetOrders() []*TrimmedDerivativeLimitOrder {
@@ -3092,7 +3090,7 @@ type QueryAccountAddressDerivativeOrdersResponse struct {
 
 func (x *QueryAccountAddressDerivativeOrdersResponse) Reset() {
 	*x = QueryAccountAddressDerivativeOrdersResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[54]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[54]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3104,7 +3102,7 @@ func (x *QueryAccountAddressDerivativeOrdersResponse) String() string {
 func (*QueryAccountAddressDerivativeOrdersResponse) ProtoMessage() {}
 
 func (x *QueryAccountAddressDerivativeOrdersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[54]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[54]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3117,7 +3115,7 @@ func (x *QueryAccountAddressDerivativeOrdersResponse) ProtoReflect() protoreflec
 
 // Deprecated: Use QueryAccountAddressDerivativeOrdersResponse.ProtoReflect.Descriptor instead.
 func (*QueryAccountAddressDerivativeOrdersResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{54}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{54}
 }
 
 func (x *QueryAccountAddressDerivativeOrdersResponse) GetOrders() []*TrimmedDerivativeLimitOrder {
@@ -3143,7 +3141,7 @@ type QueryDerivativeOrdersByHashesRequest struct {
 
 func (x *QueryDerivativeOrdersByHashesRequest) Reset() {
 	*x = QueryDerivativeOrdersByHashesRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[55]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[55]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3155,7 +3153,7 @@ func (x *QueryDerivativeOrdersByHashesRequest) String() string {
 func (*QueryDerivativeOrdersByHashesRequest) ProtoMessage() {}
 
 func (x *QueryDerivativeOrdersByHashesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[55]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[55]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3168,7 +3166,7 @@ func (x *QueryDerivativeOrdersByHashesRequest) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use QueryDerivativeOrdersByHashesRequest.ProtoReflect.Descriptor instead.
 func (*QueryDerivativeOrdersByHashesRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{55}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{55}
 }
 
 func (x *QueryDerivativeOrdersByHashesRequest) GetMarketId() string {
@@ -3203,7 +3201,7 @@ type QueryDerivativeOrdersByHashesResponse struct {
 
 func (x *QueryDerivativeOrdersByHashesResponse) Reset() {
 	*x = QueryDerivativeOrdersByHashesResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[56]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[56]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3215,7 +3213,7 @@ func (x *QueryDerivativeOrdersByHashesResponse) String() string {
 func (*QueryDerivativeOrdersByHashesResponse) ProtoMessage() {}
 
 func (x *QueryDerivativeOrdersByHashesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[56]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[56]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3228,7 +3226,7 @@ func (x *QueryDerivativeOrdersByHashesResponse) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use QueryDerivativeOrdersByHashesResponse.ProtoReflect.Descriptor instead.
 func (*QueryDerivativeOrdersByHashesResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{56}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{56}
 }
 
 func (x *QueryDerivativeOrdersByHashesResponse) GetOrders() []*TrimmedDerivativeLimitOrder {
@@ -3255,7 +3253,7 @@ type QueryDerivativeMarketsRequest struct {
 
 func (x *QueryDerivativeMarketsRequest) Reset() {
 	*x = QueryDerivativeMarketsRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[57]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[57]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3267,7 +3265,7 @@ func (x *QueryDerivativeMarketsRequest) String() string {
 func (*QueryDerivativeMarketsRequest) ProtoMessage() {}
 
 func (x *QueryDerivativeMarketsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[57]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[57]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3280,7 +3278,7 @@ func (x *QueryDerivativeMarketsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryDerivativeMarketsRequest.ProtoReflect.Descriptor instead.
 func (*QueryDerivativeMarketsRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{57}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{57}
 }
 
 func (x *QueryDerivativeMarketsRequest) GetStatus() string {
@@ -3315,7 +3313,7 @@ type PriceLevel struct {
 
 func (x *PriceLevel) Reset() {
 	*x = PriceLevel{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[58]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[58]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3327,7 +3325,7 @@ func (x *PriceLevel) String() string {
 func (*PriceLevel) ProtoMessage() {}
 
 func (x *PriceLevel) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[58]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[58]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3340,7 +3338,7 @@ func (x *PriceLevel) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PriceLevel.ProtoReflect.Descriptor instead.
 func (*PriceLevel) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{58}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{58}
 }
 
 func (x *PriceLevel) GetPrice() string {
@@ -3367,7 +3365,7 @@ type PerpetualMarketState struct {
 
 func (x *PerpetualMarketState) Reset() {
 	*x = PerpetualMarketState{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[59]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[59]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3379,7 +3377,7 @@ func (x *PerpetualMarketState) String() string {
 func (*PerpetualMarketState) ProtoMessage() {}
 
 func (x *PerpetualMarketState) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[59]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[59]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3392,7 +3390,7 @@ func (x *PerpetualMarketState) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PerpetualMarketState.ProtoReflect.Descriptor instead.
 func (*PerpetualMarketState) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{59}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{59}
 }
 
 func (x *PerpetualMarketState) GetMarketInfo() *PerpetualMarketInfo {
@@ -3420,7 +3418,7 @@ type FullDerivativeMarket struct {
 	//	*FullDerivativeMarket_PerpetualInfo
 	//	*FullDerivativeMarket_FuturesInfo
 	Info isFullDerivativeMarket_Info `protobuf_oneof:"info"`
-	// mark price (in human readable format)
+	// mark price (in chain format)
 	MarkPrice string `protobuf:"bytes,4,opt,name=mark_price,json=markPrice,proto3" json:"mark_price,omitempty"`
 	// mid_price_and_tob defines the mid price for this market and the best ask
 	// and bid orders
@@ -3431,7 +3429,7 @@ type FullDerivativeMarket struct {
 
 func (x *FullDerivativeMarket) Reset() {
 	*x = FullDerivativeMarket{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[60]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[60]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3443,7 +3441,7 @@ func (x *FullDerivativeMarket) String() string {
 func (*FullDerivativeMarket) ProtoMessage() {}
 
 func (x *FullDerivativeMarket) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[60]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[60]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3456,7 +3454,7 @@ func (x *FullDerivativeMarket) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FullDerivativeMarket.ProtoReflect.Descriptor instead.
 func (*FullDerivativeMarket) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{60}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{60}
 }
 
 func (x *FullDerivativeMarket) GetMarket() *DerivativeMarket {
@@ -3534,7 +3532,7 @@ type QueryDerivativeMarketsResponse struct {
 
 func (x *QueryDerivativeMarketsResponse) Reset() {
 	*x = QueryDerivativeMarketsResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[61]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[61]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3546,7 +3544,7 @@ func (x *QueryDerivativeMarketsResponse) String() string {
 func (*QueryDerivativeMarketsResponse) ProtoMessage() {}
 
 func (x *QueryDerivativeMarketsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[61]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[61]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3559,7 +3557,7 @@ func (x *QueryDerivativeMarketsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryDerivativeMarketsResponse.ProtoReflect.Descriptor instead.
 func (*QueryDerivativeMarketsResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{61}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{61}
 }
 
 func (x *QueryDerivativeMarketsResponse) GetMarkets() []*FullDerivativeMarket {
@@ -3581,7 +3579,7 @@ type QueryDerivativeMarketRequest struct {
 
 func (x *QueryDerivativeMarketRequest) Reset() {
 	*x = QueryDerivativeMarketRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[62]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[62]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3593,7 +3591,7 @@ func (x *QueryDerivativeMarketRequest) String() string {
 func (*QueryDerivativeMarketRequest) ProtoMessage() {}
 
 func (x *QueryDerivativeMarketRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[62]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[62]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3606,7 +3604,7 @@ func (x *QueryDerivativeMarketRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryDerivativeMarketRequest.ProtoReflect.Descriptor instead.
 func (*QueryDerivativeMarketRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{62}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{62}
 }
 
 func (x *QueryDerivativeMarketRequest) GetMarketId() string {
@@ -3627,7 +3625,7 @@ type QueryDerivativeMarketResponse struct {
 
 func (x *QueryDerivativeMarketResponse) Reset() {
 	*x = QueryDerivativeMarketResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[63]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[63]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3639,7 +3637,7 @@ func (x *QueryDerivativeMarketResponse) String() string {
 func (*QueryDerivativeMarketResponse) ProtoMessage() {}
 
 func (x *QueryDerivativeMarketResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[63]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[63]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3652,7 +3650,7 @@ func (x *QueryDerivativeMarketResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryDerivativeMarketResponse.ProtoReflect.Descriptor instead.
 func (*QueryDerivativeMarketResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{63}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{63}
 }
 
 func (x *QueryDerivativeMarketResponse) GetMarket() *FullDerivativeMarket {
@@ -3674,7 +3672,7 @@ type QueryDerivativeMarketAddressRequest struct {
 
 func (x *QueryDerivativeMarketAddressRequest) Reset() {
 	*x = QueryDerivativeMarketAddressRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[64]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[64]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3686,7 +3684,7 @@ func (x *QueryDerivativeMarketAddressRequest) String() string {
 func (*QueryDerivativeMarketAddressRequest) ProtoMessage() {}
 
 func (x *QueryDerivativeMarketAddressRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[64]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[64]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3699,7 +3697,7 @@ func (x *QueryDerivativeMarketAddressRequest) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use QueryDerivativeMarketAddressRequest.ProtoReflect.Descriptor instead.
 func (*QueryDerivativeMarketAddressRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{64}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{64}
 }
 
 func (x *QueryDerivativeMarketAddressRequest) GetMarketId() string {
@@ -3723,7 +3721,7 @@ type QueryDerivativeMarketAddressResponse struct {
 
 func (x *QueryDerivativeMarketAddressResponse) Reset() {
 	*x = QueryDerivativeMarketAddressResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[65]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[65]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3735,7 +3733,7 @@ func (x *QueryDerivativeMarketAddressResponse) String() string {
 func (*QueryDerivativeMarketAddressResponse) ProtoMessage() {}
 
 func (x *QueryDerivativeMarketAddressResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[65]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[65]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3748,7 +3746,7 @@ func (x *QueryDerivativeMarketAddressResponse) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use QueryDerivativeMarketAddressResponse.ProtoReflect.Descriptor instead.
 func (*QueryDerivativeMarketAddressResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{65}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{65}
 }
 
 func (x *QueryDerivativeMarketAddressResponse) GetAddress() string {
@@ -3777,7 +3775,7 @@ type QuerySubaccountTradeNonceRequest struct {
 
 func (x *QuerySubaccountTradeNonceRequest) Reset() {
 	*x = QuerySubaccountTradeNonceRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[66]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[66]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3789,7 +3787,7 @@ func (x *QuerySubaccountTradeNonceRequest) String() string {
 func (*QuerySubaccountTradeNonceRequest) ProtoMessage() {}
 
 func (x *QuerySubaccountTradeNonceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[66]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[66]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3802,7 +3800,7 @@ func (x *QuerySubaccountTradeNonceRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuerySubaccountTradeNonceRequest.ProtoReflect.Descriptor instead.
 func (*QuerySubaccountTradeNonceRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{66}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{66}
 }
 
 func (x *QuerySubaccountTradeNonceRequest) GetSubaccountId() string {
@@ -3810,98 +3808,6 @@ func (x *QuerySubaccountTradeNonceRequest) GetSubaccountId() string {
 		return x.SubaccountId
 	}
 	return ""
-}
-
-// QueryPositionsInMarketRequest is the request type for the
-// Query/PositionsInMarket RPC method.
-type QueryPositionsInMarketRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	MarketId      string                 `protobuf:"bytes,1,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *QueryPositionsInMarketRequest) Reset() {
-	*x = QueryPositionsInMarketRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[67]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *QueryPositionsInMarketRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*QueryPositionsInMarketRequest) ProtoMessage() {}
-
-func (x *QueryPositionsInMarketRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[67]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use QueryPositionsInMarketRequest.ProtoReflect.Descriptor instead.
-func (*QueryPositionsInMarketRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{67}
-}
-
-func (x *QueryPositionsInMarketRequest) GetMarketId() string {
-	if x != nil {
-		return x.MarketId
-	}
-	return ""
-}
-
-// QueryPositionsInMarketResponse is the response type for the
-// Query/PositionsInMarket RPC method.
-type QueryPositionsInMarketResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	State         []*DerivativePosition  `protobuf:"bytes,1,rep,name=state,proto3" json:"state,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *QueryPositionsInMarketResponse) Reset() {
-	*x = QueryPositionsInMarketResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[68]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *QueryPositionsInMarketResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*QueryPositionsInMarketResponse) ProtoMessage() {}
-
-func (x *QueryPositionsInMarketResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[68]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use QueryPositionsInMarketResponse.ProtoReflect.Descriptor instead.
-func (*QueryPositionsInMarketResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{68}
-}
-
-func (x *QueryPositionsInMarketResponse) GetState() []*DerivativePosition {
-	if x != nil {
-		return x.State
-	}
-	return nil
 }
 
 // QuerySubaccountPositionsRequest is the request type for the
@@ -3916,7 +3822,7 @@ type QuerySubaccountPositionsRequest struct {
 
 func (x *QuerySubaccountPositionsRequest) Reset() {
 	*x = QuerySubaccountPositionsRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[69]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[67]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3928,7 +3834,7 @@ func (x *QuerySubaccountPositionsRequest) String() string {
 func (*QuerySubaccountPositionsRequest) ProtoMessage() {}
 
 func (x *QuerySubaccountPositionsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[69]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[67]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3941,7 +3847,7 @@ func (x *QuerySubaccountPositionsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuerySubaccountPositionsRequest.ProtoReflect.Descriptor instead.
 func (*QuerySubaccountPositionsRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{69}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{67}
 }
 
 func (x *QuerySubaccountPositionsRequest) GetSubaccountId() string {
@@ -3965,7 +3871,7 @@ type QuerySubaccountPositionInMarketRequest struct {
 
 func (x *QuerySubaccountPositionInMarketRequest) Reset() {
 	*x = QuerySubaccountPositionInMarketRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[70]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[68]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3977,7 +3883,7 @@ func (x *QuerySubaccountPositionInMarketRequest) String() string {
 func (*QuerySubaccountPositionInMarketRequest) ProtoMessage() {}
 
 func (x *QuerySubaccountPositionInMarketRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[70]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[68]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3990,7 +3896,7 @@ func (x *QuerySubaccountPositionInMarketRequest) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use QuerySubaccountPositionInMarketRequest.ProtoReflect.Descriptor instead.
 func (*QuerySubaccountPositionInMarketRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{70}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{68}
 }
 
 func (x *QuerySubaccountPositionInMarketRequest) GetSubaccountId() string {
@@ -4021,7 +3927,7 @@ type QuerySubaccountEffectivePositionInMarketRequest struct {
 
 func (x *QuerySubaccountEffectivePositionInMarketRequest) Reset() {
 	*x = QuerySubaccountEffectivePositionInMarketRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[71]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[69]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4033,7 +3939,7 @@ func (x *QuerySubaccountEffectivePositionInMarketRequest) String() string {
 func (*QuerySubaccountEffectivePositionInMarketRequest) ProtoMessage() {}
 
 func (x *QuerySubaccountEffectivePositionInMarketRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[71]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[69]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4046,7 +3952,7 @@ func (x *QuerySubaccountEffectivePositionInMarketRequest) ProtoReflect() protore
 
 // Deprecated: Use QuerySubaccountEffectivePositionInMarketRequest.ProtoReflect.Descriptor instead.
 func (*QuerySubaccountEffectivePositionInMarketRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{71}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{69}
 }
 
 func (x *QuerySubaccountEffectivePositionInMarketRequest) GetSubaccountId() string {
@@ -4075,7 +3981,7 @@ type QuerySubaccountOrderMetadataRequest struct {
 
 func (x *QuerySubaccountOrderMetadataRequest) Reset() {
 	*x = QuerySubaccountOrderMetadataRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[72]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[70]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4087,7 +3993,7 @@ func (x *QuerySubaccountOrderMetadataRequest) String() string {
 func (*QuerySubaccountOrderMetadataRequest) ProtoMessage() {}
 
 func (x *QuerySubaccountOrderMetadataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[72]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[70]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4100,7 +4006,7 @@ func (x *QuerySubaccountOrderMetadataRequest) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use QuerySubaccountOrderMetadataRequest.ProtoReflect.Descriptor instead.
 func (*QuerySubaccountOrderMetadataRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{72}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{70}
 }
 
 func (x *QuerySubaccountOrderMetadataRequest) GetSubaccountId() string {
@@ -4121,7 +4027,7 @@ type QuerySubaccountPositionsResponse struct {
 
 func (x *QuerySubaccountPositionsResponse) Reset() {
 	*x = QuerySubaccountPositionsResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[73]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[71]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4133,7 +4039,7 @@ func (x *QuerySubaccountPositionsResponse) String() string {
 func (*QuerySubaccountPositionsResponse) ProtoMessage() {}
 
 func (x *QuerySubaccountPositionsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[73]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[71]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4146,7 +4052,7 @@ func (x *QuerySubaccountPositionsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuerySubaccountPositionsResponse.ProtoReflect.Descriptor instead.
 func (*QuerySubaccountPositionsResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{73}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{71}
 }
 
 func (x *QuerySubaccountPositionsResponse) GetState() []*DerivativePosition {
@@ -4167,7 +4073,7 @@ type QuerySubaccountPositionInMarketResponse struct {
 
 func (x *QuerySubaccountPositionInMarketResponse) Reset() {
 	*x = QuerySubaccountPositionInMarketResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[74]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[72]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4179,7 +4085,7 @@ func (x *QuerySubaccountPositionInMarketResponse) String() string {
 func (*QuerySubaccountPositionInMarketResponse) ProtoMessage() {}
 
 func (x *QuerySubaccountPositionInMarketResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[74]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[72]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4192,7 +4098,7 @@ func (x *QuerySubaccountPositionInMarketResponse) ProtoReflect() protoreflect.Me
 
 // Deprecated: Use QuerySubaccountPositionInMarketResponse.ProtoReflect.Descriptor instead.
 func (*QuerySubaccountPositionInMarketResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{74}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{72}
 }
 
 func (x *QuerySubaccountPositionInMarketResponse) GetState() *Position {
@@ -4206,11 +4112,11 @@ type EffectivePosition struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// whether the position is long or short
 	IsLong bool `protobuf:"varint,1,opt,name=is_long,json=isLong,proto3" json:"is_long,omitempty"`
-	// the quantity of the position (in human readable format)
+	// the quantity of the position (in chain format)
 	Quantity string `protobuf:"bytes,2,opt,name=quantity,proto3" json:"quantity,omitempty"`
-	// the entry price of the position (in human readable format)
+	// the entry price of the position (in chain format)
 	EntryPrice string `protobuf:"bytes,3,opt,name=entry_price,json=entryPrice,proto3" json:"entry_price,omitempty"`
-	// the effective margin of the position (in human readable format)
+	// the effective margin of the position (in chain format)
 	EffectiveMargin string `protobuf:"bytes,4,opt,name=effective_margin,json=effectiveMargin,proto3" json:"effective_margin,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
@@ -4218,7 +4124,7 @@ type EffectivePosition struct {
 
 func (x *EffectivePosition) Reset() {
 	*x = EffectivePosition{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[75]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[73]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4230,7 +4136,7 @@ func (x *EffectivePosition) String() string {
 func (*EffectivePosition) ProtoMessage() {}
 
 func (x *EffectivePosition) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[75]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[73]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4243,7 +4149,7 @@ func (x *EffectivePosition) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EffectivePosition.ProtoReflect.Descriptor instead.
 func (*EffectivePosition) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{75}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{73}
 }
 
 func (x *EffectivePosition) GetIsLong() bool {
@@ -4285,7 +4191,7 @@ type QuerySubaccountEffectivePositionInMarketResponse struct {
 
 func (x *QuerySubaccountEffectivePositionInMarketResponse) Reset() {
 	*x = QuerySubaccountEffectivePositionInMarketResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[76]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[74]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4297,7 +4203,7 @@ func (x *QuerySubaccountEffectivePositionInMarketResponse) String() string {
 func (*QuerySubaccountEffectivePositionInMarketResponse) ProtoMessage() {}
 
 func (x *QuerySubaccountEffectivePositionInMarketResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[76]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[74]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4310,7 +4216,7 @@ func (x *QuerySubaccountEffectivePositionInMarketResponse) ProtoReflect() protor
 
 // Deprecated: Use QuerySubaccountEffectivePositionInMarketResponse.ProtoReflect.Descriptor instead.
 func (*QuerySubaccountEffectivePositionInMarketResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{76}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{74}
 }
 
 func (x *QuerySubaccountEffectivePositionInMarketResponse) GetState() *EffectivePosition {
@@ -4331,7 +4237,7 @@ type QueryPerpetualMarketInfoRequest struct {
 
 func (x *QueryPerpetualMarketInfoRequest) Reset() {
 	*x = QueryPerpetualMarketInfoRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[77]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[75]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4343,7 +4249,7 @@ func (x *QueryPerpetualMarketInfoRequest) String() string {
 func (*QueryPerpetualMarketInfoRequest) ProtoMessage() {}
 
 func (x *QueryPerpetualMarketInfoRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[77]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[75]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4356,7 +4262,7 @@ func (x *QueryPerpetualMarketInfoRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryPerpetualMarketInfoRequest.ProtoReflect.Descriptor instead.
 func (*QueryPerpetualMarketInfoRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{77}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{75}
 }
 
 func (x *QueryPerpetualMarketInfoRequest) GetMarketId() string {
@@ -4377,7 +4283,7 @@ type QueryPerpetualMarketInfoResponse struct {
 
 func (x *QueryPerpetualMarketInfoResponse) Reset() {
 	*x = QueryPerpetualMarketInfoResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[78]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[76]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4389,7 +4295,7 @@ func (x *QueryPerpetualMarketInfoResponse) String() string {
 func (*QueryPerpetualMarketInfoResponse) ProtoMessage() {}
 
 func (x *QueryPerpetualMarketInfoResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[78]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[76]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4402,7 +4308,7 @@ func (x *QueryPerpetualMarketInfoResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryPerpetualMarketInfoResponse.ProtoReflect.Descriptor instead.
 func (*QueryPerpetualMarketInfoResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{78}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{76}
 }
 
 func (x *QueryPerpetualMarketInfoResponse) GetInfo() *PerpetualMarketInfo {
@@ -4423,7 +4329,7 @@ type QueryExpiryFuturesMarketInfoRequest struct {
 
 func (x *QueryExpiryFuturesMarketInfoRequest) Reset() {
 	*x = QueryExpiryFuturesMarketInfoRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[79]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[77]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4435,7 +4341,7 @@ func (x *QueryExpiryFuturesMarketInfoRequest) String() string {
 func (*QueryExpiryFuturesMarketInfoRequest) ProtoMessage() {}
 
 func (x *QueryExpiryFuturesMarketInfoRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[79]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[77]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4448,7 +4354,7 @@ func (x *QueryExpiryFuturesMarketInfoRequest) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use QueryExpiryFuturesMarketInfoRequest.ProtoReflect.Descriptor instead.
 func (*QueryExpiryFuturesMarketInfoRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{79}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{77}
 }
 
 func (x *QueryExpiryFuturesMarketInfoRequest) GetMarketId() string {
@@ -4469,7 +4375,7 @@ type QueryExpiryFuturesMarketInfoResponse struct {
 
 func (x *QueryExpiryFuturesMarketInfoResponse) Reset() {
 	*x = QueryExpiryFuturesMarketInfoResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[80]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[78]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4481,7 +4387,7 @@ func (x *QueryExpiryFuturesMarketInfoResponse) String() string {
 func (*QueryExpiryFuturesMarketInfoResponse) ProtoMessage() {}
 
 func (x *QueryExpiryFuturesMarketInfoResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[80]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[78]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4494,7 +4400,7 @@ func (x *QueryExpiryFuturesMarketInfoResponse) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use QueryExpiryFuturesMarketInfoResponse.ProtoReflect.Descriptor instead.
 func (*QueryExpiryFuturesMarketInfoResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{80}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{78}
 }
 
 func (x *QueryExpiryFuturesMarketInfoResponse) GetInfo() *ExpiryFuturesMarketInfo {
@@ -4515,7 +4421,7 @@ type QueryPerpetualMarketFundingRequest struct {
 
 func (x *QueryPerpetualMarketFundingRequest) Reset() {
 	*x = QueryPerpetualMarketFundingRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[81]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[79]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4527,7 +4433,7 @@ func (x *QueryPerpetualMarketFundingRequest) String() string {
 func (*QueryPerpetualMarketFundingRequest) ProtoMessage() {}
 
 func (x *QueryPerpetualMarketFundingRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[81]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[79]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4540,7 +4446,7 @@ func (x *QueryPerpetualMarketFundingRequest) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use QueryPerpetualMarketFundingRequest.ProtoReflect.Descriptor instead.
 func (*QueryPerpetualMarketFundingRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{81}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{79}
 }
 
 func (x *QueryPerpetualMarketFundingRequest) GetMarketId() string {
@@ -4561,7 +4467,7 @@ type QueryPerpetualMarketFundingResponse struct {
 
 func (x *QueryPerpetualMarketFundingResponse) Reset() {
 	*x = QueryPerpetualMarketFundingResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[82]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[80]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4573,7 +4479,7 @@ func (x *QueryPerpetualMarketFundingResponse) String() string {
 func (*QueryPerpetualMarketFundingResponse) ProtoMessage() {}
 
 func (x *QueryPerpetualMarketFundingResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[82]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[80]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4586,7 +4492,7 @@ func (x *QueryPerpetualMarketFundingResponse) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use QueryPerpetualMarketFundingResponse.ProtoReflect.Descriptor instead.
 func (*QueryPerpetualMarketFundingResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{82}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{80}
 }
 
 func (x *QueryPerpetualMarketFundingResponse) GetState() *PerpetualMarketFunding {
@@ -4607,7 +4513,7 @@ type QuerySubaccountOrderMetadataResponse struct {
 
 func (x *QuerySubaccountOrderMetadataResponse) Reset() {
 	*x = QuerySubaccountOrderMetadataResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[83]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[81]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4619,7 +4525,7 @@ func (x *QuerySubaccountOrderMetadataResponse) String() string {
 func (*QuerySubaccountOrderMetadataResponse) ProtoMessage() {}
 
 func (x *QuerySubaccountOrderMetadataResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[83]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[81]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4632,7 +4538,7 @@ func (x *QuerySubaccountOrderMetadataResponse) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use QuerySubaccountOrderMetadataResponse.ProtoReflect.Descriptor instead.
 func (*QuerySubaccountOrderMetadataResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{83}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{81}
 }
 
 func (x *QuerySubaccountOrderMetadataResponse) GetMetadata() []*SubaccountOrderbookMetadataWithMarket {
@@ -4653,7 +4559,7 @@ type QuerySubaccountTradeNonceResponse struct {
 
 func (x *QuerySubaccountTradeNonceResponse) Reset() {
 	*x = QuerySubaccountTradeNonceResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[84]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[82]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4665,7 +4571,7 @@ func (x *QuerySubaccountTradeNonceResponse) String() string {
 func (*QuerySubaccountTradeNonceResponse) ProtoMessage() {}
 
 func (x *QuerySubaccountTradeNonceResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[84]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[82]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4678,7 +4584,7 @@ func (x *QuerySubaccountTradeNonceResponse) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use QuerySubaccountTradeNonceResponse.ProtoReflect.Descriptor instead.
 func (*QuerySubaccountTradeNonceResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{84}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{82}
 }
 
 func (x *QuerySubaccountTradeNonceResponse) GetNonce() uint32 {
@@ -4698,7 +4604,7 @@ type QueryModuleStateRequest struct {
 
 func (x *QueryModuleStateRequest) Reset() {
 	*x = QueryModuleStateRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[85]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[83]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4710,7 +4616,7 @@ func (x *QueryModuleStateRequest) String() string {
 func (*QueryModuleStateRequest) ProtoMessage() {}
 
 func (x *QueryModuleStateRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[85]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[83]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4723,7 +4629,7 @@ func (x *QueryModuleStateRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryModuleStateRequest.ProtoReflect.Descriptor instead.
 func (*QueryModuleStateRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{85}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{83}
 }
 
 // QueryModuleStateResponse is the response type for the
@@ -4737,7 +4643,7 @@ type QueryModuleStateResponse struct {
 
 func (x *QueryModuleStateResponse) Reset() {
 	*x = QueryModuleStateResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[86]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[84]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4749,7 +4655,7 @@ func (x *QueryModuleStateResponse) String() string {
 func (*QueryModuleStateResponse) ProtoMessage() {}
 
 func (x *QueryModuleStateResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[86]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[84]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4762,7 +4668,7 @@ func (x *QueryModuleStateResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryModuleStateResponse.ProtoReflect.Descriptor instead.
 func (*QueryModuleStateResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{86}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{84}
 }
 
 func (x *QueryModuleStateResponse) GetState() *GenesisState {
@@ -4781,7 +4687,7 @@ type QueryPositionsRequest struct {
 
 func (x *QueryPositionsRequest) Reset() {
 	*x = QueryPositionsRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[87]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[85]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4793,7 +4699,7 @@ func (x *QueryPositionsRequest) String() string {
 func (*QueryPositionsRequest) ProtoMessage() {}
 
 func (x *QueryPositionsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[87]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[85]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4806,7 +4712,7 @@ func (x *QueryPositionsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryPositionsRequest.ProtoReflect.Descriptor instead.
 func (*QueryPositionsRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{87}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{85}
 }
 
 // QueryPositionsResponse is the response type for the Query/Positions RPC
@@ -4820,7 +4726,7 @@ type QueryPositionsResponse struct {
 
 func (x *QueryPositionsResponse) Reset() {
 	*x = QueryPositionsResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[88]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[86]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4832,7 +4738,7 @@ func (x *QueryPositionsResponse) String() string {
 func (*QueryPositionsResponse) ProtoMessage() {}
 
 func (x *QueryPositionsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[88]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[86]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4845,7 +4751,7 @@ func (x *QueryPositionsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryPositionsResponse.ProtoReflect.Descriptor instead.
 func (*QueryPositionsResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{88}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{86}
 }
 
 func (x *QueryPositionsResponse) GetState() []*DerivativePosition {
@@ -4867,7 +4773,7 @@ type QueryTradeRewardPointsRequest struct {
 
 func (x *QueryTradeRewardPointsRequest) Reset() {
 	*x = QueryTradeRewardPointsRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[89]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[87]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4879,7 +4785,7 @@ func (x *QueryTradeRewardPointsRequest) String() string {
 func (*QueryTradeRewardPointsRequest) ProtoMessage() {}
 
 func (x *QueryTradeRewardPointsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[89]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[87]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4892,7 +4798,7 @@ func (x *QueryTradeRewardPointsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryTradeRewardPointsRequest.ProtoReflect.Descriptor instead.
 func (*QueryTradeRewardPointsRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{89}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{87}
 }
 
 func (x *QueryTradeRewardPointsRequest) GetAccounts() []string {
@@ -4920,7 +4826,7 @@ type QueryTradeRewardPointsResponse struct {
 
 func (x *QueryTradeRewardPointsResponse) Reset() {
 	*x = QueryTradeRewardPointsResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[90]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[88]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4932,7 +4838,7 @@ func (x *QueryTradeRewardPointsResponse) String() string {
 func (*QueryTradeRewardPointsResponse) ProtoMessage() {}
 
 func (x *QueryTradeRewardPointsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[90]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[88]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4945,7 +4851,7 @@ func (x *QueryTradeRewardPointsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryTradeRewardPointsResponse.ProtoReflect.Descriptor instead.
 func (*QueryTradeRewardPointsResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{90}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{88}
 }
 
 func (x *QueryTradeRewardPointsResponse) GetAccountTradeRewardPoints() []string {
@@ -4965,7 +4871,7 @@ type QueryTradeRewardCampaignRequest struct {
 
 func (x *QueryTradeRewardCampaignRequest) Reset() {
 	*x = QueryTradeRewardCampaignRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[91]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[89]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4977,7 +4883,7 @@ func (x *QueryTradeRewardCampaignRequest) String() string {
 func (*QueryTradeRewardCampaignRequest) ProtoMessage() {}
 
 func (x *QueryTradeRewardCampaignRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[91]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[89]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4990,7 +4896,7 @@ func (x *QueryTradeRewardCampaignRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryTradeRewardCampaignRequest.ProtoReflect.Descriptor instead.
 func (*QueryTradeRewardCampaignRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{91}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{89}
 }
 
 // QueryTradeRewardCampaignResponse is the response type for the
@@ -5008,7 +4914,7 @@ type QueryTradeRewardCampaignResponse struct {
 
 func (x *QueryTradeRewardCampaignResponse) Reset() {
 	*x = QueryTradeRewardCampaignResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[92]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[90]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5020,7 +4926,7 @@ func (x *QueryTradeRewardCampaignResponse) String() string {
 func (*QueryTradeRewardCampaignResponse) ProtoMessage() {}
 
 func (x *QueryTradeRewardCampaignResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[92]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[90]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5033,7 +4939,7 @@ func (x *QueryTradeRewardCampaignResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryTradeRewardCampaignResponse.ProtoReflect.Descriptor instead.
 func (*QueryTradeRewardCampaignResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{92}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{90}
 }
 
 func (x *QueryTradeRewardCampaignResponse) GetTradingRewardCampaignInfo() *TradingRewardCampaignInfo {
@@ -5082,7 +4988,7 @@ type QueryIsOptedOutOfRewardsRequest struct {
 
 func (x *QueryIsOptedOutOfRewardsRequest) Reset() {
 	*x = QueryIsOptedOutOfRewardsRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[93]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[91]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5094,7 +5000,7 @@ func (x *QueryIsOptedOutOfRewardsRequest) String() string {
 func (*QueryIsOptedOutOfRewardsRequest) ProtoMessage() {}
 
 func (x *QueryIsOptedOutOfRewardsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[93]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[91]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5107,7 +5013,7 @@ func (x *QueryIsOptedOutOfRewardsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryIsOptedOutOfRewardsRequest.ProtoReflect.Descriptor instead.
 func (*QueryIsOptedOutOfRewardsRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{93}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{91}
 }
 
 func (x *QueryIsOptedOutOfRewardsRequest) GetAccount() string {
@@ -5128,7 +5034,7 @@ type QueryIsOptedOutOfRewardsResponse struct {
 
 func (x *QueryIsOptedOutOfRewardsResponse) Reset() {
 	*x = QueryIsOptedOutOfRewardsResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[94]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[92]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5140,7 +5046,7 @@ func (x *QueryIsOptedOutOfRewardsResponse) String() string {
 func (*QueryIsOptedOutOfRewardsResponse) ProtoMessage() {}
 
 func (x *QueryIsOptedOutOfRewardsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[94]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[92]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5153,7 +5059,7 @@ func (x *QueryIsOptedOutOfRewardsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryIsOptedOutOfRewardsResponse.ProtoReflect.Descriptor instead.
 func (*QueryIsOptedOutOfRewardsResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{94}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{92}
 }
 
 func (x *QueryIsOptedOutOfRewardsResponse) GetIsOptedOut() bool {
@@ -5173,7 +5079,7 @@ type QueryOptedOutOfRewardsAccountsRequest struct {
 
 func (x *QueryOptedOutOfRewardsAccountsRequest) Reset() {
 	*x = QueryOptedOutOfRewardsAccountsRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[95]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[93]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5185,7 +5091,7 @@ func (x *QueryOptedOutOfRewardsAccountsRequest) String() string {
 func (*QueryOptedOutOfRewardsAccountsRequest) ProtoMessage() {}
 
 func (x *QueryOptedOutOfRewardsAccountsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[95]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[93]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5198,7 +5104,7 @@ func (x *QueryOptedOutOfRewardsAccountsRequest) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use QueryOptedOutOfRewardsAccountsRequest.ProtoReflect.Descriptor instead.
 func (*QueryOptedOutOfRewardsAccountsRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{95}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{93}
 }
 
 // QueryRegisteredDMMsResponse is the response type for the Query/RegisteredDMMs
@@ -5212,7 +5118,7 @@ type QueryOptedOutOfRewardsAccountsResponse struct {
 
 func (x *QueryOptedOutOfRewardsAccountsResponse) Reset() {
 	*x = QueryOptedOutOfRewardsAccountsResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[96]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[94]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5224,7 +5130,7 @@ func (x *QueryOptedOutOfRewardsAccountsResponse) String() string {
 func (*QueryOptedOutOfRewardsAccountsResponse) ProtoMessage() {}
 
 func (x *QueryOptedOutOfRewardsAccountsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[96]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[94]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5237,7 +5143,7 @@ func (x *QueryOptedOutOfRewardsAccountsResponse) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use QueryOptedOutOfRewardsAccountsResponse.ProtoReflect.Descriptor instead.
 func (*QueryOptedOutOfRewardsAccountsResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{96}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{94}
 }
 
 func (x *QueryOptedOutOfRewardsAccountsResponse) GetAccounts() []string {
@@ -5258,7 +5164,7 @@ type QueryFeeDiscountAccountInfoRequest struct {
 
 func (x *QueryFeeDiscountAccountInfoRequest) Reset() {
 	*x = QueryFeeDiscountAccountInfoRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[97]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[95]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5270,7 +5176,7 @@ func (x *QueryFeeDiscountAccountInfoRequest) String() string {
 func (*QueryFeeDiscountAccountInfoRequest) ProtoMessage() {}
 
 func (x *QueryFeeDiscountAccountInfoRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[97]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[95]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5283,7 +5189,7 @@ func (x *QueryFeeDiscountAccountInfoRequest) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use QueryFeeDiscountAccountInfoRequest.ProtoReflect.Descriptor instead.
 func (*QueryFeeDiscountAccountInfoRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{97}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{95}
 }
 
 func (x *QueryFeeDiscountAccountInfoRequest) GetAccount() string {
@@ -5306,7 +5212,7 @@ type QueryFeeDiscountAccountInfoResponse struct {
 
 func (x *QueryFeeDiscountAccountInfoResponse) Reset() {
 	*x = QueryFeeDiscountAccountInfoResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[98]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[96]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5318,7 +5224,7 @@ func (x *QueryFeeDiscountAccountInfoResponse) String() string {
 func (*QueryFeeDiscountAccountInfoResponse) ProtoMessage() {}
 
 func (x *QueryFeeDiscountAccountInfoResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[98]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[96]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5331,7 +5237,7 @@ func (x *QueryFeeDiscountAccountInfoResponse) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use QueryFeeDiscountAccountInfoResponse.ProtoReflect.Descriptor instead.
 func (*QueryFeeDiscountAccountInfoResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{98}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{96}
 }
 
 func (x *QueryFeeDiscountAccountInfoResponse) GetTierLevel() uint64 {
@@ -5365,7 +5271,7 @@ type QueryFeeDiscountScheduleRequest struct {
 
 func (x *QueryFeeDiscountScheduleRequest) Reset() {
 	*x = QueryFeeDiscountScheduleRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[99]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[97]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5377,7 +5283,7 @@ func (x *QueryFeeDiscountScheduleRequest) String() string {
 func (*QueryFeeDiscountScheduleRequest) ProtoMessage() {}
 
 func (x *QueryFeeDiscountScheduleRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[99]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[97]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5390,7 +5296,7 @@ func (x *QueryFeeDiscountScheduleRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryFeeDiscountScheduleRequest.ProtoReflect.Descriptor instead.
 func (*QueryFeeDiscountScheduleRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{99}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{97}
 }
 
 // QueryFeeDiscountScheduleResponse is the response type for the
@@ -5404,7 +5310,7 @@ type QueryFeeDiscountScheduleResponse struct {
 
 func (x *QueryFeeDiscountScheduleResponse) Reset() {
 	*x = QueryFeeDiscountScheduleResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[100]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[98]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5416,7 +5322,7 @@ func (x *QueryFeeDiscountScheduleResponse) String() string {
 func (*QueryFeeDiscountScheduleResponse) ProtoMessage() {}
 
 func (x *QueryFeeDiscountScheduleResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[100]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[98]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5429,7 +5335,7 @@ func (x *QueryFeeDiscountScheduleResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryFeeDiscountScheduleResponse.ProtoReflect.Descriptor instead.
 func (*QueryFeeDiscountScheduleResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{100}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{98}
 }
 
 func (x *QueryFeeDiscountScheduleResponse) GetFeeDiscountSchedule() *FeeDiscountSchedule {
@@ -5450,7 +5356,7 @@ type QueryBalanceMismatchesRequest struct {
 
 func (x *QueryBalanceMismatchesRequest) Reset() {
 	*x = QueryBalanceMismatchesRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[101]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[99]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5462,7 +5368,7 @@ func (x *QueryBalanceMismatchesRequest) String() string {
 func (*QueryBalanceMismatchesRequest) ProtoMessage() {}
 
 func (x *QueryBalanceMismatchesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[101]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[99]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5475,7 +5381,7 @@ func (x *QueryBalanceMismatchesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryBalanceMismatchesRequest.ProtoReflect.Descriptor instead.
 func (*QueryBalanceMismatchesRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{101}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{99}
 }
 
 func (x *QueryBalanceMismatchesRequest) GetDustFactor() int64 {
@@ -5507,7 +5413,7 @@ type BalanceMismatch struct {
 
 func (x *BalanceMismatch) Reset() {
 	*x = BalanceMismatch{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[102]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[100]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5519,7 +5425,7 @@ func (x *BalanceMismatch) String() string {
 func (*BalanceMismatch) ProtoMessage() {}
 
 func (x *BalanceMismatch) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[102]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[100]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5532,7 +5438,7 @@ func (x *BalanceMismatch) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BalanceMismatch.ProtoReflect.Descriptor instead.
 func (*BalanceMismatch) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{102}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{100}
 }
 
 func (x *BalanceMismatch) GetSubaccountId() string {
@@ -5595,7 +5501,7 @@ type QueryBalanceMismatchesResponse struct {
 
 func (x *QueryBalanceMismatchesResponse) Reset() {
 	*x = QueryBalanceMismatchesResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[103]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[101]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5607,7 +5513,7 @@ func (x *QueryBalanceMismatchesResponse) String() string {
 func (*QueryBalanceMismatchesResponse) ProtoMessage() {}
 
 func (x *QueryBalanceMismatchesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[103]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[101]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5620,7 +5526,7 @@ func (x *QueryBalanceMismatchesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryBalanceMismatchesResponse.ProtoReflect.Descriptor instead.
 func (*QueryBalanceMismatchesResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{103}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{101}
 }
 
 func (x *QueryBalanceMismatchesResponse) GetBalanceMismatches() []*BalanceMismatch {
@@ -5640,7 +5546,7 @@ type QueryBalanceWithBalanceHoldsRequest struct {
 
 func (x *QueryBalanceWithBalanceHoldsRequest) Reset() {
 	*x = QueryBalanceWithBalanceHoldsRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[104]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[102]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5652,7 +5558,7 @@ func (x *QueryBalanceWithBalanceHoldsRequest) String() string {
 func (*QueryBalanceWithBalanceHoldsRequest) ProtoMessage() {}
 
 func (x *QueryBalanceWithBalanceHoldsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[104]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[102]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5665,7 +5571,7 @@ func (x *QueryBalanceWithBalanceHoldsRequest) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use QueryBalanceWithBalanceHoldsRequest.ProtoReflect.Descriptor instead.
 func (*QueryBalanceWithBalanceHoldsRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{104}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{102}
 }
 
 type BalanceWithMarginHold struct {
@@ -5686,7 +5592,7 @@ type BalanceWithMarginHold struct {
 
 func (x *BalanceWithMarginHold) Reset() {
 	*x = BalanceWithMarginHold{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[105]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[103]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5698,7 +5604,7 @@ func (x *BalanceWithMarginHold) String() string {
 func (*BalanceWithMarginHold) ProtoMessage() {}
 
 func (x *BalanceWithMarginHold) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[105]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[103]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5711,7 +5617,7 @@ func (x *BalanceWithMarginHold) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BalanceWithMarginHold.ProtoReflect.Descriptor instead.
 func (*BalanceWithMarginHold) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{105}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{103}
 }
 
 func (x *BalanceWithMarginHold) GetSubaccountId() string {
@@ -5760,7 +5666,7 @@ type QueryBalanceWithBalanceHoldsResponse struct {
 
 func (x *QueryBalanceWithBalanceHoldsResponse) Reset() {
 	*x = QueryBalanceWithBalanceHoldsResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[106]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[104]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5772,7 +5678,7 @@ func (x *QueryBalanceWithBalanceHoldsResponse) String() string {
 func (*QueryBalanceWithBalanceHoldsResponse) ProtoMessage() {}
 
 func (x *QueryBalanceWithBalanceHoldsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[106]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[104]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5785,7 +5691,7 @@ func (x *QueryBalanceWithBalanceHoldsResponse) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use QueryBalanceWithBalanceHoldsResponse.ProtoReflect.Descriptor instead.
 func (*QueryBalanceWithBalanceHoldsResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{106}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{104}
 }
 
 func (x *QueryBalanceWithBalanceHoldsResponse) GetBalanceWithBalanceHolds() []*BalanceWithMarginHold {
@@ -5805,7 +5711,7 @@ type QueryFeeDiscountTierStatisticsRequest struct {
 
 func (x *QueryFeeDiscountTierStatisticsRequest) Reset() {
 	*x = QueryFeeDiscountTierStatisticsRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[107]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[105]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5817,7 +5723,7 @@ func (x *QueryFeeDiscountTierStatisticsRequest) String() string {
 func (*QueryFeeDiscountTierStatisticsRequest) ProtoMessage() {}
 
 func (x *QueryFeeDiscountTierStatisticsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[107]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[105]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5830,7 +5736,7 @@ func (x *QueryFeeDiscountTierStatisticsRequest) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use QueryFeeDiscountTierStatisticsRequest.ProtoReflect.Descriptor instead.
 func (*QueryFeeDiscountTierStatisticsRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{107}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{105}
 }
 
 type TierStatistic struct {
@@ -5843,7 +5749,7 @@ type TierStatistic struct {
 
 func (x *TierStatistic) Reset() {
 	*x = TierStatistic{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[108]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[106]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5855,7 +5761,7 @@ func (x *TierStatistic) String() string {
 func (*TierStatistic) ProtoMessage() {}
 
 func (x *TierStatistic) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[108]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[106]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5868,7 +5774,7 @@ func (x *TierStatistic) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TierStatistic.ProtoReflect.Descriptor instead.
 func (*TierStatistic) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{108}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{106}
 }
 
 func (x *TierStatistic) GetTier() uint64 {
@@ -5896,7 +5802,7 @@ type QueryFeeDiscountTierStatisticsResponse struct {
 
 func (x *QueryFeeDiscountTierStatisticsResponse) Reset() {
 	*x = QueryFeeDiscountTierStatisticsResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[109]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[107]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5908,7 +5814,7 @@ func (x *QueryFeeDiscountTierStatisticsResponse) String() string {
 func (*QueryFeeDiscountTierStatisticsResponse) ProtoMessage() {}
 
 func (x *QueryFeeDiscountTierStatisticsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[109]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[107]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5921,7 +5827,7 @@ func (x *QueryFeeDiscountTierStatisticsResponse) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use QueryFeeDiscountTierStatisticsResponse.ProtoReflect.Descriptor instead.
 func (*QueryFeeDiscountTierStatisticsResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{109}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{107}
 }
 
 func (x *QueryFeeDiscountTierStatisticsResponse) GetStatistics() []*TierStatistic {
@@ -5941,7 +5847,7 @@ type MitoVaultInfosRequest struct {
 
 func (x *MitoVaultInfosRequest) Reset() {
 	*x = MitoVaultInfosRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[110]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[108]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5953,7 +5859,7 @@ func (x *MitoVaultInfosRequest) String() string {
 func (*MitoVaultInfosRequest) ProtoMessage() {}
 
 func (x *MitoVaultInfosRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[110]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[108]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5966,7 +5872,7 @@ func (x *MitoVaultInfosRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MitoVaultInfosRequest.ProtoReflect.Descriptor instead.
 func (*MitoVaultInfosRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{110}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{108}
 }
 
 // MitoVaultInfosResponse is the response type for the Query/MitoVaultInfos RPC
@@ -5987,7 +5893,7 @@ type MitoVaultInfosResponse struct {
 
 func (x *MitoVaultInfosResponse) Reset() {
 	*x = MitoVaultInfosResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[111]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[109]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5999,7 +5905,7 @@ func (x *MitoVaultInfosResponse) String() string {
 func (*MitoVaultInfosResponse) ProtoMessage() {}
 
 func (x *MitoVaultInfosResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[111]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[109]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6012,7 +5918,7 @@ func (x *MitoVaultInfosResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MitoVaultInfosResponse.ProtoReflect.Descriptor instead.
 func (*MitoVaultInfosResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{111}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{109}
 }
 
 func (x *MitoVaultInfosResponse) GetMasterAddresses() []string {
@@ -6054,7 +5960,7 @@ type QueryMarketIDFromVaultRequest struct {
 
 func (x *QueryMarketIDFromVaultRequest) Reset() {
 	*x = QueryMarketIDFromVaultRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[112]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[110]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6066,7 +5972,7 @@ func (x *QueryMarketIDFromVaultRequest) String() string {
 func (*QueryMarketIDFromVaultRequest) ProtoMessage() {}
 
 func (x *QueryMarketIDFromVaultRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[112]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[110]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6079,7 +5985,7 @@ func (x *QueryMarketIDFromVaultRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryMarketIDFromVaultRequest.ProtoReflect.Descriptor instead.
 func (*QueryMarketIDFromVaultRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{112}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{110}
 }
 
 func (x *QueryMarketIDFromVaultRequest) GetVaultAddress() string {
@@ -6100,7 +6006,7 @@ type QueryMarketIDFromVaultResponse struct {
 
 func (x *QueryMarketIDFromVaultResponse) Reset() {
 	*x = QueryMarketIDFromVaultResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[113]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[111]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6112,7 +6018,7 @@ func (x *QueryMarketIDFromVaultResponse) String() string {
 func (*QueryMarketIDFromVaultResponse) ProtoMessage() {}
 
 func (x *QueryMarketIDFromVaultResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[113]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[111]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6125,7 +6031,7 @@ func (x *QueryMarketIDFromVaultResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryMarketIDFromVaultResponse.ProtoReflect.Descriptor instead.
 func (*QueryMarketIDFromVaultResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{113}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{111}
 }
 
 func (x *QueryMarketIDFromVaultResponse) GetMarketId() string {
@@ -6144,7 +6050,7 @@ type QueryHistoricalTradeRecordsRequest struct {
 
 func (x *QueryHistoricalTradeRecordsRequest) Reset() {
 	*x = QueryHistoricalTradeRecordsRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[114]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[112]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6156,7 +6062,7 @@ func (x *QueryHistoricalTradeRecordsRequest) String() string {
 func (*QueryHistoricalTradeRecordsRequest) ProtoMessage() {}
 
 func (x *QueryHistoricalTradeRecordsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[114]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[112]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6169,7 +6075,7 @@ func (x *QueryHistoricalTradeRecordsRequest) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use QueryHistoricalTradeRecordsRequest.ProtoReflect.Descriptor instead.
 func (*QueryHistoricalTradeRecordsRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{114}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{112}
 }
 
 func (x *QueryHistoricalTradeRecordsRequest) GetMarketId() string {
@@ -6188,7 +6094,7 @@ type QueryHistoricalTradeRecordsResponse struct {
 
 func (x *QueryHistoricalTradeRecordsResponse) Reset() {
 	*x = QueryHistoricalTradeRecordsResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[115]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[113]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6200,7 +6106,7 @@ func (x *QueryHistoricalTradeRecordsResponse) String() string {
 func (*QueryHistoricalTradeRecordsResponse) ProtoMessage() {}
 
 func (x *QueryHistoricalTradeRecordsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[115]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[113]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6213,7 +6119,7 @@ func (x *QueryHistoricalTradeRecordsResponse) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use QueryHistoricalTradeRecordsResponse.ProtoReflect.Descriptor instead.
 func (*QueryHistoricalTradeRecordsResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{115}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{113}
 }
 
 func (x *QueryHistoricalTradeRecordsResponse) GetTradeRecords() []*TradeRecords {
@@ -6245,7 +6151,7 @@ type TradeHistoryOptions struct {
 
 func (x *TradeHistoryOptions) Reset() {
 	*x = TradeHistoryOptions{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[116]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[114]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6257,7 +6163,7 @@ func (x *TradeHistoryOptions) String() string {
 func (*TradeHistoryOptions) ProtoMessage() {}
 
 func (x *TradeHistoryOptions) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[116]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[114]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6270,7 +6176,7 @@ func (x *TradeHistoryOptions) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TradeHistoryOptions.ProtoReflect.Descriptor instead.
 func (*TradeHistoryOptions) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{116}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{114}
 }
 
 func (x *TradeHistoryOptions) GetTradeGroupingSec() uint64 {
@@ -6304,18 +6210,16 @@ func (x *TradeHistoryOptions) GetIncludeMetadata() bool {
 // QueryMarketVolatilityRequest are the request params for the
 // Query/MarketVolatility RPC method.
 type QueryMarketVolatilityRequest struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// the market ID to query volatility for
-	MarketId string `protobuf:"bytes,1,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty"`
-	// the trade history options
-	TradeHistoryOptions *TradeHistoryOptions `protobuf:"bytes,2,opt,name=trade_history_options,json=tradeHistoryOptions,proto3" json:"trade_history_options,omitempty"`
+	state               protoimpl.MessageState `protogen:"open.v1"`
+	MarketId            string                 `protobuf:"bytes,1,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty"`
+	TradeHistoryOptions *TradeHistoryOptions   `protobuf:"bytes,2,opt,name=trade_history_options,json=tradeHistoryOptions,proto3" json:"trade_history_options,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
 
 func (x *QueryMarketVolatilityRequest) Reset() {
 	*x = QueryMarketVolatilityRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[117]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[115]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6327,7 +6231,7 @@ func (x *QueryMarketVolatilityRequest) String() string {
 func (*QueryMarketVolatilityRequest) ProtoMessage() {}
 
 func (x *QueryMarketVolatilityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[117]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[115]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6340,7 +6244,7 @@ func (x *QueryMarketVolatilityRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryMarketVolatilityRequest.ProtoReflect.Descriptor instead.
 func (*QueryMarketVolatilityRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{117}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{115}
 }
 
 func (x *QueryMarketVolatilityRequest) GetMarketId() string {
@@ -6370,7 +6274,7 @@ type QueryMarketVolatilityResponse struct {
 
 func (x *QueryMarketVolatilityResponse) Reset() {
 	*x = QueryMarketVolatilityResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[118]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[116]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6382,7 +6286,7 @@ func (x *QueryMarketVolatilityResponse) String() string {
 func (*QueryMarketVolatilityResponse) ProtoMessage() {}
 
 func (x *QueryMarketVolatilityResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[118]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[116]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6395,7 +6299,7 @@ func (x *QueryMarketVolatilityResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryMarketVolatilityResponse.ProtoReflect.Descriptor instead.
 func (*QueryMarketVolatilityResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{118}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{116}
 }
 
 func (x *QueryMarketVolatilityResponse) GetVolatility() string {
@@ -6431,7 +6335,7 @@ type QueryBinaryMarketsRequest struct {
 
 func (x *QueryBinaryMarketsRequest) Reset() {
 	*x = QueryBinaryMarketsRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[119]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[117]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6443,7 +6347,7 @@ func (x *QueryBinaryMarketsRequest) String() string {
 func (*QueryBinaryMarketsRequest) ProtoMessage() {}
 
 func (x *QueryBinaryMarketsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[119]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[117]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6456,7 +6360,7 @@ func (x *QueryBinaryMarketsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryBinaryMarketsRequest.ProtoReflect.Descriptor instead.
 func (*QueryBinaryMarketsRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{119}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{117}
 }
 
 func (x *QueryBinaryMarketsRequest) GetStatus() string {
@@ -6477,7 +6381,7 @@ type QueryBinaryMarketsResponse struct {
 
 func (x *QueryBinaryMarketsResponse) Reset() {
 	*x = QueryBinaryMarketsResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[120]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[118]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6489,7 +6393,7 @@ func (x *QueryBinaryMarketsResponse) String() string {
 func (*QueryBinaryMarketsResponse) ProtoMessage() {}
 
 func (x *QueryBinaryMarketsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[120]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[118]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6502,7 +6406,7 @@ func (x *QueryBinaryMarketsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryBinaryMarketsResponse.ProtoReflect.Descriptor instead.
 func (*QueryBinaryMarketsResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{120}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{118}
 }
 
 func (x *QueryBinaryMarketsResponse) GetMarkets() []*BinaryOptionsMarket {
@@ -6526,7 +6430,7 @@ type QueryTraderDerivativeConditionalOrdersRequest struct {
 
 func (x *QueryTraderDerivativeConditionalOrdersRequest) Reset() {
 	*x = QueryTraderDerivativeConditionalOrdersRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[121]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[119]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6538,7 +6442,7 @@ func (x *QueryTraderDerivativeConditionalOrdersRequest) String() string {
 func (*QueryTraderDerivativeConditionalOrdersRequest) ProtoMessage() {}
 
 func (x *QueryTraderDerivativeConditionalOrdersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[121]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[119]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6551,7 +6455,7 @@ func (x *QueryTraderDerivativeConditionalOrdersRequest) ProtoReflect() protorefl
 
 // Deprecated: Use QueryTraderDerivativeConditionalOrdersRequest.ProtoReflect.Descriptor instead.
 func (*QueryTraderDerivativeConditionalOrdersRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{121}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{119}
 }
 
 func (x *QueryTraderDerivativeConditionalOrdersRequest) GetSubaccountId() string {
@@ -6570,13 +6474,13 @@ func (x *QueryTraderDerivativeConditionalOrdersRequest) GetMarketId() string {
 
 type TrimmedDerivativeConditionalOrder struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// price of the order (in human readable format)
+	// price of the order (in chain format)
 	Price string `protobuf:"bytes,1,opt,name=price,proto3" json:"price,omitempty"`
-	// quantity of the order (in human readable format)
+	// quantity of the order (in chain format)
 	Quantity string `protobuf:"bytes,2,opt,name=quantity,proto3" json:"quantity,omitempty"`
-	// margin of the order (in human readable format)
+	// margin of the order (in chain format)
 	Margin string `protobuf:"bytes,3,opt,name=margin,proto3" json:"margin,omitempty"`
-	// price to trigger the order (in human readable format)
+	// price to trigger the order (in chain format)
 	TriggerPrice string `protobuf:"bytes,4,opt,name=triggerPrice,proto3" json:"triggerPrice,omitempty"`
 	// true if the order is a buy
 	IsBuy bool `protobuf:"varint,5,opt,name=isBuy,proto3" json:"isBuy,omitempty"`
@@ -6592,7 +6496,7 @@ type TrimmedDerivativeConditionalOrder struct {
 
 func (x *TrimmedDerivativeConditionalOrder) Reset() {
 	*x = TrimmedDerivativeConditionalOrder{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[122]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[120]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6604,7 +6508,7 @@ func (x *TrimmedDerivativeConditionalOrder) String() string {
 func (*TrimmedDerivativeConditionalOrder) ProtoMessage() {}
 
 func (x *TrimmedDerivativeConditionalOrder) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[122]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[120]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6617,7 +6521,7 @@ func (x *TrimmedDerivativeConditionalOrder) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use TrimmedDerivativeConditionalOrder.ProtoReflect.Descriptor instead.
 func (*TrimmedDerivativeConditionalOrder) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{122}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{120}
 }
 
 func (x *TrimmedDerivativeConditionalOrder) GetPrice() string {
@@ -6687,7 +6591,7 @@ type QueryTraderDerivativeConditionalOrdersResponse struct {
 
 func (x *QueryTraderDerivativeConditionalOrdersResponse) Reset() {
 	*x = QueryTraderDerivativeConditionalOrdersResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[123]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[121]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6699,7 +6603,7 @@ func (x *QueryTraderDerivativeConditionalOrdersResponse) String() string {
 func (*QueryTraderDerivativeConditionalOrdersResponse) ProtoMessage() {}
 
 func (x *QueryTraderDerivativeConditionalOrdersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[123]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[121]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6712,7 +6616,7 @@ func (x *QueryTraderDerivativeConditionalOrdersResponse) ProtoReflect() protoref
 
 // Deprecated: Use QueryTraderDerivativeConditionalOrdersResponse.ProtoReflect.Descriptor instead.
 func (*QueryTraderDerivativeConditionalOrdersResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{123}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{121}
 }
 
 func (x *QueryTraderDerivativeConditionalOrdersResponse) GetOrders() []*TrimmedDerivativeConditionalOrder {
@@ -6732,7 +6636,7 @@ type QueryFullSpotOrderbookRequest struct {
 
 func (x *QueryFullSpotOrderbookRequest) Reset() {
 	*x = QueryFullSpotOrderbookRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[124]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[122]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6744,7 +6648,7 @@ func (x *QueryFullSpotOrderbookRequest) String() string {
 func (*QueryFullSpotOrderbookRequest) ProtoMessage() {}
 
 func (x *QueryFullSpotOrderbookRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[124]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[122]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6757,7 +6661,7 @@ func (x *QueryFullSpotOrderbookRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryFullSpotOrderbookRequest.ProtoReflect.Descriptor instead.
 func (*QueryFullSpotOrderbookRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{124}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{122}
 }
 
 func (x *QueryFullSpotOrderbookRequest) GetMarketId() string {
@@ -6777,7 +6681,7 @@ type QueryFullSpotOrderbookResponse struct {
 
 func (x *QueryFullSpotOrderbookResponse) Reset() {
 	*x = QueryFullSpotOrderbookResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[125]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[123]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6789,7 +6693,7 @@ func (x *QueryFullSpotOrderbookResponse) String() string {
 func (*QueryFullSpotOrderbookResponse) ProtoMessage() {}
 
 func (x *QueryFullSpotOrderbookResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[125]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[123]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6802,7 +6706,7 @@ func (x *QueryFullSpotOrderbookResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryFullSpotOrderbookResponse.ProtoReflect.Descriptor instead.
 func (*QueryFullSpotOrderbookResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{125}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{123}
 }
 
 func (x *QueryFullSpotOrderbookResponse) GetBids() []*TrimmedLimitOrder {
@@ -6829,7 +6733,7 @@ type QueryFullDerivativeOrderbookRequest struct {
 
 func (x *QueryFullDerivativeOrderbookRequest) Reset() {
 	*x = QueryFullDerivativeOrderbookRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[126]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[124]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6841,7 +6745,7 @@ func (x *QueryFullDerivativeOrderbookRequest) String() string {
 func (*QueryFullDerivativeOrderbookRequest) ProtoMessage() {}
 
 func (x *QueryFullDerivativeOrderbookRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[126]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[124]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6854,7 +6758,7 @@ func (x *QueryFullDerivativeOrderbookRequest) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use QueryFullDerivativeOrderbookRequest.ProtoReflect.Descriptor instead.
 func (*QueryFullDerivativeOrderbookRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{126}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{124}
 }
 
 func (x *QueryFullDerivativeOrderbookRequest) GetMarketId() string {
@@ -6874,7 +6778,7 @@ type QueryFullDerivativeOrderbookResponse struct {
 
 func (x *QueryFullDerivativeOrderbookResponse) Reset() {
 	*x = QueryFullDerivativeOrderbookResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[127]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[125]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6886,7 +6790,7 @@ func (x *QueryFullDerivativeOrderbookResponse) String() string {
 func (*QueryFullDerivativeOrderbookResponse) ProtoMessage() {}
 
 func (x *QueryFullDerivativeOrderbookResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[127]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[125]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6899,7 +6803,7 @@ func (x *QueryFullDerivativeOrderbookResponse) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use QueryFullDerivativeOrderbookResponse.ProtoReflect.Descriptor instead.
 func (*QueryFullDerivativeOrderbookResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{127}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{125}
 }
 
 func (x *QueryFullDerivativeOrderbookResponse) GetBids() []*TrimmedLimitOrder {
@@ -6918,9 +6822,9 @@ func (x *QueryFullDerivativeOrderbookResponse) GetAsks() []*TrimmedLimitOrder {
 
 type TrimmedLimitOrder struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// price of the order (in human readable format)
+	// the price of the order (in chain format)
 	Price string `protobuf:"bytes,1,opt,name=price,proto3" json:"price,omitempty"`
-	// quantity of the order (in human readable format)
+	// the quantity of the order (in chain format)
 	Quantity string `protobuf:"bytes,2,opt,name=quantity,proto3" json:"quantity,omitempty"`
 	// the order hash
 	OrderHash string `protobuf:"bytes,3,opt,name=order_hash,json=orderHash,proto3" json:"order_hash,omitempty"`
@@ -6932,7 +6836,7 @@ type TrimmedLimitOrder struct {
 
 func (x *TrimmedLimitOrder) Reset() {
 	*x = TrimmedLimitOrder{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[128]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[126]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6944,7 +6848,7 @@ func (x *TrimmedLimitOrder) String() string {
 func (*TrimmedLimitOrder) ProtoMessage() {}
 
 func (x *TrimmedLimitOrder) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[128]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[126]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6957,7 +6861,7 @@ func (x *TrimmedLimitOrder) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TrimmedLimitOrder.ProtoReflect.Descriptor instead.
 func (*TrimmedLimitOrder) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{128}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{126}
 }
 
 func (x *TrimmedLimitOrder) GetPrice() string {
@@ -6989,15 +6893,16 @@ func (x *TrimmedLimitOrder) GetSubaccountId() string {
 }
 
 type QueryMarketAtomicExecutionFeeMultiplierRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	MarketId      string                 `protobuf:"bytes,1,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// the market ID
+	MarketId      string `protobuf:"bytes,1,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *QueryMarketAtomicExecutionFeeMultiplierRequest) Reset() {
 	*x = QueryMarketAtomicExecutionFeeMultiplierRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[129]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[127]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7009,7 +6914,7 @@ func (x *QueryMarketAtomicExecutionFeeMultiplierRequest) String() string {
 func (*QueryMarketAtomicExecutionFeeMultiplierRequest) ProtoMessage() {}
 
 func (x *QueryMarketAtomicExecutionFeeMultiplierRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[129]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[127]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7022,7 +6927,7 @@ func (x *QueryMarketAtomicExecutionFeeMultiplierRequest) ProtoReflect() protoref
 
 // Deprecated: Use QueryMarketAtomicExecutionFeeMultiplierRequest.ProtoReflect.Descriptor instead.
 func (*QueryMarketAtomicExecutionFeeMultiplierRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{129}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{127}
 }
 
 func (x *QueryMarketAtomicExecutionFeeMultiplierRequest) GetMarketId() string {
@@ -7041,7 +6946,7 @@ type QueryMarketAtomicExecutionFeeMultiplierResponse struct {
 
 func (x *QueryMarketAtomicExecutionFeeMultiplierResponse) Reset() {
 	*x = QueryMarketAtomicExecutionFeeMultiplierResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[130]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[128]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7053,7 +6958,7 @@ func (x *QueryMarketAtomicExecutionFeeMultiplierResponse) String() string {
 func (*QueryMarketAtomicExecutionFeeMultiplierResponse) ProtoMessage() {}
 
 func (x *QueryMarketAtomicExecutionFeeMultiplierResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[130]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[128]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7066,7 +6971,7 @@ func (x *QueryMarketAtomicExecutionFeeMultiplierResponse) ProtoReflect() protore
 
 // Deprecated: Use QueryMarketAtomicExecutionFeeMultiplierResponse.ProtoReflect.Descriptor instead.
 func (*QueryMarketAtomicExecutionFeeMultiplierResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{130}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{128}
 }
 
 func (x *QueryMarketAtomicExecutionFeeMultiplierResponse) GetMultiplier() string {
@@ -7085,7 +6990,7 @@ type QueryActiveStakeGrantRequest struct {
 
 func (x *QueryActiveStakeGrantRequest) Reset() {
 	*x = QueryActiveStakeGrantRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[131]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[129]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7097,7 +7002,7 @@ func (x *QueryActiveStakeGrantRequest) String() string {
 func (*QueryActiveStakeGrantRequest) ProtoMessage() {}
 
 func (x *QueryActiveStakeGrantRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[131]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[129]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7110,7 +7015,7 @@ func (x *QueryActiveStakeGrantRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryActiveStakeGrantRequest.ProtoReflect.Descriptor instead.
 func (*QueryActiveStakeGrantRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{131}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{129}
 }
 
 func (x *QueryActiveStakeGrantRequest) GetGrantee() string {
@@ -7130,7 +7035,7 @@ type QueryActiveStakeGrantResponse struct {
 
 func (x *QueryActiveStakeGrantResponse) Reset() {
 	*x = QueryActiveStakeGrantResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[132]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[130]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7142,7 +7047,7 @@ func (x *QueryActiveStakeGrantResponse) String() string {
 func (*QueryActiveStakeGrantResponse) ProtoMessage() {}
 
 func (x *QueryActiveStakeGrantResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[132]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[130]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7155,7 +7060,7 @@ func (x *QueryActiveStakeGrantResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryActiveStakeGrantResponse.ProtoReflect.Descriptor instead.
 func (*QueryActiveStakeGrantResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{132}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{130}
 }
 
 func (x *QueryActiveStakeGrantResponse) GetGrant() *ActiveGrant {
@@ -7182,7 +7087,7 @@ type QueryGrantAuthorizationRequest struct {
 
 func (x *QueryGrantAuthorizationRequest) Reset() {
 	*x = QueryGrantAuthorizationRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[133]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[131]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7194,7 +7099,7 @@ func (x *QueryGrantAuthorizationRequest) String() string {
 func (*QueryGrantAuthorizationRequest) ProtoMessage() {}
 
 func (x *QueryGrantAuthorizationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[133]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[131]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7207,7 +7112,7 @@ func (x *QueryGrantAuthorizationRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryGrantAuthorizationRequest.ProtoReflect.Descriptor instead.
 func (*QueryGrantAuthorizationRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{133}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{131}
 }
 
 func (x *QueryGrantAuthorizationRequest) GetGranter() string {
@@ -7233,7 +7138,7 @@ type QueryGrantAuthorizationResponse struct {
 
 func (x *QueryGrantAuthorizationResponse) Reset() {
 	*x = QueryGrantAuthorizationResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[134]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[132]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7245,7 +7150,7 @@ func (x *QueryGrantAuthorizationResponse) String() string {
 func (*QueryGrantAuthorizationResponse) ProtoMessage() {}
 
 func (x *QueryGrantAuthorizationResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[134]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[132]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7258,7 +7163,7 @@ func (x *QueryGrantAuthorizationResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryGrantAuthorizationResponse.ProtoReflect.Descriptor instead.
 func (*QueryGrantAuthorizationResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{134}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{132}
 }
 
 func (x *QueryGrantAuthorizationResponse) GetAmount() string {
@@ -7277,7 +7182,7 @@ type QueryGrantAuthorizationsRequest struct {
 
 func (x *QueryGrantAuthorizationsRequest) Reset() {
 	*x = QueryGrantAuthorizationsRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[135]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[133]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7289,7 +7194,7 @@ func (x *QueryGrantAuthorizationsRequest) String() string {
 func (*QueryGrantAuthorizationsRequest) ProtoMessage() {}
 
 func (x *QueryGrantAuthorizationsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[135]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[133]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7302,7 +7207,7 @@ func (x *QueryGrantAuthorizationsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryGrantAuthorizationsRequest.ProtoReflect.Descriptor instead.
 func (*QueryGrantAuthorizationsRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{135}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{133}
 }
 
 func (x *QueryGrantAuthorizationsRequest) GetGranter() string {
@@ -7322,7 +7227,7 @@ type QueryGrantAuthorizationsResponse struct {
 
 func (x *QueryGrantAuthorizationsResponse) Reset() {
 	*x = QueryGrantAuthorizationsResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[136]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[134]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7334,7 +7239,7 @@ func (x *QueryGrantAuthorizationsResponse) String() string {
 func (*QueryGrantAuthorizationsResponse) ProtoMessage() {}
 
 func (x *QueryGrantAuthorizationsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[136]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[134]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7347,7 +7252,7 @@ func (x *QueryGrantAuthorizationsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryGrantAuthorizationsResponse.ProtoReflect.Descriptor instead.
 func (*QueryGrantAuthorizationsResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{136}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{134}
 }
 
 func (x *QueryGrantAuthorizationsResponse) GetTotalGrantAmount() string {
@@ -7374,7 +7279,7 @@ type QueryMarketBalanceRequest struct {
 
 func (x *QueryMarketBalanceRequest) Reset() {
 	*x = QueryMarketBalanceRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[137]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[135]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7386,7 +7291,7 @@ func (x *QueryMarketBalanceRequest) String() string {
 func (*QueryMarketBalanceRequest) ProtoMessage() {}
 
 func (x *QueryMarketBalanceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[137]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[135]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7399,7 +7304,7 @@ func (x *QueryMarketBalanceRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryMarketBalanceRequest.ProtoReflect.Descriptor instead.
 func (*QueryMarketBalanceRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{137}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{135}
 }
 
 func (x *QueryMarketBalanceRequest) GetMarketId() string {
@@ -7418,7 +7323,7 @@ type QueryMarketBalanceResponse struct {
 
 func (x *QueryMarketBalanceResponse) Reset() {
 	*x = QueryMarketBalanceResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[138]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[136]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7430,7 +7335,7 @@ func (x *QueryMarketBalanceResponse) String() string {
 func (*QueryMarketBalanceResponse) ProtoMessage() {}
 
 func (x *QueryMarketBalanceResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[138]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[136]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7443,7 +7348,7 @@ func (x *QueryMarketBalanceResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryMarketBalanceResponse.ProtoReflect.Descriptor instead.
 func (*QueryMarketBalanceResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{138}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{136}
 }
 
 func (x *QueryMarketBalanceResponse) GetBalance() *MarketBalance {
@@ -7461,7 +7366,7 @@ type QueryMarketBalancesRequest struct {
 
 func (x *QueryMarketBalancesRequest) Reset() {
 	*x = QueryMarketBalancesRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[139]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[137]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7473,7 +7378,7 @@ func (x *QueryMarketBalancesRequest) String() string {
 func (*QueryMarketBalancesRequest) ProtoMessage() {}
 
 func (x *QueryMarketBalancesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[139]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[137]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7486,7 +7391,7 @@ func (x *QueryMarketBalancesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryMarketBalancesRequest.ProtoReflect.Descriptor instead.
 func (*QueryMarketBalancesRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{139}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{137}
 }
 
 type QueryMarketBalancesResponse struct {
@@ -7498,7 +7403,7 @@ type QueryMarketBalancesResponse struct {
 
 func (x *QueryMarketBalancesResponse) Reset() {
 	*x = QueryMarketBalancesResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[140]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[138]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7510,7 +7415,7 @@ func (x *QueryMarketBalancesResponse) String() string {
 func (*QueryMarketBalancesResponse) ProtoMessage() {}
 
 func (x *QueryMarketBalancesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[140]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[138]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7523,7 +7428,7 @@ func (x *QueryMarketBalancesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryMarketBalancesResponse.ProtoReflect.Descriptor instead.
 func (*QueryMarketBalancesResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{140}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{138}
 }
 
 func (x *QueryMarketBalancesResponse) GetBalances() []*MarketBalance {
@@ -7534,18 +7439,16 @@ func (x *QueryMarketBalancesResponse) GetBalances() []*MarketBalance {
 }
 
 type MarketBalance struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// the market ID
-	MarketId string `protobuf:"bytes,1,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty"`
-	// the current balance of the market
-	Balance       string `protobuf:"bytes,2,opt,name=balance,proto3" json:"balance,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	MarketId      string                 `protobuf:"bytes,1,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty"`
+	Balance       string                 `protobuf:"bytes,2,opt,name=balance,proto3" json:"balance,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *MarketBalance) Reset() {
 	*x = MarketBalance{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[141]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[139]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7557,7 +7460,7 @@ func (x *MarketBalance) String() string {
 func (*MarketBalance) ProtoMessage() {}
 
 func (x *MarketBalance) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[141]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[139]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7570,7 +7473,7 @@ func (x *MarketBalance) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MarketBalance.ProtoReflect.Descriptor instead.
 func (*MarketBalance) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{141}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{139}
 }
 
 func (x *MarketBalance) GetMarketId() string {
@@ -7596,7 +7499,7 @@ type QueryDenomMinNotionalRequest struct {
 
 func (x *QueryDenomMinNotionalRequest) Reset() {
 	*x = QueryDenomMinNotionalRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[142]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[140]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7608,7 +7511,7 @@ func (x *QueryDenomMinNotionalRequest) String() string {
 func (*QueryDenomMinNotionalRequest) ProtoMessage() {}
 
 func (x *QueryDenomMinNotionalRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[142]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[140]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7621,7 +7524,7 @@ func (x *QueryDenomMinNotionalRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryDenomMinNotionalRequest.ProtoReflect.Descriptor instead.
 func (*QueryDenomMinNotionalRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{142}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{140}
 }
 
 func (x *QueryDenomMinNotionalRequest) GetDenom() string {
@@ -7633,7 +7536,7 @@ func (x *QueryDenomMinNotionalRequest) GetDenom() string {
 
 type QueryDenomMinNotionalResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// the minimum notional amount for the denom (in human readable format)
+	// the minimum notional amount for the denom (in chain format)
 	Amount        string `protobuf:"bytes,1,opt,name=amount,proto3" json:"amount,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -7641,7 +7544,7 @@ type QueryDenomMinNotionalResponse struct {
 
 func (x *QueryDenomMinNotionalResponse) Reset() {
 	*x = QueryDenomMinNotionalResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[143]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[141]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7653,7 +7556,7 @@ func (x *QueryDenomMinNotionalResponse) String() string {
 func (*QueryDenomMinNotionalResponse) ProtoMessage() {}
 
 func (x *QueryDenomMinNotionalResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[143]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[141]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7666,7 +7569,7 @@ func (x *QueryDenomMinNotionalResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryDenomMinNotionalResponse.ProtoReflect.Descriptor instead.
 func (*QueryDenomMinNotionalResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{143}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{141}
 }
 
 func (x *QueryDenomMinNotionalResponse) GetAmount() string {
@@ -7684,7 +7587,7 @@ type QueryDenomMinNotionalsRequest struct {
 
 func (x *QueryDenomMinNotionalsRequest) Reset() {
 	*x = QueryDenomMinNotionalsRequest{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[144]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[142]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7696,7 +7599,7 @@ func (x *QueryDenomMinNotionalsRequest) String() string {
 func (*QueryDenomMinNotionalsRequest) ProtoMessage() {}
 
 func (x *QueryDenomMinNotionalsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[144]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[142]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7709,7 +7612,7 @@ func (x *QueryDenomMinNotionalsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryDenomMinNotionalsRequest.ProtoReflect.Descriptor instead.
 func (*QueryDenomMinNotionalsRequest) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{144}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{142}
 }
 
 type QueryDenomMinNotionalsResponse struct {
@@ -7721,7 +7624,7 @@ type QueryDenomMinNotionalsResponse struct {
 
 func (x *QueryDenomMinNotionalsResponse) Reset() {
 	*x = QueryDenomMinNotionalsResponse{}
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[145]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[143]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7733,7 +7636,7 @@ func (x *QueryDenomMinNotionalsResponse) String() string {
 func (*QueryDenomMinNotionalsResponse) ProtoMessage() {}
 
 func (x *QueryDenomMinNotionalsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_injective_exchange_v2_query_proto_msgTypes[145]
+	mi := &file_injective_exchange_v1beta1_query_proto_msgTypes[143]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7746,7 +7649,7 @@ func (x *QueryDenomMinNotionalsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryDenomMinNotionalsResponse.ProtoReflect.Descriptor instead.
 func (*QueryDenomMinNotionalsResponse) Descriptor() ([]byte, []int) {
-	return file_injective_exchange_v2_query_proto_rawDescGZIP(), []int{145}
+	return file_injective_exchange_v1beta1_query_proto_rawDescGZIP(), []int{143}
 }
 
 func (x *QueryDenomMinNotionalsResponse) GetDenomMinNotionals() []*DenomMinNotional {
@@ -7756,117 +7659,117 @@ func (x *QueryDenomMinNotionalsResponse) GetDenomMinNotionals() []*DenomMinNotio
 	return nil
 }
 
-var File_injective_exchange_v2_query_proto protoreflect.FileDescriptor
+var File_injective_exchange_v1beta1_query_proto protoreflect.FileDescriptor
 
-const file_injective_exchange_v2_query_proto_rawDesc = "" +
+const file_injective_exchange_v1beta1_query_proto_rawDesc = "" +
 	"\n" +
-	"!injective/exchange/v2/query.proto\x12\x15injective.exchange.v2\x1a\x14gogoproto/gogo.proto\x1a\x1cgoogle/api/annotations.proto\x1a$injective/exchange/v2/exchange.proto\x1a%injective/exchange/v2/orderbook.proto\x1a\"injective/exchange/v2/market.proto\x1a#injective/exchange/v2/genesis.proto\x1a%injective/oracle/v1beta1/oracle.proto\"O\n" +
+	"&injective/exchange/v1beta1/query.proto\x12\x1ainjective.exchange.v1beta1\x1a\x1cgoogle/api/annotations.proto\x1a)injective/exchange/v1beta1/exchange.proto\x1a(injective/exchange/v1beta1/genesis.proto\x1a%injective/oracle/v1beta1/oracle.proto\x1a\x14gogoproto/gogo.proto\"O\n" +
 	"\n" +
 	"Subaccount\x12\x16\n" +
 	"\x06trader\x18\x01 \x01(\tR\x06trader\x12)\n" +
 	"\x10subaccount_nonce\x18\x02 \x01(\rR\x0fsubaccountNonce\"`\n" +
 	"\x1cQuerySubaccountOrdersRequest\x12#\n" +
 	"\rsubaccount_id\x18\x01 \x01(\tR\fsubaccountId\x12\x1b\n" +
-	"\tmarket_id\x18\x02 \x01(\tR\bmarketId\"\xb7\x01\n" +
-	"\x1dQuerySubaccountOrdersResponse\x12I\n" +
+	"\tmarket_id\x18\x02 \x01(\tR\bmarketId\"\xc1\x01\n" +
+	"\x1dQuerySubaccountOrdersResponse\x12N\n" +
 	"\n" +
-	"buy_orders\x18\x01 \x03(\v2*.injective.exchange.v2.SubaccountOrderDataR\tbuyOrders\x12K\n" +
-	"\vsell_orders\x18\x02 \x03(\v2*.injective.exchange.v2.SubaccountOrderDataR\n" +
-	"sellOrders\"\xaa\x01\n" +
-	"%SubaccountOrderbookMetadataWithMarket\x12N\n" +
-	"\bmetadata\x18\x01 \x01(\v22.injective.exchange.v2.SubaccountOrderbookMetadataR\bmetadata\x12\x1b\n" +
+	"buy_orders\x18\x01 \x03(\v2/.injective.exchange.v1beta1.SubaccountOrderDataR\tbuyOrders\x12P\n" +
+	"\vsell_orders\x18\x02 \x03(\v2/.injective.exchange.v1beta1.SubaccountOrderDataR\n" +
+	"sellOrders\"\xaf\x01\n" +
+	"%SubaccountOrderbookMetadataWithMarket\x12S\n" +
+	"\bmetadata\x18\x01 \x01(\v27.injective.exchange.v1beta1.SubaccountOrderbookMetadataR\bmetadata\x12\x1b\n" +
 	"\tmarket_id\x18\x02 \x01(\tR\bmarketId\x12\x14\n" +
 	"\x05isBuy\x18\x03 \x01(\bR\x05isBuy\"\x1c\n" +
-	"\x1aQueryExchangeParamsRequest\"Z\n" +
-	"\x1bQueryExchangeParamsResponse\x12;\n" +
-	"\x06params\x18\x01 \x01(\v2\x1d.injective.exchange.v2.ParamsB\x04\xc8\xde\x1f\x00R\x06params\"\x8e\x01\n" +
+	"\x1aQueryExchangeParamsRequest\"_\n" +
+	"\x1bQueryExchangeParamsResponse\x12@\n" +
+	"\x06params\x18\x01 \x01(\v2\".injective.exchange.v1beta1.ParamsB\x04\xc8\xde\x1f\x00R\x06params\"\x93\x01\n" +
 	"\x1eQuerySubaccountDepositsRequest\x12#\n" +
-	"\rsubaccount_id\x18\x01 \x01(\tR\fsubaccountId\x12G\n" +
+	"\rsubaccount_id\x18\x01 \x01(\tR\fsubaccountId\x12L\n" +
 	"\n" +
-	"subaccount\x18\x02 \x01(\v2!.injective.exchange.v2.SubaccountB\x04\xc8\xde\x1f\x01R\n" +
-	"subaccount\"\xe0\x01\n" +
-	"\x1fQuerySubaccountDepositsResponse\x12`\n" +
-	"\bdeposits\x18\x01 \x03(\v2D.injective.exchange.v2.QuerySubaccountDepositsResponse.DepositsEntryR\bdeposits\x1a[\n" +
+	"subaccount\x18\x02 \x01(\v2&.injective.exchange.v1beta1.SubaccountB\x04\xc8\xde\x1f\x01R\n" +
+	"subaccount\"\xea\x01\n" +
+	"\x1fQuerySubaccountDepositsResponse\x12e\n" +
+	"\bdeposits\x18\x01 \x03(\v2I.injective.exchange.v1beta1.QuerySubaccountDepositsResponse.DepositsEntryR\bdeposits\x1a`\n" +
 	"\rDepositsEntry\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\tR\x03key\x124\n" +
-	"\x05value\x18\x02 \x01(\v2\x1e.injective.exchange.v2.DepositR\x05value:\x028\x01\"\x1e\n" +
-	"\x1cQueryExchangeBalancesRequest\"a\n" +
-	"\x1dQueryExchangeBalancesResponse\x12@\n" +
-	"\bbalances\x18\x01 \x03(\v2\x1e.injective.exchange.v2.BalanceB\x04\xc8\xde\x1f\x00R\bbalances\"7\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x129\n" +
+	"\x05value\x18\x02 \x01(\v2#.injective.exchange.v1beta1.DepositR\x05value:\x028\x01\"\x1e\n" +
+	"\x1cQueryExchangeBalancesRequest\"f\n" +
+	"\x1dQueryExchangeBalancesResponse\x12E\n" +
+	"\bbalances\x18\x01 \x03(\v2#.injective.exchange.v1beta1.BalanceB\x04\xc8\xde\x1f\x00R\bbalances\"7\n" +
 	"\x1bQueryAggregateVolumeRequest\x12\x18\n" +
-	"\aaccount\x18\x01 \x01(\tR\aaccount\"p\n" +
-	"\x1cQueryAggregateVolumeResponse\x12P\n" +
-	"\x11aggregate_volumes\x18\x01 \x03(\v2#.injective.exchange.v2.MarketVolumeR\x10aggregateVolumes\"Y\n" +
+	"\aaccount\x18\x01 \x01(\tR\aaccount\"u\n" +
+	"\x1cQueryAggregateVolumeResponse\x12U\n" +
+	"\x11aggregate_volumes\x18\x01 \x03(\v2(.injective.exchange.v1beta1.MarketVolumeR\x10aggregateVolumes\"Y\n" +
 	"\x1cQueryAggregateVolumesRequest\x12\x1a\n" +
 	"\baccounts\x18\x01 \x03(\tR\baccounts\x12\x1d\n" +
 	"\n" +
-	"market_ids\x18\x02 \x03(\tR\tmarketIds\"\xef\x01\n" +
-	"\x1dQueryAggregateVolumesResponse\x12o\n" +
-	"\x19aggregate_account_volumes\x18\x01 \x03(\v23.injective.exchange.v2.AggregateAccountVolumeRecordR\x17aggregateAccountVolumes\x12]\n" +
-	"\x18aggregate_market_volumes\x18\x02 \x03(\v2#.injective.exchange.v2.MarketVolumeR\x16aggregateMarketVolumes\"@\n" +
+	"market_ids\x18\x02 \x03(\tR\tmarketIds\"\xf9\x01\n" +
+	"\x1dQueryAggregateVolumesResponse\x12t\n" +
+	"\x19aggregate_account_volumes\x18\x01 \x03(\v28.injective.exchange.v1beta1.AggregateAccountVolumeRecordR\x17aggregateAccountVolumes\x12b\n" +
+	"\x18aggregate_market_volumes\x18\x02 \x03(\v2(.injective.exchange.v1beta1.MarketVolumeR\x16aggregateMarketVolumes\"@\n" +
 	"!QueryAggregateMarketVolumeRequest\x12\x1b\n" +
-	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"g\n" +
-	"\"QueryAggregateMarketVolumeResponse\x12A\n" +
-	"\x06volume\x18\x01 \x01(\v2#.injective.exchange.v2.VolumeRecordB\x04\xc8\xde\x1f\x00R\x06volume\"0\n" +
+	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"l\n" +
+	"\"QueryAggregateMarketVolumeResponse\x12F\n" +
+	"\x06volume\x18\x01 \x01(\v2(.injective.exchange.v1beta1.VolumeRecordB\x04\xc8\xde\x1f\x00R\x06volume\"0\n" +
 	"\x18QueryDenomDecimalRequest\x12\x14\n" +
 	"\x05denom\x18\x01 \x01(\tR\x05denom\"5\n" +
 	"\x19QueryDenomDecimalResponse\x12\x18\n" +
 	"\adecimal\x18\x01 \x01(\x04R\adecimal\"3\n" +
 	"\x19QueryDenomDecimalsRequest\x12\x16\n" +
-	"\x06denoms\x18\x01 \x03(\tR\x06denoms\"o\n" +
-	"\x1aQueryDenomDecimalsResponse\x12Q\n" +
-	"\x0edenom_decimals\x18\x01 \x03(\v2$.injective.exchange.v2.DenomDecimalsB\x04\xc8\xde\x1f\x00R\rdenomDecimals\"C\n" +
+	"\x06denoms\x18\x01 \x03(\tR\x06denoms\"t\n" +
+	"\x1aQueryDenomDecimalsResponse\x12V\n" +
+	"\x0edenom_decimals\x18\x01 \x03(\v2).injective.exchange.v1beta1.DenomDecimalsB\x04\xc8\xde\x1f\x00R\rdenomDecimals\"C\n" +
 	"\"QueryAggregateMarketVolumesRequest\x12\x1d\n" +
 	"\n" +
-	"market_ids\x18\x01 \x03(\tR\tmarketIds\"d\n" +
-	"#QueryAggregateMarketVolumesResponse\x12=\n" +
-	"\avolumes\x18\x01 \x03(\v2#.injective.exchange.v2.MarketVolumeR\avolumes\"Z\n" +
+	"market_ids\x18\x01 \x03(\tR\tmarketIds\"i\n" +
+	"#QueryAggregateMarketVolumesResponse\x12B\n" +
+	"\avolumes\x18\x01 \x03(\v2(.injective.exchange.v1beta1.MarketVolumeR\avolumes\"Z\n" +
 	"\x1dQuerySubaccountDepositRequest\x12#\n" +
 	"\rsubaccount_id\x18\x01 \x01(\tR\fsubaccountId\x12\x14\n" +
-	"\x05denom\x18\x02 \x01(\tR\x05denom\"\\\n" +
-	"\x1eQuerySubaccountDepositResponse\x12:\n" +
-	"\bdeposits\x18\x01 \x01(\v2\x1e.injective.exchange.v2.DepositR\bdeposits\"P\n" +
+	"\x05denom\x18\x02 \x01(\tR\x05denom\"a\n" +
+	"\x1eQuerySubaccountDepositResponse\x12?\n" +
+	"\bdeposits\x18\x01 \x01(\v2#.injective.exchange.v1beta1.DepositR\bdeposits\"P\n" +
 	"\x17QuerySpotMarketsRequest\x12\x16\n" +
 	"\x06status\x18\x01 \x01(\tR\x06status\x12\x1d\n" +
 	"\n" +
-	"market_ids\x18\x02 \x03(\tR\tmarketIds\"W\n" +
-	"\x18QuerySpotMarketsResponse\x12;\n" +
-	"\amarkets\x18\x01 \x03(\v2!.injective.exchange.v2.SpotMarketR\amarkets\"5\n" +
+	"market_ids\x18\x02 \x03(\tR\tmarketIds\"\\\n" +
+	"\x18QuerySpotMarketsResponse\x12@\n" +
+	"\amarkets\x18\x01 \x03(\v2&.injective.exchange.v1beta1.SpotMarketR\amarkets\"5\n" +
 	"\x16QuerySpotMarketRequest\x12\x1b\n" +
-	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"T\n" +
-	"\x17QuerySpotMarketResponse\x129\n" +
-	"\x06market\x18\x01 \x01(\v2!.injective.exchange.v2.SpotMarketR\x06market\"\xd1\x02\n" +
+	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"Y\n" +
+	"\x17QuerySpotMarketResponse\x12>\n" +
+	"\x06market\x18\x01 \x01(\v2&.injective.exchange.v1beta1.SpotMarketR\x06market\"\xd6\x02\n" +
 	"\x19QuerySpotOrderbookRequest\x12\x1b\n" +
 	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\x12\x14\n" +
-	"\x05limit\x18\x02 \x01(\x04R\x05limit\x12?\n" +
+	"\x05limit\x18\x02 \x01(\x04R\x05limit\x12D\n" +
 	"\n" +
-	"order_side\x18\x03 \x01(\x0e2 .injective.exchange.v2.OrderSideR\torderSide\x12_\n" +
+	"order_side\x18\x03 \x01(\x0e2%.injective.exchange.v1beta1.OrderSideR\torderSide\x12_\n" +
 	"\x19limit_cumulative_notional\x18\x04 \x01(\tB#\xc8\xde\x1f\x01\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\x17limitCumulativeNotional\x12_\n" +
-	"\x19limit_cumulative_quantity\x18\x05 \x01(\tB#\xc8\xde\x1f\x01\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\x17limitCumulativeQuantity\"\xae\x01\n" +
-	"\x1aQuerySpotOrderbookResponse\x12F\n" +
-	"\x10buys_price_level\x18\x01 \x03(\v2\x1c.injective.exchange.v2.LevelR\x0ebuysPriceLevel\x12H\n" +
-	"\x11sells_price_level\x18\x02 \x03(\v2\x1c.injective.exchange.v2.LevelR\x0fsellsPriceLevel\"\xa3\x01\n" +
-	"\x0eFullSpotMarket\x129\n" +
-	"\x06market\x18\x01 \x01(\v2!.injective.exchange.v2.SpotMarketR\x06market\x12V\n" +
-	"\x11mid_price_and_tob\x18\x02 \x01(\v2%.injective.exchange.v2.MidPriceAndTOBB\x04\xc8\xde\x1f\x01R\x0emidPriceAndTob\"\x88\x01\n" +
+	"\x19limit_cumulative_quantity\x18\x05 \x01(\tB#\xc8\xde\x1f\x01\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\x17limitCumulativeQuantity\"\xb8\x01\n" +
+	"\x1aQuerySpotOrderbookResponse\x12K\n" +
+	"\x10buys_price_level\x18\x01 \x03(\v2!.injective.exchange.v1beta1.LevelR\x0ebuysPriceLevel\x12M\n" +
+	"\x11sells_price_level\x18\x02 \x03(\v2!.injective.exchange.v1beta1.LevelR\x0fsellsPriceLevel\"\xad\x01\n" +
+	"\x0eFullSpotMarket\x12>\n" +
+	"\x06market\x18\x01 \x01(\v2&.injective.exchange.v1beta1.SpotMarketR\x06market\x12[\n" +
+	"\x11mid_price_and_tob\x18\x02 \x01(\v2*.injective.exchange.v1beta1.MidPriceAndTOBB\x04\xc8\xde\x1f\x01R\x0emidPriceAndTob\"\x88\x01\n" +
 	"\x1bQueryFullSpotMarketsRequest\x12\x16\n" +
 	"\x06status\x18\x01 \x01(\tR\x06status\x12\x1d\n" +
 	"\n" +
 	"market_ids\x18\x02 \x03(\tR\tmarketIds\x122\n" +
-	"\x16with_mid_price_and_tob\x18\x03 \x01(\bR\x12withMidPriceAndTob\"_\n" +
-	"\x1cQueryFullSpotMarketsResponse\x12?\n" +
-	"\amarkets\x18\x01 \x03(\v2%.injective.exchange.v2.FullSpotMarketR\amarkets\"m\n" +
+	"\x16with_mid_price_and_tob\x18\x03 \x01(\bR\x12withMidPriceAndTob\"d\n" +
+	"\x1cQueryFullSpotMarketsResponse\x12D\n" +
+	"\amarkets\x18\x01 \x03(\v2*.injective.exchange.v1beta1.FullSpotMarketR\amarkets\"m\n" +
 	"\x1aQueryFullSpotMarketRequest\x12\x1b\n" +
 	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\x122\n" +
-	"\x16with_mid_price_and_tob\x18\x02 \x01(\bR\x12withMidPriceAndTob\"\\\n" +
-	"\x1bQueryFullSpotMarketResponse\x12=\n" +
-	"\x06market\x18\x01 \x01(\v2%.injective.exchange.v2.FullSpotMarketR\x06market\"\x85\x01\n" +
+	"\x16with_mid_price_and_tob\x18\x02 \x01(\bR\x12withMidPriceAndTob\"a\n" +
+	"\x1bQueryFullSpotMarketResponse\x12B\n" +
+	"\x06market\x18\x01 \x01(\v2*.injective.exchange.v1beta1.FullSpotMarketR\x06market\"\x85\x01\n" +
 	"\x1eQuerySpotOrdersByHashesRequest\x12\x1b\n" +
 	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\x12#\n" +
 	"\rsubaccount_id\x18\x02 \x01(\tR\fsubaccountId\x12!\n" +
-	"\forder_hashes\x18\x03 \x03(\tR\vorderHashes\"g\n" +
-	"\x1fQuerySpotOrdersByHashesResponse\x12D\n" +
-	"\x06orders\x18\x01 \x03(\v2,.injective.exchange.v2.TrimmedSpotLimitOrderR\x06orders\"`\n" +
+	"\forder_hashes\x18\x03 \x03(\tR\vorderHashes\"l\n" +
+	"\x1fQuerySpotOrdersByHashesResponse\x12I\n" +
+	"\x06orders\x18\x01 \x03(\v21.injective.exchange.v1beta1.TrimmedSpotLimitOrderR\x06orders\"`\n" +
 	"\x1cQueryTraderSpotOrdersRequest\x12\x1b\n" +
 	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\x12#\n" +
 	"\rsubaccount_id\x18\x02 \x01(\tR\fsubaccountId\"l\n" +
@@ -7880,11 +7783,11 @@ const file_injective_exchange_v2_query_proto_rawDesc = "" +
 	"\x05isBuy\x18\x04 \x01(\bR\x05isBuy\x12\x1d\n" +
 	"\n" +
 	"order_hash\x18\x05 \x01(\tR\torderHash\x12\x10\n" +
-	"\x03cid\x18\x06 \x01(\tR\x03cid\"e\n" +
-	"\x1dQueryTraderSpotOrdersResponse\x12D\n" +
-	"\x06orders\x18\x01 \x03(\v2,.injective.exchange.v2.TrimmedSpotLimitOrderR\x06orders\"m\n" +
-	"%QueryAccountAddressSpotOrdersResponse\x12D\n" +
-	"\x06orders\x18\x01 \x03(\v2,.injective.exchange.v2.TrimmedSpotLimitOrderR\x06orders\"=\n" +
+	"\x03cid\x18\x06 \x01(\tR\x03cid\"j\n" +
+	"\x1dQueryTraderSpotOrdersResponse\x12I\n" +
+	"\x06orders\x18\x01 \x03(\v21.injective.exchange.v1beta1.TrimmedSpotLimitOrderR\x06orders\"r\n" +
+	"%QueryAccountAddressSpotOrdersResponse\x12I\n" +
+	"\x06orders\x18\x01 \x03(\v21.injective.exchange.v1beta1.TrimmedSpotLimitOrderR\x06orders\"=\n" +
 	"\x1eQuerySpotMidPriceAndTOBRequest\x12\x1b\n" +
 	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"\xfb\x01\n" +
 	"\x1fQuerySpotMidPriceAndTOBResponse\x12@\n" +
@@ -7900,23 +7803,23 @@ const file_injective_exchange_v2_query_proto_rawDesc = "" +
 	"\x1fQueryDerivativeOrderbookRequest\x12\x1b\n" +
 	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\x12\x14\n" +
 	"\x05limit\x18\x02 \x01(\x04R\x05limit\x12_\n" +
-	"\x19limit_cumulative_notional\x18\x03 \x01(\tB#\xc8\xde\x1f\x01\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\x17limitCumulativeNotional\"\xb4\x01\n" +
-	" QueryDerivativeOrderbookResponse\x12F\n" +
-	"\x10buys_price_level\x18\x01 \x03(\v2\x1c.injective.exchange.v2.LevelR\x0ebuysPriceLevel\x12H\n" +
-	"\x11sells_price_level\x18\x02 \x03(\v2\x1c.injective.exchange.v2.LevelR\x0fsellsPriceLevel\"\x97\x03\n" +
+	"\x19limit_cumulative_notional\x18\x03 \x01(\tB#\xc8\xde\x1f\x01\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\x17limitCumulativeNotional\"\xbe\x01\n" +
+	" QueryDerivativeOrderbookResponse\x12K\n" +
+	"\x10buys_price_level\x18\x01 \x03(\v2!.injective.exchange.v1beta1.LevelR\x0ebuysPriceLevel\x12M\n" +
+	"\x11sells_price_level\x18\x02 \x03(\v2!.injective.exchange.v1beta1.LevelR\x0fsellsPriceLevel\"\x9c\x03\n" +
 	".QueryTraderSpotOrdersToCancelUpToAmountRequest\x12\x1b\n" +
 	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\x12#\n" +
 	"\rsubaccount_id\x18\x02 \x01(\tR\fsubaccountId\x12D\n" +
 	"\vbase_amount\x18\x03 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\n" +
 	"baseAmount\x12F\n" +
-	"\fquote_amount\x18\x04 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\vquoteAmount\x12G\n" +
-	"\bstrategy\x18\x05 \x01(\x0e2+.injective.exchange.v2.CancellationStrategyR\bstrategy\x12L\n" +
-	"\x0freference_price\x18\x06 \x01(\tB#\xc8\xde\x1f\x01\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\x0ereferencePrice\"\xd7\x02\n" +
+	"\fquote_amount\x18\x04 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\vquoteAmount\x12L\n" +
+	"\bstrategy\x18\x05 \x01(\x0e20.injective.exchange.v1beta1.CancellationStrategyR\bstrategy\x12L\n" +
+	"\x0freference_price\x18\x06 \x01(\tB#\xc8\xde\x1f\x01\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\x0ereferencePrice\"\xdc\x02\n" +
 	"4QueryTraderDerivativeOrdersToCancelUpToAmountRequest\x12\x1b\n" +
 	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\x12#\n" +
 	"\rsubaccount_id\x18\x02 \x01(\tR\fsubaccountId\x12F\n" +
-	"\fquote_amount\x18\x03 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\vquoteAmount\x12G\n" +
-	"\bstrategy\x18\x04 \x01(\x0e2+.injective.exchange.v2.CancellationStrategyR\bstrategy\x12L\n" +
+	"\fquote_amount\x18\x03 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\vquoteAmount\x12L\n" +
+	"\bstrategy\x18\x04 \x01(\x0e20.injective.exchange.v1beta1.CancellationStrategyR\bstrategy\x12L\n" +
 	"\x0freference_price\x18\x05 \x01(\tB#\xc8\xde\x1f\x01\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\x0ereferencePrice\"f\n" +
 	"\"QueryTraderDerivativeOrdersRequest\x12\x1b\n" +
 	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\x12#\n" +
@@ -7932,17 +7835,17 @@ const file_injective_exchange_v2_query_proto_rawDesc = "" +
 	"\x05isBuy\x18\x05 \x01(\bB\t\xea\xde\x1f\x05isBuyR\x05isBuy\x12\x1d\n" +
 	"\n" +
 	"order_hash\x18\x06 \x01(\tR\torderHash\x12\x10\n" +
-	"\x03cid\x18\a \x01(\tR\x03cid\"q\n" +
-	"#QueryTraderDerivativeOrdersResponse\x12J\n" +
-	"\x06orders\x18\x01 \x03(\v22.injective.exchange.v2.TrimmedDerivativeLimitOrderR\x06orders\"y\n" +
-	"+QueryAccountAddressDerivativeOrdersResponse\x12J\n" +
-	"\x06orders\x18\x01 \x03(\v22.injective.exchange.v2.TrimmedDerivativeLimitOrderR\x06orders\"\x8b\x01\n" +
+	"\x03cid\x18\a \x01(\tR\x03cid\"v\n" +
+	"#QueryTraderDerivativeOrdersResponse\x12O\n" +
+	"\x06orders\x18\x01 \x03(\v27.injective.exchange.v1beta1.TrimmedDerivativeLimitOrderR\x06orders\"~\n" +
+	"+QueryAccountAddressDerivativeOrdersResponse\x12O\n" +
+	"\x06orders\x18\x01 \x03(\v27.injective.exchange.v1beta1.TrimmedDerivativeLimitOrderR\x06orders\"\x8b\x01\n" +
 	"$QueryDerivativeOrdersByHashesRequest\x12\x1b\n" +
 	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\x12#\n" +
 	"\rsubaccount_id\x18\x02 \x01(\tR\fsubaccountId\x12!\n" +
-	"\forder_hashes\x18\x03 \x03(\tR\vorderHashes\"s\n" +
-	"%QueryDerivativeOrdersByHashesResponse\x12J\n" +
-	"\x06orders\x18\x01 \x03(\v22.injective.exchange.v2.TrimmedDerivativeLimitOrderR\x06orders\"\x8a\x01\n" +
+	"\forder_hashes\x18\x03 \x03(\tR\vorderHashes\"x\n" +
+	"%QueryDerivativeOrdersByHashesResponse\x12O\n" +
+	"\x06orders\x18\x01 \x03(\v27.injective.exchange.v1beta1.TrimmedDerivativeLimitOrderR\x06orders\"\x8a\x01\n" +
 	"\x1dQueryDerivativeMarketsRequest\x12\x16\n" +
 	"\x06status\x18\x01 \x01(\tR\x06status\x12\x1d\n" +
 	"\n" +
@@ -7951,36 +7854,32 @@ const file_injective_exchange_v2_query_proto_rawDesc = "" +
 	"\n" +
 	"PriceLevel\x129\n" +
 	"\x05price\x18\x01 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\x05price\x12?\n" +
-	"\bquantity\x18\x02 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\bquantity\"\xb5\x01\n" +
-	"\x14PerpetualMarketState\x12K\n" +
-	"\vmarket_info\x18\x01 \x01(\v2*.injective.exchange.v2.PerpetualMarketInfoR\n" +
-	"marketInfo\x12P\n" +
-	"\ffunding_info\x18\x02 \x01(\v2-.injective.exchange.v2.PerpetualMarketFundingR\vfundingInfo\"\xa6\x03\n" +
-	"\x14FullDerivativeMarket\x12?\n" +
-	"\x06market\x18\x01 \x01(\v2'.injective.exchange.v2.DerivativeMarketR\x06market\x12T\n" +
-	"\x0eperpetual_info\x18\x02 \x01(\v2+.injective.exchange.v2.PerpetualMarketStateH\x00R\rperpetualInfo\x12S\n" +
-	"\ffutures_info\x18\x03 \x01(\v2..injective.exchange.v2.ExpiryFuturesMarketInfoH\x00R\vfuturesInfo\x12B\n" +
+	"\bquantity\x18\x02 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\bquantity\"\xbf\x01\n" +
+	"\x14PerpetualMarketState\x12P\n" +
+	"\vmarket_info\x18\x01 \x01(\v2/.injective.exchange.v1beta1.PerpetualMarketInfoR\n" +
+	"marketInfo\x12U\n" +
+	"\ffunding_info\x18\x02 \x01(\v22.injective.exchange.v1beta1.PerpetualMarketFundingR\vfundingInfo\"\xba\x03\n" +
+	"\x14FullDerivativeMarket\x12D\n" +
+	"\x06market\x18\x01 \x01(\v2,.injective.exchange.v1beta1.DerivativeMarketR\x06market\x12Y\n" +
+	"\x0eperpetual_info\x18\x02 \x01(\v20.injective.exchange.v1beta1.PerpetualMarketStateH\x00R\rperpetualInfo\x12X\n" +
+	"\ffutures_info\x18\x03 \x01(\v23.injective.exchange.v1beta1.ExpiryFuturesMarketInfoH\x00R\vfuturesInfo\x12B\n" +
 	"\n" +
-	"mark_price\x18\x04 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\tmarkPrice\x12V\n" +
-	"\x11mid_price_and_tob\x18\x05 \x01(\v2%.injective.exchange.v2.MidPriceAndTOBB\x04\xc8\xde\x1f\x01R\x0emidPriceAndTobB\x06\n" +
-	"\x04info\"g\n" +
-	"\x1eQueryDerivativeMarketsResponse\x12E\n" +
-	"\amarkets\x18\x01 \x03(\v2+.injective.exchange.v2.FullDerivativeMarketR\amarkets\";\n" +
+	"mark_price\x18\x04 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\tmarkPrice\x12[\n" +
+	"\x11mid_price_and_tob\x18\x05 \x01(\v2*.injective.exchange.v1beta1.MidPriceAndTOBB\x04\xc8\xde\x1f\x01R\x0emidPriceAndTobB\x06\n" +
+	"\x04info\"l\n" +
+	"\x1eQueryDerivativeMarketsResponse\x12J\n" +
+	"\amarkets\x18\x01 \x03(\v20.injective.exchange.v1beta1.FullDerivativeMarketR\amarkets\";\n" +
 	"\x1cQueryDerivativeMarketRequest\x12\x1b\n" +
-	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"d\n" +
-	"\x1dQueryDerivativeMarketResponse\x12C\n" +
-	"\x06market\x18\x01 \x01(\v2+.injective.exchange.v2.FullDerivativeMarketR\x06market\"B\n" +
+	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"i\n" +
+	"\x1dQueryDerivativeMarketResponse\x12H\n" +
+	"\x06market\x18\x01 \x01(\v20.injective.exchange.v1beta1.FullDerivativeMarketR\x06market\"B\n" +
 	"#QueryDerivativeMarketAddressRequest\x12\x1b\n" +
 	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"e\n" +
 	"$QueryDerivativeMarketAddressResponse\x12\x18\n" +
 	"\aaddress\x18\x01 \x01(\tR\aaddress\x12#\n" +
 	"\rsubaccount_id\x18\x02 \x01(\tR\fsubaccountId\"G\n" +
 	" QuerySubaccountTradeNonceRequest\x12#\n" +
-	"\rsubaccount_id\x18\x01 \x01(\tR\fsubaccountId\"<\n" +
-	"\x1dQueryPositionsInMarketRequest\x12\x1b\n" +
-	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"g\n" +
-	"\x1eQueryPositionsInMarketResponse\x12E\n" +
-	"\x05state\x18\x01 \x03(\v2).injective.exchange.v2.DerivativePositionB\x04\xc8\xde\x1f\x01R\x05state\"F\n" +
+	"\rsubaccount_id\x18\x01 \x01(\tR\fsubaccountId\"F\n" +
 	"\x1fQuerySubaccountPositionsRequest\x12#\n" +
 	"\rsubaccount_id\x18\x01 \x01(\tR\fsubaccountId\"j\n" +
 	"&QuerySubaccountPositionInMarketRequest\x12#\n" +
@@ -7990,52 +7889,52 @@ const file_injective_exchange_v2_query_proto_rawDesc = "" +
 	"\rsubaccount_id\x18\x01 \x01(\tR\fsubaccountId\x12\x1b\n" +
 	"\tmarket_id\x18\x02 \x01(\tR\bmarketId\"J\n" +
 	"#QuerySubaccountOrderMetadataRequest\x12#\n" +
-	"\rsubaccount_id\x18\x01 \x01(\tR\fsubaccountId\"i\n" +
-	" QuerySubaccountPositionsResponse\x12E\n" +
-	"\x05state\x18\x01 \x03(\v2).injective.exchange.v2.DerivativePositionB\x04\xc8\xde\x1f\x00R\x05state\"f\n" +
-	"'QuerySubaccountPositionInMarketResponse\x12;\n" +
-	"\x05state\x18\x01 \x01(\v2\x1f.injective.exchange.v2.PositionB\x04\xc8\xde\x1f\x01R\x05state\"\x83\x02\n" +
+	"\rsubaccount_id\x18\x01 \x01(\tR\fsubaccountId\"n\n" +
+	" QuerySubaccountPositionsResponse\x12J\n" +
+	"\x05state\x18\x01 \x03(\v2..injective.exchange.v1beta1.DerivativePositionB\x04\xc8\xde\x1f\x00R\x05state\"k\n" +
+	"'QuerySubaccountPositionInMarketResponse\x12@\n" +
+	"\x05state\x18\x01 \x01(\v2$.injective.exchange.v1beta1.PositionB\x04\xc8\xde\x1f\x01R\x05state\"\x83\x02\n" +
 	"\x11EffectivePosition\x12\x17\n" +
 	"\ais_long\x18\x01 \x01(\bR\x06isLong\x12?\n" +
 	"\bquantity\x18\x02 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\bquantity\x12D\n" +
 	"\ventry_price\x18\x03 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\n" +
 	"entryPrice\x12N\n" +
-	"\x10effective_margin\x18\x04 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\x0feffectiveMargin\"x\n" +
-	"0QuerySubaccountEffectivePositionInMarketResponse\x12D\n" +
-	"\x05state\x18\x01 \x01(\v2(.injective.exchange.v2.EffectivePositionB\x04\xc8\xde\x1f\x01R\x05state\">\n" +
+	"\x10effective_margin\x18\x04 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\x0feffectiveMargin\"}\n" +
+	"0QuerySubaccountEffectivePositionInMarketResponse\x12I\n" +
+	"\x05state\x18\x01 \x01(\v2-.injective.exchange.v1beta1.EffectivePositionB\x04\xc8\xde\x1f\x01R\x05state\">\n" +
 	"\x1fQueryPerpetualMarketInfoRequest\x12\x1b\n" +
-	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"h\n" +
-	" QueryPerpetualMarketInfoResponse\x12D\n" +
-	"\x04info\x18\x01 \x01(\v2*.injective.exchange.v2.PerpetualMarketInfoB\x04\xc8\xde\x1f\x00R\x04info\"B\n" +
+	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"m\n" +
+	" QueryPerpetualMarketInfoResponse\x12I\n" +
+	"\x04info\x18\x01 \x01(\v2/.injective.exchange.v1beta1.PerpetualMarketInfoB\x04\xc8\xde\x1f\x00R\x04info\"B\n" +
 	"#QueryExpiryFuturesMarketInfoRequest\x12\x1b\n" +
-	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"p\n" +
-	"$QueryExpiryFuturesMarketInfoResponse\x12H\n" +
-	"\x04info\x18\x01 \x01(\v2..injective.exchange.v2.ExpiryFuturesMarketInfoB\x04\xc8\xde\x1f\x00R\x04info\"A\n" +
+	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"u\n" +
+	"$QueryExpiryFuturesMarketInfoResponse\x12M\n" +
+	"\x04info\x18\x01 \x01(\v23.injective.exchange.v1beta1.ExpiryFuturesMarketInfoB\x04\xc8\xde\x1f\x00R\x04info\"A\n" +
 	"\"QueryPerpetualMarketFundingRequest\x12\x1b\n" +
-	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"p\n" +
-	"#QueryPerpetualMarketFundingResponse\x12I\n" +
-	"\x05state\x18\x01 \x01(\v2-.injective.exchange.v2.PerpetualMarketFundingB\x04\xc8\xde\x1f\x00R\x05state\"\x86\x01\n" +
-	"$QuerySubaccountOrderMetadataResponse\x12^\n" +
-	"\bmetadata\x18\x01 \x03(\v2<.injective.exchange.v2.SubaccountOrderbookMetadataWithMarketB\x04\xc8\xde\x1f\x00R\bmetadata\"9\n" +
+	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"u\n" +
+	"#QueryPerpetualMarketFundingResponse\x12N\n" +
+	"\x05state\x18\x01 \x01(\v22.injective.exchange.v1beta1.PerpetualMarketFundingB\x04\xc8\xde\x1f\x00R\x05state\"\x8b\x01\n" +
+	"$QuerySubaccountOrderMetadataResponse\x12c\n" +
+	"\bmetadata\x18\x01 \x03(\v2A.injective.exchange.v1beta1.SubaccountOrderbookMetadataWithMarketB\x04\xc8\xde\x1f\x00R\bmetadata\"9\n" +
 	"!QuerySubaccountTradeNonceResponse\x12\x14\n" +
 	"\x05nonce\x18\x01 \x01(\rR\x05nonce\"\x19\n" +
-	"\x17QueryModuleStateRequest\"U\n" +
-	"\x18QueryModuleStateResponse\x129\n" +
-	"\x05state\x18\x01 \x01(\v2#.injective.exchange.v2.GenesisStateR\x05state\"\x17\n" +
-	"\x15QueryPositionsRequest\"_\n" +
-	"\x16QueryPositionsResponse\x12E\n" +
-	"\x05state\x18\x01 \x03(\v2).injective.exchange.v2.DerivativePositionB\x04\xc8\xde\x1f\x00R\x05state\"q\n" +
+	"\x17QueryModuleStateRequest\"Z\n" +
+	"\x18QueryModuleStateResponse\x12>\n" +
+	"\x05state\x18\x01 \x01(\v2(.injective.exchange.v1beta1.GenesisStateR\x05state\"\x17\n" +
+	"\x15QueryPositionsRequest\"d\n" +
+	"\x16QueryPositionsResponse\x12J\n" +
+	"\x05state\x18\x01 \x03(\v2..injective.exchange.v1beta1.DerivativePositionB\x04\xc8\xde\x1f\x00R\x05state\"q\n" +
 	"\x1dQueryTradeRewardPointsRequest\x12\x1a\n" +
 	"\baccounts\x18\x01 \x03(\tR\baccounts\x124\n" +
 	"\x16pending_pool_timestamp\x18\x02 \x01(\x03R\x14pendingPoolTimestamp\"\x84\x01\n" +
 	"\x1eQueryTradeRewardPointsResponse\x12b\n" +
 	"\x1baccount_trade_reward_points\x18\x01 \x03(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\x18accountTradeRewardPoints\"!\n" +
-	"\x1fQueryTradeRewardCampaignRequest\"\xee\x04\n" +
-	" QueryTradeRewardCampaignResponse\x12q\n" +
-	"\x1ctrading_reward_campaign_info\x18\x01 \x01(\v20.injective.exchange.v2.TradingRewardCampaignInfoR\x19tradingRewardCampaignInfo\x12{\n" +
-	"%trading_reward_pool_campaign_schedule\x18\x02 \x03(\v2).injective.exchange.v2.CampaignRewardPoolR!tradingRewardPoolCampaignSchedule\x12^\n" +
-	"\x19total_trade_reward_points\x18\x03 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\x16totalTradeRewardPoints\x12\x8a\x01\n" +
-	"-pending_trading_reward_pool_campaign_schedule\x18\x04 \x03(\v2).injective.exchange.v2.CampaignRewardPoolR(pendingTradingRewardPoolCampaignSchedule\x12m\n" +
+	"\x1fQueryTradeRewardCampaignRequest\"\xfe\x04\n" +
+	" QueryTradeRewardCampaignResponse\x12v\n" +
+	"\x1ctrading_reward_campaign_info\x18\x01 \x01(\v25.injective.exchange.v1beta1.TradingRewardCampaignInfoR\x19tradingRewardCampaignInfo\x12\x80\x01\n" +
+	"%trading_reward_pool_campaign_schedule\x18\x02 \x03(\v2..injective.exchange.v1beta1.CampaignRewardPoolR!tradingRewardPoolCampaignSchedule\x12^\n" +
+	"\x19total_trade_reward_points\x18\x03 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\x16totalTradeRewardPoints\x12\x8f\x01\n" +
+	"-pending_trading_reward_pool_campaign_schedule\x18\x04 \x03(\v2..injective.exchange.v1beta1.CampaignRewardPoolR(pendingTradingRewardPoolCampaignSchedule\x12m\n" +
 	"!pending_total_trade_reward_points\x18\x05 \x03(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\x1dpendingTotalTradeRewardPoints\";\n" +
 	"\x1fQueryIsOptedOutOfRewardsRequest\x12\x18\n" +
 	"\aaccount\x18\x01 \x01(\tR\aaccount\"D\n" +
@@ -8046,16 +7945,16 @@ const file_injective_exchange_v2_query_proto_rawDesc = "" +
 	"&QueryOptedOutOfRewardsAccountsResponse\x12\x1a\n" +
 	"\baccounts\x18\x01 \x03(\tR\baccounts\">\n" +
 	"\"QueryFeeDiscountAccountInfoRequest\x12\x18\n" +
-	"\aaccount\x18\x01 \x01(\tR\aaccount\"\xdf\x01\n" +
+	"\aaccount\x18\x01 \x01(\tR\aaccount\"\xe9\x01\n" +
 	"#QueryFeeDiscountAccountInfoResponse\x12\x1d\n" +
 	"\n" +
-	"tier_level\x18\x01 \x01(\x04R\ttierLevel\x12M\n" +
-	"\faccount_info\x18\x02 \x01(\v2*.injective.exchange.v2.FeeDiscountTierInfoR\vaccountInfo\x12J\n" +
-	"\vaccount_ttl\x18\x03 \x01(\v2).injective.exchange.v2.FeeDiscountTierTTLR\n" +
+	"tier_level\x18\x01 \x01(\x04R\ttierLevel\x12R\n" +
+	"\faccount_info\x18\x02 \x01(\v2/.injective.exchange.v1beta1.FeeDiscountTierInfoR\vaccountInfo\x12O\n" +
+	"\vaccount_ttl\x18\x03 \x01(\v2..injective.exchange.v1beta1.FeeDiscountTierTTLR\n" +
 	"accountTtl\"!\n" +
-	"\x1fQueryFeeDiscountScheduleRequest\"\x82\x01\n" +
-	" QueryFeeDiscountScheduleResponse\x12^\n" +
-	"\x15fee_discount_schedule\x18\x01 \x01(\v2*.injective.exchange.v2.FeeDiscountScheduleR\x13feeDiscountSchedule\"@\n" +
+	"\x1fQueryFeeDiscountScheduleRequest\"\x87\x01\n" +
+	" QueryFeeDiscountScheduleResponse\x12c\n" +
+	"\x15fee_discount_schedule\x18\x01 \x01(\v2/.injective.exchange.v1beta1.FeeDiscountScheduleR\x13feeDiscountSchedule\"@\n" +
 	"\x1dQueryBalanceMismatchesRequest\x12\x1f\n" +
 	"\vdust_factor\x18\x01 \x01(\x03R\n" +
 	"dustFactor\"\xa2\x03\n" +
@@ -8068,25 +7967,25 @@ const file_injective_exchange_v2_query_proto_rawDesc = "" +
 	"\x0eexpected_total\x18\x06 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\rexpectedTotal\x12C\n" +
 	"\n" +
 	"difference\x18\a \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\n" +
-	"difference\"w\n" +
-	"\x1eQueryBalanceMismatchesResponse\x12U\n" +
-	"\x12balance_mismatches\x18\x01 \x03(\v2&.injective.exchange.v2.BalanceMismatchR\x11balanceMismatches\"%\n" +
+	"difference\"|\n" +
+	"\x1eQueryBalanceMismatchesResponse\x12Z\n" +
+	"\x12balance_mismatches\x18\x01 \x03(\v2+.injective.exchange.v1beta1.BalanceMismatchR\x11balanceMismatches\"%\n" +
 	"#QueryBalanceWithBalanceHoldsRequest\"\x97\x02\n" +
 	"\x15BalanceWithMarginHold\x12\"\n" +
 	"\fsubaccountId\x18\x01 \x01(\tR\fsubaccountId\x12\x14\n" +
 	"\x05denom\x18\x02 \x01(\tR\x05denom\x12A\n" +
 	"\tavailable\x18\x03 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\tavailable\x129\n" +
 	"\x05total\x18\x04 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\x05total\x12F\n" +
-	"\fbalance_hold\x18\x05 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\vbalanceHold\"\x91\x01\n" +
-	"$QueryBalanceWithBalanceHoldsResponse\x12i\n" +
-	"\x1abalance_with_balance_holds\x18\x01 \x03(\v2,.injective.exchange.v2.BalanceWithMarginHoldR\x17balanceWithBalanceHolds\"'\n" +
+	"\fbalance_hold\x18\x05 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\vbalanceHold\"\x96\x01\n" +
+	"$QueryBalanceWithBalanceHoldsResponse\x12n\n" +
+	"\x1abalance_with_balance_holds\x18\x01 \x03(\v21.injective.exchange.v1beta1.BalanceWithMarginHoldR\x17balanceWithBalanceHolds\"'\n" +
 	"%QueryFeeDiscountTierStatisticsRequest\"9\n" +
 	"\rTierStatistic\x12\x12\n" +
 	"\x04tier\x18\x01 \x01(\x04R\x04tier\x12\x14\n" +
-	"\x05count\x18\x02 \x01(\x04R\x05count\"n\n" +
-	"&QueryFeeDiscountTierStatisticsResponse\x12D\n" +
+	"\x05count\x18\x02 \x01(\x04R\x05count\"s\n" +
+	"&QueryFeeDiscountTierStatisticsResponse\x12I\n" +
 	"\n" +
-	"statistics\x18\x01 \x03(\v2$.injective.exchange.v2.TierStatisticR\n" +
+	"statistics\x18\x01 \x03(\v2).injective.exchange.v1beta1.TierStatisticR\n" +
 	"statistics\"\x17\n" +
 	"\x15MitoVaultInfosRequest\"\xc4\x01\n" +
 	"\x16MitoVaultInfosResponse\x12)\n" +
@@ -8099,28 +7998,28 @@ const file_injective_exchange_v2_query_proto_rawDesc = "" +
 	"\x1eQueryMarketIDFromVaultResponse\x12\x1b\n" +
 	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"A\n" +
 	"\"QueryHistoricalTradeRecordsRequest\x12\x1b\n" +
-	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"o\n" +
-	"#QueryHistoricalTradeRecordsResponse\x12H\n" +
-	"\rtrade_records\x18\x01 \x03(\v2#.injective.exchange.v2.TradeRecordsR\ftradeRecords\"\xb7\x01\n" +
+	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"t\n" +
+	"#QueryHistoricalTradeRecordsResponse\x12M\n" +
+	"\rtrade_records\x18\x01 \x03(\v2(.injective.exchange.v1beta1.TradeRecordsR\ftradeRecords\"\xb7\x01\n" +
 	"\x13TradeHistoryOptions\x12,\n" +
 	"\x12trade_grouping_sec\x18\x01 \x01(\x04R\x10tradeGroupingSec\x12\x17\n" +
 	"\amax_age\x18\x02 \x01(\x04R\x06maxAge\x12.\n" +
 	"\x13include_raw_history\x18\x04 \x01(\bR\x11includeRawHistory\x12)\n" +
-	"\x10include_metadata\x18\x05 \x01(\bR\x0fincludeMetadata\"\x9b\x01\n" +
+	"\x10include_metadata\x18\x05 \x01(\bR\x0fincludeMetadata\"\xa0\x01\n" +
 	"\x1cQueryMarketVolatilityRequest\x12\x1b\n" +
-	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\x12^\n" +
-	"\x15trade_history_options\x18\x02 \x01(\v2*.injective.exchange.v2.TradeHistoryOptionsR\x13tradeHistoryOptions\"\xfe\x01\n" +
+	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\x12c\n" +
+	"\x15trade_history_options\x18\x02 \x01(\v2/.injective.exchange.v1beta1.TradeHistoryOptionsR\x13tradeHistoryOptions\"\x83\x02\n" +
 	"\x1dQueryMarketVolatilityResponse\x12?\n" +
 	"\n" +
 	"volatility\x18\x01 \x01(\tB\x1f\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\n" +
 	"volatility\x12W\n" +
-	"\x10history_metadata\x18\x02 \x01(\v2,.injective.oracle.v1beta1.MetadataStatisticsR\x0fhistoryMetadata\x12C\n" +
-	"\vraw_history\x18\x03 \x03(\v2\".injective.exchange.v2.TradeRecordR\n" +
+	"\x10history_metadata\x18\x02 \x01(\v2,.injective.oracle.v1beta1.MetadataStatisticsR\x0fhistoryMetadata\x12H\n" +
+	"\vraw_history\x18\x03 \x03(\v2'.injective.exchange.v1beta1.TradeRecordR\n" +
 	"rawHistory\"3\n" +
 	"\x19QueryBinaryMarketsRequest\x12\x16\n" +
-	"\x06status\x18\x01 \x01(\tR\x06status\"b\n" +
-	"\x1aQueryBinaryMarketsResponse\x12D\n" +
-	"\amarkets\x18\x01 \x03(\v2*.injective.exchange.v2.BinaryOptionsMarketR\amarkets\"q\n" +
+	"\x06status\x18\x01 \x01(\tR\x06status\"g\n" +
+	"\x1aQueryBinaryMarketsResponse\x12I\n" +
+	"\amarkets\x18\x01 \x03(\v2/.injective.exchange.v1beta1.BinaryOptionsMarketR\amarkets\"q\n" +
 	"-QueryTraderDerivativeConditionalOrdersRequest\x12#\n" +
 	"\rsubaccount_id\x18\x01 \x01(\tR\fsubaccountId\x12\x1b\n" +
 	"\tmarket_id\x18\x02 \x01(\tR\bmarketId\"\x9e\x03\n" +
@@ -8133,19 +8032,19 @@ const file_injective_exchange_v2_query_proto_rawDesc = "" +
 	"\aisLimit\x18\x06 \x01(\bB\v\xea\xde\x1f\aisLimitR\aisLimit\x12\x1d\n" +
 	"\n" +
 	"order_hash\x18\a \x01(\tR\torderHash\x12\x10\n" +
-	"\x03cid\x18\b \x01(\tR\x03cid\"\x82\x01\n" +
-	".QueryTraderDerivativeConditionalOrdersResponse\x12P\n" +
-	"\x06orders\x18\x01 \x03(\v28.injective.exchange.v2.TrimmedDerivativeConditionalOrderR\x06orders\"<\n" +
+	"\x03cid\x18\b \x01(\tR\x03cid\"\x87\x01\n" +
+	".QueryTraderDerivativeConditionalOrdersResponse\x12U\n" +
+	"\x06orders\x18\x01 \x03(\v2=.injective.exchange.v1beta1.TrimmedDerivativeConditionalOrderR\x06orders\"<\n" +
 	"\x1dQueryFullSpotOrderbookRequest\x12\x1b\n" +
-	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"\x9c\x01\n" +
-	"\x1eQueryFullSpotOrderbookResponse\x12<\n" +
-	"\x04Bids\x18\x01 \x03(\v2(.injective.exchange.v2.TrimmedLimitOrderR\x04Bids\x12<\n" +
-	"\x04Asks\x18\x02 \x03(\v2(.injective.exchange.v2.TrimmedLimitOrderR\x04Asks\"B\n" +
+	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"\xa6\x01\n" +
+	"\x1eQueryFullSpotOrderbookResponse\x12A\n" +
+	"\x04Bids\x18\x01 \x03(\v2-.injective.exchange.v1beta1.TrimmedLimitOrderR\x04Bids\x12A\n" +
+	"\x04Asks\x18\x02 \x03(\v2-.injective.exchange.v1beta1.TrimmedLimitOrderR\x04Asks\"B\n" +
 	"#QueryFullDerivativeOrderbookRequest\x12\x1b\n" +
-	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"\xa2\x01\n" +
-	"$QueryFullDerivativeOrderbookResponse\x12<\n" +
-	"\x04Bids\x18\x01 \x03(\v2(.injective.exchange.v2.TrimmedLimitOrderR\x04Bids\x12<\n" +
-	"\x04Asks\x18\x02 \x03(\v2(.injective.exchange.v2.TrimmedLimitOrderR\x04Asks\"\xd3\x01\n" +
+	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"\xac\x01\n" +
+	"$QueryFullDerivativeOrderbookResponse\x12A\n" +
+	"\x04Bids\x18\x01 \x03(\v2-.injective.exchange.v1beta1.TrimmedLimitOrderR\x04Bids\x12A\n" +
+	"\x04Asks\x18\x02 \x03(\v2-.injective.exchange.v1beta1.TrimmedLimitOrderR\x04Asks\"\xd3\x01\n" +
 	"\x11TrimmedLimitOrder\x129\n" +
 	"\x05price\x18\x01 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\x05price\x12?\n" +
 	"\bquantity\x18\x02 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\bquantity\x12\x1d\n" +
@@ -8159,27 +8058,27 @@ const file_injective_exchange_v2_query_proto_rawDesc = "" +
 	"multiplier\x18\x01 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\n" +
 	"multiplier\"8\n" +
 	"\x1cQueryActiveStakeGrantRequest\x12\x18\n" +
-	"\agrantee\x18\x01 \x01(\tR\agrantee\"\xa9\x01\n" +
-	"\x1dQueryActiveStakeGrantResponse\x128\n" +
-	"\x05grant\x18\x01 \x01(\v2\".injective.exchange.v2.ActiveGrantR\x05grant\x12N\n" +
-	"\x0feffective_grant\x18\x02 \x01(\v2%.injective.exchange.v2.EffectiveGrantR\x0eeffectiveGrant\"T\n" +
+	"\agrantee\x18\x01 \x01(\tR\agrantee\"\xb3\x01\n" +
+	"\x1dQueryActiveStakeGrantResponse\x12=\n" +
+	"\x05grant\x18\x01 \x01(\v2'.injective.exchange.v1beta1.ActiveGrantR\x05grant\x12S\n" +
+	"\x0feffective_grant\x18\x02 \x01(\v2*.injective.exchange.v1beta1.EffectiveGrantR\x0eeffectiveGrant\"T\n" +
 	"\x1eQueryGrantAuthorizationRequest\x12\x18\n" +
 	"\agranter\x18\x01 \x01(\tR\agranter\x12\x18\n" +
 	"\agrantee\x18\x02 \x01(\tR\agrantee\"X\n" +
 	"\x1fQueryGrantAuthorizationResponse\x125\n" +
 	"\x06amount\x18\x01 \x01(\tB\x1d\xc8\xde\x1f\x00\xda\xde\x1f\x15cosmossdk.io/math.IntR\x06amount\";\n" +
 	"\x1fQueryGrantAuthorizationsRequest\x12\x18\n" +
-	"\agranter\x18\x01 \x01(\tR\agranter\"\xb2\x01\n" +
+	"\agranter\x18\x01 \x01(\tR\agranter\"\xb7\x01\n" +
 	" QueryGrantAuthorizationsResponse\x12K\n" +
-	"\x12total_grant_amount\x18\x01 \x01(\tB\x1d\xc8\xde\x1f\x00\xda\xde\x1f\x15cosmossdk.io/math.IntR\x10totalGrantAmount\x12A\n" +
-	"\x06grants\x18\x02 \x03(\v2).injective.exchange.v2.GrantAuthorizationR\x06grants\"8\n" +
+	"\x12total_grant_amount\x18\x01 \x01(\tB\x1d\xc8\xde\x1f\x00\xda\xde\x1f\x15cosmossdk.io/math.IntR\x10totalGrantAmount\x12F\n" +
+	"\x06grants\x18\x02 \x03(\v2..injective.exchange.v1beta1.GrantAuthorizationR\x06grants\"8\n" +
 	"\x19QueryMarketBalanceRequest\x12\x1b\n" +
-	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"\\\n" +
-	"\x1aQueryMarketBalanceResponse\x12>\n" +
-	"\abalance\x18\x01 \x01(\v2$.injective.exchange.v2.MarketBalanceR\abalance\"\x1c\n" +
-	"\x1aQueryMarketBalancesRequest\"_\n" +
-	"\x1bQueryMarketBalancesResponse\x12@\n" +
-	"\bbalances\x18\x01 \x03(\v2$.injective.exchange.v2.MarketBalanceR\bbalances\"k\n" +
+	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\"a\n" +
+	"\x1aQueryMarketBalanceResponse\x12C\n" +
+	"\abalance\x18\x01 \x01(\v2).injective.exchange.v1beta1.MarketBalanceR\abalance\"\x1c\n" +
+	"\x1aQueryMarketBalancesRequest\"d\n" +
+	"\x1bQueryMarketBalancesResponse\x12E\n" +
+	"\bbalances\x18\x01 \x03(\v2).injective.exchange.v1beta1.MarketBalanceR\bbalances\"k\n" +
 	"\rMarketBalance\x12\x1b\n" +
 	"\tmarket_id\x18\x01 \x01(\tR\bmarketId\x12=\n" +
 	"\abalance\x18\x02 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\abalance\"4\n" +
@@ -8187,9 +8086,9 @@ const file_injective_exchange_v2_query_proto_rawDesc = "" +
 	"\x05denom\x18\x01 \x01(\tR\x05denom\"\\\n" +
 	"\x1dQueryDenomMinNotionalResponse\x12;\n" +
 	"\x06amount\x18\x01 \x01(\tB#\xc8\xde\x1f\x00\xda\xde\x1f\x1bcosmossdk.io/math.LegacyDecR\x06amount\"\x1f\n" +
-	"\x1dQueryDenomMinNotionalsRequest\"y\n" +
-	"\x1eQueryDenomMinNotionalsResponse\x12W\n" +
-	"\x13denom_min_notionals\x18\x01 \x03(\v2'.injective.exchange.v2.DenomMinNotionalR\x11denomMinNotionals*4\n" +
+	"\x1dQueryDenomMinNotionalsRequest\"~\n" +
+	"\x1eQueryDenomMinNotionalsResponse\x12\\\n" +
+	"\x13denom_min_notionals\x18\x01 \x03(\v2,.injective.exchange.v1beta1.DenomMinNotionalR\x11denomMinNotionals*4\n" +
 	"\tOrderSide\x12\x14\n" +
 	"\x10Side_Unspecified\x10\x00\x12\a\n" +
 	"\x03Buy\x10\x01\x12\b\n" +
@@ -8197,503 +8096,495 @@ const file_injective_exchange_v2_query_proto_rawDesc = "" +
 	"\x14CancellationStrategy\x12\x14\n" +
 	"\x10UnspecifiedOrder\x10\x00\x12\x13\n" +
 	"\x0fFromWorstToBest\x10\x01\x12\x13\n" +
-	"\x0fFromBestToWorst\x10\x022\xe4h\n" +
-	"\x05Query\x12\xd3\x01\n" +
-	"\x15L3DerivativeOrderBook\x12:.injective.exchange.v2.QueryFullDerivativeOrderbookRequest\x1a;.injective.exchange.v2.QueryFullDerivativeOrderbookResponse\"A\x82\xd3\xe4\x93\x02;\x129/injective/exchange/v2/derivative/L3OrderBook/{market_id}\x12\xbb\x01\n" +
-	"\x0fL3SpotOrderBook\x124.injective.exchange.v2.QueryFullSpotOrderbookRequest\x1a5.injective.exchange.v2.QueryFullSpotOrderbookResponse\";\x82\xd3\xe4\x93\x025\x123/injective/exchange/v2/spot/L3OrderBook/{market_id}\x12\xab\x01\n" +
-	"\x13QueryExchangeParams\x121.injective.exchange.v2.QueryExchangeParamsRequest\x1a2.injective.exchange.v2.QueryExchangeParamsResponse\"-\x82\xd3\xe4\x93\x02'\x12%/injective/exchange/v2/exchangeParams\x12\xbf\x01\n" +
-	"\x12SubaccountDeposits\x125.injective.exchange.v2.QuerySubaccountDepositsRequest\x1a6.injective.exchange.v2.QuerySubaccountDepositsResponse\":\x82\xd3\xe4\x93\x024\x122/injective/exchange/v2/exchange/subaccountDeposits\x12\xbb\x01\n" +
-	"\x11SubaccountDeposit\x124.injective.exchange.v2.QuerySubaccountDepositRequest\x1a5.injective.exchange.v2.QuerySubaccountDepositResponse\"9\x82\xd3\xe4\x93\x023\x121/injective/exchange/v2/exchange/subaccountDeposit\x12\xb7\x01\n" +
-	"\x10ExchangeBalances\x123.injective.exchange.v2.QueryExchangeBalancesRequest\x1a4.injective.exchange.v2.QueryExchangeBalancesResponse\"8\x82\xd3\xe4\x93\x022\x120/injective/exchange/v2/exchange/exchangeBalances\x12\xbd\x01\n" +
-	"\x0fAggregateVolume\x122.injective.exchange.v2.QueryAggregateVolumeRequest\x1a3.injective.exchange.v2.QueryAggregateVolumeResponse\"A\x82\xd3\xe4\x93\x02;\x129/injective/exchange/v2/exchange/aggregateVolume/{account}\x12\xb7\x01\n" +
-	"\x10AggregateVolumes\x123.injective.exchange.v2.QueryAggregateVolumesRequest\x1a4.injective.exchange.v2.QueryAggregateVolumesResponse\"8\x82\xd3\xe4\x93\x022\x120/injective/exchange/v2/exchange/aggregateVolumes\x12\xd7\x01\n" +
-	"\x15AggregateMarketVolume\x128.injective.exchange.v2.QueryAggregateMarketVolumeRequest\x1a9.injective.exchange.v2.QueryAggregateMarketVolumeResponse\"I\x82\xd3\xe4\x93\x02C\x12A/injective/exchange/v2/exchange/aggregateMarketVolume/{market_id}\x12\xcf\x01\n" +
-	"\x16AggregateMarketVolumes\x129.injective.exchange.v2.QueryAggregateMarketVolumesRequest\x1a:.injective.exchange.v2.QueryAggregateMarketVolumesResponse\">\x82\xd3\xe4\x93\x028\x126/injective/exchange/v2/exchange/aggregateMarketVolumes\x12\xb0\x01\n" +
-	"\fDenomDecimal\x12/.injective.exchange.v2.QueryDenomDecimalRequest\x1a0.injective.exchange.v2.QueryDenomDecimalResponse\"=\x82\xd3\xe4\x93\x027\x125/injective/exchange/v2/exchange/denom_decimal/{denom}\x12\xac\x01\n" +
-	"\rDenomDecimals\x120.injective.exchange.v2.QueryDenomDecimalsRequest\x1a1.injective.exchange.v2.QueryDenomDecimalsResponse\"6\x82\xd3\xe4\x93\x020\x12./injective/exchange/v2/exchange/denom_decimals\x12\x9b\x01\n" +
-	"\vSpotMarkets\x12..injective.exchange.v2.QuerySpotMarketsRequest\x1a/.injective.exchange.v2.QuerySpotMarketsResponse\"+\x82\xd3\xe4\x93\x02%\x12#/injective/exchange/v2/spot/markets\x12\xa4\x01\n" +
+	"\x0fFromBestToWorst\x10\x022\x89o\n" +
+	"\x05Query\x12\xe2\x01\n" +
+	"\x15L3DerivativeOrderBook\x12?.injective.exchange.v1beta1.QueryFullDerivativeOrderbookRequest\x1a@.injective.exchange.v1beta1.QueryFullDerivativeOrderbookResponse\"F\x82\xd3\xe4\x93\x02@\x12>/injective/exchange/v1beta1/derivative/L3OrderBook/{market_id}\x12\xca\x01\n" +
+	"\x0fL3SpotOrderBook\x129.injective.exchange.v1beta1.QueryFullSpotOrderbookRequest\x1a:.injective.exchange.v1beta1.QueryFullSpotOrderbookResponse\"@\x82\xd3\xe4\x93\x02:\x128/injective/exchange/v1beta1/spot/L3OrderBook/{market_id}\x12\xba\x01\n" +
+	"\x13QueryExchangeParams\x126.injective.exchange.v1beta1.QueryExchangeParamsRequest\x1a7.injective.exchange.v1beta1.QueryExchangeParamsResponse\"2\x82\xd3\xe4\x93\x02,\x12*/injective/exchange/v1beta1/exchangeParams\x12\xce\x01\n" +
+	"\x12SubaccountDeposits\x12:.injective.exchange.v1beta1.QuerySubaccountDepositsRequest\x1a;.injective.exchange.v1beta1.QuerySubaccountDepositsResponse\"?\x82\xd3\xe4\x93\x029\x127/injective/exchange/v1beta1/exchange/subaccountDeposits\x12\xca\x01\n" +
+	"\x11SubaccountDeposit\x129.injective.exchange.v1beta1.QuerySubaccountDepositRequest\x1a:.injective.exchange.v1beta1.QuerySubaccountDepositResponse\">\x82\xd3\xe4\x93\x028\x126/injective/exchange/v1beta1/exchange/subaccountDeposit\x12\xc6\x01\n" +
+	"\x10ExchangeBalances\x128.injective.exchange.v1beta1.QueryExchangeBalancesRequest\x1a9.injective.exchange.v1beta1.QueryExchangeBalancesResponse\"=\x82\xd3\xe4\x93\x027\x125/injective/exchange/v1beta1/exchange/exchangeBalances\x12\xcc\x01\n" +
+	"\x0fAggregateVolume\x127.injective.exchange.v1beta1.QueryAggregateVolumeRequest\x1a8.injective.exchange.v1beta1.QueryAggregateVolumeResponse\"F\x82\xd3\xe4\x93\x02@\x12>/injective/exchange/v1beta1/exchange/aggregateVolume/{account}\x12\xc6\x01\n" +
+	"\x10AggregateVolumes\x128.injective.exchange.v1beta1.QueryAggregateVolumesRequest\x1a9.injective.exchange.v1beta1.QueryAggregateVolumesResponse\"=\x82\xd3\xe4\x93\x027\x125/injective/exchange/v1beta1/exchange/aggregateVolumes\x12\xe6\x01\n" +
+	"\x15AggregateMarketVolume\x12=.injective.exchange.v1beta1.QueryAggregateMarketVolumeRequest\x1a>.injective.exchange.v1beta1.QueryAggregateMarketVolumeResponse\"N\x82\xd3\xe4\x93\x02H\x12F/injective/exchange/v1beta1/exchange/aggregateMarketVolume/{market_id}\x12\xde\x01\n" +
+	"\x16AggregateMarketVolumes\x12>.injective.exchange.v1beta1.QueryAggregateMarketVolumesRequest\x1a?.injective.exchange.v1beta1.QueryAggregateMarketVolumesResponse\"C\x82\xd3\xe4\x93\x02=\x12;/injective/exchange/v1beta1/exchange/aggregateMarketVolumes\x12\xbf\x01\n" +
+	"\fDenomDecimal\x124.injective.exchange.v1beta1.QueryDenomDecimalRequest\x1a5.injective.exchange.v1beta1.QueryDenomDecimalResponse\"B\x82\xd3\xe4\x93\x02<\x12:/injective/exchange/v1beta1/exchange/denom_decimal/{denom}\x12\xbb\x01\n" +
+	"\rDenomDecimals\x125.injective.exchange.v1beta1.QueryDenomDecimalsRequest\x1a6.injective.exchange.v1beta1.QueryDenomDecimalsResponse\";\x82\xd3\xe4\x93\x025\x123/injective/exchange/v1beta1/exchange/denom_decimals\x12\xaa\x01\n" +
+	"\vSpotMarkets\x123.injective.exchange.v1beta1.QuerySpotMarketsRequest\x1a4.injective.exchange.v1beta1.QuerySpotMarketsResponse\"0\x82\xd3\xe4\x93\x02*\x12(/injective/exchange/v1beta1/spot/markets\x12\xb3\x01\n" +
 	"\n" +
-	"SpotMarket\x12-.injective.exchange.v2.QuerySpotMarketRequest\x1a..injective.exchange.v2.QuerySpotMarketResponse\"7\x82\xd3\xe4\x93\x021\x12//injective/exchange/v2/spot/markets/{market_id}\x12\xac\x01\n" +
-	"\x0fFullSpotMarkets\x122.injective.exchange.v2.QueryFullSpotMarketsRequest\x1a3.injective.exchange.v2.QueryFullSpotMarketsResponse\"0\x82\xd3\xe4\x93\x02*\x12(/injective/exchange/v2/spot/full_markets\x12\xb4\x01\n" +
-	"\x0eFullSpotMarket\x121.injective.exchange.v2.QueryFullSpotMarketRequest\x1a2.injective.exchange.v2.QueryFullSpotMarketResponse\";\x82\xd3\xe4\x93\x025\x123/injective/exchange/v2/spot/full_market/{market_id}\x12\xaf\x01\n" +
-	"\rSpotOrderbook\x120.injective.exchange.v2.QuerySpotOrderbookRequest\x1a1.injective.exchange.v2.QuerySpotOrderbookResponse\"9\x82\xd3\xe4\x93\x023\x121/injective/exchange/v2/spot/orderbook/{market_id}\x12\xc5\x01\n" +
-	"\x10TraderSpotOrders\x123.injective.exchange.v2.QueryTraderSpotOrdersRequest\x1a4.injective.exchange.v2.QueryTraderSpotOrdersResponse\"F\x82\xd3\xe4\x93\x02@\x12>/injective/exchange/v2/spot/orders/{market_id}/{subaccount_id}\x12\xe7\x01\n" +
-	"\x18AccountAddressSpotOrders\x12;.injective.exchange.v2.QueryAccountAddressSpotOrdersRequest\x1a<.injective.exchange.v2.QueryAccountAddressSpotOrdersResponse\"P\x82\xd3\xe4\x93\x02J\x12H/injective/exchange/v2/spot/orders/{market_id}/account/{account_address}\x12\xd5\x01\n" +
-	"\x12SpotOrdersByHashes\x125.injective.exchange.v2.QuerySpotOrdersByHashesRequest\x1a6.injective.exchange.v2.QuerySpotOrdersByHashesResponse\"P\x82\xd3\xe4\x93\x02J\x12H/injective/exchange/v2/spot/orders_by_hashes/{market_id}/{subaccount_id}\x12\xb4\x01\n" +
-	"\x10SubaccountOrders\x123.injective.exchange.v2.QuerySubaccountOrdersRequest\x1a4.injective.exchange.v2.QuerySubaccountOrdersResponse\"5\x82\xd3\xe4\x93\x02/\x12-/injective/exchange/v2/orders/{subaccount_id}\x12\xd8\x01\n" +
-	"\x19TraderSpotTransientOrders\x123.injective.exchange.v2.QueryTraderSpotOrdersRequest\x1a4.injective.exchange.v2.QueryTraderSpotOrdersResponse\"P\x82\xd3\xe4\x93\x02J\x12H/injective/exchange/v2/spot/transient_orders/{market_id}/{subaccount_id}\x12\xc6\x01\n" +
-	"\x12SpotMidPriceAndTOB\x125.injective.exchange.v2.QuerySpotMidPriceAndTOBRequest\x1a6.injective.exchange.v2.QuerySpotMidPriceAndTOBResponse\"A\x82\xd3\xe4\x93\x02;\x129/injective/exchange/v2/spot/mid_price_and_tob/{market_id}\x12\xde\x01\n" +
-	"\x18DerivativeMidPriceAndTOB\x12;.injective.exchange.v2.QueryDerivativeMidPriceAndTOBRequest\x1a<.injective.exchange.v2.QueryDerivativeMidPriceAndTOBResponse\"G\x82\xd3\xe4\x93\x02A\x12?/injective/exchange/v2/derivative/mid_price_and_tob/{market_id}\x12\xc7\x01\n" +
-	"\x13DerivativeOrderbook\x126.injective.exchange.v2.QueryDerivativeOrderbookRequest\x1a7.injective.exchange.v2.QueryDerivativeOrderbookResponse\"?\x82\xd3\xe4\x93\x029\x127/injective/exchange/v2/derivative/orderbook/{market_id}\x12\xdd\x01\n" +
-	"\x16TraderDerivativeOrders\x129.injective.exchange.v2.QueryTraderDerivativeOrdersRequest\x1a:.injective.exchange.v2.QueryTraderDerivativeOrdersResponse\"L\x82\xd3\xe4\x93\x02F\x12D/injective/exchange/v2/derivative/orders/{market_id}/{subaccount_id}\x12\xff\x01\n" +
-	"\x1eAccountAddressDerivativeOrders\x12A.injective.exchange.v2.QueryAccountAddressDerivativeOrdersRequest\x1aB.injective.exchange.v2.QueryAccountAddressDerivativeOrdersResponse\"V\x82\xd3\xe4\x93\x02P\x12N/injective/exchange/v2/derivative/orders/{market_id}/account/{account_address}\x12\xed\x01\n" +
-	"\x18DerivativeOrdersByHashes\x12;.injective.exchange.v2.QueryDerivativeOrdersByHashesRequest\x1a<.injective.exchange.v2.QueryDerivativeOrdersByHashesResponse\"V\x82\xd3\xe4\x93\x02P\x12N/injective/exchange/v2/derivative/orders_by_hashes/{market_id}/{subaccount_id}\x12\xf0\x01\n" +
-	"\x1fTraderDerivativeTransientOrders\x129.injective.exchange.v2.QueryTraderDerivativeOrdersRequest\x1a:.injective.exchange.v2.QueryTraderDerivativeOrdersResponse\"V\x82\xd3\xe4\x93\x02P\x12N/injective/exchange/v2/derivative/transient_orders/{market_id}/{subaccount_id}\x12\xb3\x01\n" +
-	"\x11DerivativeMarkets\x124.injective.exchange.v2.QueryDerivativeMarketsRequest\x1a5.injective.exchange.v2.QueryDerivativeMarketsResponse\"1\x82\xd3\xe4\x93\x02+\x12)/injective/exchange/v2/derivative/markets\x12\xbc\x01\n" +
-	"\x10DerivativeMarket\x123.injective.exchange.v2.QueryDerivativeMarketRequest\x1a4.injective.exchange.v2.QueryDerivativeMarketResponse\"=\x82\xd3\xe4\x93\x027\x125/injective/exchange/v2/derivative/markets/{market_id}\x12\xd8\x01\n" +
-	"\x17DerivativeMarketAddress\x12:.injective.exchange.v2.QueryDerivativeMarketAddressRequest\x1a;.injective.exchange.v2.QueryDerivativeMarketAddressResponse\"D\x82\xd3\xe4\x93\x02>\x12</injective/exchange/v2/derivative/market_address/{market_id}\x12\xc2\x01\n" +
-	"\x14SubaccountTradeNonce\x127.injective.exchange.v2.QuerySubaccountTradeNonceRequest\x1a8.injective.exchange.v2.QuerySubaccountTradeNonceResponse\"7\x82\xd3\xe4\x93\x021\x12//injective/exchange/v2/exchange/{subaccount_id}\x12\xa3\x01\n" +
-	"\x13ExchangeModuleState\x12..injective.exchange.v2.QueryModuleStateRequest\x1a/.injective.exchange.v2.QueryModuleStateResponse\"+\x82\xd3\xe4\x93\x02%\x12#/injective/exchange/v2/module_state\x12\x92\x01\n" +
-	"\tPositions\x12,.injective.exchange.v2.QueryPositionsRequest\x1a-.injective.exchange.v2.QueryPositionsResponse\"(\x82\xd3\xe4\x93\x02\"\x12 /injective/exchange/v2/positions\x12\xb6\x01\n" +
-	"\x11PositionsInMarket\x124.injective.exchange.v2.QueryPositionsInMarketRequest\x1a5.injective.exchange.v2.QueryPositionsInMarketResponse\"4\x82\xd3\xe4\x93\x02.\x12,/injective/exchange/v2/positions/{market_id}\x12\xc0\x01\n" +
-	"\x13SubaccountPositions\x126.injective.exchange.v2.QuerySubaccountPositionsRequest\x1a7.injective.exchange.v2.QuerySubaccountPositionsResponse\"8\x82\xd3\xe4\x93\x022\x120/injective/exchange/v2/positions/{subaccount_id}\x12\xe1\x01\n" +
-	"\x1aSubaccountPositionInMarket\x12=.injective.exchange.v2.QuerySubaccountPositionInMarketRequest\x1a>.injective.exchange.v2.QuerySubaccountPositionInMarketResponse\"D\x82\xd3\xe4\x93\x02>\x12</injective/exchange/v2/positions/{subaccount_id}/{market_id}\x12\x86\x02\n" +
-	"#SubaccountEffectivePositionInMarket\x12F.injective.exchange.v2.QuerySubaccountEffectivePositionInMarketRequest\x1aG.injective.exchange.v2.QuerySubaccountEffectivePositionInMarketResponse\"N\x82\xd3\xe4\x93\x02H\x12F/injective/exchange/v2/effective_positions/{subaccount_id}/{market_id}\x12\xc8\x01\n" +
-	"\x13PerpetualMarketInfo\x126.injective.exchange.v2.QueryPerpetualMarketInfoRequest\x1a7.injective.exchange.v2.QueryPerpetualMarketInfoResponse\"@\x82\xd3\xe4\x93\x02:\x128/injective/exchange/v2/perpetual_market_info/{market_id}\x12\xd1\x01\n" +
-	"\x17ExpiryFuturesMarketInfo\x12:.injective.exchange.v2.QueryExpiryFuturesMarketInfoRequest\x1a;.injective.exchange.v2.QueryExpiryFuturesMarketInfoResponse\"=\x82\xd3\xe4\x93\x027\x125/injective/exchange/v2/expiry_market_info/{market_id}\x12\xd4\x01\n" +
-	"\x16PerpetualMarketFunding\x129.injective.exchange.v2.QueryPerpetualMarketFundingRequest\x1a:.injective.exchange.v2.QueryPerpetualMarketFundingResponse\"C\x82\xd3\xe4\x93\x02=\x12;/injective/exchange/v2/perpetual_market_funding/{market_id}\x12\xd1\x01\n" +
-	"\x17SubaccountOrderMetadata\x12:.injective.exchange.v2.QuerySubaccountOrderMetadataRequest\x1a;.injective.exchange.v2.QuerySubaccountOrderMetadataResponse\"=\x82\xd3\xe4\x93\x027\x125/injective/exchange/v2/order_metadata/{subaccount_id}\x12\xb4\x01\n" +
-	"\x11TradeRewardPoints\x124.injective.exchange.v2.QueryTradeRewardPointsRequest\x1a5.injective.exchange.v2.QueryTradeRewardPointsResponse\"2\x82\xd3\xe4\x93\x02,\x12*/injective/exchange/v2/trade_reward_points\x12\xc3\x01\n" +
-	"\x18PendingTradeRewardPoints\x124.injective.exchange.v2.QueryTradeRewardPointsRequest\x1a5.injective.exchange.v2.QueryTradeRewardPointsResponse\":\x82\xd3\xe4\x93\x024\x122/injective/exchange/v2/pending_trade_reward_points\x12\xbc\x01\n" +
-	"\x13TradeRewardCampaign\x126.injective.exchange.v2.QueryTradeRewardCampaignRequest\x1a7.injective.exchange.v2.QueryTradeRewardCampaignResponse\"4\x82\xd3\xe4\x93\x02.\x12,/injective/exchange/v2/trade_reward_campaign\x12\xd3\x01\n" +
-	"\x16FeeDiscountAccountInfo\x129.injective.exchange.v2.QueryFeeDiscountAccountInfoRequest\x1a:.injective.exchange.v2.QueryFeeDiscountAccountInfoResponse\"B\x82\xd3\xe4\x93\x02<\x12:/injective/exchange/v2/fee_discount_account_info/{account}\x12\xbc\x01\n" +
-	"\x13FeeDiscountSchedule\x126.injective.exchange.v2.QueryFeeDiscountScheduleRequest\x1a7.injective.exchange.v2.QueryFeeDiscountScheduleResponse\"4\x82\xd3\xe4\x93\x02.\x12,/injective/exchange/v2/fee_discount_schedule\x12\xc1\x01\n" +
-	"\x11BalanceMismatches\x124.injective.exchange.v2.QueryBalanceMismatchesRequest\x1a5.injective.exchange.v2.QueryBalanceMismatchesResponse\"?\x82\xd3\xe4\x93\x029\x127/injective/exchange/v2/balance_mismatches/{dust_factor}\x12\xce\x01\n" +
-	"\x17BalanceWithBalanceHolds\x12:.injective.exchange.v2.QueryBalanceWithBalanceHoldsRequest\x1a;.injective.exchange.v2.QueryBalanceWithBalanceHoldsResponse\":\x82\xd3\xe4\x93\x024\x122/injective/exchange/v2/balances_with_balance_holds\x12\xd0\x01\n" +
-	"\x19FeeDiscountTierStatistics\x12<.injective.exchange.v2.QueryFeeDiscountTierStatisticsRequest\x1a=.injective.exchange.v2.QueryFeeDiscountTierStatisticsResponse\"6\x82\xd3\xe4\x93\x020\x12./injective/exchange/v2/fee_discount_tier_stats\x12\x9e\x01\n" +
-	"\x0eMitoVaultInfos\x12,.injective.exchange.v2.MitoVaultInfosRequest\x1a-.injective.exchange.v2.MitoVaultInfosResponse\"/\x82\xd3\xe4\x93\x02)\x12'/injective/exchange/v2/mito_vault_infos\x12\xc5\x01\n" +
-	"\x16QueryMarketIDFromVault\x124.injective.exchange.v2.QueryMarketIDFromVaultRequest\x1a5.injective.exchange.v2.QueryMarketIDFromVaultResponse\">\x82\xd3\xe4\x93\x028\x126/injective/exchange/v2/vault_market_id/{vault_address}\x12\xc8\x01\n" +
-	"\x16HistoricalTradeRecords\x129.injective.exchange.v2.QueryHistoricalTradeRecordsRequest\x1a:.injective.exchange.v2.QueryHistoricalTradeRecordsResponse\"7\x82\xd3\xe4\x93\x021\x12//injective/exchange/v2/historical_trade_records\x12\xc8\x01\n" +
-	"\x13IsOptedOutOfRewards\x126.injective.exchange.v2.QueryIsOptedOutOfRewardsRequest\x1a7.injective.exchange.v2.QueryIsOptedOutOfRewardsResponse\"@\x82\xd3\xe4\x93\x02:\x128/injective/exchange/v2/is_opted_out_of_rewards/{account}\x12\xd6\x01\n" +
-	"\x19OptedOutOfRewardsAccounts\x12<.injective.exchange.v2.QueryOptedOutOfRewardsAccountsRequest\x1a=.injective.exchange.v2.QueryOptedOutOfRewardsAccountsResponse\"<\x82\xd3\xe4\x93\x026\x124/injective/exchange/v2/opted_out_of_rewards_accounts\x12\xbb\x01\n" +
-	"\x10MarketVolatility\x123.injective.exchange.v2.QueryMarketVolatilityRequest\x1a4.injective.exchange.v2.QueryMarketVolatilityResponse\"<\x82\xd3\xe4\x93\x026\x124/injective/exchange/v2/market_volatility/{market_id}\x12\xb2\x01\n" +
-	"\x14BinaryOptionsMarkets\x120.injective.exchange.v2.QueryBinaryMarketsRequest\x1a1.injective.exchange.v2.QueryBinaryMarketsResponse\"5\x82\xd3\xe4\x93\x02/\x12-/injective/exchange/v2/binary_options/markets\x12\x8a\x02\n" +
-	"!TraderDerivativeConditionalOrders\x12D.injective.exchange.v2.QueryTraderDerivativeConditionalOrdersRequest\x1aE.injective.exchange.v2.QueryTraderDerivativeConditionalOrdersResponse\"X\x82\xd3\xe4\x93\x02R\x12P/injective/exchange/v2/derivative/orders/conditional/{market_id}/{subaccount_id}\x12\xef\x01\n" +
-	"\"MarketAtomicExecutionFeeMultiplier\x12E.injective.exchange.v2.QueryMarketAtomicExecutionFeeMultiplierRequest\x1aF.injective.exchange.v2.QueryMarketAtomicExecutionFeeMultiplierResponse\":\x82\xd3\xe4\x93\x024\x122/injective/exchange/v2/atomic_order_fee_multiplier\x12\xba\x01\n" +
-	"\x10ActiveStakeGrant\x123.injective.exchange.v2.QueryActiveStakeGrantRequest\x1a4.injective.exchange.v2.QueryActiveStakeGrantResponse\";\x82\xd3\xe4\x93\x025\x123/injective/exchange/v2/active_stake_grant/{grantee}\x12\xcb\x01\n" +
-	"\x12GrantAuthorization\x125.injective.exchange.v2.QueryGrantAuthorizationRequest\x1a6.injective.exchange.v2.QueryGrantAuthorizationResponse\"F\x82\xd3\xe4\x93\x02@\x12>/injective/exchange/v2/grant_authorization/{granter}/{grantee}\x12\xc5\x01\n" +
-	"\x13GrantAuthorizations\x126.injective.exchange.v2.QueryGrantAuthorizationsRequest\x1a7.injective.exchange.v2.QueryGrantAuthorizationsResponse\"=\x82\xd3\xe4\x93\x027\x125/injective/exchange/v2/grant_authorizations/{granter}\x12\xaf\x01\n" +
-	"\rMarketBalance\x120.injective.exchange.v2.QueryMarketBalanceRequest\x1a1.injective.exchange.v2.QueryMarketBalanceResponse\"9\x82\xd3\xe4\x93\x023\x121/injective/exchange/v2/market_balance/{market_id}\x12\xa7\x01\n" +
-	"\x0eMarketBalances\x121.injective.exchange.v2.QueryMarketBalancesRequest\x1a2.injective.exchange.v2.QueryMarketBalancesResponse\".\x82\xd3\xe4\x93\x02(\x12&/injective/exchange/v2/market_balances\x12\xb8\x01\n" +
-	"\x10DenomMinNotional\x123.injective.exchange.v2.QueryDenomMinNotionalRequest\x1a4.injective.exchange.v2.QueryDenomMinNotionalResponse\"9\x82\xd3\xe4\x93\x023\x121/injective/exchange/v2/denom_min_notional/{denom}\x12\xb4\x01\n" +
-	"\x11DenomMinNotionals\x124.injective.exchange.v2.QueryDenomMinNotionalsRequest\x1a5.injective.exchange.v2.QueryDenomMinNotionalsResponse\"2\x82\xd3\xe4\x93\x02,\x12*/injective/exchange/v2/denom_min_notionalsBSZQgithub.com/InjectiveLabs/injective-core/injective-chain/modules/exchange/types/v2b\x06proto3"
+	"SpotMarket\x122.injective.exchange.v1beta1.QuerySpotMarketRequest\x1a3.injective.exchange.v1beta1.QuerySpotMarketResponse\"<\x82\xd3\xe4\x93\x026\x124/injective/exchange/v1beta1/spot/markets/{market_id}\x12\xbb\x01\n" +
+	"\x0fFullSpotMarkets\x127.injective.exchange.v1beta1.QueryFullSpotMarketsRequest\x1a8.injective.exchange.v1beta1.QueryFullSpotMarketsResponse\"5\x82\xd3\xe4\x93\x02/\x12-/injective/exchange/v1beta1/spot/full_markets\x12\xc3\x01\n" +
+	"\x0eFullSpotMarket\x126.injective.exchange.v1beta1.QueryFullSpotMarketRequest\x1a7.injective.exchange.v1beta1.QueryFullSpotMarketResponse\"@\x82\xd3\xe4\x93\x02:\x128/injective/exchange/v1beta1/spot/full_market/{market_id}\x12\xbe\x01\n" +
+	"\rSpotOrderbook\x125.injective.exchange.v1beta1.QuerySpotOrderbookRequest\x1a6.injective.exchange.v1beta1.QuerySpotOrderbookResponse\">\x82\xd3\xe4\x93\x028\x126/injective/exchange/v1beta1/spot/orderbook/{market_id}\x12\xd4\x01\n" +
+	"\x10TraderSpotOrders\x128.injective.exchange.v1beta1.QueryTraderSpotOrdersRequest\x1a9.injective.exchange.v1beta1.QueryTraderSpotOrdersResponse\"K\x82\xd3\xe4\x93\x02E\x12C/injective/exchange/v1beta1/spot/orders/{market_id}/{subaccount_id}\x12\xf6\x01\n" +
+	"\x18AccountAddressSpotOrders\x12@.injective.exchange.v1beta1.QueryAccountAddressSpotOrdersRequest\x1aA.injective.exchange.v1beta1.QueryAccountAddressSpotOrdersResponse\"U\x82\xd3\xe4\x93\x02O\x12M/injective/exchange/v1beta1/spot/orders/{market_id}/account/{account_address}\x12\xe4\x01\n" +
+	"\x12SpotOrdersByHashes\x12:.injective.exchange.v1beta1.QuerySpotOrdersByHashesRequest\x1a;.injective.exchange.v1beta1.QuerySpotOrdersByHashesResponse\"U\x82\xd3\xe4\x93\x02O\x12M/injective/exchange/v1beta1/spot/orders_by_hashes/{market_id}/{subaccount_id}\x12\xc3\x01\n" +
+	"\x10SubaccountOrders\x128.injective.exchange.v1beta1.QuerySubaccountOrdersRequest\x1a9.injective.exchange.v1beta1.QuerySubaccountOrdersResponse\":\x82\xd3\xe4\x93\x024\x122/injective/exchange/v1beta1/orders/{subaccount_id}\x12\xe7\x01\n" +
+	"\x19TraderSpotTransientOrders\x128.injective.exchange.v1beta1.QueryTraderSpotOrdersRequest\x1a9.injective.exchange.v1beta1.QueryTraderSpotOrdersResponse\"U\x82\xd3\xe4\x93\x02O\x12M/injective/exchange/v1beta1/spot/transient_orders/{market_id}/{subaccount_id}\x12\xd5\x01\n" +
+	"\x12SpotMidPriceAndTOB\x12:.injective.exchange.v1beta1.QuerySpotMidPriceAndTOBRequest\x1a;.injective.exchange.v1beta1.QuerySpotMidPriceAndTOBResponse\"F\x82\xd3\xe4\x93\x02@\x12>/injective/exchange/v1beta1/spot/mid_price_and_tob/{market_id}\x12\xed\x01\n" +
+	"\x18DerivativeMidPriceAndTOB\x12@.injective.exchange.v1beta1.QueryDerivativeMidPriceAndTOBRequest\x1aA.injective.exchange.v1beta1.QueryDerivativeMidPriceAndTOBResponse\"L\x82\xd3\xe4\x93\x02F\x12D/injective/exchange/v1beta1/derivative/mid_price_and_tob/{market_id}\x12\xd6\x01\n" +
+	"\x13DerivativeOrderbook\x12;.injective.exchange.v1beta1.QueryDerivativeOrderbookRequest\x1a<.injective.exchange.v1beta1.QueryDerivativeOrderbookResponse\"D\x82\xd3\xe4\x93\x02>\x12</injective/exchange/v1beta1/derivative/orderbook/{market_id}\x12\xec\x01\n" +
+	"\x16TraderDerivativeOrders\x12>.injective.exchange.v1beta1.QueryTraderDerivativeOrdersRequest\x1a?.injective.exchange.v1beta1.QueryTraderDerivativeOrdersResponse\"Q\x82\xd3\xe4\x93\x02K\x12I/injective/exchange/v1beta1/derivative/orders/{market_id}/{subaccount_id}\x12\x8e\x02\n" +
+	"\x1eAccountAddressDerivativeOrders\x12F.injective.exchange.v1beta1.QueryAccountAddressDerivativeOrdersRequest\x1aG.injective.exchange.v1beta1.QueryAccountAddressDerivativeOrdersResponse\"[\x82\xd3\xe4\x93\x02U\x12S/injective/exchange/v1beta1/derivative/orders/{market_id}/account/{account_address}\x12\xfc\x01\n" +
+	"\x18DerivativeOrdersByHashes\x12@.injective.exchange.v1beta1.QueryDerivativeOrdersByHashesRequest\x1aA.injective.exchange.v1beta1.QueryDerivativeOrdersByHashesResponse\"[\x82\xd3\xe4\x93\x02U\x12S/injective/exchange/v1beta1/derivative/orders_by_hashes/{market_id}/{subaccount_id}\x12\xff\x01\n" +
+	"\x1fTraderDerivativeTransientOrders\x12>.injective.exchange.v1beta1.QueryTraderDerivativeOrdersRequest\x1a?.injective.exchange.v1beta1.QueryTraderDerivativeOrdersResponse\"[\x82\xd3\xe4\x93\x02U\x12S/injective/exchange/v1beta1/derivative/transient_orders/{market_id}/{subaccount_id}\x12\xc2\x01\n" +
+	"\x11DerivativeMarkets\x129.injective.exchange.v1beta1.QueryDerivativeMarketsRequest\x1a:.injective.exchange.v1beta1.QueryDerivativeMarketsResponse\"6\x82\xd3\xe4\x93\x020\x12./injective/exchange/v1beta1/derivative/markets\x12\xcb\x01\n" +
+	"\x10DerivativeMarket\x128.injective.exchange.v1beta1.QueryDerivativeMarketRequest\x1a9.injective.exchange.v1beta1.QueryDerivativeMarketResponse\"B\x82\xd3\xe4\x93\x02<\x12:/injective/exchange/v1beta1/derivative/markets/{market_id}\x12\xe7\x01\n" +
+	"\x17DerivativeMarketAddress\x12?.injective.exchange.v1beta1.QueryDerivativeMarketAddressRequest\x1a@.injective.exchange.v1beta1.QueryDerivativeMarketAddressResponse\"I\x82\xd3\xe4\x93\x02C\x12A/injective/exchange/v1beta1/derivative/market_address/{market_id}\x12\xd1\x01\n" +
+	"\x14SubaccountTradeNonce\x12<.injective.exchange.v1beta1.QuerySubaccountTradeNonceRequest\x1a=.injective.exchange.v1beta1.QuerySubaccountTradeNonceResponse\"<\x82\xd3\xe4\x93\x026\x124/injective/exchange/v1beta1/exchange/{subaccount_id}\x12\xb2\x01\n" +
+	"\x13ExchangeModuleState\x123.injective.exchange.v1beta1.QueryModuleStateRequest\x1a4.injective.exchange.v1beta1.QueryModuleStateResponse\"0\x82\xd3\xe4\x93\x02*\x12(/injective/exchange/v1beta1/module_state\x12\xa1\x01\n" +
+	"\tPositions\x121.injective.exchange.v1beta1.QueryPositionsRequest\x1a2.injective.exchange.v1beta1.QueryPositionsResponse\"-\x82\xd3\xe4\x93\x02'\x12%/injective/exchange/v1beta1/positions\x12\xcf\x01\n" +
+	"\x13SubaccountPositions\x12;.injective.exchange.v1beta1.QuerySubaccountPositionsRequest\x1a<.injective.exchange.v1beta1.QuerySubaccountPositionsResponse\"=\x82\xd3\xe4\x93\x027\x125/injective/exchange/v1beta1/positions/{subaccount_id}\x12\xf0\x01\n" +
+	"\x1aSubaccountPositionInMarket\x12B.injective.exchange.v1beta1.QuerySubaccountPositionInMarketRequest\x1aC.injective.exchange.v1beta1.QuerySubaccountPositionInMarketResponse\"I\x82\xd3\xe4\x93\x02C\x12A/injective/exchange/v1beta1/positions/{subaccount_id}/{market_id}\x12\x95\x02\n" +
+	"#SubaccountEffectivePositionInMarket\x12K.injective.exchange.v1beta1.QuerySubaccountEffectivePositionInMarketRequest\x1aL.injective.exchange.v1beta1.QuerySubaccountEffectivePositionInMarketResponse\"S\x82\xd3\xe4\x93\x02M\x12K/injective/exchange/v1beta1/effective_positions/{subaccount_id}/{market_id}\x12\xd7\x01\n" +
+	"\x13PerpetualMarketInfo\x12;.injective.exchange.v1beta1.QueryPerpetualMarketInfoRequest\x1a<.injective.exchange.v1beta1.QueryPerpetualMarketInfoResponse\"E\x82\xd3\xe4\x93\x02?\x12=/injective/exchange/v1beta1/perpetual_market_info/{market_id}\x12\xe0\x01\n" +
+	"\x17ExpiryFuturesMarketInfo\x12?.injective.exchange.v1beta1.QueryExpiryFuturesMarketInfoRequest\x1a@.injective.exchange.v1beta1.QueryExpiryFuturesMarketInfoResponse\"B\x82\xd3\xe4\x93\x02<\x12:/injective/exchange/v1beta1/expiry_market_info/{market_id}\x12\xe3\x01\n" +
+	"\x16PerpetualMarketFunding\x12>.injective.exchange.v1beta1.QueryPerpetualMarketFundingRequest\x1a?.injective.exchange.v1beta1.QueryPerpetualMarketFundingResponse\"H\x82\xd3\xe4\x93\x02B\x12@/injective/exchange/v1beta1/perpetual_market_funding/{market_id}\x12\xe0\x01\n" +
+	"\x17SubaccountOrderMetadata\x12?.injective.exchange.v1beta1.QuerySubaccountOrderMetadataRequest\x1a@.injective.exchange.v1beta1.QuerySubaccountOrderMetadataResponse\"B\x82\xd3\xe4\x93\x02<\x12:/injective/exchange/v1beta1/order_metadata/{subaccount_id}\x12\xc3\x01\n" +
+	"\x11TradeRewardPoints\x129.injective.exchange.v1beta1.QueryTradeRewardPointsRequest\x1a:.injective.exchange.v1beta1.QueryTradeRewardPointsResponse\"7\x82\xd3\xe4\x93\x021\x12//injective/exchange/v1beta1/trade_reward_points\x12\xd2\x01\n" +
+	"\x18PendingTradeRewardPoints\x129.injective.exchange.v1beta1.QueryTradeRewardPointsRequest\x1a:.injective.exchange.v1beta1.QueryTradeRewardPointsResponse\"?\x82\xd3\xe4\x93\x029\x127/injective/exchange/v1beta1/pending_trade_reward_points\x12\xcb\x01\n" +
+	"\x13TradeRewardCampaign\x12;.injective.exchange.v1beta1.QueryTradeRewardCampaignRequest\x1a<.injective.exchange.v1beta1.QueryTradeRewardCampaignResponse\"9\x82\xd3\xe4\x93\x023\x121/injective/exchange/v1beta1/trade_reward_campaign\x12\xe2\x01\n" +
+	"\x16FeeDiscountAccountInfo\x12>.injective.exchange.v1beta1.QueryFeeDiscountAccountInfoRequest\x1a?.injective.exchange.v1beta1.QueryFeeDiscountAccountInfoResponse\"G\x82\xd3\xe4\x93\x02A\x12?/injective/exchange/v1beta1/fee_discount_account_info/{account}\x12\xcb\x01\n" +
+	"\x13FeeDiscountSchedule\x12;.injective.exchange.v1beta1.QueryFeeDiscountScheduleRequest\x1a<.injective.exchange.v1beta1.QueryFeeDiscountScheduleResponse\"9\x82\xd3\xe4\x93\x023\x121/injective/exchange/v1beta1/fee_discount_schedule\x12\xd0\x01\n" +
+	"\x11BalanceMismatches\x129.injective.exchange.v1beta1.QueryBalanceMismatchesRequest\x1a:.injective.exchange.v1beta1.QueryBalanceMismatchesResponse\"D\x82\xd3\xe4\x93\x02>\x12</injective/exchange/v1beta1/balance_mismatches/{dust_factor}\x12\xdd\x01\n" +
+	"\x17BalanceWithBalanceHolds\x12?.injective.exchange.v1beta1.QueryBalanceWithBalanceHoldsRequest\x1a@.injective.exchange.v1beta1.QueryBalanceWithBalanceHoldsResponse\"?\x82\xd3\xe4\x93\x029\x127/injective/exchange/v1beta1/balances_with_balance_holds\x12\xdf\x01\n" +
+	"\x19FeeDiscountTierStatistics\x12A.injective.exchange.v1beta1.QueryFeeDiscountTierStatisticsRequest\x1aB.injective.exchange.v1beta1.QueryFeeDiscountTierStatisticsResponse\";\x82\xd3\xe4\x93\x025\x123/injective/exchange/v1beta1/fee_discount_tier_stats\x12\xad\x01\n" +
+	"\x0eMitoVaultInfos\x121.injective.exchange.v1beta1.MitoVaultInfosRequest\x1a2.injective.exchange.v1beta1.MitoVaultInfosResponse\"4\x82\xd3\xe4\x93\x02.\x12,/injective/exchange/v1beta1/mito_vault_infos\x12\xd4\x01\n" +
+	"\x16QueryMarketIDFromVault\x129.injective.exchange.v1beta1.QueryMarketIDFromVaultRequest\x1a:.injective.exchange.v1beta1.QueryMarketIDFromVaultResponse\"C\x82\xd3\xe4\x93\x02=\x12;/injective/exchange/v1beta1/vault_market_id/{vault_address}\x12\xd7\x01\n" +
+	"\x16HistoricalTradeRecords\x12>.injective.exchange.v1beta1.QueryHistoricalTradeRecordsRequest\x1a?.injective.exchange.v1beta1.QueryHistoricalTradeRecordsResponse\"<\x82\xd3\xe4\x93\x026\x124/injective/exchange/v1beta1/historical_trade_records\x12\xd7\x01\n" +
+	"\x13IsOptedOutOfRewards\x12;.injective.exchange.v1beta1.QueryIsOptedOutOfRewardsRequest\x1a<.injective.exchange.v1beta1.QueryIsOptedOutOfRewardsResponse\"E\x82\xd3\xe4\x93\x02?\x12=/injective/exchange/v1beta1/is_opted_out_of_rewards/{account}\x12\xe5\x01\n" +
+	"\x19OptedOutOfRewardsAccounts\x12A.injective.exchange.v1beta1.QueryOptedOutOfRewardsAccountsRequest\x1aB.injective.exchange.v1beta1.QueryOptedOutOfRewardsAccountsResponse\"A\x82\xd3\xe4\x93\x02;\x129/injective/exchange/v1beta1/opted_out_of_rewards_accounts\x12\xca\x01\n" +
+	"\x10MarketVolatility\x128.injective.exchange.v1beta1.QueryMarketVolatilityRequest\x1a9.injective.exchange.v1beta1.QueryMarketVolatilityResponse\"A\x82\xd3\xe4\x93\x02;\x129/injective/exchange/v1beta1/market_volatility/{market_id}\x12\xc1\x01\n" +
+	"\x14BinaryOptionsMarkets\x125.injective.exchange.v1beta1.QueryBinaryMarketsRequest\x1a6.injective.exchange.v1beta1.QueryBinaryMarketsResponse\":\x82\xd3\xe4\x93\x024\x122/injective/exchange/v1beta1/binary_options/markets\x12\x99\x02\n" +
+	"!TraderDerivativeConditionalOrders\x12I.injective.exchange.v1beta1.QueryTraderDerivativeConditionalOrdersRequest\x1aJ.injective.exchange.v1beta1.QueryTraderDerivativeConditionalOrdersResponse\"]\x82\xd3\xe4\x93\x02W\x12U/injective/exchange/v1beta1/derivative/orders/conditional/{market_id}/{subaccount_id}\x12\xfe\x01\n" +
+	"\"MarketAtomicExecutionFeeMultiplier\x12J.injective.exchange.v1beta1.QueryMarketAtomicExecutionFeeMultiplierRequest\x1aK.injective.exchange.v1beta1.QueryMarketAtomicExecutionFeeMultiplierResponse\"?\x82\xd3\xe4\x93\x029\x127/injective/exchange/v1beta1/atomic_order_fee_multiplier\x12\xc9\x01\n" +
+	"\x10ActiveStakeGrant\x128.injective.exchange.v1beta1.QueryActiveStakeGrantRequest\x1a9.injective.exchange.v1beta1.QueryActiveStakeGrantResponse\"@\x82\xd3\xe4\x93\x02:\x128/injective/exchange/v1beta1/active_stake_grant/{grantee}\x12\xda\x01\n" +
+	"\x12GrantAuthorization\x12:.injective.exchange.v1beta1.QueryGrantAuthorizationRequest\x1a;.injective.exchange.v1beta1.QueryGrantAuthorizationResponse\"K\x82\xd3\xe4\x93\x02E\x12C/injective/exchange/v1beta1/grant_authorization/{granter}/{grantee}\x12\xd4\x01\n" +
+	"\x13GrantAuthorizations\x12;.injective.exchange.v1beta1.QueryGrantAuthorizationsRequest\x1a<.injective.exchange.v1beta1.QueryGrantAuthorizationsResponse\"B\x82\xd3\xe4\x93\x02<\x12:/injective/exchange/v1beta1/grant_authorizations/{granter}\x12\xbe\x01\n" +
+	"\rMarketBalance\x125.injective.exchange.v1beta1.QueryMarketBalanceRequest\x1a6.injective.exchange.v1beta1.QueryMarketBalanceResponse\">\x82\xd3\xe4\x93\x028\x126/injective/exchange/v1beta1/market_balance/{market_id}\x12\xb6\x01\n" +
+	"\x0eMarketBalances\x126.injective.exchange.v1beta1.QueryMarketBalancesRequest\x1a7.injective.exchange.v1beta1.QueryMarketBalancesResponse\"3\x82\xd3\xe4\x93\x02-\x12+/injective/exchange/v1beta1/market_balances\x12\xc7\x01\n" +
+	"\x10DenomMinNotional\x128.injective.exchange.v1beta1.QueryDenomMinNotionalRequest\x1a9.injective.exchange.v1beta1.QueryDenomMinNotionalResponse\">\x82\xd3\xe4\x93\x028\x126/injective/exchange/v1beta1/denom_min_notional/{denom}\x12\xc3\x01\n" +
+	"\x11DenomMinNotionals\x129.injective.exchange.v1beta1.QueryDenomMinNotionalsRequest\x1a:.injective.exchange.v1beta1.QueryDenomMinNotionalsResponse\"7\x82\xd3\xe4\x93\x021\x12//injective/exchange/v1beta1/denom_min_notionalsBPZNgithub.com/InjectiveLabs/injective-core/injective-chain/modules/exchange/typesb\x06proto3"
 
 var (
-	file_injective_exchange_v2_query_proto_rawDescOnce sync.Once
-	file_injective_exchange_v2_query_proto_rawDescData []byte
+	file_injective_exchange_v1beta1_query_proto_rawDescOnce sync.Once
+	file_injective_exchange_v1beta1_query_proto_rawDescData []byte
 )
 
-func file_injective_exchange_v2_query_proto_rawDescGZIP() []byte {
-	file_injective_exchange_v2_query_proto_rawDescOnce.Do(func() {
-		file_injective_exchange_v2_query_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_injective_exchange_v2_query_proto_rawDesc), len(file_injective_exchange_v2_query_proto_rawDesc)))
+func file_injective_exchange_v1beta1_query_proto_rawDescGZIP() []byte {
+	file_injective_exchange_v1beta1_query_proto_rawDescOnce.Do(func() {
+		file_injective_exchange_v1beta1_query_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_injective_exchange_v1beta1_query_proto_rawDesc), len(file_injective_exchange_v1beta1_query_proto_rawDesc)))
 	})
-	return file_injective_exchange_v2_query_proto_rawDescData
+	return file_injective_exchange_v1beta1_query_proto_rawDescData
 }
 
-var file_injective_exchange_v2_query_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_injective_exchange_v2_query_proto_msgTypes = make([]protoimpl.MessageInfo, 147)
-var file_injective_exchange_v2_query_proto_goTypes = []any{
-	(OrderSide)(0),                                               // 0: injective.exchange.v2.OrderSide
-	(CancellationStrategy)(0),                                    // 1: injective.exchange.v2.CancellationStrategy
-	(*Subaccount)(nil),                                           // 2: injective.exchange.v2.Subaccount
-	(*QuerySubaccountOrdersRequest)(nil),                         // 3: injective.exchange.v2.QuerySubaccountOrdersRequest
-	(*QuerySubaccountOrdersResponse)(nil),                        // 4: injective.exchange.v2.QuerySubaccountOrdersResponse
-	(*SubaccountOrderbookMetadataWithMarket)(nil),                // 5: injective.exchange.v2.SubaccountOrderbookMetadataWithMarket
-	(*QueryExchangeParamsRequest)(nil),                           // 6: injective.exchange.v2.QueryExchangeParamsRequest
-	(*QueryExchangeParamsResponse)(nil),                          // 7: injective.exchange.v2.QueryExchangeParamsResponse
-	(*QuerySubaccountDepositsRequest)(nil),                       // 8: injective.exchange.v2.QuerySubaccountDepositsRequest
-	(*QuerySubaccountDepositsResponse)(nil),                      // 9: injective.exchange.v2.QuerySubaccountDepositsResponse
-	(*QueryExchangeBalancesRequest)(nil),                         // 10: injective.exchange.v2.QueryExchangeBalancesRequest
-	(*QueryExchangeBalancesResponse)(nil),                        // 11: injective.exchange.v2.QueryExchangeBalancesResponse
-	(*QueryAggregateVolumeRequest)(nil),                          // 12: injective.exchange.v2.QueryAggregateVolumeRequest
-	(*QueryAggregateVolumeResponse)(nil),                         // 13: injective.exchange.v2.QueryAggregateVolumeResponse
-	(*QueryAggregateVolumesRequest)(nil),                         // 14: injective.exchange.v2.QueryAggregateVolumesRequest
-	(*QueryAggregateVolumesResponse)(nil),                        // 15: injective.exchange.v2.QueryAggregateVolumesResponse
-	(*QueryAggregateMarketVolumeRequest)(nil),                    // 16: injective.exchange.v2.QueryAggregateMarketVolumeRequest
-	(*QueryAggregateMarketVolumeResponse)(nil),                   // 17: injective.exchange.v2.QueryAggregateMarketVolumeResponse
-	(*QueryDenomDecimalRequest)(nil),                             // 18: injective.exchange.v2.QueryDenomDecimalRequest
-	(*QueryDenomDecimalResponse)(nil),                            // 19: injective.exchange.v2.QueryDenomDecimalResponse
-	(*QueryDenomDecimalsRequest)(nil),                            // 20: injective.exchange.v2.QueryDenomDecimalsRequest
-	(*QueryDenomDecimalsResponse)(nil),                           // 21: injective.exchange.v2.QueryDenomDecimalsResponse
-	(*QueryAggregateMarketVolumesRequest)(nil),                   // 22: injective.exchange.v2.QueryAggregateMarketVolumesRequest
-	(*QueryAggregateMarketVolumesResponse)(nil),                  // 23: injective.exchange.v2.QueryAggregateMarketVolumesResponse
-	(*QuerySubaccountDepositRequest)(nil),                        // 24: injective.exchange.v2.QuerySubaccountDepositRequest
-	(*QuerySubaccountDepositResponse)(nil),                       // 25: injective.exchange.v2.QuerySubaccountDepositResponse
-	(*QuerySpotMarketsRequest)(nil),                              // 26: injective.exchange.v2.QuerySpotMarketsRequest
-	(*QuerySpotMarketsResponse)(nil),                             // 27: injective.exchange.v2.QuerySpotMarketsResponse
-	(*QuerySpotMarketRequest)(nil),                               // 28: injective.exchange.v2.QuerySpotMarketRequest
-	(*QuerySpotMarketResponse)(nil),                              // 29: injective.exchange.v2.QuerySpotMarketResponse
-	(*QuerySpotOrderbookRequest)(nil),                            // 30: injective.exchange.v2.QuerySpotOrderbookRequest
-	(*QuerySpotOrderbookResponse)(nil),                           // 31: injective.exchange.v2.QuerySpotOrderbookResponse
-	(*FullSpotMarket)(nil),                                       // 32: injective.exchange.v2.FullSpotMarket
-	(*QueryFullSpotMarketsRequest)(nil),                          // 33: injective.exchange.v2.QueryFullSpotMarketsRequest
-	(*QueryFullSpotMarketsResponse)(nil),                         // 34: injective.exchange.v2.QueryFullSpotMarketsResponse
-	(*QueryFullSpotMarketRequest)(nil),                           // 35: injective.exchange.v2.QueryFullSpotMarketRequest
-	(*QueryFullSpotMarketResponse)(nil),                          // 36: injective.exchange.v2.QueryFullSpotMarketResponse
-	(*QuerySpotOrdersByHashesRequest)(nil),                       // 37: injective.exchange.v2.QuerySpotOrdersByHashesRequest
-	(*QuerySpotOrdersByHashesResponse)(nil),                      // 38: injective.exchange.v2.QuerySpotOrdersByHashesResponse
-	(*QueryTraderSpotOrdersRequest)(nil),                         // 39: injective.exchange.v2.QueryTraderSpotOrdersRequest
-	(*QueryAccountAddressSpotOrdersRequest)(nil),                 // 40: injective.exchange.v2.QueryAccountAddressSpotOrdersRequest
-	(*TrimmedSpotLimitOrder)(nil),                                // 41: injective.exchange.v2.TrimmedSpotLimitOrder
-	(*QueryTraderSpotOrdersResponse)(nil),                        // 42: injective.exchange.v2.QueryTraderSpotOrdersResponse
-	(*QueryAccountAddressSpotOrdersResponse)(nil),                // 43: injective.exchange.v2.QueryAccountAddressSpotOrdersResponse
-	(*QuerySpotMidPriceAndTOBRequest)(nil),                       // 44: injective.exchange.v2.QuerySpotMidPriceAndTOBRequest
-	(*QuerySpotMidPriceAndTOBResponse)(nil),                      // 45: injective.exchange.v2.QuerySpotMidPriceAndTOBResponse
-	(*QueryDerivativeMidPriceAndTOBRequest)(nil),                 // 46: injective.exchange.v2.QueryDerivativeMidPriceAndTOBRequest
-	(*QueryDerivativeMidPriceAndTOBResponse)(nil),                // 47: injective.exchange.v2.QueryDerivativeMidPriceAndTOBResponse
-	(*QueryDerivativeOrderbookRequest)(nil),                      // 48: injective.exchange.v2.QueryDerivativeOrderbookRequest
-	(*QueryDerivativeOrderbookResponse)(nil),                     // 49: injective.exchange.v2.QueryDerivativeOrderbookResponse
-	(*QueryTraderSpotOrdersToCancelUpToAmountRequest)(nil),       // 50: injective.exchange.v2.QueryTraderSpotOrdersToCancelUpToAmountRequest
-	(*QueryTraderDerivativeOrdersToCancelUpToAmountRequest)(nil), // 51: injective.exchange.v2.QueryTraderDerivativeOrdersToCancelUpToAmountRequest
-	(*QueryTraderDerivativeOrdersRequest)(nil),                   // 52: injective.exchange.v2.QueryTraderDerivativeOrdersRequest
-	(*QueryAccountAddressDerivativeOrdersRequest)(nil),           // 53: injective.exchange.v2.QueryAccountAddressDerivativeOrdersRequest
-	(*TrimmedDerivativeLimitOrder)(nil),                          // 54: injective.exchange.v2.TrimmedDerivativeLimitOrder
-	(*QueryTraderDerivativeOrdersResponse)(nil),                  // 55: injective.exchange.v2.QueryTraderDerivativeOrdersResponse
-	(*QueryAccountAddressDerivativeOrdersResponse)(nil),          // 56: injective.exchange.v2.QueryAccountAddressDerivativeOrdersResponse
-	(*QueryDerivativeOrdersByHashesRequest)(nil),                 // 57: injective.exchange.v2.QueryDerivativeOrdersByHashesRequest
-	(*QueryDerivativeOrdersByHashesResponse)(nil),                // 58: injective.exchange.v2.QueryDerivativeOrdersByHashesResponse
-	(*QueryDerivativeMarketsRequest)(nil),                        // 59: injective.exchange.v2.QueryDerivativeMarketsRequest
-	(*PriceLevel)(nil),                                           // 60: injective.exchange.v2.PriceLevel
-	(*PerpetualMarketState)(nil),                                 // 61: injective.exchange.v2.PerpetualMarketState
-	(*FullDerivativeMarket)(nil),                                 // 62: injective.exchange.v2.FullDerivativeMarket
-	(*QueryDerivativeMarketsResponse)(nil),                       // 63: injective.exchange.v2.QueryDerivativeMarketsResponse
-	(*QueryDerivativeMarketRequest)(nil),                         // 64: injective.exchange.v2.QueryDerivativeMarketRequest
-	(*QueryDerivativeMarketResponse)(nil),                        // 65: injective.exchange.v2.QueryDerivativeMarketResponse
-	(*QueryDerivativeMarketAddressRequest)(nil),                  // 66: injective.exchange.v2.QueryDerivativeMarketAddressRequest
-	(*QueryDerivativeMarketAddressResponse)(nil),                 // 67: injective.exchange.v2.QueryDerivativeMarketAddressResponse
-	(*QuerySubaccountTradeNonceRequest)(nil),                     // 68: injective.exchange.v2.QuerySubaccountTradeNonceRequest
-	(*QueryPositionsInMarketRequest)(nil),                        // 69: injective.exchange.v2.QueryPositionsInMarketRequest
-	(*QueryPositionsInMarketResponse)(nil),                       // 70: injective.exchange.v2.QueryPositionsInMarketResponse
-	(*QuerySubaccountPositionsRequest)(nil),                      // 71: injective.exchange.v2.QuerySubaccountPositionsRequest
-	(*QuerySubaccountPositionInMarketRequest)(nil),               // 72: injective.exchange.v2.QuerySubaccountPositionInMarketRequest
-	(*QuerySubaccountEffectivePositionInMarketRequest)(nil),      // 73: injective.exchange.v2.QuerySubaccountEffectivePositionInMarketRequest
-	(*QuerySubaccountOrderMetadataRequest)(nil),                  // 74: injective.exchange.v2.QuerySubaccountOrderMetadataRequest
-	(*QuerySubaccountPositionsResponse)(nil),                     // 75: injective.exchange.v2.QuerySubaccountPositionsResponse
-	(*QuerySubaccountPositionInMarketResponse)(nil),              // 76: injective.exchange.v2.QuerySubaccountPositionInMarketResponse
-	(*EffectivePosition)(nil),                                    // 77: injective.exchange.v2.EffectivePosition
-	(*QuerySubaccountEffectivePositionInMarketResponse)(nil),     // 78: injective.exchange.v2.QuerySubaccountEffectivePositionInMarketResponse
-	(*QueryPerpetualMarketInfoRequest)(nil),                      // 79: injective.exchange.v2.QueryPerpetualMarketInfoRequest
-	(*QueryPerpetualMarketInfoResponse)(nil),                     // 80: injective.exchange.v2.QueryPerpetualMarketInfoResponse
-	(*QueryExpiryFuturesMarketInfoRequest)(nil),                  // 81: injective.exchange.v2.QueryExpiryFuturesMarketInfoRequest
-	(*QueryExpiryFuturesMarketInfoResponse)(nil),                 // 82: injective.exchange.v2.QueryExpiryFuturesMarketInfoResponse
-	(*QueryPerpetualMarketFundingRequest)(nil),                   // 83: injective.exchange.v2.QueryPerpetualMarketFundingRequest
-	(*QueryPerpetualMarketFundingResponse)(nil),                  // 84: injective.exchange.v2.QueryPerpetualMarketFundingResponse
-	(*QuerySubaccountOrderMetadataResponse)(nil),                 // 85: injective.exchange.v2.QuerySubaccountOrderMetadataResponse
-	(*QuerySubaccountTradeNonceResponse)(nil),                    // 86: injective.exchange.v2.QuerySubaccountTradeNonceResponse
-	(*QueryModuleStateRequest)(nil),                              // 87: injective.exchange.v2.QueryModuleStateRequest
-	(*QueryModuleStateResponse)(nil),                             // 88: injective.exchange.v2.QueryModuleStateResponse
-	(*QueryPositionsRequest)(nil),                                // 89: injective.exchange.v2.QueryPositionsRequest
-	(*QueryPositionsResponse)(nil),                               // 90: injective.exchange.v2.QueryPositionsResponse
-	(*QueryTradeRewardPointsRequest)(nil),                        // 91: injective.exchange.v2.QueryTradeRewardPointsRequest
-	(*QueryTradeRewardPointsResponse)(nil),                       // 92: injective.exchange.v2.QueryTradeRewardPointsResponse
-	(*QueryTradeRewardCampaignRequest)(nil),                      // 93: injective.exchange.v2.QueryTradeRewardCampaignRequest
-	(*QueryTradeRewardCampaignResponse)(nil),                     // 94: injective.exchange.v2.QueryTradeRewardCampaignResponse
-	(*QueryIsOptedOutOfRewardsRequest)(nil),                      // 95: injective.exchange.v2.QueryIsOptedOutOfRewardsRequest
-	(*QueryIsOptedOutOfRewardsResponse)(nil),                     // 96: injective.exchange.v2.QueryIsOptedOutOfRewardsResponse
-	(*QueryOptedOutOfRewardsAccountsRequest)(nil),                // 97: injective.exchange.v2.QueryOptedOutOfRewardsAccountsRequest
-	(*QueryOptedOutOfRewardsAccountsResponse)(nil),               // 98: injective.exchange.v2.QueryOptedOutOfRewardsAccountsResponse
-	(*QueryFeeDiscountAccountInfoRequest)(nil),                   // 99: injective.exchange.v2.QueryFeeDiscountAccountInfoRequest
-	(*QueryFeeDiscountAccountInfoResponse)(nil),                  // 100: injective.exchange.v2.QueryFeeDiscountAccountInfoResponse
-	(*QueryFeeDiscountScheduleRequest)(nil),                      // 101: injective.exchange.v2.QueryFeeDiscountScheduleRequest
-	(*QueryFeeDiscountScheduleResponse)(nil),                     // 102: injective.exchange.v2.QueryFeeDiscountScheduleResponse
-	(*QueryBalanceMismatchesRequest)(nil),                        // 103: injective.exchange.v2.QueryBalanceMismatchesRequest
-	(*BalanceMismatch)(nil),                                      // 104: injective.exchange.v2.BalanceMismatch
-	(*QueryBalanceMismatchesResponse)(nil),                       // 105: injective.exchange.v2.QueryBalanceMismatchesResponse
-	(*QueryBalanceWithBalanceHoldsRequest)(nil),                  // 106: injective.exchange.v2.QueryBalanceWithBalanceHoldsRequest
-	(*BalanceWithMarginHold)(nil),                                // 107: injective.exchange.v2.BalanceWithMarginHold
-	(*QueryBalanceWithBalanceHoldsResponse)(nil),                 // 108: injective.exchange.v2.QueryBalanceWithBalanceHoldsResponse
-	(*QueryFeeDiscountTierStatisticsRequest)(nil),                // 109: injective.exchange.v2.QueryFeeDiscountTierStatisticsRequest
-	(*TierStatistic)(nil),                                        // 110: injective.exchange.v2.TierStatistic
-	(*QueryFeeDiscountTierStatisticsResponse)(nil),               // 111: injective.exchange.v2.QueryFeeDiscountTierStatisticsResponse
-	(*MitoVaultInfosRequest)(nil),                                // 112: injective.exchange.v2.MitoVaultInfosRequest
-	(*MitoVaultInfosResponse)(nil),                               // 113: injective.exchange.v2.MitoVaultInfosResponse
-	(*QueryMarketIDFromVaultRequest)(nil),                        // 114: injective.exchange.v2.QueryMarketIDFromVaultRequest
-	(*QueryMarketIDFromVaultResponse)(nil),                       // 115: injective.exchange.v2.QueryMarketIDFromVaultResponse
-	(*QueryHistoricalTradeRecordsRequest)(nil),                   // 116: injective.exchange.v2.QueryHistoricalTradeRecordsRequest
-	(*QueryHistoricalTradeRecordsResponse)(nil),                  // 117: injective.exchange.v2.QueryHistoricalTradeRecordsResponse
-	(*TradeHistoryOptions)(nil),                                  // 118: injective.exchange.v2.TradeHistoryOptions
-	(*QueryMarketVolatilityRequest)(nil),                         // 119: injective.exchange.v2.QueryMarketVolatilityRequest
-	(*QueryMarketVolatilityResponse)(nil),                        // 120: injective.exchange.v2.QueryMarketVolatilityResponse
-	(*QueryBinaryMarketsRequest)(nil),                            // 121: injective.exchange.v2.QueryBinaryMarketsRequest
-	(*QueryBinaryMarketsResponse)(nil),                           // 122: injective.exchange.v2.QueryBinaryMarketsResponse
-	(*QueryTraderDerivativeConditionalOrdersRequest)(nil),        // 123: injective.exchange.v2.QueryTraderDerivativeConditionalOrdersRequest
-	(*TrimmedDerivativeConditionalOrder)(nil),                    // 124: injective.exchange.v2.TrimmedDerivativeConditionalOrder
-	(*QueryTraderDerivativeConditionalOrdersResponse)(nil),       // 125: injective.exchange.v2.QueryTraderDerivativeConditionalOrdersResponse
-	(*QueryFullSpotOrderbookRequest)(nil),                        // 126: injective.exchange.v2.QueryFullSpotOrderbookRequest
-	(*QueryFullSpotOrderbookResponse)(nil),                       // 127: injective.exchange.v2.QueryFullSpotOrderbookResponse
-	(*QueryFullDerivativeOrderbookRequest)(nil),                  // 128: injective.exchange.v2.QueryFullDerivativeOrderbookRequest
-	(*QueryFullDerivativeOrderbookResponse)(nil),                 // 129: injective.exchange.v2.QueryFullDerivativeOrderbookResponse
-	(*TrimmedLimitOrder)(nil),                                    // 130: injective.exchange.v2.TrimmedLimitOrder
-	(*QueryMarketAtomicExecutionFeeMultiplierRequest)(nil),       // 131: injective.exchange.v2.QueryMarketAtomicExecutionFeeMultiplierRequest
-	(*QueryMarketAtomicExecutionFeeMultiplierResponse)(nil),      // 132: injective.exchange.v2.QueryMarketAtomicExecutionFeeMultiplierResponse
-	(*QueryActiveStakeGrantRequest)(nil),                         // 133: injective.exchange.v2.QueryActiveStakeGrantRequest
-	(*QueryActiveStakeGrantResponse)(nil),                        // 134: injective.exchange.v2.QueryActiveStakeGrantResponse
-	(*QueryGrantAuthorizationRequest)(nil),                       // 135: injective.exchange.v2.QueryGrantAuthorizationRequest
-	(*QueryGrantAuthorizationResponse)(nil),                      // 136: injective.exchange.v2.QueryGrantAuthorizationResponse
-	(*QueryGrantAuthorizationsRequest)(nil),                      // 137: injective.exchange.v2.QueryGrantAuthorizationsRequest
-	(*QueryGrantAuthorizationsResponse)(nil),                     // 138: injective.exchange.v2.QueryGrantAuthorizationsResponse
-	(*QueryMarketBalanceRequest)(nil),                            // 139: injective.exchange.v2.QueryMarketBalanceRequest
-	(*QueryMarketBalanceResponse)(nil),                           // 140: injective.exchange.v2.QueryMarketBalanceResponse
-	(*QueryMarketBalancesRequest)(nil),                           // 141: injective.exchange.v2.QueryMarketBalancesRequest
-	(*QueryMarketBalancesResponse)(nil),                          // 142: injective.exchange.v2.QueryMarketBalancesResponse
-	(*MarketBalance)(nil),                                        // 143: injective.exchange.v2.MarketBalance
-	(*QueryDenomMinNotionalRequest)(nil),                         // 144: injective.exchange.v2.QueryDenomMinNotionalRequest
-	(*QueryDenomMinNotionalResponse)(nil),                        // 145: injective.exchange.v2.QueryDenomMinNotionalResponse
-	(*QueryDenomMinNotionalsRequest)(nil),                        // 146: injective.exchange.v2.QueryDenomMinNotionalsRequest
-	(*QueryDenomMinNotionalsResponse)(nil),                       // 147: injective.exchange.v2.QueryDenomMinNotionalsResponse
-	nil,                                                          // 148: injective.exchange.v2.QuerySubaccountDepositsResponse.DepositsEntry
-	(*SubaccountOrderData)(nil),                                  // 149: injective.exchange.v2.SubaccountOrderData
-	(*SubaccountOrderbookMetadata)(nil),                          // 150: injective.exchange.v2.SubaccountOrderbookMetadata
-	(*Params)(nil),                                               // 151: injective.exchange.v2.Params
-	(*Balance)(nil),                                              // 152: injective.exchange.v2.Balance
-	(*MarketVolume)(nil),                                         // 153: injective.exchange.v2.MarketVolume
-	(*AggregateAccountVolumeRecord)(nil),                         // 154: injective.exchange.v2.AggregateAccountVolumeRecord
-	(*VolumeRecord)(nil),                                         // 155: injective.exchange.v2.VolumeRecord
-	(*DenomDecimals)(nil),                                        // 156: injective.exchange.v2.DenomDecimals
-	(*Deposit)(nil),                                              // 157: injective.exchange.v2.Deposit
-	(*SpotMarket)(nil),                                           // 158: injective.exchange.v2.SpotMarket
-	(*Level)(nil),                                                // 159: injective.exchange.v2.Level
-	(*MidPriceAndTOB)(nil),                                       // 160: injective.exchange.v2.MidPriceAndTOB
-	(*PerpetualMarketInfo)(nil),                                  // 161: injective.exchange.v2.PerpetualMarketInfo
-	(*PerpetualMarketFunding)(nil),                               // 162: injective.exchange.v2.PerpetualMarketFunding
-	(*DerivativeMarket)(nil),                                     // 163: injective.exchange.v2.DerivativeMarket
-	(*ExpiryFuturesMarketInfo)(nil),                              // 164: injective.exchange.v2.ExpiryFuturesMarketInfo
-	(*DerivativePosition)(nil),                                   // 165: injective.exchange.v2.DerivativePosition
-	(*Position)(nil),                                             // 166: injective.exchange.v2.Position
-	(*GenesisState)(nil),                                         // 167: injective.exchange.v2.GenesisState
-	(*TradingRewardCampaignInfo)(nil),                            // 168: injective.exchange.v2.TradingRewardCampaignInfo
-	(*CampaignRewardPool)(nil),                                   // 169: injective.exchange.v2.CampaignRewardPool
-	(*FeeDiscountTierInfo)(nil),                                  // 170: injective.exchange.v2.FeeDiscountTierInfo
-	(*FeeDiscountTierTTL)(nil),                                   // 171: injective.exchange.v2.FeeDiscountTierTTL
-	(*FeeDiscountSchedule)(nil),                                  // 172: injective.exchange.v2.FeeDiscountSchedule
-	(*TradeRecords)(nil),                                         // 173: injective.exchange.v2.TradeRecords
-	(*types.MetadataStatistics)(nil),                             // 174: injective.oracle.v1beta1.MetadataStatistics
-	(*TradeRecord)(nil),                                          // 175: injective.exchange.v2.TradeRecord
-	(*BinaryOptionsMarket)(nil),                                  // 176: injective.exchange.v2.BinaryOptionsMarket
-	(*ActiveGrant)(nil),                                          // 177: injective.exchange.v2.ActiveGrant
-	(*EffectiveGrant)(nil),                                       // 178: injective.exchange.v2.EffectiveGrant
-	(*GrantAuthorization)(nil),                                   // 179: injective.exchange.v2.GrantAuthorization
-	(*DenomMinNotional)(nil),                                     // 180: injective.exchange.v2.DenomMinNotional
+var file_injective_exchange_v1beta1_query_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_injective_exchange_v1beta1_query_proto_msgTypes = make([]protoimpl.MessageInfo, 145)
+var file_injective_exchange_v1beta1_query_proto_goTypes = []any{
+	(OrderSide)(0),                                               // 0: injective.exchange.v1beta1.OrderSide
+	(CancellationStrategy)(0),                                    // 1: injective.exchange.v1beta1.CancellationStrategy
+	(*Subaccount)(nil),                                           // 2: injective.exchange.v1beta1.Subaccount
+	(*QuerySubaccountOrdersRequest)(nil),                         // 3: injective.exchange.v1beta1.QuerySubaccountOrdersRequest
+	(*QuerySubaccountOrdersResponse)(nil),                        // 4: injective.exchange.v1beta1.QuerySubaccountOrdersResponse
+	(*SubaccountOrderbookMetadataWithMarket)(nil),                // 5: injective.exchange.v1beta1.SubaccountOrderbookMetadataWithMarket
+	(*QueryExchangeParamsRequest)(nil),                           // 6: injective.exchange.v1beta1.QueryExchangeParamsRequest
+	(*QueryExchangeParamsResponse)(nil),                          // 7: injective.exchange.v1beta1.QueryExchangeParamsResponse
+	(*QuerySubaccountDepositsRequest)(nil),                       // 8: injective.exchange.v1beta1.QuerySubaccountDepositsRequest
+	(*QuerySubaccountDepositsResponse)(nil),                      // 9: injective.exchange.v1beta1.QuerySubaccountDepositsResponse
+	(*QueryExchangeBalancesRequest)(nil),                         // 10: injective.exchange.v1beta1.QueryExchangeBalancesRequest
+	(*QueryExchangeBalancesResponse)(nil),                        // 11: injective.exchange.v1beta1.QueryExchangeBalancesResponse
+	(*QueryAggregateVolumeRequest)(nil),                          // 12: injective.exchange.v1beta1.QueryAggregateVolumeRequest
+	(*QueryAggregateVolumeResponse)(nil),                         // 13: injective.exchange.v1beta1.QueryAggregateVolumeResponse
+	(*QueryAggregateVolumesRequest)(nil),                         // 14: injective.exchange.v1beta1.QueryAggregateVolumesRequest
+	(*QueryAggregateVolumesResponse)(nil),                        // 15: injective.exchange.v1beta1.QueryAggregateVolumesResponse
+	(*QueryAggregateMarketVolumeRequest)(nil),                    // 16: injective.exchange.v1beta1.QueryAggregateMarketVolumeRequest
+	(*QueryAggregateMarketVolumeResponse)(nil),                   // 17: injective.exchange.v1beta1.QueryAggregateMarketVolumeResponse
+	(*QueryDenomDecimalRequest)(nil),                             // 18: injective.exchange.v1beta1.QueryDenomDecimalRequest
+	(*QueryDenomDecimalResponse)(nil),                            // 19: injective.exchange.v1beta1.QueryDenomDecimalResponse
+	(*QueryDenomDecimalsRequest)(nil),                            // 20: injective.exchange.v1beta1.QueryDenomDecimalsRequest
+	(*QueryDenomDecimalsResponse)(nil),                           // 21: injective.exchange.v1beta1.QueryDenomDecimalsResponse
+	(*QueryAggregateMarketVolumesRequest)(nil),                   // 22: injective.exchange.v1beta1.QueryAggregateMarketVolumesRequest
+	(*QueryAggregateMarketVolumesResponse)(nil),                  // 23: injective.exchange.v1beta1.QueryAggregateMarketVolumesResponse
+	(*QuerySubaccountDepositRequest)(nil),                        // 24: injective.exchange.v1beta1.QuerySubaccountDepositRequest
+	(*QuerySubaccountDepositResponse)(nil),                       // 25: injective.exchange.v1beta1.QuerySubaccountDepositResponse
+	(*QuerySpotMarketsRequest)(nil),                              // 26: injective.exchange.v1beta1.QuerySpotMarketsRequest
+	(*QuerySpotMarketsResponse)(nil),                             // 27: injective.exchange.v1beta1.QuerySpotMarketsResponse
+	(*QuerySpotMarketRequest)(nil),                               // 28: injective.exchange.v1beta1.QuerySpotMarketRequest
+	(*QuerySpotMarketResponse)(nil),                              // 29: injective.exchange.v1beta1.QuerySpotMarketResponse
+	(*QuerySpotOrderbookRequest)(nil),                            // 30: injective.exchange.v1beta1.QuerySpotOrderbookRequest
+	(*QuerySpotOrderbookResponse)(nil),                           // 31: injective.exchange.v1beta1.QuerySpotOrderbookResponse
+	(*FullSpotMarket)(nil),                                       // 32: injective.exchange.v1beta1.FullSpotMarket
+	(*QueryFullSpotMarketsRequest)(nil),                          // 33: injective.exchange.v1beta1.QueryFullSpotMarketsRequest
+	(*QueryFullSpotMarketsResponse)(nil),                         // 34: injective.exchange.v1beta1.QueryFullSpotMarketsResponse
+	(*QueryFullSpotMarketRequest)(nil),                           // 35: injective.exchange.v1beta1.QueryFullSpotMarketRequest
+	(*QueryFullSpotMarketResponse)(nil),                          // 36: injective.exchange.v1beta1.QueryFullSpotMarketResponse
+	(*QuerySpotOrdersByHashesRequest)(nil),                       // 37: injective.exchange.v1beta1.QuerySpotOrdersByHashesRequest
+	(*QuerySpotOrdersByHashesResponse)(nil),                      // 38: injective.exchange.v1beta1.QuerySpotOrdersByHashesResponse
+	(*QueryTraderSpotOrdersRequest)(nil),                         // 39: injective.exchange.v1beta1.QueryTraderSpotOrdersRequest
+	(*QueryAccountAddressSpotOrdersRequest)(nil),                 // 40: injective.exchange.v1beta1.QueryAccountAddressSpotOrdersRequest
+	(*TrimmedSpotLimitOrder)(nil),                                // 41: injective.exchange.v1beta1.TrimmedSpotLimitOrder
+	(*QueryTraderSpotOrdersResponse)(nil),                        // 42: injective.exchange.v1beta1.QueryTraderSpotOrdersResponse
+	(*QueryAccountAddressSpotOrdersResponse)(nil),                // 43: injective.exchange.v1beta1.QueryAccountAddressSpotOrdersResponse
+	(*QuerySpotMidPriceAndTOBRequest)(nil),                       // 44: injective.exchange.v1beta1.QuerySpotMidPriceAndTOBRequest
+	(*QuerySpotMidPriceAndTOBResponse)(nil),                      // 45: injective.exchange.v1beta1.QuerySpotMidPriceAndTOBResponse
+	(*QueryDerivativeMidPriceAndTOBRequest)(nil),                 // 46: injective.exchange.v1beta1.QueryDerivativeMidPriceAndTOBRequest
+	(*QueryDerivativeMidPriceAndTOBResponse)(nil),                // 47: injective.exchange.v1beta1.QueryDerivativeMidPriceAndTOBResponse
+	(*QueryDerivativeOrderbookRequest)(nil),                      // 48: injective.exchange.v1beta1.QueryDerivativeOrderbookRequest
+	(*QueryDerivativeOrderbookResponse)(nil),                     // 49: injective.exchange.v1beta1.QueryDerivativeOrderbookResponse
+	(*QueryTraderSpotOrdersToCancelUpToAmountRequest)(nil),       // 50: injective.exchange.v1beta1.QueryTraderSpotOrdersToCancelUpToAmountRequest
+	(*QueryTraderDerivativeOrdersToCancelUpToAmountRequest)(nil), // 51: injective.exchange.v1beta1.QueryTraderDerivativeOrdersToCancelUpToAmountRequest
+	(*QueryTraderDerivativeOrdersRequest)(nil),                   // 52: injective.exchange.v1beta1.QueryTraderDerivativeOrdersRequest
+	(*QueryAccountAddressDerivativeOrdersRequest)(nil),           // 53: injective.exchange.v1beta1.QueryAccountAddressDerivativeOrdersRequest
+	(*TrimmedDerivativeLimitOrder)(nil),                          // 54: injective.exchange.v1beta1.TrimmedDerivativeLimitOrder
+	(*QueryTraderDerivativeOrdersResponse)(nil),                  // 55: injective.exchange.v1beta1.QueryTraderDerivativeOrdersResponse
+	(*QueryAccountAddressDerivativeOrdersResponse)(nil),          // 56: injective.exchange.v1beta1.QueryAccountAddressDerivativeOrdersResponse
+	(*QueryDerivativeOrdersByHashesRequest)(nil),                 // 57: injective.exchange.v1beta1.QueryDerivativeOrdersByHashesRequest
+	(*QueryDerivativeOrdersByHashesResponse)(nil),                // 58: injective.exchange.v1beta1.QueryDerivativeOrdersByHashesResponse
+	(*QueryDerivativeMarketsRequest)(nil),                        // 59: injective.exchange.v1beta1.QueryDerivativeMarketsRequest
+	(*PriceLevel)(nil),                                           // 60: injective.exchange.v1beta1.PriceLevel
+	(*PerpetualMarketState)(nil),                                 // 61: injective.exchange.v1beta1.PerpetualMarketState
+	(*FullDerivativeMarket)(nil),                                 // 62: injective.exchange.v1beta1.FullDerivativeMarket
+	(*QueryDerivativeMarketsResponse)(nil),                       // 63: injective.exchange.v1beta1.QueryDerivativeMarketsResponse
+	(*QueryDerivativeMarketRequest)(nil),                         // 64: injective.exchange.v1beta1.QueryDerivativeMarketRequest
+	(*QueryDerivativeMarketResponse)(nil),                        // 65: injective.exchange.v1beta1.QueryDerivativeMarketResponse
+	(*QueryDerivativeMarketAddressRequest)(nil),                  // 66: injective.exchange.v1beta1.QueryDerivativeMarketAddressRequest
+	(*QueryDerivativeMarketAddressResponse)(nil),                 // 67: injective.exchange.v1beta1.QueryDerivativeMarketAddressResponse
+	(*QuerySubaccountTradeNonceRequest)(nil),                     // 68: injective.exchange.v1beta1.QuerySubaccountTradeNonceRequest
+	(*QuerySubaccountPositionsRequest)(nil),                      // 69: injective.exchange.v1beta1.QuerySubaccountPositionsRequest
+	(*QuerySubaccountPositionInMarketRequest)(nil),               // 70: injective.exchange.v1beta1.QuerySubaccountPositionInMarketRequest
+	(*QuerySubaccountEffectivePositionInMarketRequest)(nil),      // 71: injective.exchange.v1beta1.QuerySubaccountEffectivePositionInMarketRequest
+	(*QuerySubaccountOrderMetadataRequest)(nil),                  // 72: injective.exchange.v1beta1.QuerySubaccountOrderMetadataRequest
+	(*QuerySubaccountPositionsResponse)(nil),                     // 73: injective.exchange.v1beta1.QuerySubaccountPositionsResponse
+	(*QuerySubaccountPositionInMarketResponse)(nil),              // 74: injective.exchange.v1beta1.QuerySubaccountPositionInMarketResponse
+	(*EffectivePosition)(nil),                                    // 75: injective.exchange.v1beta1.EffectivePosition
+	(*QuerySubaccountEffectivePositionInMarketResponse)(nil),     // 76: injective.exchange.v1beta1.QuerySubaccountEffectivePositionInMarketResponse
+	(*QueryPerpetualMarketInfoRequest)(nil),                      // 77: injective.exchange.v1beta1.QueryPerpetualMarketInfoRequest
+	(*QueryPerpetualMarketInfoResponse)(nil),                     // 78: injective.exchange.v1beta1.QueryPerpetualMarketInfoResponse
+	(*QueryExpiryFuturesMarketInfoRequest)(nil),                  // 79: injective.exchange.v1beta1.QueryExpiryFuturesMarketInfoRequest
+	(*QueryExpiryFuturesMarketInfoResponse)(nil),                 // 80: injective.exchange.v1beta1.QueryExpiryFuturesMarketInfoResponse
+	(*QueryPerpetualMarketFundingRequest)(nil),                   // 81: injective.exchange.v1beta1.QueryPerpetualMarketFundingRequest
+	(*QueryPerpetualMarketFundingResponse)(nil),                  // 82: injective.exchange.v1beta1.QueryPerpetualMarketFundingResponse
+	(*QuerySubaccountOrderMetadataResponse)(nil),                 // 83: injective.exchange.v1beta1.QuerySubaccountOrderMetadataResponse
+	(*QuerySubaccountTradeNonceResponse)(nil),                    // 84: injective.exchange.v1beta1.QuerySubaccountTradeNonceResponse
+	(*QueryModuleStateRequest)(nil),                              // 85: injective.exchange.v1beta1.QueryModuleStateRequest
+	(*QueryModuleStateResponse)(nil),                             // 86: injective.exchange.v1beta1.QueryModuleStateResponse
+	(*QueryPositionsRequest)(nil),                                // 87: injective.exchange.v1beta1.QueryPositionsRequest
+	(*QueryPositionsResponse)(nil),                               // 88: injective.exchange.v1beta1.QueryPositionsResponse
+	(*QueryTradeRewardPointsRequest)(nil),                        // 89: injective.exchange.v1beta1.QueryTradeRewardPointsRequest
+	(*QueryTradeRewardPointsResponse)(nil),                       // 90: injective.exchange.v1beta1.QueryTradeRewardPointsResponse
+	(*QueryTradeRewardCampaignRequest)(nil),                      // 91: injective.exchange.v1beta1.QueryTradeRewardCampaignRequest
+	(*QueryTradeRewardCampaignResponse)(nil),                     // 92: injective.exchange.v1beta1.QueryTradeRewardCampaignResponse
+	(*QueryIsOptedOutOfRewardsRequest)(nil),                      // 93: injective.exchange.v1beta1.QueryIsOptedOutOfRewardsRequest
+	(*QueryIsOptedOutOfRewardsResponse)(nil),                     // 94: injective.exchange.v1beta1.QueryIsOptedOutOfRewardsResponse
+	(*QueryOptedOutOfRewardsAccountsRequest)(nil),                // 95: injective.exchange.v1beta1.QueryOptedOutOfRewardsAccountsRequest
+	(*QueryOptedOutOfRewardsAccountsResponse)(nil),               // 96: injective.exchange.v1beta1.QueryOptedOutOfRewardsAccountsResponse
+	(*QueryFeeDiscountAccountInfoRequest)(nil),                   // 97: injective.exchange.v1beta1.QueryFeeDiscountAccountInfoRequest
+	(*QueryFeeDiscountAccountInfoResponse)(nil),                  // 98: injective.exchange.v1beta1.QueryFeeDiscountAccountInfoResponse
+	(*QueryFeeDiscountScheduleRequest)(nil),                      // 99: injective.exchange.v1beta1.QueryFeeDiscountScheduleRequest
+	(*QueryFeeDiscountScheduleResponse)(nil),                     // 100: injective.exchange.v1beta1.QueryFeeDiscountScheduleResponse
+	(*QueryBalanceMismatchesRequest)(nil),                        // 101: injective.exchange.v1beta1.QueryBalanceMismatchesRequest
+	(*BalanceMismatch)(nil),                                      // 102: injective.exchange.v1beta1.BalanceMismatch
+	(*QueryBalanceMismatchesResponse)(nil),                       // 103: injective.exchange.v1beta1.QueryBalanceMismatchesResponse
+	(*QueryBalanceWithBalanceHoldsRequest)(nil),                  // 104: injective.exchange.v1beta1.QueryBalanceWithBalanceHoldsRequest
+	(*BalanceWithMarginHold)(nil),                                // 105: injective.exchange.v1beta1.BalanceWithMarginHold
+	(*QueryBalanceWithBalanceHoldsResponse)(nil),                 // 106: injective.exchange.v1beta1.QueryBalanceWithBalanceHoldsResponse
+	(*QueryFeeDiscountTierStatisticsRequest)(nil),                // 107: injective.exchange.v1beta1.QueryFeeDiscountTierStatisticsRequest
+	(*TierStatistic)(nil),                                        // 108: injective.exchange.v1beta1.TierStatistic
+	(*QueryFeeDiscountTierStatisticsResponse)(nil),               // 109: injective.exchange.v1beta1.QueryFeeDiscountTierStatisticsResponse
+	(*MitoVaultInfosRequest)(nil),                                // 110: injective.exchange.v1beta1.MitoVaultInfosRequest
+	(*MitoVaultInfosResponse)(nil),                               // 111: injective.exchange.v1beta1.MitoVaultInfosResponse
+	(*QueryMarketIDFromVaultRequest)(nil),                        // 112: injective.exchange.v1beta1.QueryMarketIDFromVaultRequest
+	(*QueryMarketIDFromVaultResponse)(nil),                       // 113: injective.exchange.v1beta1.QueryMarketIDFromVaultResponse
+	(*QueryHistoricalTradeRecordsRequest)(nil),                   // 114: injective.exchange.v1beta1.QueryHistoricalTradeRecordsRequest
+	(*QueryHistoricalTradeRecordsResponse)(nil),                  // 115: injective.exchange.v1beta1.QueryHistoricalTradeRecordsResponse
+	(*TradeHistoryOptions)(nil),                                  // 116: injective.exchange.v1beta1.TradeHistoryOptions
+	(*QueryMarketVolatilityRequest)(nil),                         // 117: injective.exchange.v1beta1.QueryMarketVolatilityRequest
+	(*QueryMarketVolatilityResponse)(nil),                        // 118: injective.exchange.v1beta1.QueryMarketVolatilityResponse
+	(*QueryBinaryMarketsRequest)(nil),                            // 119: injective.exchange.v1beta1.QueryBinaryMarketsRequest
+	(*QueryBinaryMarketsResponse)(nil),                           // 120: injective.exchange.v1beta1.QueryBinaryMarketsResponse
+	(*QueryTraderDerivativeConditionalOrdersRequest)(nil),        // 121: injective.exchange.v1beta1.QueryTraderDerivativeConditionalOrdersRequest
+	(*TrimmedDerivativeConditionalOrder)(nil),                    // 122: injective.exchange.v1beta1.TrimmedDerivativeConditionalOrder
+	(*QueryTraderDerivativeConditionalOrdersResponse)(nil),       // 123: injective.exchange.v1beta1.QueryTraderDerivativeConditionalOrdersResponse
+	(*QueryFullSpotOrderbookRequest)(nil),                        // 124: injective.exchange.v1beta1.QueryFullSpotOrderbookRequest
+	(*QueryFullSpotOrderbookResponse)(nil),                       // 125: injective.exchange.v1beta1.QueryFullSpotOrderbookResponse
+	(*QueryFullDerivativeOrderbookRequest)(nil),                  // 126: injective.exchange.v1beta1.QueryFullDerivativeOrderbookRequest
+	(*QueryFullDerivativeOrderbookResponse)(nil),                 // 127: injective.exchange.v1beta1.QueryFullDerivativeOrderbookResponse
+	(*TrimmedLimitOrder)(nil),                                    // 128: injective.exchange.v1beta1.TrimmedLimitOrder
+	(*QueryMarketAtomicExecutionFeeMultiplierRequest)(nil),       // 129: injective.exchange.v1beta1.QueryMarketAtomicExecutionFeeMultiplierRequest
+	(*QueryMarketAtomicExecutionFeeMultiplierResponse)(nil),      // 130: injective.exchange.v1beta1.QueryMarketAtomicExecutionFeeMultiplierResponse
+	(*QueryActiveStakeGrantRequest)(nil),                         // 131: injective.exchange.v1beta1.QueryActiveStakeGrantRequest
+	(*QueryActiveStakeGrantResponse)(nil),                        // 132: injective.exchange.v1beta1.QueryActiveStakeGrantResponse
+	(*QueryGrantAuthorizationRequest)(nil),                       // 133: injective.exchange.v1beta1.QueryGrantAuthorizationRequest
+	(*QueryGrantAuthorizationResponse)(nil),                      // 134: injective.exchange.v1beta1.QueryGrantAuthorizationResponse
+	(*QueryGrantAuthorizationsRequest)(nil),                      // 135: injective.exchange.v1beta1.QueryGrantAuthorizationsRequest
+	(*QueryGrantAuthorizationsResponse)(nil),                     // 136: injective.exchange.v1beta1.QueryGrantAuthorizationsResponse
+	(*QueryMarketBalanceRequest)(nil),                            // 137: injective.exchange.v1beta1.QueryMarketBalanceRequest
+	(*QueryMarketBalanceResponse)(nil),                           // 138: injective.exchange.v1beta1.QueryMarketBalanceResponse
+	(*QueryMarketBalancesRequest)(nil),                           // 139: injective.exchange.v1beta1.QueryMarketBalancesRequest
+	(*QueryMarketBalancesResponse)(nil),                          // 140: injective.exchange.v1beta1.QueryMarketBalancesResponse
+	(*MarketBalance)(nil),                                        // 141: injective.exchange.v1beta1.MarketBalance
+	(*QueryDenomMinNotionalRequest)(nil),                         // 142: injective.exchange.v1beta1.QueryDenomMinNotionalRequest
+	(*QueryDenomMinNotionalResponse)(nil),                        // 143: injective.exchange.v1beta1.QueryDenomMinNotionalResponse
+	(*QueryDenomMinNotionalsRequest)(nil),                        // 144: injective.exchange.v1beta1.QueryDenomMinNotionalsRequest
+	(*QueryDenomMinNotionalsResponse)(nil),                       // 145: injective.exchange.v1beta1.QueryDenomMinNotionalsResponse
+	nil,                                                          // 146: injective.exchange.v1beta1.QuerySubaccountDepositsResponse.DepositsEntry
+	(*SubaccountOrderData)(nil),                                  // 147: injective.exchange.v1beta1.SubaccountOrderData
+	(*SubaccountOrderbookMetadata)(nil),                          // 148: injective.exchange.v1beta1.SubaccountOrderbookMetadata
+	(*Params)(nil),                                               // 149: injective.exchange.v1beta1.Params
+	(*Balance)(nil),                                              // 150: injective.exchange.v1beta1.Balance
+	(*MarketVolume)(nil),                                         // 151: injective.exchange.v1beta1.MarketVolume
+	(*AggregateAccountVolumeRecord)(nil),                         // 152: injective.exchange.v1beta1.AggregateAccountVolumeRecord
+	(*VolumeRecord)(nil),                                         // 153: injective.exchange.v1beta1.VolumeRecord
+	(*DenomDecimals)(nil),                                        // 154: injective.exchange.v1beta1.DenomDecimals
+	(*Deposit)(nil),                                              // 155: injective.exchange.v1beta1.Deposit
+	(*SpotMarket)(nil),                                           // 156: injective.exchange.v1beta1.SpotMarket
+	(*Level)(nil),                                                // 157: injective.exchange.v1beta1.Level
+	(*MidPriceAndTOB)(nil),                                       // 158: injective.exchange.v1beta1.MidPriceAndTOB
+	(*PerpetualMarketInfo)(nil),                                  // 159: injective.exchange.v1beta1.PerpetualMarketInfo
+	(*PerpetualMarketFunding)(nil),                               // 160: injective.exchange.v1beta1.PerpetualMarketFunding
+	(*DerivativeMarket)(nil),                                     // 161: injective.exchange.v1beta1.DerivativeMarket
+	(*ExpiryFuturesMarketInfo)(nil),                              // 162: injective.exchange.v1beta1.ExpiryFuturesMarketInfo
+	(*DerivativePosition)(nil),                                   // 163: injective.exchange.v1beta1.DerivativePosition
+	(*Position)(nil),                                             // 164: injective.exchange.v1beta1.Position
+	(*GenesisState)(nil),                                         // 165: injective.exchange.v1beta1.GenesisState
+	(*TradingRewardCampaignInfo)(nil),                            // 166: injective.exchange.v1beta1.TradingRewardCampaignInfo
+	(*CampaignRewardPool)(nil),                                   // 167: injective.exchange.v1beta1.CampaignRewardPool
+	(*FeeDiscountTierInfo)(nil),                                  // 168: injective.exchange.v1beta1.FeeDiscountTierInfo
+	(*FeeDiscountTierTTL)(nil),                                   // 169: injective.exchange.v1beta1.FeeDiscountTierTTL
+	(*FeeDiscountSchedule)(nil),                                  // 170: injective.exchange.v1beta1.FeeDiscountSchedule
+	(*TradeRecords)(nil),                                         // 171: injective.exchange.v1beta1.TradeRecords
+	(*types.MetadataStatistics)(nil),                             // 172: injective.oracle.v1beta1.MetadataStatistics
+	(*TradeRecord)(nil),                                          // 173: injective.exchange.v1beta1.TradeRecord
+	(*BinaryOptionsMarket)(nil),                                  // 174: injective.exchange.v1beta1.BinaryOptionsMarket
+	(*ActiveGrant)(nil),                                          // 175: injective.exchange.v1beta1.ActiveGrant
+	(*EffectiveGrant)(nil),                                       // 176: injective.exchange.v1beta1.EffectiveGrant
+	(*GrantAuthorization)(nil),                                   // 177: injective.exchange.v1beta1.GrantAuthorization
+	(*DenomMinNotional)(nil),                                     // 178: injective.exchange.v1beta1.DenomMinNotional
 }
-var file_injective_exchange_v2_query_proto_depIdxs = []int32{
-	149, // 0: injective.exchange.v2.QuerySubaccountOrdersResponse.buy_orders:type_name -> injective.exchange.v2.SubaccountOrderData
-	149, // 1: injective.exchange.v2.QuerySubaccountOrdersResponse.sell_orders:type_name -> injective.exchange.v2.SubaccountOrderData
-	150, // 2: injective.exchange.v2.SubaccountOrderbookMetadataWithMarket.metadata:type_name -> injective.exchange.v2.SubaccountOrderbookMetadata
-	151, // 3: injective.exchange.v2.QueryExchangeParamsResponse.params:type_name -> injective.exchange.v2.Params
-	2,   // 4: injective.exchange.v2.QuerySubaccountDepositsRequest.subaccount:type_name -> injective.exchange.v2.Subaccount
-	148, // 5: injective.exchange.v2.QuerySubaccountDepositsResponse.deposits:type_name -> injective.exchange.v2.QuerySubaccountDepositsResponse.DepositsEntry
-	152, // 6: injective.exchange.v2.QueryExchangeBalancesResponse.balances:type_name -> injective.exchange.v2.Balance
-	153, // 7: injective.exchange.v2.QueryAggregateVolumeResponse.aggregate_volumes:type_name -> injective.exchange.v2.MarketVolume
-	154, // 8: injective.exchange.v2.QueryAggregateVolumesResponse.aggregate_account_volumes:type_name -> injective.exchange.v2.AggregateAccountVolumeRecord
-	153, // 9: injective.exchange.v2.QueryAggregateVolumesResponse.aggregate_market_volumes:type_name -> injective.exchange.v2.MarketVolume
-	155, // 10: injective.exchange.v2.QueryAggregateMarketVolumeResponse.volume:type_name -> injective.exchange.v2.VolumeRecord
-	156, // 11: injective.exchange.v2.QueryDenomDecimalsResponse.denom_decimals:type_name -> injective.exchange.v2.DenomDecimals
-	153, // 12: injective.exchange.v2.QueryAggregateMarketVolumesResponse.volumes:type_name -> injective.exchange.v2.MarketVolume
-	157, // 13: injective.exchange.v2.QuerySubaccountDepositResponse.deposits:type_name -> injective.exchange.v2.Deposit
-	158, // 14: injective.exchange.v2.QuerySpotMarketsResponse.markets:type_name -> injective.exchange.v2.SpotMarket
-	158, // 15: injective.exchange.v2.QuerySpotMarketResponse.market:type_name -> injective.exchange.v2.SpotMarket
-	0,   // 16: injective.exchange.v2.QuerySpotOrderbookRequest.order_side:type_name -> injective.exchange.v2.OrderSide
-	159, // 17: injective.exchange.v2.QuerySpotOrderbookResponse.buys_price_level:type_name -> injective.exchange.v2.Level
-	159, // 18: injective.exchange.v2.QuerySpotOrderbookResponse.sells_price_level:type_name -> injective.exchange.v2.Level
-	158, // 19: injective.exchange.v2.FullSpotMarket.market:type_name -> injective.exchange.v2.SpotMarket
-	160, // 20: injective.exchange.v2.FullSpotMarket.mid_price_and_tob:type_name -> injective.exchange.v2.MidPriceAndTOB
-	32,  // 21: injective.exchange.v2.QueryFullSpotMarketsResponse.markets:type_name -> injective.exchange.v2.FullSpotMarket
-	32,  // 22: injective.exchange.v2.QueryFullSpotMarketResponse.market:type_name -> injective.exchange.v2.FullSpotMarket
-	41,  // 23: injective.exchange.v2.QuerySpotOrdersByHashesResponse.orders:type_name -> injective.exchange.v2.TrimmedSpotLimitOrder
-	41,  // 24: injective.exchange.v2.QueryTraderSpotOrdersResponse.orders:type_name -> injective.exchange.v2.TrimmedSpotLimitOrder
-	41,  // 25: injective.exchange.v2.QueryAccountAddressSpotOrdersResponse.orders:type_name -> injective.exchange.v2.TrimmedSpotLimitOrder
-	159, // 26: injective.exchange.v2.QueryDerivativeOrderbookResponse.buys_price_level:type_name -> injective.exchange.v2.Level
-	159, // 27: injective.exchange.v2.QueryDerivativeOrderbookResponse.sells_price_level:type_name -> injective.exchange.v2.Level
-	1,   // 28: injective.exchange.v2.QueryTraderSpotOrdersToCancelUpToAmountRequest.strategy:type_name -> injective.exchange.v2.CancellationStrategy
-	1,   // 29: injective.exchange.v2.QueryTraderDerivativeOrdersToCancelUpToAmountRequest.strategy:type_name -> injective.exchange.v2.CancellationStrategy
-	54,  // 30: injective.exchange.v2.QueryTraderDerivativeOrdersResponse.orders:type_name -> injective.exchange.v2.TrimmedDerivativeLimitOrder
-	54,  // 31: injective.exchange.v2.QueryAccountAddressDerivativeOrdersResponse.orders:type_name -> injective.exchange.v2.TrimmedDerivativeLimitOrder
-	54,  // 32: injective.exchange.v2.QueryDerivativeOrdersByHashesResponse.orders:type_name -> injective.exchange.v2.TrimmedDerivativeLimitOrder
-	161, // 33: injective.exchange.v2.PerpetualMarketState.market_info:type_name -> injective.exchange.v2.PerpetualMarketInfo
-	162, // 34: injective.exchange.v2.PerpetualMarketState.funding_info:type_name -> injective.exchange.v2.PerpetualMarketFunding
-	163, // 35: injective.exchange.v2.FullDerivativeMarket.market:type_name -> injective.exchange.v2.DerivativeMarket
-	61,  // 36: injective.exchange.v2.FullDerivativeMarket.perpetual_info:type_name -> injective.exchange.v2.PerpetualMarketState
-	164, // 37: injective.exchange.v2.FullDerivativeMarket.futures_info:type_name -> injective.exchange.v2.ExpiryFuturesMarketInfo
-	160, // 38: injective.exchange.v2.FullDerivativeMarket.mid_price_and_tob:type_name -> injective.exchange.v2.MidPriceAndTOB
-	62,  // 39: injective.exchange.v2.QueryDerivativeMarketsResponse.markets:type_name -> injective.exchange.v2.FullDerivativeMarket
-	62,  // 40: injective.exchange.v2.QueryDerivativeMarketResponse.market:type_name -> injective.exchange.v2.FullDerivativeMarket
-	165, // 41: injective.exchange.v2.QueryPositionsInMarketResponse.state:type_name -> injective.exchange.v2.DerivativePosition
-	165, // 42: injective.exchange.v2.QuerySubaccountPositionsResponse.state:type_name -> injective.exchange.v2.DerivativePosition
-	166, // 43: injective.exchange.v2.QuerySubaccountPositionInMarketResponse.state:type_name -> injective.exchange.v2.Position
-	77,  // 44: injective.exchange.v2.QuerySubaccountEffectivePositionInMarketResponse.state:type_name -> injective.exchange.v2.EffectivePosition
-	161, // 45: injective.exchange.v2.QueryPerpetualMarketInfoResponse.info:type_name -> injective.exchange.v2.PerpetualMarketInfo
-	164, // 46: injective.exchange.v2.QueryExpiryFuturesMarketInfoResponse.info:type_name -> injective.exchange.v2.ExpiryFuturesMarketInfo
-	162, // 47: injective.exchange.v2.QueryPerpetualMarketFundingResponse.state:type_name -> injective.exchange.v2.PerpetualMarketFunding
-	5,   // 48: injective.exchange.v2.QuerySubaccountOrderMetadataResponse.metadata:type_name -> injective.exchange.v2.SubaccountOrderbookMetadataWithMarket
-	167, // 49: injective.exchange.v2.QueryModuleStateResponse.state:type_name -> injective.exchange.v2.GenesisState
-	165, // 50: injective.exchange.v2.QueryPositionsResponse.state:type_name -> injective.exchange.v2.DerivativePosition
-	168, // 51: injective.exchange.v2.QueryTradeRewardCampaignResponse.trading_reward_campaign_info:type_name -> injective.exchange.v2.TradingRewardCampaignInfo
-	169, // 52: injective.exchange.v2.QueryTradeRewardCampaignResponse.trading_reward_pool_campaign_schedule:type_name -> injective.exchange.v2.CampaignRewardPool
-	169, // 53: injective.exchange.v2.QueryTradeRewardCampaignResponse.pending_trading_reward_pool_campaign_schedule:type_name -> injective.exchange.v2.CampaignRewardPool
-	170, // 54: injective.exchange.v2.QueryFeeDiscountAccountInfoResponse.account_info:type_name -> injective.exchange.v2.FeeDiscountTierInfo
-	171, // 55: injective.exchange.v2.QueryFeeDiscountAccountInfoResponse.account_ttl:type_name -> injective.exchange.v2.FeeDiscountTierTTL
-	172, // 56: injective.exchange.v2.QueryFeeDiscountScheduleResponse.fee_discount_schedule:type_name -> injective.exchange.v2.FeeDiscountSchedule
-	104, // 57: injective.exchange.v2.QueryBalanceMismatchesResponse.balance_mismatches:type_name -> injective.exchange.v2.BalanceMismatch
-	107, // 58: injective.exchange.v2.QueryBalanceWithBalanceHoldsResponse.balance_with_balance_holds:type_name -> injective.exchange.v2.BalanceWithMarginHold
-	110, // 59: injective.exchange.v2.QueryFeeDiscountTierStatisticsResponse.statistics:type_name -> injective.exchange.v2.TierStatistic
-	173, // 60: injective.exchange.v2.QueryHistoricalTradeRecordsResponse.trade_records:type_name -> injective.exchange.v2.TradeRecords
-	118, // 61: injective.exchange.v2.QueryMarketVolatilityRequest.trade_history_options:type_name -> injective.exchange.v2.TradeHistoryOptions
-	174, // 62: injective.exchange.v2.QueryMarketVolatilityResponse.history_metadata:type_name -> injective.oracle.v1beta1.MetadataStatistics
-	175, // 63: injective.exchange.v2.QueryMarketVolatilityResponse.raw_history:type_name -> injective.exchange.v2.TradeRecord
-	176, // 64: injective.exchange.v2.QueryBinaryMarketsResponse.markets:type_name -> injective.exchange.v2.BinaryOptionsMarket
-	124, // 65: injective.exchange.v2.QueryTraderDerivativeConditionalOrdersResponse.orders:type_name -> injective.exchange.v2.TrimmedDerivativeConditionalOrder
-	130, // 66: injective.exchange.v2.QueryFullSpotOrderbookResponse.Bids:type_name -> injective.exchange.v2.TrimmedLimitOrder
-	130, // 67: injective.exchange.v2.QueryFullSpotOrderbookResponse.Asks:type_name -> injective.exchange.v2.TrimmedLimitOrder
-	130, // 68: injective.exchange.v2.QueryFullDerivativeOrderbookResponse.Bids:type_name -> injective.exchange.v2.TrimmedLimitOrder
-	130, // 69: injective.exchange.v2.QueryFullDerivativeOrderbookResponse.Asks:type_name -> injective.exchange.v2.TrimmedLimitOrder
-	177, // 70: injective.exchange.v2.QueryActiveStakeGrantResponse.grant:type_name -> injective.exchange.v2.ActiveGrant
-	178, // 71: injective.exchange.v2.QueryActiveStakeGrantResponse.effective_grant:type_name -> injective.exchange.v2.EffectiveGrant
-	179, // 72: injective.exchange.v2.QueryGrantAuthorizationsResponse.grants:type_name -> injective.exchange.v2.GrantAuthorization
-	143, // 73: injective.exchange.v2.QueryMarketBalanceResponse.balance:type_name -> injective.exchange.v2.MarketBalance
-	143, // 74: injective.exchange.v2.QueryMarketBalancesResponse.balances:type_name -> injective.exchange.v2.MarketBalance
-	180, // 75: injective.exchange.v2.QueryDenomMinNotionalsResponse.denom_min_notionals:type_name -> injective.exchange.v2.DenomMinNotional
-	157, // 76: injective.exchange.v2.QuerySubaccountDepositsResponse.DepositsEntry.value:type_name -> injective.exchange.v2.Deposit
-	128, // 77: injective.exchange.v2.Query.L3DerivativeOrderBook:input_type -> injective.exchange.v2.QueryFullDerivativeOrderbookRequest
-	126, // 78: injective.exchange.v2.Query.L3SpotOrderBook:input_type -> injective.exchange.v2.QueryFullSpotOrderbookRequest
-	6,   // 79: injective.exchange.v2.Query.QueryExchangeParams:input_type -> injective.exchange.v2.QueryExchangeParamsRequest
-	8,   // 80: injective.exchange.v2.Query.SubaccountDeposits:input_type -> injective.exchange.v2.QuerySubaccountDepositsRequest
-	24,  // 81: injective.exchange.v2.Query.SubaccountDeposit:input_type -> injective.exchange.v2.QuerySubaccountDepositRequest
-	10,  // 82: injective.exchange.v2.Query.ExchangeBalances:input_type -> injective.exchange.v2.QueryExchangeBalancesRequest
-	12,  // 83: injective.exchange.v2.Query.AggregateVolume:input_type -> injective.exchange.v2.QueryAggregateVolumeRequest
-	14,  // 84: injective.exchange.v2.Query.AggregateVolumes:input_type -> injective.exchange.v2.QueryAggregateVolumesRequest
-	16,  // 85: injective.exchange.v2.Query.AggregateMarketVolume:input_type -> injective.exchange.v2.QueryAggregateMarketVolumeRequest
-	22,  // 86: injective.exchange.v2.Query.AggregateMarketVolumes:input_type -> injective.exchange.v2.QueryAggregateMarketVolumesRequest
-	18,  // 87: injective.exchange.v2.Query.DenomDecimal:input_type -> injective.exchange.v2.QueryDenomDecimalRequest
-	20,  // 88: injective.exchange.v2.Query.DenomDecimals:input_type -> injective.exchange.v2.QueryDenomDecimalsRequest
-	26,  // 89: injective.exchange.v2.Query.SpotMarkets:input_type -> injective.exchange.v2.QuerySpotMarketsRequest
-	28,  // 90: injective.exchange.v2.Query.SpotMarket:input_type -> injective.exchange.v2.QuerySpotMarketRequest
-	33,  // 91: injective.exchange.v2.Query.FullSpotMarkets:input_type -> injective.exchange.v2.QueryFullSpotMarketsRequest
-	35,  // 92: injective.exchange.v2.Query.FullSpotMarket:input_type -> injective.exchange.v2.QueryFullSpotMarketRequest
-	30,  // 93: injective.exchange.v2.Query.SpotOrderbook:input_type -> injective.exchange.v2.QuerySpotOrderbookRequest
-	39,  // 94: injective.exchange.v2.Query.TraderSpotOrders:input_type -> injective.exchange.v2.QueryTraderSpotOrdersRequest
-	40,  // 95: injective.exchange.v2.Query.AccountAddressSpotOrders:input_type -> injective.exchange.v2.QueryAccountAddressSpotOrdersRequest
-	37,  // 96: injective.exchange.v2.Query.SpotOrdersByHashes:input_type -> injective.exchange.v2.QuerySpotOrdersByHashesRequest
-	3,   // 97: injective.exchange.v2.Query.SubaccountOrders:input_type -> injective.exchange.v2.QuerySubaccountOrdersRequest
-	39,  // 98: injective.exchange.v2.Query.TraderSpotTransientOrders:input_type -> injective.exchange.v2.QueryTraderSpotOrdersRequest
-	44,  // 99: injective.exchange.v2.Query.SpotMidPriceAndTOB:input_type -> injective.exchange.v2.QuerySpotMidPriceAndTOBRequest
-	46,  // 100: injective.exchange.v2.Query.DerivativeMidPriceAndTOB:input_type -> injective.exchange.v2.QueryDerivativeMidPriceAndTOBRequest
-	48,  // 101: injective.exchange.v2.Query.DerivativeOrderbook:input_type -> injective.exchange.v2.QueryDerivativeOrderbookRequest
-	52,  // 102: injective.exchange.v2.Query.TraderDerivativeOrders:input_type -> injective.exchange.v2.QueryTraderDerivativeOrdersRequest
-	53,  // 103: injective.exchange.v2.Query.AccountAddressDerivativeOrders:input_type -> injective.exchange.v2.QueryAccountAddressDerivativeOrdersRequest
-	57,  // 104: injective.exchange.v2.Query.DerivativeOrdersByHashes:input_type -> injective.exchange.v2.QueryDerivativeOrdersByHashesRequest
-	52,  // 105: injective.exchange.v2.Query.TraderDerivativeTransientOrders:input_type -> injective.exchange.v2.QueryTraderDerivativeOrdersRequest
-	59,  // 106: injective.exchange.v2.Query.DerivativeMarkets:input_type -> injective.exchange.v2.QueryDerivativeMarketsRequest
-	64,  // 107: injective.exchange.v2.Query.DerivativeMarket:input_type -> injective.exchange.v2.QueryDerivativeMarketRequest
-	66,  // 108: injective.exchange.v2.Query.DerivativeMarketAddress:input_type -> injective.exchange.v2.QueryDerivativeMarketAddressRequest
-	68,  // 109: injective.exchange.v2.Query.SubaccountTradeNonce:input_type -> injective.exchange.v2.QuerySubaccountTradeNonceRequest
-	87,  // 110: injective.exchange.v2.Query.ExchangeModuleState:input_type -> injective.exchange.v2.QueryModuleStateRequest
-	89,  // 111: injective.exchange.v2.Query.Positions:input_type -> injective.exchange.v2.QueryPositionsRequest
-	69,  // 112: injective.exchange.v2.Query.PositionsInMarket:input_type -> injective.exchange.v2.QueryPositionsInMarketRequest
-	71,  // 113: injective.exchange.v2.Query.SubaccountPositions:input_type -> injective.exchange.v2.QuerySubaccountPositionsRequest
-	72,  // 114: injective.exchange.v2.Query.SubaccountPositionInMarket:input_type -> injective.exchange.v2.QuerySubaccountPositionInMarketRequest
-	73,  // 115: injective.exchange.v2.Query.SubaccountEffectivePositionInMarket:input_type -> injective.exchange.v2.QuerySubaccountEffectivePositionInMarketRequest
-	79,  // 116: injective.exchange.v2.Query.PerpetualMarketInfo:input_type -> injective.exchange.v2.QueryPerpetualMarketInfoRequest
-	81,  // 117: injective.exchange.v2.Query.ExpiryFuturesMarketInfo:input_type -> injective.exchange.v2.QueryExpiryFuturesMarketInfoRequest
-	83,  // 118: injective.exchange.v2.Query.PerpetualMarketFunding:input_type -> injective.exchange.v2.QueryPerpetualMarketFundingRequest
-	74,  // 119: injective.exchange.v2.Query.SubaccountOrderMetadata:input_type -> injective.exchange.v2.QuerySubaccountOrderMetadataRequest
-	91,  // 120: injective.exchange.v2.Query.TradeRewardPoints:input_type -> injective.exchange.v2.QueryTradeRewardPointsRequest
-	91,  // 121: injective.exchange.v2.Query.PendingTradeRewardPoints:input_type -> injective.exchange.v2.QueryTradeRewardPointsRequest
-	93,  // 122: injective.exchange.v2.Query.TradeRewardCampaign:input_type -> injective.exchange.v2.QueryTradeRewardCampaignRequest
-	99,  // 123: injective.exchange.v2.Query.FeeDiscountAccountInfo:input_type -> injective.exchange.v2.QueryFeeDiscountAccountInfoRequest
-	101, // 124: injective.exchange.v2.Query.FeeDiscountSchedule:input_type -> injective.exchange.v2.QueryFeeDiscountScheduleRequest
-	103, // 125: injective.exchange.v2.Query.BalanceMismatches:input_type -> injective.exchange.v2.QueryBalanceMismatchesRequest
-	106, // 126: injective.exchange.v2.Query.BalanceWithBalanceHolds:input_type -> injective.exchange.v2.QueryBalanceWithBalanceHoldsRequest
-	109, // 127: injective.exchange.v2.Query.FeeDiscountTierStatistics:input_type -> injective.exchange.v2.QueryFeeDiscountTierStatisticsRequest
-	112, // 128: injective.exchange.v2.Query.MitoVaultInfos:input_type -> injective.exchange.v2.MitoVaultInfosRequest
-	114, // 129: injective.exchange.v2.Query.QueryMarketIDFromVault:input_type -> injective.exchange.v2.QueryMarketIDFromVaultRequest
-	116, // 130: injective.exchange.v2.Query.HistoricalTradeRecords:input_type -> injective.exchange.v2.QueryHistoricalTradeRecordsRequest
-	95,  // 131: injective.exchange.v2.Query.IsOptedOutOfRewards:input_type -> injective.exchange.v2.QueryIsOptedOutOfRewardsRequest
-	97,  // 132: injective.exchange.v2.Query.OptedOutOfRewardsAccounts:input_type -> injective.exchange.v2.QueryOptedOutOfRewardsAccountsRequest
-	119, // 133: injective.exchange.v2.Query.MarketVolatility:input_type -> injective.exchange.v2.QueryMarketVolatilityRequest
-	121, // 134: injective.exchange.v2.Query.BinaryOptionsMarkets:input_type -> injective.exchange.v2.QueryBinaryMarketsRequest
-	123, // 135: injective.exchange.v2.Query.TraderDerivativeConditionalOrders:input_type -> injective.exchange.v2.QueryTraderDerivativeConditionalOrdersRequest
-	131, // 136: injective.exchange.v2.Query.MarketAtomicExecutionFeeMultiplier:input_type -> injective.exchange.v2.QueryMarketAtomicExecutionFeeMultiplierRequest
-	133, // 137: injective.exchange.v2.Query.ActiveStakeGrant:input_type -> injective.exchange.v2.QueryActiveStakeGrantRequest
-	135, // 138: injective.exchange.v2.Query.GrantAuthorization:input_type -> injective.exchange.v2.QueryGrantAuthorizationRequest
-	137, // 139: injective.exchange.v2.Query.GrantAuthorizations:input_type -> injective.exchange.v2.QueryGrantAuthorizationsRequest
-	139, // 140: injective.exchange.v2.Query.MarketBalance:input_type -> injective.exchange.v2.QueryMarketBalanceRequest
-	141, // 141: injective.exchange.v2.Query.MarketBalances:input_type -> injective.exchange.v2.QueryMarketBalancesRequest
-	144, // 142: injective.exchange.v2.Query.DenomMinNotional:input_type -> injective.exchange.v2.QueryDenomMinNotionalRequest
-	146, // 143: injective.exchange.v2.Query.DenomMinNotionals:input_type -> injective.exchange.v2.QueryDenomMinNotionalsRequest
-	129, // 144: injective.exchange.v2.Query.L3DerivativeOrderBook:output_type -> injective.exchange.v2.QueryFullDerivativeOrderbookResponse
-	127, // 145: injective.exchange.v2.Query.L3SpotOrderBook:output_type -> injective.exchange.v2.QueryFullSpotOrderbookResponse
-	7,   // 146: injective.exchange.v2.Query.QueryExchangeParams:output_type -> injective.exchange.v2.QueryExchangeParamsResponse
-	9,   // 147: injective.exchange.v2.Query.SubaccountDeposits:output_type -> injective.exchange.v2.QuerySubaccountDepositsResponse
-	25,  // 148: injective.exchange.v2.Query.SubaccountDeposit:output_type -> injective.exchange.v2.QuerySubaccountDepositResponse
-	11,  // 149: injective.exchange.v2.Query.ExchangeBalances:output_type -> injective.exchange.v2.QueryExchangeBalancesResponse
-	13,  // 150: injective.exchange.v2.Query.AggregateVolume:output_type -> injective.exchange.v2.QueryAggregateVolumeResponse
-	15,  // 151: injective.exchange.v2.Query.AggregateVolumes:output_type -> injective.exchange.v2.QueryAggregateVolumesResponse
-	17,  // 152: injective.exchange.v2.Query.AggregateMarketVolume:output_type -> injective.exchange.v2.QueryAggregateMarketVolumeResponse
-	23,  // 153: injective.exchange.v2.Query.AggregateMarketVolumes:output_type -> injective.exchange.v2.QueryAggregateMarketVolumesResponse
-	19,  // 154: injective.exchange.v2.Query.DenomDecimal:output_type -> injective.exchange.v2.QueryDenomDecimalResponse
-	21,  // 155: injective.exchange.v2.Query.DenomDecimals:output_type -> injective.exchange.v2.QueryDenomDecimalsResponse
-	27,  // 156: injective.exchange.v2.Query.SpotMarkets:output_type -> injective.exchange.v2.QuerySpotMarketsResponse
-	29,  // 157: injective.exchange.v2.Query.SpotMarket:output_type -> injective.exchange.v2.QuerySpotMarketResponse
-	34,  // 158: injective.exchange.v2.Query.FullSpotMarkets:output_type -> injective.exchange.v2.QueryFullSpotMarketsResponse
-	36,  // 159: injective.exchange.v2.Query.FullSpotMarket:output_type -> injective.exchange.v2.QueryFullSpotMarketResponse
-	31,  // 160: injective.exchange.v2.Query.SpotOrderbook:output_type -> injective.exchange.v2.QuerySpotOrderbookResponse
-	42,  // 161: injective.exchange.v2.Query.TraderSpotOrders:output_type -> injective.exchange.v2.QueryTraderSpotOrdersResponse
-	43,  // 162: injective.exchange.v2.Query.AccountAddressSpotOrders:output_type -> injective.exchange.v2.QueryAccountAddressSpotOrdersResponse
-	38,  // 163: injective.exchange.v2.Query.SpotOrdersByHashes:output_type -> injective.exchange.v2.QuerySpotOrdersByHashesResponse
-	4,   // 164: injective.exchange.v2.Query.SubaccountOrders:output_type -> injective.exchange.v2.QuerySubaccountOrdersResponse
-	42,  // 165: injective.exchange.v2.Query.TraderSpotTransientOrders:output_type -> injective.exchange.v2.QueryTraderSpotOrdersResponse
-	45,  // 166: injective.exchange.v2.Query.SpotMidPriceAndTOB:output_type -> injective.exchange.v2.QuerySpotMidPriceAndTOBResponse
-	47,  // 167: injective.exchange.v2.Query.DerivativeMidPriceAndTOB:output_type -> injective.exchange.v2.QueryDerivativeMidPriceAndTOBResponse
-	49,  // 168: injective.exchange.v2.Query.DerivativeOrderbook:output_type -> injective.exchange.v2.QueryDerivativeOrderbookResponse
-	55,  // 169: injective.exchange.v2.Query.TraderDerivativeOrders:output_type -> injective.exchange.v2.QueryTraderDerivativeOrdersResponse
-	56,  // 170: injective.exchange.v2.Query.AccountAddressDerivativeOrders:output_type -> injective.exchange.v2.QueryAccountAddressDerivativeOrdersResponse
-	58,  // 171: injective.exchange.v2.Query.DerivativeOrdersByHashes:output_type -> injective.exchange.v2.QueryDerivativeOrdersByHashesResponse
-	55,  // 172: injective.exchange.v2.Query.TraderDerivativeTransientOrders:output_type -> injective.exchange.v2.QueryTraderDerivativeOrdersResponse
-	63,  // 173: injective.exchange.v2.Query.DerivativeMarkets:output_type -> injective.exchange.v2.QueryDerivativeMarketsResponse
-	65,  // 174: injective.exchange.v2.Query.DerivativeMarket:output_type -> injective.exchange.v2.QueryDerivativeMarketResponse
-	67,  // 175: injective.exchange.v2.Query.DerivativeMarketAddress:output_type -> injective.exchange.v2.QueryDerivativeMarketAddressResponse
-	86,  // 176: injective.exchange.v2.Query.SubaccountTradeNonce:output_type -> injective.exchange.v2.QuerySubaccountTradeNonceResponse
-	88,  // 177: injective.exchange.v2.Query.ExchangeModuleState:output_type -> injective.exchange.v2.QueryModuleStateResponse
-	90,  // 178: injective.exchange.v2.Query.Positions:output_type -> injective.exchange.v2.QueryPositionsResponse
-	70,  // 179: injective.exchange.v2.Query.PositionsInMarket:output_type -> injective.exchange.v2.QueryPositionsInMarketResponse
-	75,  // 180: injective.exchange.v2.Query.SubaccountPositions:output_type -> injective.exchange.v2.QuerySubaccountPositionsResponse
-	76,  // 181: injective.exchange.v2.Query.SubaccountPositionInMarket:output_type -> injective.exchange.v2.QuerySubaccountPositionInMarketResponse
-	78,  // 182: injective.exchange.v2.Query.SubaccountEffectivePositionInMarket:output_type -> injective.exchange.v2.QuerySubaccountEffectivePositionInMarketResponse
-	80,  // 183: injective.exchange.v2.Query.PerpetualMarketInfo:output_type -> injective.exchange.v2.QueryPerpetualMarketInfoResponse
-	82,  // 184: injective.exchange.v2.Query.ExpiryFuturesMarketInfo:output_type -> injective.exchange.v2.QueryExpiryFuturesMarketInfoResponse
-	84,  // 185: injective.exchange.v2.Query.PerpetualMarketFunding:output_type -> injective.exchange.v2.QueryPerpetualMarketFundingResponse
-	85,  // 186: injective.exchange.v2.Query.SubaccountOrderMetadata:output_type -> injective.exchange.v2.QuerySubaccountOrderMetadataResponse
-	92,  // 187: injective.exchange.v2.Query.TradeRewardPoints:output_type -> injective.exchange.v2.QueryTradeRewardPointsResponse
-	92,  // 188: injective.exchange.v2.Query.PendingTradeRewardPoints:output_type -> injective.exchange.v2.QueryTradeRewardPointsResponse
-	94,  // 189: injective.exchange.v2.Query.TradeRewardCampaign:output_type -> injective.exchange.v2.QueryTradeRewardCampaignResponse
-	100, // 190: injective.exchange.v2.Query.FeeDiscountAccountInfo:output_type -> injective.exchange.v2.QueryFeeDiscountAccountInfoResponse
-	102, // 191: injective.exchange.v2.Query.FeeDiscountSchedule:output_type -> injective.exchange.v2.QueryFeeDiscountScheduleResponse
-	105, // 192: injective.exchange.v2.Query.BalanceMismatches:output_type -> injective.exchange.v2.QueryBalanceMismatchesResponse
-	108, // 193: injective.exchange.v2.Query.BalanceWithBalanceHolds:output_type -> injective.exchange.v2.QueryBalanceWithBalanceHoldsResponse
-	111, // 194: injective.exchange.v2.Query.FeeDiscountTierStatistics:output_type -> injective.exchange.v2.QueryFeeDiscountTierStatisticsResponse
-	113, // 195: injective.exchange.v2.Query.MitoVaultInfos:output_type -> injective.exchange.v2.MitoVaultInfosResponse
-	115, // 196: injective.exchange.v2.Query.QueryMarketIDFromVault:output_type -> injective.exchange.v2.QueryMarketIDFromVaultResponse
-	117, // 197: injective.exchange.v2.Query.HistoricalTradeRecords:output_type -> injective.exchange.v2.QueryHistoricalTradeRecordsResponse
-	96,  // 198: injective.exchange.v2.Query.IsOptedOutOfRewards:output_type -> injective.exchange.v2.QueryIsOptedOutOfRewardsResponse
-	98,  // 199: injective.exchange.v2.Query.OptedOutOfRewardsAccounts:output_type -> injective.exchange.v2.QueryOptedOutOfRewardsAccountsResponse
-	120, // 200: injective.exchange.v2.Query.MarketVolatility:output_type -> injective.exchange.v2.QueryMarketVolatilityResponse
-	122, // 201: injective.exchange.v2.Query.BinaryOptionsMarkets:output_type -> injective.exchange.v2.QueryBinaryMarketsResponse
-	125, // 202: injective.exchange.v2.Query.TraderDerivativeConditionalOrders:output_type -> injective.exchange.v2.QueryTraderDerivativeConditionalOrdersResponse
-	132, // 203: injective.exchange.v2.Query.MarketAtomicExecutionFeeMultiplier:output_type -> injective.exchange.v2.QueryMarketAtomicExecutionFeeMultiplierResponse
-	134, // 204: injective.exchange.v2.Query.ActiveStakeGrant:output_type -> injective.exchange.v2.QueryActiveStakeGrantResponse
-	136, // 205: injective.exchange.v2.Query.GrantAuthorization:output_type -> injective.exchange.v2.QueryGrantAuthorizationResponse
-	138, // 206: injective.exchange.v2.Query.GrantAuthorizations:output_type -> injective.exchange.v2.QueryGrantAuthorizationsResponse
-	140, // 207: injective.exchange.v2.Query.MarketBalance:output_type -> injective.exchange.v2.QueryMarketBalanceResponse
-	142, // 208: injective.exchange.v2.Query.MarketBalances:output_type -> injective.exchange.v2.QueryMarketBalancesResponse
-	145, // 209: injective.exchange.v2.Query.DenomMinNotional:output_type -> injective.exchange.v2.QueryDenomMinNotionalResponse
-	147, // 210: injective.exchange.v2.Query.DenomMinNotionals:output_type -> injective.exchange.v2.QueryDenomMinNotionalsResponse
-	144, // [144:211] is the sub-list for method output_type
-	77,  // [77:144] is the sub-list for method input_type
-	77,  // [77:77] is the sub-list for extension type_name
-	77,  // [77:77] is the sub-list for extension extendee
-	0,   // [0:77] is the sub-list for field type_name
+var file_injective_exchange_v1beta1_query_proto_depIdxs = []int32{
+	147, // 0: injective.exchange.v1beta1.QuerySubaccountOrdersResponse.buy_orders:type_name -> injective.exchange.v1beta1.SubaccountOrderData
+	147, // 1: injective.exchange.v1beta1.QuerySubaccountOrdersResponse.sell_orders:type_name -> injective.exchange.v1beta1.SubaccountOrderData
+	148, // 2: injective.exchange.v1beta1.SubaccountOrderbookMetadataWithMarket.metadata:type_name -> injective.exchange.v1beta1.SubaccountOrderbookMetadata
+	149, // 3: injective.exchange.v1beta1.QueryExchangeParamsResponse.params:type_name -> injective.exchange.v1beta1.Params
+	2,   // 4: injective.exchange.v1beta1.QuerySubaccountDepositsRequest.subaccount:type_name -> injective.exchange.v1beta1.Subaccount
+	146, // 5: injective.exchange.v1beta1.QuerySubaccountDepositsResponse.deposits:type_name -> injective.exchange.v1beta1.QuerySubaccountDepositsResponse.DepositsEntry
+	150, // 6: injective.exchange.v1beta1.QueryExchangeBalancesResponse.balances:type_name -> injective.exchange.v1beta1.Balance
+	151, // 7: injective.exchange.v1beta1.QueryAggregateVolumeResponse.aggregate_volumes:type_name -> injective.exchange.v1beta1.MarketVolume
+	152, // 8: injective.exchange.v1beta1.QueryAggregateVolumesResponse.aggregate_account_volumes:type_name -> injective.exchange.v1beta1.AggregateAccountVolumeRecord
+	151, // 9: injective.exchange.v1beta1.QueryAggregateVolumesResponse.aggregate_market_volumes:type_name -> injective.exchange.v1beta1.MarketVolume
+	153, // 10: injective.exchange.v1beta1.QueryAggregateMarketVolumeResponse.volume:type_name -> injective.exchange.v1beta1.VolumeRecord
+	154, // 11: injective.exchange.v1beta1.QueryDenomDecimalsResponse.denom_decimals:type_name -> injective.exchange.v1beta1.DenomDecimals
+	151, // 12: injective.exchange.v1beta1.QueryAggregateMarketVolumesResponse.volumes:type_name -> injective.exchange.v1beta1.MarketVolume
+	155, // 13: injective.exchange.v1beta1.QuerySubaccountDepositResponse.deposits:type_name -> injective.exchange.v1beta1.Deposit
+	156, // 14: injective.exchange.v1beta1.QuerySpotMarketsResponse.markets:type_name -> injective.exchange.v1beta1.SpotMarket
+	156, // 15: injective.exchange.v1beta1.QuerySpotMarketResponse.market:type_name -> injective.exchange.v1beta1.SpotMarket
+	0,   // 16: injective.exchange.v1beta1.QuerySpotOrderbookRequest.order_side:type_name -> injective.exchange.v1beta1.OrderSide
+	157, // 17: injective.exchange.v1beta1.QuerySpotOrderbookResponse.buys_price_level:type_name -> injective.exchange.v1beta1.Level
+	157, // 18: injective.exchange.v1beta1.QuerySpotOrderbookResponse.sells_price_level:type_name -> injective.exchange.v1beta1.Level
+	156, // 19: injective.exchange.v1beta1.FullSpotMarket.market:type_name -> injective.exchange.v1beta1.SpotMarket
+	158, // 20: injective.exchange.v1beta1.FullSpotMarket.mid_price_and_tob:type_name -> injective.exchange.v1beta1.MidPriceAndTOB
+	32,  // 21: injective.exchange.v1beta1.QueryFullSpotMarketsResponse.markets:type_name -> injective.exchange.v1beta1.FullSpotMarket
+	32,  // 22: injective.exchange.v1beta1.QueryFullSpotMarketResponse.market:type_name -> injective.exchange.v1beta1.FullSpotMarket
+	41,  // 23: injective.exchange.v1beta1.QuerySpotOrdersByHashesResponse.orders:type_name -> injective.exchange.v1beta1.TrimmedSpotLimitOrder
+	41,  // 24: injective.exchange.v1beta1.QueryTraderSpotOrdersResponse.orders:type_name -> injective.exchange.v1beta1.TrimmedSpotLimitOrder
+	41,  // 25: injective.exchange.v1beta1.QueryAccountAddressSpotOrdersResponse.orders:type_name -> injective.exchange.v1beta1.TrimmedSpotLimitOrder
+	157, // 26: injective.exchange.v1beta1.QueryDerivativeOrderbookResponse.buys_price_level:type_name -> injective.exchange.v1beta1.Level
+	157, // 27: injective.exchange.v1beta1.QueryDerivativeOrderbookResponse.sells_price_level:type_name -> injective.exchange.v1beta1.Level
+	1,   // 28: injective.exchange.v1beta1.QueryTraderSpotOrdersToCancelUpToAmountRequest.strategy:type_name -> injective.exchange.v1beta1.CancellationStrategy
+	1,   // 29: injective.exchange.v1beta1.QueryTraderDerivativeOrdersToCancelUpToAmountRequest.strategy:type_name -> injective.exchange.v1beta1.CancellationStrategy
+	54,  // 30: injective.exchange.v1beta1.QueryTraderDerivativeOrdersResponse.orders:type_name -> injective.exchange.v1beta1.TrimmedDerivativeLimitOrder
+	54,  // 31: injective.exchange.v1beta1.QueryAccountAddressDerivativeOrdersResponse.orders:type_name -> injective.exchange.v1beta1.TrimmedDerivativeLimitOrder
+	54,  // 32: injective.exchange.v1beta1.QueryDerivativeOrdersByHashesResponse.orders:type_name -> injective.exchange.v1beta1.TrimmedDerivativeLimitOrder
+	159, // 33: injective.exchange.v1beta1.PerpetualMarketState.market_info:type_name -> injective.exchange.v1beta1.PerpetualMarketInfo
+	160, // 34: injective.exchange.v1beta1.PerpetualMarketState.funding_info:type_name -> injective.exchange.v1beta1.PerpetualMarketFunding
+	161, // 35: injective.exchange.v1beta1.FullDerivativeMarket.market:type_name -> injective.exchange.v1beta1.DerivativeMarket
+	61,  // 36: injective.exchange.v1beta1.FullDerivativeMarket.perpetual_info:type_name -> injective.exchange.v1beta1.PerpetualMarketState
+	162, // 37: injective.exchange.v1beta1.FullDerivativeMarket.futures_info:type_name -> injective.exchange.v1beta1.ExpiryFuturesMarketInfo
+	158, // 38: injective.exchange.v1beta1.FullDerivativeMarket.mid_price_and_tob:type_name -> injective.exchange.v1beta1.MidPriceAndTOB
+	62,  // 39: injective.exchange.v1beta1.QueryDerivativeMarketsResponse.markets:type_name -> injective.exchange.v1beta1.FullDerivativeMarket
+	62,  // 40: injective.exchange.v1beta1.QueryDerivativeMarketResponse.market:type_name -> injective.exchange.v1beta1.FullDerivativeMarket
+	163, // 41: injective.exchange.v1beta1.QuerySubaccountPositionsResponse.state:type_name -> injective.exchange.v1beta1.DerivativePosition
+	164, // 42: injective.exchange.v1beta1.QuerySubaccountPositionInMarketResponse.state:type_name -> injective.exchange.v1beta1.Position
+	75,  // 43: injective.exchange.v1beta1.QuerySubaccountEffectivePositionInMarketResponse.state:type_name -> injective.exchange.v1beta1.EffectivePosition
+	159, // 44: injective.exchange.v1beta1.QueryPerpetualMarketInfoResponse.info:type_name -> injective.exchange.v1beta1.PerpetualMarketInfo
+	162, // 45: injective.exchange.v1beta1.QueryExpiryFuturesMarketInfoResponse.info:type_name -> injective.exchange.v1beta1.ExpiryFuturesMarketInfo
+	160, // 46: injective.exchange.v1beta1.QueryPerpetualMarketFundingResponse.state:type_name -> injective.exchange.v1beta1.PerpetualMarketFunding
+	5,   // 47: injective.exchange.v1beta1.QuerySubaccountOrderMetadataResponse.metadata:type_name -> injective.exchange.v1beta1.SubaccountOrderbookMetadataWithMarket
+	165, // 48: injective.exchange.v1beta1.QueryModuleStateResponse.state:type_name -> injective.exchange.v1beta1.GenesisState
+	163, // 49: injective.exchange.v1beta1.QueryPositionsResponse.state:type_name -> injective.exchange.v1beta1.DerivativePosition
+	166, // 50: injective.exchange.v1beta1.QueryTradeRewardCampaignResponse.trading_reward_campaign_info:type_name -> injective.exchange.v1beta1.TradingRewardCampaignInfo
+	167, // 51: injective.exchange.v1beta1.QueryTradeRewardCampaignResponse.trading_reward_pool_campaign_schedule:type_name -> injective.exchange.v1beta1.CampaignRewardPool
+	167, // 52: injective.exchange.v1beta1.QueryTradeRewardCampaignResponse.pending_trading_reward_pool_campaign_schedule:type_name -> injective.exchange.v1beta1.CampaignRewardPool
+	168, // 53: injective.exchange.v1beta1.QueryFeeDiscountAccountInfoResponse.account_info:type_name -> injective.exchange.v1beta1.FeeDiscountTierInfo
+	169, // 54: injective.exchange.v1beta1.QueryFeeDiscountAccountInfoResponse.account_ttl:type_name -> injective.exchange.v1beta1.FeeDiscountTierTTL
+	170, // 55: injective.exchange.v1beta1.QueryFeeDiscountScheduleResponse.fee_discount_schedule:type_name -> injective.exchange.v1beta1.FeeDiscountSchedule
+	102, // 56: injective.exchange.v1beta1.QueryBalanceMismatchesResponse.balance_mismatches:type_name -> injective.exchange.v1beta1.BalanceMismatch
+	105, // 57: injective.exchange.v1beta1.QueryBalanceWithBalanceHoldsResponse.balance_with_balance_holds:type_name -> injective.exchange.v1beta1.BalanceWithMarginHold
+	108, // 58: injective.exchange.v1beta1.QueryFeeDiscountTierStatisticsResponse.statistics:type_name -> injective.exchange.v1beta1.TierStatistic
+	171, // 59: injective.exchange.v1beta1.QueryHistoricalTradeRecordsResponse.trade_records:type_name -> injective.exchange.v1beta1.TradeRecords
+	116, // 60: injective.exchange.v1beta1.QueryMarketVolatilityRequest.trade_history_options:type_name -> injective.exchange.v1beta1.TradeHistoryOptions
+	172, // 61: injective.exchange.v1beta1.QueryMarketVolatilityResponse.history_metadata:type_name -> injective.oracle.v1beta1.MetadataStatistics
+	173, // 62: injective.exchange.v1beta1.QueryMarketVolatilityResponse.raw_history:type_name -> injective.exchange.v1beta1.TradeRecord
+	174, // 63: injective.exchange.v1beta1.QueryBinaryMarketsResponse.markets:type_name -> injective.exchange.v1beta1.BinaryOptionsMarket
+	122, // 64: injective.exchange.v1beta1.QueryTraderDerivativeConditionalOrdersResponse.orders:type_name -> injective.exchange.v1beta1.TrimmedDerivativeConditionalOrder
+	128, // 65: injective.exchange.v1beta1.QueryFullSpotOrderbookResponse.Bids:type_name -> injective.exchange.v1beta1.TrimmedLimitOrder
+	128, // 66: injective.exchange.v1beta1.QueryFullSpotOrderbookResponse.Asks:type_name -> injective.exchange.v1beta1.TrimmedLimitOrder
+	128, // 67: injective.exchange.v1beta1.QueryFullDerivativeOrderbookResponse.Bids:type_name -> injective.exchange.v1beta1.TrimmedLimitOrder
+	128, // 68: injective.exchange.v1beta1.QueryFullDerivativeOrderbookResponse.Asks:type_name -> injective.exchange.v1beta1.TrimmedLimitOrder
+	175, // 69: injective.exchange.v1beta1.QueryActiveStakeGrantResponse.grant:type_name -> injective.exchange.v1beta1.ActiveGrant
+	176, // 70: injective.exchange.v1beta1.QueryActiveStakeGrantResponse.effective_grant:type_name -> injective.exchange.v1beta1.EffectiveGrant
+	177, // 71: injective.exchange.v1beta1.QueryGrantAuthorizationsResponse.grants:type_name -> injective.exchange.v1beta1.GrantAuthorization
+	141, // 72: injective.exchange.v1beta1.QueryMarketBalanceResponse.balance:type_name -> injective.exchange.v1beta1.MarketBalance
+	141, // 73: injective.exchange.v1beta1.QueryMarketBalancesResponse.balances:type_name -> injective.exchange.v1beta1.MarketBalance
+	178, // 74: injective.exchange.v1beta1.QueryDenomMinNotionalsResponse.denom_min_notionals:type_name -> injective.exchange.v1beta1.DenomMinNotional
+	155, // 75: injective.exchange.v1beta1.QuerySubaccountDepositsResponse.DepositsEntry.value:type_name -> injective.exchange.v1beta1.Deposit
+	126, // 76: injective.exchange.v1beta1.Query.L3DerivativeOrderBook:input_type -> injective.exchange.v1beta1.QueryFullDerivativeOrderbookRequest
+	124, // 77: injective.exchange.v1beta1.Query.L3SpotOrderBook:input_type -> injective.exchange.v1beta1.QueryFullSpotOrderbookRequest
+	6,   // 78: injective.exchange.v1beta1.Query.QueryExchangeParams:input_type -> injective.exchange.v1beta1.QueryExchangeParamsRequest
+	8,   // 79: injective.exchange.v1beta1.Query.SubaccountDeposits:input_type -> injective.exchange.v1beta1.QuerySubaccountDepositsRequest
+	24,  // 80: injective.exchange.v1beta1.Query.SubaccountDeposit:input_type -> injective.exchange.v1beta1.QuerySubaccountDepositRequest
+	10,  // 81: injective.exchange.v1beta1.Query.ExchangeBalances:input_type -> injective.exchange.v1beta1.QueryExchangeBalancesRequest
+	12,  // 82: injective.exchange.v1beta1.Query.AggregateVolume:input_type -> injective.exchange.v1beta1.QueryAggregateVolumeRequest
+	14,  // 83: injective.exchange.v1beta1.Query.AggregateVolumes:input_type -> injective.exchange.v1beta1.QueryAggregateVolumesRequest
+	16,  // 84: injective.exchange.v1beta1.Query.AggregateMarketVolume:input_type -> injective.exchange.v1beta1.QueryAggregateMarketVolumeRequest
+	22,  // 85: injective.exchange.v1beta1.Query.AggregateMarketVolumes:input_type -> injective.exchange.v1beta1.QueryAggregateMarketVolumesRequest
+	18,  // 86: injective.exchange.v1beta1.Query.DenomDecimal:input_type -> injective.exchange.v1beta1.QueryDenomDecimalRequest
+	20,  // 87: injective.exchange.v1beta1.Query.DenomDecimals:input_type -> injective.exchange.v1beta1.QueryDenomDecimalsRequest
+	26,  // 88: injective.exchange.v1beta1.Query.SpotMarkets:input_type -> injective.exchange.v1beta1.QuerySpotMarketsRequest
+	28,  // 89: injective.exchange.v1beta1.Query.SpotMarket:input_type -> injective.exchange.v1beta1.QuerySpotMarketRequest
+	33,  // 90: injective.exchange.v1beta1.Query.FullSpotMarkets:input_type -> injective.exchange.v1beta1.QueryFullSpotMarketsRequest
+	35,  // 91: injective.exchange.v1beta1.Query.FullSpotMarket:input_type -> injective.exchange.v1beta1.QueryFullSpotMarketRequest
+	30,  // 92: injective.exchange.v1beta1.Query.SpotOrderbook:input_type -> injective.exchange.v1beta1.QuerySpotOrderbookRequest
+	39,  // 93: injective.exchange.v1beta1.Query.TraderSpotOrders:input_type -> injective.exchange.v1beta1.QueryTraderSpotOrdersRequest
+	40,  // 94: injective.exchange.v1beta1.Query.AccountAddressSpotOrders:input_type -> injective.exchange.v1beta1.QueryAccountAddressSpotOrdersRequest
+	37,  // 95: injective.exchange.v1beta1.Query.SpotOrdersByHashes:input_type -> injective.exchange.v1beta1.QuerySpotOrdersByHashesRequest
+	3,   // 96: injective.exchange.v1beta1.Query.SubaccountOrders:input_type -> injective.exchange.v1beta1.QuerySubaccountOrdersRequest
+	39,  // 97: injective.exchange.v1beta1.Query.TraderSpotTransientOrders:input_type -> injective.exchange.v1beta1.QueryTraderSpotOrdersRequest
+	44,  // 98: injective.exchange.v1beta1.Query.SpotMidPriceAndTOB:input_type -> injective.exchange.v1beta1.QuerySpotMidPriceAndTOBRequest
+	46,  // 99: injective.exchange.v1beta1.Query.DerivativeMidPriceAndTOB:input_type -> injective.exchange.v1beta1.QueryDerivativeMidPriceAndTOBRequest
+	48,  // 100: injective.exchange.v1beta1.Query.DerivativeOrderbook:input_type -> injective.exchange.v1beta1.QueryDerivativeOrderbookRequest
+	52,  // 101: injective.exchange.v1beta1.Query.TraderDerivativeOrders:input_type -> injective.exchange.v1beta1.QueryTraderDerivativeOrdersRequest
+	53,  // 102: injective.exchange.v1beta1.Query.AccountAddressDerivativeOrders:input_type -> injective.exchange.v1beta1.QueryAccountAddressDerivativeOrdersRequest
+	57,  // 103: injective.exchange.v1beta1.Query.DerivativeOrdersByHashes:input_type -> injective.exchange.v1beta1.QueryDerivativeOrdersByHashesRequest
+	52,  // 104: injective.exchange.v1beta1.Query.TraderDerivativeTransientOrders:input_type -> injective.exchange.v1beta1.QueryTraderDerivativeOrdersRequest
+	59,  // 105: injective.exchange.v1beta1.Query.DerivativeMarkets:input_type -> injective.exchange.v1beta1.QueryDerivativeMarketsRequest
+	64,  // 106: injective.exchange.v1beta1.Query.DerivativeMarket:input_type -> injective.exchange.v1beta1.QueryDerivativeMarketRequest
+	66,  // 107: injective.exchange.v1beta1.Query.DerivativeMarketAddress:input_type -> injective.exchange.v1beta1.QueryDerivativeMarketAddressRequest
+	68,  // 108: injective.exchange.v1beta1.Query.SubaccountTradeNonce:input_type -> injective.exchange.v1beta1.QuerySubaccountTradeNonceRequest
+	85,  // 109: injective.exchange.v1beta1.Query.ExchangeModuleState:input_type -> injective.exchange.v1beta1.QueryModuleStateRequest
+	87,  // 110: injective.exchange.v1beta1.Query.Positions:input_type -> injective.exchange.v1beta1.QueryPositionsRequest
+	69,  // 111: injective.exchange.v1beta1.Query.SubaccountPositions:input_type -> injective.exchange.v1beta1.QuerySubaccountPositionsRequest
+	70,  // 112: injective.exchange.v1beta1.Query.SubaccountPositionInMarket:input_type -> injective.exchange.v1beta1.QuerySubaccountPositionInMarketRequest
+	71,  // 113: injective.exchange.v1beta1.Query.SubaccountEffectivePositionInMarket:input_type -> injective.exchange.v1beta1.QuerySubaccountEffectivePositionInMarketRequest
+	77,  // 114: injective.exchange.v1beta1.Query.PerpetualMarketInfo:input_type -> injective.exchange.v1beta1.QueryPerpetualMarketInfoRequest
+	79,  // 115: injective.exchange.v1beta1.Query.ExpiryFuturesMarketInfo:input_type -> injective.exchange.v1beta1.QueryExpiryFuturesMarketInfoRequest
+	81,  // 116: injective.exchange.v1beta1.Query.PerpetualMarketFunding:input_type -> injective.exchange.v1beta1.QueryPerpetualMarketFundingRequest
+	72,  // 117: injective.exchange.v1beta1.Query.SubaccountOrderMetadata:input_type -> injective.exchange.v1beta1.QuerySubaccountOrderMetadataRequest
+	89,  // 118: injective.exchange.v1beta1.Query.TradeRewardPoints:input_type -> injective.exchange.v1beta1.QueryTradeRewardPointsRequest
+	89,  // 119: injective.exchange.v1beta1.Query.PendingTradeRewardPoints:input_type -> injective.exchange.v1beta1.QueryTradeRewardPointsRequest
+	91,  // 120: injective.exchange.v1beta1.Query.TradeRewardCampaign:input_type -> injective.exchange.v1beta1.QueryTradeRewardCampaignRequest
+	97,  // 121: injective.exchange.v1beta1.Query.FeeDiscountAccountInfo:input_type -> injective.exchange.v1beta1.QueryFeeDiscountAccountInfoRequest
+	99,  // 122: injective.exchange.v1beta1.Query.FeeDiscountSchedule:input_type -> injective.exchange.v1beta1.QueryFeeDiscountScheduleRequest
+	101, // 123: injective.exchange.v1beta1.Query.BalanceMismatches:input_type -> injective.exchange.v1beta1.QueryBalanceMismatchesRequest
+	104, // 124: injective.exchange.v1beta1.Query.BalanceWithBalanceHolds:input_type -> injective.exchange.v1beta1.QueryBalanceWithBalanceHoldsRequest
+	107, // 125: injective.exchange.v1beta1.Query.FeeDiscountTierStatistics:input_type -> injective.exchange.v1beta1.QueryFeeDiscountTierStatisticsRequest
+	110, // 126: injective.exchange.v1beta1.Query.MitoVaultInfos:input_type -> injective.exchange.v1beta1.MitoVaultInfosRequest
+	112, // 127: injective.exchange.v1beta1.Query.QueryMarketIDFromVault:input_type -> injective.exchange.v1beta1.QueryMarketIDFromVaultRequest
+	114, // 128: injective.exchange.v1beta1.Query.HistoricalTradeRecords:input_type -> injective.exchange.v1beta1.QueryHistoricalTradeRecordsRequest
+	93,  // 129: injective.exchange.v1beta1.Query.IsOptedOutOfRewards:input_type -> injective.exchange.v1beta1.QueryIsOptedOutOfRewardsRequest
+	95,  // 130: injective.exchange.v1beta1.Query.OptedOutOfRewardsAccounts:input_type -> injective.exchange.v1beta1.QueryOptedOutOfRewardsAccountsRequest
+	117, // 131: injective.exchange.v1beta1.Query.MarketVolatility:input_type -> injective.exchange.v1beta1.QueryMarketVolatilityRequest
+	119, // 132: injective.exchange.v1beta1.Query.BinaryOptionsMarkets:input_type -> injective.exchange.v1beta1.QueryBinaryMarketsRequest
+	121, // 133: injective.exchange.v1beta1.Query.TraderDerivativeConditionalOrders:input_type -> injective.exchange.v1beta1.QueryTraderDerivativeConditionalOrdersRequest
+	129, // 134: injective.exchange.v1beta1.Query.MarketAtomicExecutionFeeMultiplier:input_type -> injective.exchange.v1beta1.QueryMarketAtomicExecutionFeeMultiplierRequest
+	131, // 135: injective.exchange.v1beta1.Query.ActiveStakeGrant:input_type -> injective.exchange.v1beta1.QueryActiveStakeGrantRequest
+	133, // 136: injective.exchange.v1beta1.Query.GrantAuthorization:input_type -> injective.exchange.v1beta1.QueryGrantAuthorizationRequest
+	135, // 137: injective.exchange.v1beta1.Query.GrantAuthorizations:input_type -> injective.exchange.v1beta1.QueryGrantAuthorizationsRequest
+	137, // 138: injective.exchange.v1beta1.Query.MarketBalance:input_type -> injective.exchange.v1beta1.QueryMarketBalanceRequest
+	139, // 139: injective.exchange.v1beta1.Query.MarketBalances:input_type -> injective.exchange.v1beta1.QueryMarketBalancesRequest
+	142, // 140: injective.exchange.v1beta1.Query.DenomMinNotional:input_type -> injective.exchange.v1beta1.QueryDenomMinNotionalRequest
+	144, // 141: injective.exchange.v1beta1.Query.DenomMinNotionals:input_type -> injective.exchange.v1beta1.QueryDenomMinNotionalsRequest
+	127, // 142: injective.exchange.v1beta1.Query.L3DerivativeOrderBook:output_type -> injective.exchange.v1beta1.QueryFullDerivativeOrderbookResponse
+	125, // 143: injective.exchange.v1beta1.Query.L3SpotOrderBook:output_type -> injective.exchange.v1beta1.QueryFullSpotOrderbookResponse
+	7,   // 144: injective.exchange.v1beta1.Query.QueryExchangeParams:output_type -> injective.exchange.v1beta1.QueryExchangeParamsResponse
+	9,   // 145: injective.exchange.v1beta1.Query.SubaccountDeposits:output_type -> injective.exchange.v1beta1.QuerySubaccountDepositsResponse
+	25,  // 146: injective.exchange.v1beta1.Query.SubaccountDeposit:output_type -> injective.exchange.v1beta1.QuerySubaccountDepositResponse
+	11,  // 147: injective.exchange.v1beta1.Query.ExchangeBalances:output_type -> injective.exchange.v1beta1.QueryExchangeBalancesResponse
+	13,  // 148: injective.exchange.v1beta1.Query.AggregateVolume:output_type -> injective.exchange.v1beta1.QueryAggregateVolumeResponse
+	15,  // 149: injective.exchange.v1beta1.Query.AggregateVolumes:output_type -> injective.exchange.v1beta1.QueryAggregateVolumesResponse
+	17,  // 150: injective.exchange.v1beta1.Query.AggregateMarketVolume:output_type -> injective.exchange.v1beta1.QueryAggregateMarketVolumeResponse
+	23,  // 151: injective.exchange.v1beta1.Query.AggregateMarketVolumes:output_type -> injective.exchange.v1beta1.QueryAggregateMarketVolumesResponse
+	19,  // 152: injective.exchange.v1beta1.Query.DenomDecimal:output_type -> injective.exchange.v1beta1.QueryDenomDecimalResponse
+	21,  // 153: injective.exchange.v1beta1.Query.DenomDecimals:output_type -> injective.exchange.v1beta1.QueryDenomDecimalsResponse
+	27,  // 154: injective.exchange.v1beta1.Query.SpotMarkets:output_type -> injective.exchange.v1beta1.QuerySpotMarketsResponse
+	29,  // 155: injective.exchange.v1beta1.Query.SpotMarket:output_type -> injective.exchange.v1beta1.QuerySpotMarketResponse
+	34,  // 156: injective.exchange.v1beta1.Query.FullSpotMarkets:output_type -> injective.exchange.v1beta1.QueryFullSpotMarketsResponse
+	36,  // 157: injective.exchange.v1beta1.Query.FullSpotMarket:output_type -> injective.exchange.v1beta1.QueryFullSpotMarketResponse
+	31,  // 158: injective.exchange.v1beta1.Query.SpotOrderbook:output_type -> injective.exchange.v1beta1.QuerySpotOrderbookResponse
+	42,  // 159: injective.exchange.v1beta1.Query.TraderSpotOrders:output_type -> injective.exchange.v1beta1.QueryTraderSpotOrdersResponse
+	43,  // 160: injective.exchange.v1beta1.Query.AccountAddressSpotOrders:output_type -> injective.exchange.v1beta1.QueryAccountAddressSpotOrdersResponse
+	38,  // 161: injective.exchange.v1beta1.Query.SpotOrdersByHashes:output_type -> injective.exchange.v1beta1.QuerySpotOrdersByHashesResponse
+	4,   // 162: injective.exchange.v1beta1.Query.SubaccountOrders:output_type -> injective.exchange.v1beta1.QuerySubaccountOrdersResponse
+	42,  // 163: injective.exchange.v1beta1.Query.TraderSpotTransientOrders:output_type -> injective.exchange.v1beta1.QueryTraderSpotOrdersResponse
+	45,  // 164: injective.exchange.v1beta1.Query.SpotMidPriceAndTOB:output_type -> injective.exchange.v1beta1.QuerySpotMidPriceAndTOBResponse
+	47,  // 165: injective.exchange.v1beta1.Query.DerivativeMidPriceAndTOB:output_type -> injective.exchange.v1beta1.QueryDerivativeMidPriceAndTOBResponse
+	49,  // 166: injective.exchange.v1beta1.Query.DerivativeOrderbook:output_type -> injective.exchange.v1beta1.QueryDerivativeOrderbookResponse
+	55,  // 167: injective.exchange.v1beta1.Query.TraderDerivativeOrders:output_type -> injective.exchange.v1beta1.QueryTraderDerivativeOrdersResponse
+	56,  // 168: injective.exchange.v1beta1.Query.AccountAddressDerivativeOrders:output_type -> injective.exchange.v1beta1.QueryAccountAddressDerivativeOrdersResponse
+	58,  // 169: injective.exchange.v1beta1.Query.DerivativeOrdersByHashes:output_type -> injective.exchange.v1beta1.QueryDerivativeOrdersByHashesResponse
+	55,  // 170: injective.exchange.v1beta1.Query.TraderDerivativeTransientOrders:output_type -> injective.exchange.v1beta1.QueryTraderDerivativeOrdersResponse
+	63,  // 171: injective.exchange.v1beta1.Query.DerivativeMarkets:output_type -> injective.exchange.v1beta1.QueryDerivativeMarketsResponse
+	65,  // 172: injective.exchange.v1beta1.Query.DerivativeMarket:output_type -> injective.exchange.v1beta1.QueryDerivativeMarketResponse
+	67,  // 173: injective.exchange.v1beta1.Query.DerivativeMarketAddress:output_type -> injective.exchange.v1beta1.QueryDerivativeMarketAddressResponse
+	84,  // 174: injective.exchange.v1beta1.Query.SubaccountTradeNonce:output_type -> injective.exchange.v1beta1.QuerySubaccountTradeNonceResponse
+	86,  // 175: injective.exchange.v1beta1.Query.ExchangeModuleState:output_type -> injective.exchange.v1beta1.QueryModuleStateResponse
+	88,  // 176: injective.exchange.v1beta1.Query.Positions:output_type -> injective.exchange.v1beta1.QueryPositionsResponse
+	73,  // 177: injective.exchange.v1beta1.Query.SubaccountPositions:output_type -> injective.exchange.v1beta1.QuerySubaccountPositionsResponse
+	74,  // 178: injective.exchange.v1beta1.Query.SubaccountPositionInMarket:output_type -> injective.exchange.v1beta1.QuerySubaccountPositionInMarketResponse
+	76,  // 179: injective.exchange.v1beta1.Query.SubaccountEffectivePositionInMarket:output_type -> injective.exchange.v1beta1.QuerySubaccountEffectivePositionInMarketResponse
+	78,  // 180: injective.exchange.v1beta1.Query.PerpetualMarketInfo:output_type -> injective.exchange.v1beta1.QueryPerpetualMarketInfoResponse
+	80,  // 181: injective.exchange.v1beta1.Query.ExpiryFuturesMarketInfo:output_type -> injective.exchange.v1beta1.QueryExpiryFuturesMarketInfoResponse
+	82,  // 182: injective.exchange.v1beta1.Query.PerpetualMarketFunding:output_type -> injective.exchange.v1beta1.QueryPerpetualMarketFundingResponse
+	83,  // 183: injective.exchange.v1beta1.Query.SubaccountOrderMetadata:output_type -> injective.exchange.v1beta1.QuerySubaccountOrderMetadataResponse
+	90,  // 184: injective.exchange.v1beta1.Query.TradeRewardPoints:output_type -> injective.exchange.v1beta1.QueryTradeRewardPointsResponse
+	90,  // 185: injective.exchange.v1beta1.Query.PendingTradeRewardPoints:output_type -> injective.exchange.v1beta1.QueryTradeRewardPointsResponse
+	92,  // 186: injective.exchange.v1beta1.Query.TradeRewardCampaign:output_type -> injective.exchange.v1beta1.QueryTradeRewardCampaignResponse
+	98,  // 187: injective.exchange.v1beta1.Query.FeeDiscountAccountInfo:output_type -> injective.exchange.v1beta1.QueryFeeDiscountAccountInfoResponse
+	100, // 188: injective.exchange.v1beta1.Query.FeeDiscountSchedule:output_type -> injective.exchange.v1beta1.QueryFeeDiscountScheduleResponse
+	103, // 189: injective.exchange.v1beta1.Query.BalanceMismatches:output_type -> injective.exchange.v1beta1.QueryBalanceMismatchesResponse
+	106, // 190: injective.exchange.v1beta1.Query.BalanceWithBalanceHolds:output_type -> injective.exchange.v1beta1.QueryBalanceWithBalanceHoldsResponse
+	109, // 191: injective.exchange.v1beta1.Query.FeeDiscountTierStatistics:output_type -> injective.exchange.v1beta1.QueryFeeDiscountTierStatisticsResponse
+	111, // 192: injective.exchange.v1beta1.Query.MitoVaultInfos:output_type -> injective.exchange.v1beta1.MitoVaultInfosResponse
+	113, // 193: injective.exchange.v1beta1.Query.QueryMarketIDFromVault:output_type -> injective.exchange.v1beta1.QueryMarketIDFromVaultResponse
+	115, // 194: injective.exchange.v1beta1.Query.HistoricalTradeRecords:output_type -> injective.exchange.v1beta1.QueryHistoricalTradeRecordsResponse
+	94,  // 195: injective.exchange.v1beta1.Query.IsOptedOutOfRewards:output_type -> injective.exchange.v1beta1.QueryIsOptedOutOfRewardsResponse
+	96,  // 196: injective.exchange.v1beta1.Query.OptedOutOfRewardsAccounts:output_type -> injective.exchange.v1beta1.QueryOptedOutOfRewardsAccountsResponse
+	118, // 197: injective.exchange.v1beta1.Query.MarketVolatility:output_type -> injective.exchange.v1beta1.QueryMarketVolatilityResponse
+	120, // 198: injective.exchange.v1beta1.Query.BinaryOptionsMarkets:output_type -> injective.exchange.v1beta1.QueryBinaryMarketsResponse
+	123, // 199: injective.exchange.v1beta1.Query.TraderDerivativeConditionalOrders:output_type -> injective.exchange.v1beta1.QueryTraderDerivativeConditionalOrdersResponse
+	130, // 200: injective.exchange.v1beta1.Query.MarketAtomicExecutionFeeMultiplier:output_type -> injective.exchange.v1beta1.QueryMarketAtomicExecutionFeeMultiplierResponse
+	132, // 201: injective.exchange.v1beta1.Query.ActiveStakeGrant:output_type -> injective.exchange.v1beta1.QueryActiveStakeGrantResponse
+	134, // 202: injective.exchange.v1beta1.Query.GrantAuthorization:output_type -> injective.exchange.v1beta1.QueryGrantAuthorizationResponse
+	136, // 203: injective.exchange.v1beta1.Query.GrantAuthorizations:output_type -> injective.exchange.v1beta1.QueryGrantAuthorizationsResponse
+	138, // 204: injective.exchange.v1beta1.Query.MarketBalance:output_type -> injective.exchange.v1beta1.QueryMarketBalanceResponse
+	140, // 205: injective.exchange.v1beta1.Query.MarketBalances:output_type -> injective.exchange.v1beta1.QueryMarketBalancesResponse
+	143, // 206: injective.exchange.v1beta1.Query.DenomMinNotional:output_type -> injective.exchange.v1beta1.QueryDenomMinNotionalResponse
+	145, // 207: injective.exchange.v1beta1.Query.DenomMinNotionals:output_type -> injective.exchange.v1beta1.QueryDenomMinNotionalsResponse
+	142, // [142:208] is the sub-list for method output_type
+	76,  // [76:142] is the sub-list for method input_type
+	76,  // [76:76] is the sub-list for extension type_name
+	76,  // [76:76] is the sub-list for extension extendee
+	0,   // [0:76] is the sub-list for field type_name
 }
 
-func init() { file_injective_exchange_v2_query_proto_init() }
-func file_injective_exchange_v2_query_proto_init() {
-	if File_injective_exchange_v2_query_proto != nil {
+func init() { file_injective_exchange_v1beta1_query_proto_init() }
+func file_injective_exchange_v1beta1_query_proto_init() {
+	if File_injective_exchange_v1beta1_query_proto != nil {
 		return
 	}
-	file_injective_exchange_v2_exchange_proto_init()
-	file_injective_exchange_v2_orderbook_proto_init()
-	file_injective_exchange_v2_market_proto_init()
-	file_injective_exchange_v2_genesis_proto_init()
-	file_injective_exchange_v2_query_proto_msgTypes[60].OneofWrappers = []any{
+	file_injective_exchange_v1beta1_exchange_proto_init()
+	file_injective_exchange_v1beta1_genesis_proto_init()
+	file_injective_exchange_v1beta1_query_proto_msgTypes[60].OneofWrappers = []any{
 		(*FullDerivativeMarket_PerpetualInfo)(nil),
 		(*FullDerivativeMarket_FuturesInfo)(nil),
 	}
@@ -8701,18 +8592,18 @@ func file_injective_exchange_v2_query_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_injective_exchange_v2_query_proto_rawDesc), len(file_injective_exchange_v2_query_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_injective_exchange_v1beta1_query_proto_rawDesc), len(file_injective_exchange_v1beta1_query_proto_rawDesc)),
 			NumEnums:      2,
-			NumMessages:   147,
+			NumMessages:   145,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_injective_exchange_v2_query_proto_goTypes,
-		DependencyIndexes: file_injective_exchange_v2_query_proto_depIdxs,
-		EnumInfos:         file_injective_exchange_v2_query_proto_enumTypes,
-		MessageInfos:      file_injective_exchange_v2_query_proto_msgTypes,
+		GoTypes:           file_injective_exchange_v1beta1_query_proto_goTypes,
+		DependencyIndexes: file_injective_exchange_v1beta1_query_proto_depIdxs,
+		EnumInfos:         file_injective_exchange_v1beta1_query_proto_enumTypes,
+		MessageInfos:      file_injective_exchange_v1beta1_query_proto_msgTypes,
 	}.Build()
-	File_injective_exchange_v2_query_proto = out.File
-	file_injective_exchange_v2_query_proto_goTypes = nil
-	file_injective_exchange_v2_query_proto_depIdxs = nil
+	File_injective_exchange_v1beta1_query_proto = out.File
+	file_injective_exchange_v1beta1_query_proto_goTypes = nil
+	file_injective_exchange_v1beta1_query_proto_depIdxs = nil
 }

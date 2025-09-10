@@ -7,13 +7,14 @@
 package v2
 
 import (
-	types "github.com/InjectiveLabs/injective-core/injective-chain/modules/oracle/types"
-	_ "github.com/cosmos/gogoproto/gogoproto"
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
+
+	types "github.com/FluxNFTLabs/sdk-go/chain/modules/injective/chain/oracle/types"
+	_ "github.com/cosmos/gogoproto/gogoproto"
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (
