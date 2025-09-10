@@ -492,7 +492,7 @@ type BankBalance struct {
 	// the account address
 	Account string `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
 	// list of account balances
-	Balances []*types.Coin `protobuf:"bytes,2,rep,name=balances,proto3" json:"balances,omitempty"`
+	Balances types.Coins `protobuf:"bytes,2,rep,name=balances,proto3" json:"balances,omitempty"`
 }
 
 func (x *BankBalance) Reset() {
@@ -534,7 +534,7 @@ func (x *BankBalance) GetAccount() string {
 	return ""
 }
 
-func (x *BankBalance) GetBalances() []*types.Coin {
+func (x *BankBalance) GetBalances() types.Coins {
 	if x != nil {
 		return x.Balances
 	}
