@@ -1,4 +1,4 @@
-module github.com/FluxNFTLabs/sdk-go
+module github.com/wutdahack1337/flux-sdk-go
 
 go 1.21
 

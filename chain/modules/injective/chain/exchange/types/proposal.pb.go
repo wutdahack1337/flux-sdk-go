@@ -11,13 +11,13 @@ import (
 	sync "sync"
 	unsafe "unsafe"
 
-	types "github.com/FluxNFTLabs/sdk-go/chain/modules/injective/chain/oracle/types"
 	_ "github.com/cosmos/cosmos-proto"
 	_ "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/cosmos-sdk/types/msgservice"
 	_ "github.com/cosmos/cosmos-sdk/types/tx/amino"
 	types1 "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
+	types "github.com/wutdahack1337/flux-sdk-go/chain/modules/injective/chain/oracle/types"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )
