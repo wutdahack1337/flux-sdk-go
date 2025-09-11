@@ -11,6 +11,7 @@ import (
 	math_bits "math/bits"
 
 	cosmossdk_io_math "cosmossdk.io/math"
+	types1 "github.com/FluxNFTLabs/sdk-go/chain/modules/injective/chain/oracle/types"
 	_ "github.com/cosmos/cosmos-proto"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	types "github.com/cosmos/cosmos-sdk/types"
@@ -20,7 +21,6 @@ import (
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
-	types1 "github.com/wutdahack1337/flux-sdk-go/chain/modules/injective/chain/oracle/types"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"

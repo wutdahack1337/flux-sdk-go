@@ -1,4 +1,4 @@
-module github.com/wutdahack1337/flux-sdk-go
+module github.com/FluxNFTLabs/sdk-go
 
 go 1.21
 
@@ -14,7 +14,6 @@ require (
 	cosmossdk.io/x/feegrant v0.1.0
 	cosmossdk.io/x/tx v0.12.0
 	cosmossdk.io/x/upgrade v0.1.0
-	github.com/FluxNFTLabs/sdk-go v0.0.7
 	github.com/InjectiveLabs/suplog v1.3.3
 	github.com/cometbft/cometbft v0.38.1
 	github.com/cosmos/cosmos-proto v1.0.0-beta.3
@@ -46,6 +45,7 @@ require (
 	github.com/CosmWasm/wasmvm v1.5.0 // indirect
 	github.com/andres-erbsen/clock v0.0.0-20160526145045-9e14626cd129 // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect
+	github.com/bitly/go-simplejson v0.5.1 // indirect
 	github.com/blendle/zapdriver v1.3.1 // indirect
 	github.com/dfuse-io/logging v0.0.0-20201110202154-26697de88c79 // indirect
 	github.com/distribution/reference v0.5.0 // indirect

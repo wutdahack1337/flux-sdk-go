@@ -10,6 +10,7 @@ import (
 	math_bits "math/bits"
 
 	cosmossdk_io_math "cosmossdk.io/math"
+	types "github.com/FluxNFTLabs/sdk-go/chain/modules/injective/chain/oracle/types"
 	_ "github.com/cosmos/cosmos-proto"
 	_ "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/cosmos-sdk/types/msgservice"
@@ -17,7 +18,6 @@ import (
 	types1 "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
-	types "github.com/wutdahack1337/flux-sdk-go/chain/modules/injective/chain/oracle/types"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
